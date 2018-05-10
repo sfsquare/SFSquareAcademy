@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SFSAcademy.STORE_CATEGORY>
+
+@{
+    ViewBag.Title = "ViewAll";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Show Store Logo">
+    <h1>Store</h1>
+    <h3>View Product Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    View All Products
+</div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("Show Cart", "ViewCart")</li>
+        @if (Html.Permitted_To("Edit", "Store"))
+            {
+            <li>@Html.ActionLink("Add New Product", "Create")</li>
+        }
+        <li>@Html.ActionLink("Shortage Products**", "ShortageProducts")@Html.Check_ShortageProducts()</li>
+    </ul>
+</div>
+<div id="flash_box">
+    @if (ViewBag.CartItems != null && ViewBag.CartItems != 0)
+            {
+        <p class="flash-msg"> Number of Items in the Cart = @ViewBag.CartItems </p>
+    }
+</div>
+<div id="page-yield">
+    <div id="search_box_bg">
+        <div id="searchbox">
+            <form name="search-form" id="search-form" action="" style="display:inline">
+                @using (Html.BeginForm("ViewAll", "Store", FormMethod.Get))
+                {
+                    if (ViewBag.IsPostBack == 1)
+                    {
+                        <div class="second_filter">
+                            <p>
+                                @Html.DropDownList("searchString", null, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
+                                @Html.DropDownList("searchString2", null, htmlAttributes: new { @class = "form-control" })
+                                <input type="submit" value="Submit" id="submit-button2" />
+                                @Html.Hidden("searchString", "searchString")
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="firt_filter">
+                            <p>
+                                @Html.DropDownList("searchString", null, htmlAttributes: new { @class = "form-control" })
+                                <input type="submit" value="Submit" id="submit-button1" />
+                            </p>
+                        </div>
+                    }
+                }
+
+                <div class="extender"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="students-table">
+        <div id="text-input-bg">
+            @{Html.RenderAction("ListAllProducts", "Store", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter });}
+
+        </div>
+    </div>
+    <div id="products"></div>
+</div>

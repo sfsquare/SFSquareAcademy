@@ -1,0 +1,60 @@
+﻿@model SFSAcademy.Models.User
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "../Shared/_Layout/Login.cshtml";
+}
+
+<div id="wrapper">
+    <div id="top_logo">
+        <img src="~/Content/images/login/SF_Square_Logo-Small.svg" alt="A S. F. Square Title">
+    </div>
+    <div id="login_strip"></div>
+    <div id="login_area_bg">
+        @using (Html.BeginForm())
+        {
+            <div id="login_area">
+                <label for="username">@Html.LabelFor(u => u.UserName)</label>
+                <div id="username_textbox_bg">
+                    @Html.TextBoxFor(u => u.UserName)
+                    @Html.ValidationMessageFor(u => u.UserName)
+                </div>
+                <label for="password">@Html.LabelFor(u => u.Password)</label>
+                <div id="password_textbox_bg">
+                    @Html.PasswordFor(u => u.Password)
+                    @Html.ValidationMessageFor(u => u.Password)
+                </div>
+                <div id="notice-box">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div id="notice">
+                            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+                        </div>                     
+                    }                   
+                </div>
+                <div id="submit_area">
+                    <input type="submit" value="Log In" />
+                </div>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <label for="forgot_password" class="forgot_password_link">
+                        Contact Admin If you forgot Password.
+                    </label>
+                }
+            </div>
+        }
+    </div>
+    <div id="help_forgot_pw">
+    </div>
+    <div class="clearfooter"></div>
+</div>
+<div id="footer">
+    <div id="footer_logo">
+        <div id="powered_by">
+            <a href="http://sfsquare.net" alt="visit S. F. Square" target="_blank">Powered by S. F. Square</a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    document.getElementById("username").focus();
+</script>

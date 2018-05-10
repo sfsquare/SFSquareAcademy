@@ -1,0 +1,44 @@
+﻿@model IEnumerable<SFSAcademy.Models.SubCategory>
+@using SFSAcademy.Models;
+
+@{
+    Layout = null;
+}
+<div id="page-yield">
+    <div class="students-table">
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                    </td>
+                    <td>
+                        <span>   </span>
+                        <span>   </span>
+                    </td>
+                    @if (Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                        <td>
+                            @Html.ActionLink("Edit", "_SubCategoriesEdit", new { id = item.SubCategoryData.ID }, new { style = "text-decoration:underline" }) |
+                            @Html.ActionLink("Delete", "_SubCategoriesDelete", new { id = item.SubCategoryData.ID }, new { style = "text-decoration:underline" })
+                        </td>
+                    }
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+    </div>
+    <div id="user_information"> </div>
+    <div class="extender"> </div>
+</div>
