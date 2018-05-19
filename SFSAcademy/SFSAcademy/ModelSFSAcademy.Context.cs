@@ -108,7 +108,6 @@ namespace SFSAcademy
         public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
         public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
-        public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<Privilege> Privileges { get; set; }
         public virtual DbSet<Privileges_Users> Privileges_Users { get; set; }
         public virtual DbSet<Gallery_Master> Gallery_Master { get; set; }
@@ -118,5 +117,6 @@ namespace SFSAcademy
         public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
         public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
         public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
+        public virtual DbSet<STUDENT> STUDENTs { get; set; }
     }
 }

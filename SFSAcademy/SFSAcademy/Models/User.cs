@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Entity.Validation;
 using System.Linq;
+using System.Web.Mvc;
 
 namespace SFSAcademy.Models
 {
@@ -67,9 +69,7 @@ namespace SFSAcademy.Models
             {
                 return false;
             }
-
             var v = db.USERS.Where(a => a.USRNAME.Equals(_username) && a.HASHED_PSWRD.Equals(_password)).FirstOrDefault();
-
 
             if (v != null)
             {

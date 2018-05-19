@@ -478,6 +478,17 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Select_Batch_Particular(int? id)
+        {
+            var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
+                                      join b in db.BATCHes on ffc.BTCH_ID equals b.ID
+                                      join cs in db.COURSEs on b.CRS_ID equals cs.ID
+                                      where ffc.IS_DEL.Equals("N") && b.IS_DEL.Equals("N") && ffc.IS_MSTR.Equals("N") && ffc.MSTR_CATGRY_ID == id
+                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+
+            return PartialView("_Select_Batch_Particular", fEEcATEGORYaACCESS);
+        }
 
         [HttpGet]
         public ActionResult _Fees_Particulars_Create()
@@ -1049,18 +1060,6 @@ namespace SFSAcademy.Controllers
         }
 
         [HttpGet]
-        public ActionResult Select_Batch_Particular(int? id)
-        {
-            var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
-                                      join b in db.BATCHes on ffc.BTCH_ID equals b.ID
-                                      join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                                      where ffc.IS_DEL.Equals("N") && b.IS_DEL.Equals("N") && ffc.IS_MSTR.Equals("N") && ffc.MSTR_CATGRY_ID == id
-                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
-
-            return PartialView("_Select_Batch_Particular", fEEcATEGORYaACCESS);
-        }
-
-        [HttpGet]
         public ActionResult Select_Batch_Collection(int? id)
         {
             var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
@@ -1068,7 +1067,7 @@ namespace SFSAcademy.Controllers
                                       join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                       join cs in db.COURSEs on b.CRS_ID equals cs.ID
                                       where ffc.IS_DEL.Equals("N") && b.IS_DEL.Equals("N") && ffc.IS_MSTR.Equals("N") && ffc.MSTR_CATGRY_ID == id
-                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).Distinct().OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
 
             if (fEEcATEGORYaACCESS == null || fEEcATEGORYaACCESS.Count() == 0)
             {
