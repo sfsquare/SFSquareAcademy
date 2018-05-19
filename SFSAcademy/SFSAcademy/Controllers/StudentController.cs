@@ -819,6 +819,7 @@ namespace SFSAcademy.Controllers
 
                 sTUDENT.IS_ACT = "Y";
                 sTUDENT.IS_DEL = "N";
+                sTUDENT.HAS_PD_FE = false;
                 sTUDENT.CREATED_AT = System.DateTime.Now;
                 sTUDENT.UPDATED_AT = System.DateTime.Now;
                 db.STUDENTs.Add(sTUDENT);
@@ -2059,7 +2060,7 @@ namespace SFSAcademy.Controllers
             var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
-                                       where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == "N" || fc.IS_DEL != null) && fcol.ID == id2
+                                       where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == "N" || fc.IS_DEL != null) && fcol.ID == id2 && (ff.STDNT_ID == student.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == student.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                        select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["fee_particulars"] = fee_particulars_val;
 

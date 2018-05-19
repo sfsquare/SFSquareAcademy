@@ -148,7 +148,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>05/19/2018 14:18:53</publishTime>
+      <publishTime>05/20/2018 02:19:36</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -4374,6 +4374,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/stylesheets/finance/fees_defaulters.css">
       <publishTime>05/10/2018 17:15:36</publishTime>
     </File>
+    <File Include="Content/stylesheets/finance/Fees_Defaulters_Index.css">
+      <publishTime>05/14/2018 18:13:07</publishTime>
+    </File>
     <File Include="Content/stylesheets/finance/fees_index.css">
       <publishTime>05/10/2018 17:15:36</publishTime>
     </File>
@@ -4474,7 +4477,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:36</publishTime>
     </File>
     <File Include="Content/stylesheets/finance/master_fees.css">
-      <publishTime>05/10/2018 17:15:36</publishTime>
+      <publishTime>05/19/2018 21:40:51</publishTime>
     </File>
     <File Include="Content/stylesheets/finance/master_fees_index.css">
       <publishTime>05/10/2018 17:15:36</publishTime>
@@ -6012,6 +6015,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/stylesheets/student/fees.css">
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
+    <File Include="Content/stylesheets/student/Fees_New.css">
+      <publishTime>05/20/2018 00:47:54</publishTime>
+    </File>
     <File Include="Content/stylesheets/student/fee_details.css">
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
@@ -6208,7 +6214,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
     <File Include="ModelSFSAcademy.edmx.diagram">
-      <publishTime>05/19/2018 13:50:40</publishTime>
+      <publishTime>05/20/2018 02:09:52</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>05/10/2018 17:15:37</publishTime>
@@ -6330,6 +6336,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Finance/Delete_Fee_Discount.cshtml">
       <publishTime>05/18/2018 21:22:17</publishTime>
     </File>
+    <File Include="Views/Finance/Delete_Fee_Fine.cshtml">
+      <publishTime>05/19/2018 21:07:03</publishTime>
+    </File>
     <File Include="Views/Finance/Details.cshtml">
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
@@ -6338,6 +6347,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Finance/Edit_Fee_Discount.cshtml">
       <publishTime>05/10/2018 17:15:37</publishTime>
+    </File>
+    <File Include="Views/Finance/Edit_Fee_Fine.cshtml">
+      <publishTime>05/19/2018 21:05:17</publishTime>
     </File>
     <File Include="Views/Finance/Fees_Defaulters_Batch.cshtml">
       <publishTime>05/14/2018 18:46:25</publishTime>
@@ -6396,6 +6408,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Finance/Fee_Discount_New.cshtml">
       <publishTime>05/15/2018 23:16:18</publishTime>
     </File>
+    <File Include="Views/Finance/Fee_Fine.cshtml">
+      <publishTime>05/19/2018 21:53:30</publishTime>
+    </File>
+    <File Include="Views/Finance/Fee_Fine_New.cshtml">
+      <publishTime>05/19/2018 21:03:14</publishTime>
+    </File>
     <File Include="Views/Finance/Index.cshtml">
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
@@ -6415,7 +6433,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
     <File Include="Views/Finance/Master_Fees.cshtml">
-      <publishTime>05/10/2018 17:15:37</publishTime>
+      <publishTime>05/19/2018 21:48:21</publishTime>
     </File>
     <File Include="Views/Finance/pdf_Fee_Structure.cshtml">
       <publishTime>05/15/2018 20:33:57</publishTime>
@@ -6688,7 +6706,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
     <File Include="Views/Student/Fees.cshtml">
-      <publishTime>05/18/2018 20:59:54</publishTime>
+      <publishTime>05/20/2018 02:16:58</publishTime>
+    </File>
+    <File Include="Views/Student/Fees_New.cshtml">
+      <publishTime>05/20/2018 00:40:26</publishTime>
     </File>
     <File Include="Views/Student/Fee_Details.cshtml">
       <publishTime>05/18/2018 20:27:47</publishTime>
@@ -6706,7 +6727,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
     <File Include="Views/Student/Profiles.cshtml">
-      <publishTime>05/17/2018 18:33:08</publishTime>
+      <publishTime>05/20/2018 02:13:41</publishTime>
     </File>
     <File Include="Views/Student/Remove.cshtml">
       <publishTime>05/10/2018 20:31:57</publishTime>
@@ -6769,7 +6790,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/10/2018 17:15:37</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/19/2018 14:14:06</publishTime>
+      <publishTime>05/20/2018 01:42:51</publishTime>
     </File>
   </ItemGroup>
 </Project>

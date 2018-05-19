@@ -53,8 +53,7 @@
            using (Html.BeginForm())
            {
             @Html.AntiForgeryToken()
-            @Html.CheckBox(nameof(Model.HAS_PD_FE), Model.HAS_PD_FE ?? false)
-            @Html.LabelFor(m => m.HAS_PD_FE, "Has paid all the Fees")
+            @Html.CheckBoxFor(x => x.HAS_PD_FE, new { @class = "category_select", @id = "category_select" }) <label>Has paid all the Fees </label>
             <input type="submit" value="► Update" id="user_button" class="user_button" />
            }
         }

@@ -792,6 +792,7 @@
     <Content Include="Content\javascripts\tiny_mce\utils\mctabs.js" />
     <Content Include="Content\javascripts\tiny_mce\utils\validate.js" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
     <Content Include="Content\stylesheets\store\create.css" />
     <Content Include="Content\stylesheets\store\edit.css" />
     <Content Include="Content\stylesheets\store\viewcart.css" />
