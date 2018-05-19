@@ -115,8 +115,8 @@ namespace SFSAcademy
         public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
         public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
         public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
-        public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
         public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
+        public virtual DbSet<STUDENT> STUDENTs { get; set; }
     }
 }
