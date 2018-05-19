@@ -1127,7 +1127,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="varchar" MaxLength="1" />
           <Property Name="CREATED_AT" Type="datetime" />
           <Property Name="UPDATED_AT" Type="datetime" />
-          <Property Name="HAS_PD_FE" Type="varchar" MaxLength="1" />
+          <Property Name="HAS_PD_FE" Type="bit" />
           <Property Name="PHTO_FILE_SIZE" Type="int" />
           <Property Name="USRID" Type="int" Nullable="false" />
           <Property Name="STDNT_CAT_ID" Type="int" />
@@ -5873,6 +5873,43 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_TRANSACTION" EntitySet="FINANCE_TRANSACTION" />
           </AssociationSet>
           <EntitySet Name="IMAGE_DOCUMENTS" EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" />
+          <EntitySet Name="Privileges" EntityType="SFSAcademyModel.Privilege" />
+          <EntitySet Name="Privileges_Users" EntityType="SFSAcademyModel.Privileges_Users" />
+          <EntitySet Name="Gallery_Master" EntityType="SFSAcademyModel.Gallery_Master" />
+          <EntitySet Name="PHOTO_MASTER" EntityType="SFSAcademyModel.PHOTO_MASTER" />
+          <EntitySet Name="STORE_PURCHAGE_BACKUP" EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" />
+          <EntitySet Name="STORE_SUB_CATEGORY" EntityType="SFSAcademyModel.STORE_SUB_CATEGORY" />
+          <AssociationSet Name="STSUBCAT_STCAT_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI">
+            <End Role="STORE_CATEGORY" EntitySet="STORE_CATEGORY" />
+            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
+          </AssociationSet>
+          <AssociationSet Name="STPROD_STPURBKUP_ASSE_NI" Association="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI">
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+            <End Role="STORE_PURCHAGE_BACKUP" EntitySet="STORE_PURCHAGE_BACKUP" />
+          </AssociationSet>
+          <AssociationSet Name="STSUBCAT_STPROD_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI">
+            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+          </AssociationSet>
+          <EntitySet Name="STORE_PURCHAGE_STATUS" EntityType="SFSAcademyModel.STORE_PURCHAGE_STATUS" />
+          <EntitySet Name="STORE_PURCHAGE_VENDOR" EntityType="SFSAcademyModel.STORE_PURCHAGE_VENDOR" />
+          <EntitySet Name="STORE_PURCHAGE_ORDER" EntityType="SFSAcademyModel.STORE_PURCHAGE_ORDER" />
+          <AssociationSet Name="STPURPO_EMP_ASSE_NI" Association="SFSAcademyModel.STPURPO_EMP_ASSE_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <AssociationSet Name="STPURPO_PRD_ASSE_NI" Association="SFSAcademyModel.STPURPO_PRD_ASSE_NI">
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <AssociationSet Name="STPURPO_STS_ASSE_NI" Association="SFSAcademyModel.STPURPO_STS_ASSE_NI">
+            <End Role="STORE_PURCHAGE_STATUS" EntitySet="STORE_PURCHAGE_STATUS" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <AssociationSet Name="STPURPO_VDR_ASSE_NI" Association="SFSAcademyModel.STPURPO_VDR_ASSE_NI">
+            <End Role="STORE_PURCHAGE_VENDOR" EntitySet="STORE_PURCHAGE_VENDOR" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
           <EntitySet Name="STUDENTs" EntityType="SFSAcademyModel.STUDENT" />
           <AssociationSet Name="FRM_I_STUD_ARCH_NI" Association="SFSAcademyModel.FRM_I_STUD_ARCH_NI">
             <End Role="STUDENT" EntitySet="STUDENTs" />
@@ -5961,43 +5998,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="USRID_USER_STUD_NI" Association="SFSAcademyModel.USRID_USER_STUD_NI">
             <End Role="USER" EntitySet="USERS" />
             <End Role="STUDENT" EntitySet="STUDENTs" />
-          </AssociationSet>
-          <EntitySet Name="Privileges" EntityType="SFSAcademyModel.Privilege" />
-          <EntitySet Name="Privileges_Users" EntityType="SFSAcademyModel.Privileges_Users" />
-          <EntitySet Name="Gallery_Master" EntityType="SFSAcademyModel.Gallery_Master" />
-          <EntitySet Name="PHOTO_MASTER" EntityType="SFSAcademyModel.PHOTO_MASTER" />
-          <EntitySet Name="STORE_PURCHAGE_BACKUP" EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" />
-          <EntitySet Name="STORE_SUB_CATEGORY" EntityType="SFSAcademyModel.STORE_SUB_CATEGORY" />
-          <AssociationSet Name="STSUBCAT_STCAT_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI">
-            <End Role="STORE_CATEGORY" EntitySet="STORE_CATEGORY" />
-            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
-          </AssociationSet>
-          <AssociationSet Name="STPROD_STPURBKUP_ASSE_NI" Association="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI">
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
-            <End Role="STORE_PURCHAGE_BACKUP" EntitySet="STORE_PURCHAGE_BACKUP" />
-          </AssociationSet>
-          <AssociationSet Name="STSUBCAT_STPROD_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI">
-            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
-          </AssociationSet>
-          <EntitySet Name="STORE_PURCHAGE_STATUS" EntityType="SFSAcademyModel.STORE_PURCHAGE_STATUS" />
-          <EntitySet Name="STORE_PURCHAGE_VENDOR" EntityType="SFSAcademyModel.STORE_PURCHAGE_VENDOR" />
-          <EntitySet Name="STORE_PURCHAGE_ORDER" EntityType="SFSAcademyModel.STORE_PURCHAGE_ORDER" />
-          <AssociationSet Name="STPURPO_EMP_ASSE_NI" Association="SFSAcademyModel.STPURPO_EMP_ASSE_NI">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
-          </AssociationSet>
-          <AssociationSet Name="STPURPO_PRD_ASSE_NI" Association="SFSAcademyModel.STPURPO_PRD_ASSE_NI">
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
-          </AssociationSet>
-          <AssociationSet Name="STPURPO_STS_ASSE_NI" Association="SFSAcademyModel.STPURPO_STS_ASSE_NI">
-            <End Role="STORE_PURCHAGE_STATUS" EntitySet="STORE_PURCHAGE_STATUS" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
-          </AssociationSet>
-          <AssociationSet Name="STPURPO_VDR_ASSE_NI" Association="SFSAcademyModel.STPURPO_VDR_ASSE_NI">
-            <End Role="STORE_PURCHAGE_VENDOR" EntitySet="STORE_PURCHAGE_VENDOR" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FEE_COLLECTION_PARTICULAR">
@@ -6482,6 +6482,220 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Privilege">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="AddedDate" Type="DateTime" Precision="3" />
+          <Property Name="AddedBy" Type="Int64" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Privileges_Users">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
+          <Property Name="PrivilegeId" Type="Int64" Nullable="false" />
+          <Property Name="AddedBy" Type="Int64" />
+          <Property Name="AddedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Gallery_Master">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Gallery_Name" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Gallery_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Gallery_Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PHOTO_MASTER">
+          <Key>
+            <PropertyRef Name="PhotoId" />
+            <PropertyRef Name="GalleryId" />
+          </Key>
+          <Property Name="PhotoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GalleryId" Type="Int64" Nullable="false" />
+          <Property Name="Decription" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ThumbPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ImagePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="PhotoName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_BACKUP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PRODUCT_ID" Type="Int32" Nullable="false" />
+          <Property Name="UNIT_SOLD" Type="Int32" />
+          <Property Name="SOLD_PRICE" Type="Int32" />
+          <Property Name="SOLD_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SOLD_ON" Type="DateTime" Precision="3" />
+          <Property Name="STUDENT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="STUDENT_CONTACT_NO" Type="Int64" />
+          <Property Name="MONEY_RECEIVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEPOSITED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI" FromRole="STORE_PURCHAGE_BACKUP" ToRole="STORE_PRODUCTS" />
+        </EntityType>
+        <EntityType Name="STORE_SUB_CATEGORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STORE_CATEGORY_ID" Type="Int32" Nullable="false" />
+          <Property Name="NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STORE_CATEGORY" Relationship="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_CATEGORY" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_PRODUCTS" />
+        </EntityType>
+        <Association Name="STSUBCAT_STCAT_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_CATEGORY" Role="STORE_CATEGORY" Multiplicity="1" />
+          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_SUB_CATEGORY">
+              <PropertyRef Name="STORE_CATEGORY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPROD_STPURBKUP_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Role="STORE_PURCHAGE_BACKUP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PRODUCTS">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_BACKUP">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STSUBCAT_STPROD_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_SUB_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PRODUCTS">
+              <PropertyRef Name="SUB_CATEGORY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="STORE_PURCHAGE_STATUS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="START_DATE" Type="DateTime" Precision="3" />
+          <Property Name="END_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_STATUS" ToRole="STORE_PURCHAGE_ORDER" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_VENDOR">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="START_DATE" Type="DateTime" Precision="3" />
+          <Property Name="END_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_VENDOR" ToRole="STORE_PURCHAGE_ORDER" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_ORDER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PO_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PRODUCT_ID" Type="Int32" />
+          <Property Name="REVISION_NUMBER" Type="Int32" Nullable="false" />
+          <Property Name="STATUS_ID" Type="Int32" />
+          <Property Name="EMPLOYEE_ID" Type="Int32" />
+          <Property Name="VENDOR_ID" Type="Int32" />
+          <Property Name="SHIP_METHOD_ID" Type="Int32" />
+          <Property Name="ORDER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="ORDER_QUANTITY" Type="Int32" />
+          <Property Name="SHIP_DATE" Type="DateTime" Precision="3" />
+          <Property Name="SUB_TOTAL" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TAX_AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FREIGHT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TOTAL_DUE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPURPO_PRD_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PRODUCTS" />
+          <NavigationProperty Name="STORE_PURCHAGE_STATUS" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_STATUS" />
+          <NavigationProperty Name="STORE_PURCHAGE_VENDOR" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_VENDOR" />
+        </EntityType>
+        <Association Name="STPURPO_EMP_ASSE_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="EMPLOYEE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPURPO_PRD_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PRODUCTS">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPURPO_STS_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_STATUS" Role="STORE_PURCHAGE_STATUS" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PURCHAGE_STATUS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPURPO_VDR_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_VENDOR" Role="STORE_PURCHAGE_VENDOR" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PURCHAGE_VENDOR">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="VENDOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="STUDENT">
           <Key>
             <PropertyRef Name="ID" />
@@ -6519,7 +6733,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="HAS_PD_FE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="HAS_PD_FE" Type="Boolean" />
           <Property Name="PHTO_FILE_SIZE" Type="Int32" />
           <Property Name="USRID" Type="Int32" Nullable="false" />
           <Property Name="STDNT_CAT_ID" Type="Int32" />
@@ -6809,220 +7023,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="STUDENT">
               <PropertyRef Name="USRID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="Privilege">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="AddedDate" Type="DateTime" Precision="3" />
-          <Property Name="AddedBy" Type="Int64" />
-          <Property Name="ModifiedBy" Type="Int64" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Privileges_Users">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int64" Nullable="false" />
-          <Property Name="PrivilegeId" Type="Int64" Nullable="false" />
-          <Property Name="AddedBy" Type="Int64" />
-          <Property Name="AddedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int64" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Gallery_Master">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Gallery_Name" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Gallery_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Gallery_Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="PHOTO_MASTER">
-          <Key>
-            <PropertyRef Name="PhotoId" />
-            <PropertyRef Name="GalleryId" />
-          </Key>
-          <Property Name="PhotoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GalleryId" Type="Int64" Nullable="false" />
-          <Property Name="Decription" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="ThumbPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="ImagePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-          <Property Name="PhotoName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="STORE_PURCHAGE_BACKUP">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PRODUCT_ID" Type="Int32" Nullable="false" />
-          <Property Name="UNIT_SOLD" Type="Int32" />
-          <Property Name="SOLD_PRICE" Type="Int32" />
-          <Property Name="SOLD_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SOLD_ON" Type="DateTime" Precision="3" />
-          <Property Name="STUDENT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="STUDENT_CONTACT_NO" Type="Int64" />
-          <Property Name="MONEY_RECEIVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEPOSITED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI" FromRole="STORE_PURCHAGE_BACKUP" ToRole="STORE_PRODUCTS" />
-        </EntityType>
-        <EntityType Name="STORE_SUB_CATEGORY">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="STORE_CATEGORY_ID" Type="Int32" Nullable="false" />
-          <Property Name="NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STORE_CATEGORY" Relationship="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_CATEGORY" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_PRODUCTS" />
-        </EntityType>
-        <Association Name="STSUBCAT_STCAT_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_CATEGORY" Role="STORE_CATEGORY" Multiplicity="1" />
-          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_SUB_CATEGORY">
-              <PropertyRef Name="STORE_CATEGORY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STPROD_STPURBKUP_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Role="STORE_PURCHAGE_BACKUP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_PRODUCTS">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_BACKUP">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STSUBCAT_STPROD_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_SUB_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_PRODUCTS">
-              <PropertyRef Name="SUB_CATEGORY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="STORE_PURCHAGE_STATUS">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="START_DATE" Type="DateTime" Precision="3" />
-          <Property Name="END_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_STATUS" ToRole="STORE_PURCHAGE_ORDER" />
-        </EntityType>
-        <EntityType Name="STORE_PURCHAGE_VENDOR">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="START_DATE" Type="DateTime" Precision="3" />
-          <Property Name="END_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_VENDOR" ToRole="STORE_PURCHAGE_ORDER" />
-        </EntityType>
-        <EntityType Name="STORE_PURCHAGE_ORDER">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PO_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PRODUCT_ID" Type="Int32" />
-          <Property Name="REVISION_NUMBER" Type="Int32" Nullable="false" />
-          <Property Name="STATUS_ID" Type="Int32" />
-          <Property Name="EMPLOYEE_ID" Type="Int32" />
-          <Property Name="VENDOR_ID" Type="Int32" />
-          <Property Name="SHIP_METHOD_ID" Type="Int32" />
-          <Property Name="ORDER_DATE" Type="DateTime" Precision="3" />
-          <Property Name="ORDER_QUANTITY" Type="Int32" />
-          <Property Name="SHIP_DATE" Type="DateTime" Precision="3" />
-          <Property Name="SUB_TOTAL" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TAX_AMT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="FREIGHT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TOTAL_DUE" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPURPO_PRD_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PRODUCTS" />
-          <NavigationProperty Name="STORE_PURCHAGE_STATUS" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_STATUS" />
-          <NavigationProperty Name="STORE_PURCHAGE_VENDOR" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_VENDOR" />
-        </EntityType>
-        <Association Name="STPURPO_EMP_ASSE_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="EMPLOYEE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STPURPO_PRD_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_PRODUCTS">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STPURPO_STS_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_STATUS" Role="STORE_PURCHAGE_STATUS" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_PURCHAGE_STATUS">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="STATUS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STPURPO_VDR_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_VENDOR" Role="STORE_PURCHAGE_VENDOR" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_PURCHAGE_VENDOR">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="VENDOR_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8227,51 +8227,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="STUDENTs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.STUDENT">
-              <MappingFragment StoreEntitySet="STUDENT">
-                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
-                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
-                <ScalarProperty Name="STDNT_CAT_ID" ColumnName="STDNT_CAT_ID" />
-                <ScalarProperty Name="USRID" ColumnName="USRID" />
-                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
-                <ScalarProperty Name="HAS_PD_FE" ColumnName="HAS_PD_FE" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
-                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
-                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
-                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
-                <ScalarProperty Name="IS_SMS_ENABL" ColumnName="IS_SMS_ENABL" />
-                <ScalarProperty Name="IMMDT_CNTCT_ID" ColumnName="IMMDT_CNTCT_ID" />
-                <ScalarProperty Name="EML" ColumnName="EML" />
-                <ScalarProperty Name="PH2" ColumnName="PH2" />
-                <ScalarProperty Name="PH1" ColumnName="PH1" />
-                <ScalarProperty Name="CTRY_ID" ColumnName="CTRY_ID" />
-                <ScalarProperty Name="PIN_CODE" ColumnName="PIN_CODE" />
-                <ScalarProperty Name="STATE" ColumnName="STATE" />
-                <ScalarProperty Name="CITY" ColumnName="CITY" />
-                <ScalarProperty Name="ADDR_LINE2" ColumnName="ADDR_LINE2" />
-                <ScalarProperty Name="ADDR_LINE1" ColumnName="ADDR_LINE1" />
-                <ScalarProperty Name="RLGN" ColumnName="RLGN" />
-                <ScalarProperty Name="LANG" ColumnName="LANG" />
-                <ScalarProperty Name="BIRTH_PLACE" ColumnName="BIRTH_PLACE" />
-                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
-                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
-                <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
-                <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Privileges">
             <EntityTypeMapping TypeName="SFSAcademyModel.Privilege">
               <MappingFragment StoreEntitySet="Privileges">
@@ -8396,6 +8351,51 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="REVISION_NUMBER" ColumnName="REVISION_NUMBER" />
                 <ScalarProperty Name="PRODUCT_ID" ColumnName="PRODUCT_ID" />
                 <ScalarProperty Name="PO_NUMBER" ColumnName="PO_NUMBER" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STUDENTs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.STUDENT">
+              <MappingFragment StoreEntitySet="STUDENT">
+                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
+                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
+                <ScalarProperty Name="STDNT_CAT_ID" ColumnName="STDNT_CAT_ID" />
+                <ScalarProperty Name="USRID" ColumnName="USRID" />
+                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
+                <ScalarProperty Name="HAS_PD_FE" ColumnName="HAS_PD_FE" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
+                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
+                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
+                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
+                <ScalarProperty Name="IS_SMS_ENABL" ColumnName="IS_SMS_ENABL" />
+                <ScalarProperty Name="IMMDT_CNTCT_ID" ColumnName="IMMDT_CNTCT_ID" />
+                <ScalarProperty Name="EML" ColumnName="EML" />
+                <ScalarProperty Name="PH2" ColumnName="PH2" />
+                <ScalarProperty Name="PH1" ColumnName="PH1" />
+                <ScalarProperty Name="CTRY_ID" ColumnName="CTRY_ID" />
+                <ScalarProperty Name="PIN_CODE" ColumnName="PIN_CODE" />
+                <ScalarProperty Name="STATE" ColumnName="STATE" />
+                <ScalarProperty Name="CITY" ColumnName="CITY" />
+                <ScalarProperty Name="ADDR_LINE2" ColumnName="ADDR_LINE2" />
+                <ScalarProperty Name="ADDR_LINE1" ColumnName="ADDR_LINE1" />
+                <ScalarProperty Name="RLGN" ColumnName="RLGN" />
+                <ScalarProperty Name="LANG" ColumnName="LANG" />
+                <ScalarProperty Name="BIRTH_PLACE" ColumnName="BIRTH_PLACE" />
+                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
+                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
+                <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
+                <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

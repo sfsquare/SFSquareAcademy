@@ -2188,6 +2188,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Views\Finance\_Select_Batch_Particular.cshtml" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2344,7 +2345,6 @@
     <Content Include="Views\BATCH\_Update_Batch.cshtml" />
     <Content Include="Views\Finance\Fee_Category_View.cshtml" />
     <Content Include="Views\Finance\Master_Category_Create.cshtml" />
-    <Content Include="Views\Finance\_Select_Batch.cshtml" />
     <Content Include="Views\Finance\_fees_collection_dates.cshtml" />
     <Content Include="Views\Finance\_fine_submission.cshtml" />
     <Content Include="Views\Finance\student_fee_receipt_pdf.cshtml" />
@@ -2374,6 +2374,31 @@
     <Content Include="Views\Student\admission3_1.cshtml" />
     <Content Include="Views\Student\Add_Existing_Guardian.cshtml" />
     <Content Include="Views\USERs\Forgot_Password.cshtml" />
+    <Content Include="Views\Finance\_Select_Batch_Collection.cshtml" />
+    <Content Include="Views\Finance\_Master_Category_List.cshtml" />
+    <Content Include="Views\Finance\_Fees_Structure.cshtml" />
+    <Content Include="Views\Finance\_Fees_Collection_Dates_Defaulters.cshtml" />
+    <Content Include="Views\Finance\_Student_Defaulters.cshtml" />
+    <Content Include="Views\Finance\_Students_Defaulted_Fees.cshtml" />
+    <Content Include="Views\Finance\Fee_Defaulters_pdf.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Batch.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Index.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Student_Search.cshtml" />
+    <Content Include="Views\Finance\Fees_Structure_Dates.cshtml" />
+    <Content Include="Views\Finance\Fees_Student_Structure_Search.cshtml" />
+    <Content Include="Views\Finance\Master_Category_Particulars.cshtml" />
+    <Content Include="Views\Finance\Master_Category_Particulars_Edit.cshtml" />
+    <Content Include="Views\Finance\pdf_Fee_Structure.cshtml" />
+    <Content Include="Views\Student\_ListStudentsForTransfer.cshtml" />
+    <Content Include="Views\Student\_Student_TC_Generate.cshtml" />
+    <Content Include="Views\Student\AdvancedSearchPdf.cshtml" />
+    <Content Include="Views\Student\BatchTransfer.cshtml" />
+    <Content Include="Views\Student\Change_To_Former.cshtml" />
+    <Content Include="Views\Student\Fee_Details.cshtml" />
+    <Content Include="Views\Student\Fees.cshtml" />
+    <Content Include="Views\Student\Generate_TC_pdf.cshtml" />
+    <Content Include="Views\Student\ProfilePDF.cshtml" />
+    <Content Include="Views\Student\Remove.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
