@@ -4,7 +4,7 @@
 .link-box {
     float: left;
     height: 80px;
-    margin: 30px;
+    margin: 20px;
     width: 243px;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .box{
-    width:965px;
+    width:100%;
     margin:0px auto;
 }
 
@@ -228,7 +228,7 @@
 }
 
 .fee-link{
-    width: 920px;
+    width: 90%;
     margin: 0 auto;
 }
 

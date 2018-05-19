@@ -44,7 +44,6 @@
         <EntityTypeShape EntityType="SFSAcademyModel.FA_CRITERIAS" Width="3.5" PointX="15" PointY="76" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.FA_GROUP" Width="3.5" PointX="12.75" PointY="65.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.FEE_COLLECTION_DISCOUNT" Width="3.5" PointX="20.25" PointY="53.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.FEE_DISCOUNT" Width="3.5" PointX="16.25" PointY="62.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_DONATION" Width="3.5" PointX="24.75" PointY="53.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE_PARTICULAR" Width="3.5" PointX="20.25" PointY="58" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE_STRUCTURE_ELEMENT" Width="3.5" PointX="20.25" PointY="45" IsExpanded="true" />
@@ -172,14 +171,11 @@
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE_CATGEORY" Width="1.5" PointX="19.25" PointY="24.25" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI" />
-        <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3" />
         <AssociationConnector Association="SFSAcademyModel.FEE_C_FINA_FINA_NI3" />
         <AssociationConnector Association="SFSAcademyModel.FIN_C_FINA_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FINA_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE" Width="1.5" PointX="27.75" PointY="57.75" />
         <AssociationConnector Association="SFSAcademyModel.FEE_C_FINA_FINA_NI" />
-        <EntityTypeShape EntityType="SFSAcademyModel.FEE_FINE" Width="1.5" PointX="25.25" PointY="49.125" />
-        <AssociationConnector Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_TRANSACTION" Width="1.5" PointX="30" PointY="38.625" />
         <AssociationConnector Association="SFSAcademyModel.TRAN__FINA_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FINA_NI5" />
@@ -210,8 +206,6 @@
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_EXAM_NI" />
         <AssociationConnector Association="SFSAcademyModel.RCVR__STUD_FEE__NI" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FEE__NI2" />
-        <AssociationConnector Association="SFSAcademyModel.RCVR__STUD_FEE__NI2" />
-        <AssociationConnector Association="SFSAcademyModel.FEE_RCVR_FEE__NI2" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FINA_NI4" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FINA_NI6" />
@@ -224,6 +218,10 @@
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_STUD_NI5" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_SUBJ_NI" />
         <AssociationConnector Association="SFSAcademyModel.USRID_USER_STUD_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.FEE_DISCOUNT" Width="1.5" PointX="21.75" PointY="24" />
+        <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3" />
+        <EntityTypeShape EntityType="SFSAcademyModel.FEE_FINE" Width="1.5" PointX="21.75" PointY="19.875" />
+        <AssociationConnector Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

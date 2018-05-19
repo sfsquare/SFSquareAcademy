@@ -2399,6 +2399,10 @@
     <Content Include="Views\Student\Generate_TC_pdf.cshtml" />
     <Content Include="Views\Student\ProfilePDF.cshtml" />
     <Content Include="Views\Student\Remove.cshtml" />
+    <Content Include="Views\Finance\Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Fee_Fine_New.cshtml" />
+    <Content Include="Views\Finance\Edit_Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Delete_Fee_Fine.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

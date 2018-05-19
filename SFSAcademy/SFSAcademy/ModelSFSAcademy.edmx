@@ -1982,18 +1982,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FEE_RCVR_FEE__NI2">
-          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="0..1" />
-          <End Role="FEE_FINE" Type="Self.FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FIN_C_FINA_FINA_NI">
           <End Role="FINANCE_FEE_CATGEORY" Type="Self.FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
           <End Role="FINANCE_TRANSACTION_TRIGGERS" Type="Self.FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
@@ -2242,18 +2230,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="FEE_COLLECTION_DISCOUNT">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RCVR__STUD_FEE__NI2">
-          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="0..1" />
-          <End Role="FEE_DISCOUNT" Type="Self.FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
               <PropertyRef Name="RCVR_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -3117,10 +3093,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
-          <AssociationSet Name="FEE_RCVR_FEE__NI2" Association="Self.FEE_RCVR_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENT" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
-          </AssociationSet>
           <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="Self.FIN_C_FINA_FINA_NI">
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
@@ -3204,10 +3176,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="RCVR__STUD_FEE__NI" Association="Self.RCVR__STUD_FEE__NI">
             <End Role="STUDENT" EntitySet="STUDENT" />
             <End Role="FEE_COLLECTION_DISCOUNT" EntitySet="FEE_COLLECTION_DISCOUNT" />
-          </AssociationSet>
-          <AssociationSet Name="RCVR__STUD_FEE__NI2" Association="Self.RCVR__STUD_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENT" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
           </AssociationSet>
           <AssociationSet Name="RPTG__EMPL_EMPL_NI" Association="Self.RPTG__EMPL_EMPL_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
@@ -4022,20 +3990,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FEE_COLLECTION_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI" FromRole="FEE_COLLECTION_DISCOUNT" ToRole="STUDENT" />
-        </EntityType>
-        <EntityType Name="FEE_DISCOUNT">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
-          <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI2" FromRole="FEE_DISCOUNT" ToRole="STUDENT" />
         </EntityType>
         <EntityType Name="FINANCE_DONATION">
           <Key>
@@ -5441,7 +5395,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="FA_CRITERIAS" EntityType="Self.FA_CRITERIAS" />
           <EntitySet Name="FA_GROUP" EntityType="Self.FA_GROUP" />
           <EntitySet Name="FEE_COLLECTION_DISCOUNT" EntityType="Self.FEE_COLLECTION_DISCOUNT" />
-          <EntitySet Name="FEE_DISCOUNT" EntityType="Self.FEE_DISCOUNT" />
           <EntitySet Name="FINANCE_DONATION" EntityType="Self.FINANCE_DONATION" />
           <EntitySet Name="FINANCE_FEE_PARTICULAR" EntityType="Self.FINANCE_FEE_PARTICULAR" />
           <EntitySet Name="FINANCE_FEE_STRUCTURE_ELEMENT" EntityType="Self.FINANCE_FEE_STRUCTURE_ELEMENT" />
@@ -5833,10 +5786,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FEE_COLLECTION_DISCOUNT" EntitySet="FEE_COLLECTION_DISCOUNT" />
           </AssociationSet>
-          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
-          </AssociationSet>
           <AssociationSet Name="FEE_C_FINA_FINA_NI3" Association="SFSAcademyModel.FEE_C_FINA_FINA_NI3">
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FINANCE_FEE_COLLECTION" EntitySet="FINANCE_FEE_COLLECTION" />
@@ -5853,11 +5802,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="FEE_C_FINA_FINA_NI" Association="SFSAcademyModel.FEE_C_FINA_FINA_NI">
             <End Role="FINANCE_FEE_COLLECTION" EntitySet="FINANCE_FEE_COLLECTION" />
             <End Role="FINANCE_FEE" EntitySet="FINANCE_FEE" />
-          </AssociationSet>
-          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
-          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
           <EntitySet Name="FINANCE_TRANSACTION" EntityType="SFSAcademyModel.FINANCE_TRANSACTION" />
           <AssociationSet Name="TRAN__FINA_FINA_NI" Association="SFSAcademyModel.TRAN__FINA_FINA_NI">
@@ -5943,14 +5887,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="STUDENT" EntitySet="STUDENTs" />
             <End Role="FEE_COLLECTION_PARTICULAR" EntitySet="FEE_COLLECTION_PARTICULAR" />
           </AssociationSet>
-          <AssociationSet Name="RCVR__STUD_FEE__NI2" Association="SFSAcademyModel.RCVR__STUD_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENTs" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
-          </AssociationSet>
-          <AssociationSet Name="FEE_RCVR_FEE__NI2" Association="SFSAcademyModel.FEE_RCVR_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENTs" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
-          </AssociationSet>
           <AssociationSet Name="STDNT_STUD_FINA_NI" Association="SFSAcademyModel.STDNT_STUD_FINA_NI">
             <End Role="STUDENT" EntitySet="STUDENTs" />
             <End Role="FINANCE_FEE" EntitySet="FINANCE_FEE" />
@@ -5998,6 +5934,16 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="USRID_USER_STUD_NI" Association="SFSAcademyModel.USRID_USER_STUD_NI">
             <End Role="USER" EntitySet="USERS" />
             <End Role="STUDENT" EntitySet="STUDENTs" />
+          </AssociationSet>
+          <EntitySet Name="FEE_DISCOUNT" EntityType="SFSAcademyModel.FEE_DISCOUNT" />
+          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
+          </AssociationSet>
+          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
+          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FEE_COLLECTION_PARTICULAR">
@@ -6275,10 +6221,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="MSTR_CATGRY_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="BATCH" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_COLLECTION_DISCOUNT" />
-          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.FEE_C_FINA_FINA_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_COLLECTION" />
           <NavigationProperty Name="FINANCE_TRANSACTION_TRIGGERS" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_TRANSACTION_TRIGGERS" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.FIN_F_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_PARTICULAR" />
+          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
           <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_FINE" />
         </EntityType>
         <Association Name="BTCH__BATC_FINA_NI">
@@ -6302,18 +6248,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FEE_COLLECTION_DISCOUNT">
               <PropertyRef Name="FIN_FEE_CLCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FIN_F_FINA_FEE__NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6375,33 +6309,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FINANCE_FEE">
               <PropertyRef Name="FEE_CLCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="FEE_FINE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
-          <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.FEE_RCVR_FEE__NI2" FromRole="FEE_FINE" ToRole="STUDENT" />
-        </EntityType>
-        <Association Name="FEE_F_FINA_FEE_NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6747,8 +6654,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="EXAM_SCORE" Relationship="SFSAcademyModel.STDNT_STUD_EXAM_NI" FromRole="STUDENT" ToRole="EXAM_SCORE" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI" FromRole="STUDENT" ToRole="FEE_COLLECTION_DISCOUNT" />
           <NavigationProperty Name="FEE_COLLECTION_PARTICULAR" Relationship="SFSAcademyModel.STDNT_STUD_FEE__NI2" FromRole="STUDENT" ToRole="FEE_COLLECTION_PARTICULAR" />
-          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI2" FromRole="STUDENT" ToRole="FEE_DISCOUNT" />
-          <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_RCVR_FEE__NI2" FromRole="STUDENT" ToRole="FEE_FINE" />
           <NavigationProperty Name="FINANCE_FEE" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI" FromRole="STUDENT" ToRole="FINANCE_FEE" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI4" FromRole="STUDENT" ToRole="FINANCE_FEE_PARTICULAR" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI6" FromRole="STUDENT" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
@@ -6855,30 +6760,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FEE_COLLECTION_PARTICULAR">
               <PropertyRef Name="STDNT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RCVR__STUD_FEE__NI2">
-          <End Type="SFSAcademyModel.STUDENT" Role="STUDENT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FEE_RCVR_FEE__NI2">
-          <End Type="SFSAcademyModel.STUDENT" Role="STUDENT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="RCVR_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7023,6 +6904,57 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="STUDENT">
               <PropertyRef Name="USRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FEE_DISCOUNT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FIN_F_FINA_FEE__NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_DISCOUNT">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FEE_FINE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FEE_F_FINA_FEE_NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_FINE">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7589,19 +7521,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
                 <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
                 <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FEE_DISCOUNT">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
-              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="DISC" ColumnName="DISC" />
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8174,20 +8093,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FEE_FINE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
-              <MappingFragment StoreEntitySet="FEE_FINE">
-                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
-                <ScalarProperty Name="FINE" ColumnName="FINE" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FINANCE_TRANSACTION">
             <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION">
               <MappingFragment StoreEntitySet="FINANCE_TRANSACTION">
@@ -8396,6 +8301,33 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
                 <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
                 <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_DISCOUNT">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
+              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="DISC" ColumnName="DISC" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_FINE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
+              <MappingFragment StoreEntitySet="FEE_FINE">
+                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="FINE" ColumnName="FINE" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
