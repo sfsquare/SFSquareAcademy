@@ -53,6 +53,16 @@ namespace SFSAcademy.Models
         public COURSE CourseData { get; set; }
     }
 
+    public class FeeFine
+    {
+        public FEE_FINE FeeFineData { get; set; }
+        public FINANCE_FEE_CATGEORY FinanceFeeCategoryData { get; set; }
+        public FINANCE_FEE_PARTICULAR FinanceFeeParticularData { get; set; }
+        public STUDENT_CATGEORY StudentCategoryData { get; set; }
+        public STUDENT StudentData { get; set; }
+        public BATCH BatchData { get; set; }
+        public COURSE CourseData { get; set; }
+    }
     public class FeeCollectionDiscount
     {
         public FEE_COLLECTION_DISCOUNT FeeCollectionDiscountData { get; set; }

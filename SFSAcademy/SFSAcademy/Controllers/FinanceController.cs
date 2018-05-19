@@ -466,7 +466,7 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult Fees_Particulars_New(int? FeeCatCount)
         {
-            List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == "Y").OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == "Y" && x.IS_DEL == "N").OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Master Category" });
             ViewBag.MASTER_CATGEORY_ID = options;
@@ -702,8 +702,6 @@ namespace SFSAcademy.Controllers
         }
 
 
-
-
         [HttpGet]
         public ActionResult Fee_Discounts(string sortOrder, string currentFilter, string BTCH_ID, int? page, string currentFilter2, string FINANCE_FEE_CATGEORY_ID)
         {
@@ -857,6 +855,34 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
+                var queryCourceBatchFee = (from cs in db.COURSEs
+                                           join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                           join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
+                                           where cs.IS_DEL == "N" && bt.IS_DEL == "N" && fcc.IS_DEL == "N"
+                                           select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
+                                    .OrderBy(x => x.FeeCategoryData.ID).ToList();
+
+                List<SelectListItem> options = new List<SelectListItem>();
+                foreach (var item in queryCourceBatchFee)
+                {
+                    string FeeBatchFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.CourseData.CODE, "-", item.BatchData.NAME);
+                    var result = new SelectListItem();
+                    result.Text = FeeBatchFullName;
+                    result.Value = item.FeeCategoryData.ID.ToString();
+                    result.Selected = item.FeeCategoryData.ID == FIN_FEE_CAT_ID ? true : false;
+                    options.Add(result);
+                }
+
+                // add the 'ALL' option
+                options.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Category" });
+                ViewBag.FIN_FEE_CAT_ID = options;
+
+
+                List<SelectListItem> options4 = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", STUDENT_CATGEORY_ID).ToList();
+                // add the 'ALL' option
+                //options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Student Category" });
+                ViewBag.STUDENT_CATGEORY_ID = options4;
+
                 if (radioName == "Batch")
                 {
                     var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
@@ -864,6 +890,7 @@ namespace SFSAcademy.Controllers
                                               select new { FinanceFeeCategoryData = ffc }).ToList();
 
                     fEEdISCOUNT.TYPE = radioName;
+                    fEEdISCOUNT.RCVR_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.BTCH_ID;
                     fEEdISCOUNT.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
                     if (radioName2.Equals("Amount"))
                     {
@@ -874,7 +901,23 @@ namespace SFSAcademy.Controllers
                         fEEdISCOUNT.IS_AMT = "N";
                     }
                     db.FEE_DISCOUNT.Add(fEEdISCOUNT);
-                    db.SaveChanges();
+                    try { db.SaveChanges(); }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                            }
+                        }
+                        return View();
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return View();
+                    }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of select batch added in system successfully");
                 }
                 else if (radioName == "Student Category")
@@ -891,7 +934,23 @@ namespace SFSAcademy.Controllers
                         fEEdISCOUNT.IS_AMT = "N";
                     }
                     db.FEE_DISCOUNT.Add(fEEdISCOUNT);
-                    db.SaveChanges();
+                    try { db.SaveChanges(); }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                            }
+                        }
+                        return View();
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return View();
+                    }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of Student Category added in system successfully");
                 }
                 else if (radioName == "Student")
@@ -924,7 +983,22 @@ namespace SFSAcademy.Controllers
                             }
                         }
                         try { db.SaveChanges(); }
-                        catch (Exception e) { Console.WriteLine(e); }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                                }
+                            }
+                            return View();
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            return View();
+                        }
                         ViewBag.ErrorMessage = string.Concat("Fee Discounts of ", stdCount, " Students added in system successfully");
                     }
                 }
@@ -939,34 +1013,6 @@ namespace SFSAcademy.Controllers
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 ViewBag.ErrorMessage = string.Concat("No proper value selected");
             }
-
-            var queryCourceBatchFee = (from cs in db.COURSEs
-                                       join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                       join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                       where cs.IS_DEL == "N" && bt.IS_DEL == "N" && fcc.IS_DEL == "N"
-                                       select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
-                                    .OrderBy(x => x.FeeCategoryData.ID).ToList();
-
-            List<SelectListItem> options = new List<SelectListItem>();
-            foreach (var item in queryCourceBatchFee)
-            {
-                string FeeBatchFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.CourseData.CODE, "-", item.BatchData.NAME);
-                var result = new SelectListItem();
-                result.Text = FeeBatchFullName;
-                result.Value = item.FeeCategoryData.ID.ToString();
-                result.Selected = item.FeeCategoryData.ID == FIN_FEE_CAT_ID ? true : false;
-                options.Add(result);
-            }
-
-            // add the 'ALL' option
-            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Category" });
-            ViewBag.FIN_FEE_CAT_ID = options;
-
-
-            List<SelectListItem> options4 = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", STUDENT_CATGEORY_ID).ToList();
-            // add the 'ALL' option
-            //options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Student Category" });
-            ViewBag.STUDENT_CATGEORY_ID = options4;
 
             return View();
         }
@@ -1041,6 +1087,380 @@ namespace SFSAcademy.Controllers
         }
 
 
+        [HttpGet]
+        public ActionResult Fee_Fine(string sortOrder, string currentFilter, string BTCH_ID, int? page, string currentFilter2, string FINANCE_FEE_CATGEORY_ID)
+        {
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where cs.IS_DEL == "N" && bt.IS_DEL == "N"
+                                    select new { CourseData = cs, BatchData = bt })
+                                    .OrderBy(x => x.BatchData.ID).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatch)
+            {
+                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = BatchFullName;
+                result.Value = item.BatchData.ID.ToString();
+                options.Add(result);
+            }
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            ViewBag.BTCH_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", FINANCE_FEE_CATGEORY_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
+
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (BTCH_ID != null)
+            {
+                if (BTCH_ID != "-1")
+                {
+                    page = 1;
+                }
+                else { BTCH_ID = currentFilter; }
+            }
+            else { BTCH_ID = currentFilter; }
+            ViewBag.CurrentFilter = BTCH_ID;
+
+            if (FINANCE_FEE_CATGEORY_ID != null)
+            {
+                if (FINANCE_FEE_CATGEORY_ID != "-1")
+                {
+                    page = 1;
+                }
+                else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
+
+            }
+            else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
+            ViewBag.CurrentFilter2 = FINANCE_FEE_CATGEORY_ID;
+
+            var Fee_fineSData = (from fd in db.FEE_FINE
+                                     join ffc in db.FINANCE_FEE_CATGEORY on fd.FIN_FEE_CAT_ID equals ffc.ID
+                                     join bt in db.BATCHes on ffc.BTCH_ID equals bt.ID
+                                     join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                     join fds in (from crt in db.FEE_DISCOUNT where crt.TYPE == "Student" select crt) on fd.ID equals fds.ID into gms
+                                     from subgms in gms.DefaultIfEmpty()
+                                     join std in db.STUDENTs on subgms.RCVR_ID equals std.ID into gm
+                                     from substd in gm.DefaultIfEmpty()
+                                     join fdsc in (from crtc in db.FEE_DISCOUNT where crtc.TYPE == "Student Category" select crtc) on fd.ID equals fdsc.ID into gmsc
+                                     from subgmsc in gmsc.DefaultIfEmpty()
+                                     join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl
+                                     from subcat in gl.DefaultIfEmpty()
+                                     orderby fd.NAME
+                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat) }).Distinct();
+
+            if (BTCH_ID != null && !BTCH_ID.Equals("-1"))
+            {
+                Fee_fineSData = Fee_fineSData.Where(s => s.BatchData.NAME.Contains(BTCH_ID));
+            }
+            if (FINANCE_FEE_CATGEORY_ID != null && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
+            {
+                Fee_fineSData = Fee_fineSData.Where(s => s.FinanceFeeCategoryData.NAME.Contains(FINANCE_FEE_CATGEORY_ID));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.FeeFineData.NAME);
+                    break;
+                case "Date":
+                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.StudentData.ADMSN_DATE);
+                    break;
+                case "date_desc":
+                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.StudentData.ADMSN_DATE);
+                    break;
+                default:  // Name ascending 
+                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.FeeFineData.NAME);
+                    break;
+            }
+
+            int pageSize = 100;
+            int pageNumber = (page ?? 1);
+            return View(Fee_fineSData.ToPagedList(pageNumber, pageSize));
+            //return View(db.USERS.ToList());
+        }
+
+
+        // GET: Finance/Create
+        public ActionResult Fee_Fine_New()
+        {
+
+            var queryCourceBatchFee = (from cs in db.COURSEs
+                                       join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                       join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
+                                       where cs.IS_DEL == "N" && bt.IS_DEL == "N" && fcc.IS_DEL == "N"
+                                       select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
+                                    .OrderBy(x => x.FeeCategoryData.ID).ToList();
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatchFee)
+            {
+                string FeeBatchFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = FeeBatchFullName;
+                result.Value = item.FeeCategoryData.ID.ToString();
+                options.Add(result);
+            }
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Category" });
+            ViewBag.FIN_FEE_CAT_ID = options;
+
+            List<SelectListItem> options4 = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
+            ViewBag.STUDENT_CATGEORY_ID = options4;
+
+            return View();
+        }
+
+
+        // POST: Finance/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Fee_Fine_New([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEEfINE, int? STUDENT_CATGEORY_ID, int? FIN_FEE_CAT_ID, string ADMSN_NO, string radioName, string radioName2)
+        {
+            if (ModelState.IsValid)
+            {
+                var queryCourceBatchFee = (from cs in db.COURSEs
+                                           join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                           join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
+                                           where cs.IS_DEL == "N" && bt.IS_DEL == "N" && fcc.IS_DEL == "N"
+                                           select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
+                                    .OrderBy(x => x.FeeCategoryData.ID).ToList();
+
+                List<SelectListItem> options = new List<SelectListItem>();
+                foreach (var item in queryCourceBatchFee)
+                {
+                    string FeeBatchFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.CourseData.CODE, "-", item.BatchData.NAME);
+                    var result = new SelectListItem();
+                    result.Text = FeeBatchFullName;
+                    result.Value = item.FeeCategoryData.ID.ToString();
+                    result.Selected = item.FeeCategoryData.ID == FIN_FEE_CAT_ID ? true : false;
+                    options.Add(result);
+                }
+
+                // add the 'ALL' option
+                options.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Category" });
+                ViewBag.FIN_FEE_CAT_ID = options;
+
+
+                List<SelectListItem> options4 = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", STUDENT_CATGEORY_ID).ToList();
+                // add the 'ALL' option
+                //options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Student Category" });
+                ViewBag.STUDENT_CATGEORY_ID = options4;
+
+                if (radioName == "Batch")
+                {
+                    var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
+                                              where ffc.ID == FIN_FEE_CAT_ID
+                                              select new { FinanceFeeCategoryData = ffc }).ToList();
+
+                    fEEfINE.TYPE = radioName;
+                    fEEfINE.RCVR_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.BTCH_ID;
+                    fEEfINE.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
+                    fEEfINE.FINE_DATE = System.DateTime.Now;
+                    if (radioName2.Equals("Amount"))
+                    {
+                        fEEfINE.IS_AMT = "Y";
+                    }
+                    else
+                    {
+                        fEEfINE.IS_AMT = "N";
+                    }
+                    db.FEE_FINE.Add(fEEfINE);
+                    try { db.SaveChanges(); }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                            }
+                        }
+                        return View();
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return View();
+                    }
+                    ViewBag.ErrorMessage = string.Concat("Fee Fine for select batch added in system successfully");
+                }
+                else if (radioName == "Student Category")
+                {
+                    fEEfINE.RCVR_ID = STUDENT_CATGEORY_ID;
+                    fEEfINE.TYPE = radioName;
+                    fEEfINE.FIN_FEE_CAT_ID = FIN_FEE_CAT_ID;
+                    fEEfINE.FINE_DATE = System.DateTime.Now;
+                    if (radioName2.Equals("Amount"))
+                    {
+                        fEEfINE.IS_AMT = "Y";
+                    }
+                    else
+                    {
+                        fEEfINE.IS_AMT = "N";
+                    }
+                    db.FEE_FINE.Add(fEEfINE);
+                    try { db.SaveChanges(); }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors)
+                        {
+                            foreach (var ve in eve.ValidationErrors)
+                            {
+                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                            }
+                        }
+                        return View();
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return View();
+                    }
+                    ViewBag.ErrorMessage = string.Concat("Fee Fine for Student Category added in system successfully");
+                }
+                else if (radioName == "Student")
+                {
+                    if (HtmlHelpers.ApplicationHelper.StringToIntList(ADMSN_NO).Count() != 0)
+                    {
+                        int stdCount = 0;
+                        foreach (var AdmissionNoList in HtmlHelpers.ApplicationHelper.StringToIntList(ADMSN_NO).ToList())
+                        {
+                            var StdResult = from u in db.STUDENTs where (u.ADMSN_NO == AdmissionNoList.ToString() && u.IS_DEL.Equals("N") && u.IS_ACT.Equals("Y")) select u;
+                            if (StdResult.Count() != 0)
+                            {
+                                stdCount++;
+                                fEEfINE.RCVR_ID = StdResult.FirstOrDefault().ID;
+                                var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
+                                                          where ffc.ID == FIN_FEE_CAT_ID
+                                                          select new { FinanceFeeCategoryData = ffc }).ToList();
+
+                                fEEfINE.TYPE = radioName;
+                                fEEfINE.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
+                                fEEfINE.FINE_DATE = System.DateTime.Now;
+                                if (radioName2.Equals("Amount"))
+                                {
+                                    fEEfINE.IS_AMT = "Y";
+                                }
+                                else
+                                {
+                                    fEEfINE.IS_AMT = "N";
+                                }
+                                db.FEE_FINE.Add(fEEfINE);
+                            }
+                        }
+                        try { db.SaveChanges(); }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                                }
+                            }
+                            return View();
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            return View();
+                        }
+                        ViewBag.ErrorMessage = string.Concat("Fee Fine for ", stdCount, " Students added in system successfully");
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = string.Concat("Please select valid Fine Type");
+                }
+
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                ViewBag.ErrorMessage = string.Concat("No proper value selected");
+            }
+
+            return View();
+        }
+
+
+        // GET: Finance/Edit/5
+        public ActionResult Edit_Fee_Fine(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FEE_FINE fEE_FINE = db.FEE_FINE.Find(id);
+            if (fEE_FINE == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.RCVR_ID = new SelectList(db.STUDENTs, "ID", "ADMSN_NO", fEE_FINE.RCVR_ID);
+            ViewBag.FIN_FEE_CAT_ID = new SelectList(db.FINANCE_FEE_CATGEORY, "ID", "NAME", fEE_FINE.FIN_FEE_CAT_ID);
+            return View(fEE_FINE);
+        }
+
+        // POST: Finance/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Fee_Fine([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEE_FINE)
+        {
+            if (ModelState.IsValid)
+            {
+                FEE_FINE fEE_FINE_UPD = db.FEE_FINE.Find(fEE_FINE.ID);
+                fEE_FINE_UPD.TYPE = fEE_FINE.TYPE;
+                fEE_FINE_UPD.NAME = fEE_FINE.NAME;
+                fEE_FINE_UPD.FINE = fEE_FINE.FINE;
+                fEE_FINE_UPD.IS_AMT = fEE_FINE.IS_AMT;
+                fEE_FINE_UPD.FINE_DATE = System.DateTime.Now;
+                db.Entry(fEE_FINE_UPD).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            ViewBag.ErrorMessage = string.Concat("Fee Discount Edited Successfully");
+            ViewBag.RCVR_ID = new SelectList(db.STUDENTs, "ID", "ADMSN_NO", fEE_FINE.RCVR_ID);
+            ViewBag.FIN_FEE_CAT_ID = new SelectList(db.FINANCE_FEE_CATGEORY, "ID", "NAME", fEE_FINE.FIN_FEE_CAT_ID);
+            return View(fEE_FINE);
+        }
+
+
+        // GET: Finance/Delete/5
+        public ActionResult Delete_Fee_Fine(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            FEE_FINE fEE_FINE = db.FEE_FINE.Find(id);
+            if (fEE_FINE == null)
+            {
+                return HttpNotFound();
+            }
+            return View(fEE_FINE);
+        }
+
+        // POST: Finance/Delete/5
+        [HttpPost, ActionName("Delete_Fee_Fine")]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete_Fee_FineConfirmed(int id)
+        {
+            FEE_FINE fEE_FINE = db.FEE_FINE.Find(id);
+            db.FEE_FINE.Remove(fEE_FINE);
+            db.SaveChanges();
+            ViewBag.ErrorMessage = string.Concat("Fee Fine Deleted Successfully");
+            return View();
+        }
+
+
         // GET: Fee Index
         public ActionResult Fee_Collection()
         {
@@ -1051,7 +1471,7 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult Fee_Collection_New()
         {
-            List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == "Y").OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == "Y" && x.IS_DEL == "N").OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Master Category" });
             ViewBag.MASTER_CATGEORY_ID = options;

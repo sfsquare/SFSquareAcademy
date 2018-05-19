@@ -24,8 +24,6 @@ namespace SFSAcademy
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
             this.FEE_COLLECTION_DISCOUNT = new HashSet<FEE_COLLECTION_DISCOUNT>();
             this.FEE_COLLECTION_PARTICULAR = new HashSet<FEE_COLLECTION_PARTICULAR>();
-            this.FEE_DISCOUNT = new HashSet<FEE_DISCOUNT>();
-            this.FEE_FINE = new HashSet<FEE_FINE>();
             this.FINANCE_FEE = new HashSet<FINANCE_FEE>();
             this.FINANCE_FEE_PARTICULAR = new HashSet<FINANCE_FEE_PARTICULAR>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
@@ -93,10 +91,6 @@ namespace SFSAcademy
         public virtual ICollection<FEE_COLLECTION_DISCOUNT> FEE_COLLECTION_DISCOUNT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FEE_FINE> FEE_FINE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE> FINANCE_FEE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
