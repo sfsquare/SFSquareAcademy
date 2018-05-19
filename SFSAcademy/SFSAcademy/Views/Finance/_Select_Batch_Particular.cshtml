@@ -20,12 +20,12 @@
                 <div class="each_category2">
                     @Html.CheckBoxFor(x => x[j].Selected, new { @class = "category_select", @id = "category_select" }) <label>@Model[j].FinanceFeeCategoryData.NAME- @Model[j].CourseData.CODE - @Model[j].BatchData.NAME </label>
                 </div>
-                                <div class="each_category">
-                                    @Html.HiddenFor(x => x[j].FinanceFeeCategoryData.ID)
-                                </div>
-                                <div class="each_category">
-                                    @Html.HiddenFor(x => x[j].BatchData.ID)
-                                </div>
+                    <div class="each_category">
+                        @Html.HiddenFor(x => x[j].FinanceFeeCategoryData.ID)
+                    </div>
+                    <div class="each_category">
+                        @Html.HiddenFor(x => x[j].BatchData.ID)
+                    </div>
             }
         </div>
     </div>

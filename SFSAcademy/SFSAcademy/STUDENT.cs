@@ -71,7 +71,7 @@ namespace SFSAcademy
         public string IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string HAS_PD_FE { get; set; }
+        public Nullable<bool> HAS_PD_FE { get; set; }
         public Nullable<int> PHTO_FILE_SIZE { get; set; }
         public int USRID { get; set; }
         public Nullable<int> STDNT_CAT_ID { get; set; }

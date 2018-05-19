@@ -98,395 +98,403 @@
     });
 
 </script>
-<div id="flash_box">
-    @if (ViewBag.FeeCollectionMessage != null)
+@if (ViewBag.ErrorMessage != null)
             {
-        <p class="flash-msg"> @ViewBag.FeeCollectionMessage </p>
-    }
-</div>
-<div class="name"></div>
-@if (financefee != null && financefee.Count() != 0)
+    <div id="flash_box">
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    </div>
+}
+else
 {
-    if (financefee.FirstOrDefault().TRAN_ID != null)
+    <div id="flash_box">
+        @if (ViewBag.FeeCollectionMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.FeeCollectionMessage </p>
+        }
+    </div>
+    <div class="name"></div>
+    if (financefee != null && financefee.Count() != 0)
     {
-        <div class="name">Fees Receipt No</div><div class="val themed_text"><span>:</span>@financefee.FirstOrDefault().TRAN_ID</div>
+        if (financefee.FirstOrDefault().TRAN_ID != null)
+        {
+            <div class="name">Fees Receipt No</div><div class="val themed_text"><span>:</span>@financefee.FirstOrDefault().TRAN_ID</div>
+        }
+        else
+        {
+            <div class="name">Fees Receipt No</div><div class="val themed_text"><span>:</span>NA</div>
+        }
     }
     else
     {
         <div class="name">Fees Receipt No</div><div class="val themed_text"><span>:</span>NA</div>
     }
-}
-else
-{
-    <div class="name">Fees Receipt No</div><div class="val themed_text"><span>:</span>NA</div>
-}
-@if (fee_category != null)
-{
-    <div class="name">Fee Category Name</div><div class="val themed_text"><span>:</span>@fee_category.DESCR</div>
-}
-@if (student != null && student.STDNT_CAT_ID != null)
-{
-    <div class="name">student category</div><div class="val themed_text"><span>:</span>@ViewBag.StudentCategory</div>
-}
-else
-{
-    <div class="name">student category</div><div class="val themed_text"><span>:</span>NA</div>
-}
-@if (date != null)
-{
-    <div class="name">Fee Collection Name</div><div class="val themed_text"><span>:</span>@date.NAME</div>
-}
-@if (financefee != null && financefee.Count() != 0)
-{
-    if (financefee.FirstOrDefault().IS_PD != "Y")
+    if (fee_category != null)
     {
-        Html.RenderPartial("_fine_submission");
+        <div class="name">Fee Category Name</div><div class="val themed_text"><span>:</span>@fee_category.DESCR</div>
     }
-}
-else
-{ Html.RenderPartial("_fine_submission"); }
+    if (student != null && student.STDNT_CAT_ID != null)
+    {
+        <div class="name">student category</div><div class="val themed_text"><span>:</span>@ViewBag.StudentCategory</div>
+    }
+    else
+    {
+        <div class="name">student category</div><div class="val themed_text"><span>:</span>NA</div>
+    }
+    if (date != null)
+    {
+        <div class="name">Fee Collection Name</div><div class="val themed_text"><span>:</span>@date.NAME</div>
+    }
+    <br />
+    if (financefee != null && financefee.Count() != 0)
+    {
+        if (financefee.FirstOrDefault().IS_PD != "Y")
+        {
+            Html.RenderPartial("_fine_submission");
+        }
+    }
+    else
+    { Html.RenderPartial("_fine_submission"); }
 
-<div id="register">
-    <div class="header">
-        <div class="prev">
-            @if (prev_student != null && Session["student_serach"] == null)
-            {
-                <input type="submit" value="◄" id="submit-button2" class="submit-button2" />
-            }
+    <div id="register">
+        <div class="header">
+            <div class="prev">
+                @if (prev_student != null && Session["student_serach"] == null)
+                {
+                    <input type="submit" value="◄" id="submit-button2" class="submit_button2" />
+                }
+            </div>
+            <div class="month">
+                <label>@student.FIRST_NAME  @student.MID_NAME  @student.LAST_NAME</label>
+            </div>
+            <div class="next">
+                @if (next_student != null && Session["student_serach"] == null)
+                {
+                    <input type="submit" value="►" id="submit-button3" class="submit_button2" />
+                }
+            </div>
+            <div class="extender"></div>
         </div>
-        <div class="month">
-            @student.FIRST_NAME  @student.MID_NAME  @student.LAST_NAME
-        </div>
-        <div class="next">
-            @if (next_student != null && Session["student_serach"] == null)
-            {
-                <input type="submit" value="►" id="submit-button3" class="submit-button2" />
-            }
-        </div>
-        <div class="extender"></div>
     </div>
-</div>
-@{decimal total_fees = 0; }
-@{string nextRow = ""; string nextToNextRow = "";}
-@if (fee_particulars != null)
-{
-    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
-        <tr class="tr-head">
-            <td>SL. No.</td>
-            <td>Particulars</td>
-            <td>Amount</td>
-        </tr>
-        <tr class="tr-blank"></tr>
-        @{int i = 1; }
-        @foreach (var item in fee_particulars)
-        {
-            string selectedRow = "tr-even";
-            if (i % 2 == 0)
+    decimal total_fees = 0;
+    string nextRow = ""; string nextToNextRow = "";
+            if (fee_particulars != null)
             {
-                selectedRow = "tr-odd";
-            }
-            <tr class="@selectedRow">
-                <td class="col-1">@i</td>
-                <td class="col-2">@item.NAME</td>
-                <td class="col-6">@item.AMT</td>
-            </tr>
-            total_fees += (decimal)item.AMT;
-            i = i + 1;
-        }
-        @if (@ViewBag.total_discount != 0)
-        {
-            string NextRow = "tr-even";
-            if (i % 2 == 0)
-            {
-                NextRow = "tr-odd";
-                i = i + 1;
-            }
-            <tr class="tr-blank"></tr>
-            <tr class="tr-blank"></tr>
-            <tr class="@NextRow" cellpadding="1" cellspacing="1">
-                <td class="col-1"></td>
-                <td class="col-1" colspan="2"><span class="themed_text">Discounts: </span></td>
-
-            </tr>
-            foreach (var item in batch_discounts)
-            {
-                string discount_text = item.IS_AMT == "Y" ? item.NAME : string.Concat(item.NAME, ": ", item.DISC, "%");
-                decimal discount = item.IS_AMT == "Y" ? (decimal)item.DISC : ViewBag.total_payable * (decimal)item.DISC / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@discount_text</td>
-                    <td class="col-6">@discount</td>
-                </tr>
-                i = i + 1;
-            }
-            foreach (var item2 in student_discounts)
-            {
-                string discount_text2 = item2.IS_AMT == "Y" ? item2.NAME : string.Concat(item2.NAME, ": ", item2.DISC, "%");
-                decimal discount2 = item2.IS_AMT == "Y" ? (decimal)item2.DISC : ViewBag.total_payable * (decimal)item2.DISC / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@discount_text2</td>
-                    <td class="col-6">@discount2</td>
-                </tr>
-                i = i + 1;
-            }
-            foreach (var item3 in category_discounts)
-            {
-                string discount_text3 = item3.IS_AMT == "Y" ? item3.NAME : string.Concat(item3.NAME, ": ", item3.DISC, "%");
-                decimal discount3 = item3.IS_AMT == "Y" ? (decimal)item3.DISC : ViewBag.total_payable * (decimal)item3.DISC / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@discount_text3</td>
-                    <td class="col-6">@discount3</td>
-                    `
-                </tr>
-                i = i + 1;
-            }
-            if (i % 2 == 0)
-            {
-                nextRow = "tr-even";
-                nextToNextRow = "tr-odd";
-            }
-            else
-            {
-                nextRow = "tr-odd";
-                nextToNextRow = "tr-even";
-            }
-            <tr class="tr-blank"></tr>
-            <tr class="tr-blank"></tr>
-            <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                <td class="col-8" colspan="2">Total Discount</td>
-                <td class="col-6">@ViewBag.total_discount</td>
-            </tr>
-                <tr class="tr-blank"></tr>
-                <tr class="tr-blank"></tr>
-            { total_fees -= total_fees * @ViewBag.total_discount_percentage / 100; }
-            <tr class="@nextToNextRow" cellpadding="1" cellspacing="1">
-                <td class="col-8" colspan="2">Total Fees</td>
-                <td class="col-6">@total_fees.ToString("0.00")</td>
-            </tr>
-        }
-        <tr class="tr-blank"></tr>
-        <tr class="tr-blank"></tr>
-        @if (i % 2 == 0)
-        {
-            nextRow = "tr-even";
-            nextToNextRow = "tr-odd";
-        }
-        else
-        {
-            nextRow = "tr-odd";
-            nextToNextRow = "tr-even";
-        }
-
-        @if (@ViewBag.total_fine != 0)
-        {
-            <tr class="tr-blank"></tr>
-            <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                <td class="col-1"></td>
-                <td class="col-1" colspan="2"><span class="themed_text">Fine: </span></td>
-
-            </tr>
-            foreach (var item in batch_fine)
-            {
-                string fine_text = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                decimal fine = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@fine_text</td>
-                    <td class="col-6">@fine</td>
-                </tr>
-                i = i + 1;
-            }
-            foreach (var item in student_fine)
-            {
-                string fine_text2 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                decimal fine2 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@fine_text2</td>
-                    <td class="col-6">@fine2</td>
-                </tr>
-                i = i + 1;
-            }
-            foreach (var item in category_fine)
-            {
-                string fine_text3 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                decimal fine3 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">@fine_text3</td>
-                    <td class="col-6">@fine3</td>
-                    `
-                </tr>
-                i = i + 1;
-            }
-            if (i % 2 == 0)
-            {
-                nextRow = "tr-even";
-                nextToNextRow = "tr-odd";
-            }
-            else
-            {
-                nextRow = "tr-odd";
-                nextToNextRow = "tr-even";
-            }
-            <tr class="tr-blank"></tr>
-            <tr class="tr-blank"></tr>
-            <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                <td class="col-8" colspan="2">Total Fine</td>
-                <td class="col-6">@ViewBag.total_fine</td>
-            </tr>
-            <tr class="tr-blank"></tr>
-                <tr class="tr-blank"></tr>
-            { total_fees += @ViewBag.total_fine; }
-
-        }
-        <tr class="tr-blank"></tr>
-        @if (i % 2 == 0)
-        {
-            nextRow = "tr-even";
-            nextToNextRow = "tr-odd";
-        }
-        else
-        {
-            nextRow = "tr-odd";
-            nextToNextRow = "tr-even";
-        }
-        @if (paid_fees != null)
-        {
-            decimal paid = 0;
-            <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                <td class="col-1"></td>
-                <td class="col-1" colspan="2"><span class="themed_text">Payment Done: </span></td>
-
-            </tr>
-            foreach (var item13 in paid_fees)
-            {
-                paid += (decimal)item13.FinanceTransactionData.AMT;
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
-                {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">Partial Payment On : @item13.FinanceTransactionData.TRAN_DATE</td>
-                    <td class="col-6">@item13.FinanceTransactionData.AMT</td>
-                </tr>
-                i += 1;
-            }
-            total_fees -= paid;
-        }
-        <tr class="tr-blank"></tr>
-        <tr class="tr-blank"></tr>
-        @if (i % 2 == 0)
-        {
-            nextRow = "tr-even";
-            nextToNextRow = "tr-odd";
-        }
-        else
-        {
-            nextRow = "tr-odd";
-            nextToNextRow = "tr-even";
-        }
-        <tr class="@nextRow" cellpadding="1" cellspacing="1">
-            <td class="col-8" colspan="2">Amount To Pay :</td>
-            <td class="col-6">@total_fees.ToString("0.00")</td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <div class="pay_fees">
-                    @if (total_fees != 0)
+                <table id="listing" align="center" style="width:100%;" cellpadding="1" cellspacing="1">
+                    <tr class="tr-head">
+                        <td>SL. No.</td>
+                        <td>Particulars</td>
+                        <td>Amount</td>
+                    </tr>
+                    <tr class="tr-blank"></tr>
+                    @{int i = 1; }
+                    @foreach (var item in fee_particulars)
                     {
-                        <div class="label-field-pair">
-                            <div class="label-container">@Html.Label("PAYMENT_MODE", "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                        string selectedRow = "tr-even";
+                        if (i % 2 == 0)
+                        {
+                            selectedRow = "tr-odd";
+                        }
+                        <tr class="@selectedRow">
+                            <td class="col-1">@i</td>
+                            <td class="col-2">@item.NAME</td>
+                            <td class="col-6">@item.AMT</td>
+                        </tr>
+                        total_fees += (decimal)item.AMT;
+                        i = i + 1;
+                    }
+                    @if (@ViewBag.total_discount != 0)
+                    {
+                        string NextRow = "tr-even";
+                        if (i % 2 == 0)
+                        {
+                            NextRow = "tr-odd";
+                            i = i + 1;
+                        }
+                        <tr class="tr-blank"></tr>
+                        <tr class="tr-blank"></tr>
+                        <tr class="@NextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-1"></td>
+                            <td class="col-1" colspan="2"><span class="themed_text">Discounts: </span></td>
 
-                            <div class="text-input-bg">
-                                @Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))),
-"Select Mode of Payment",
-new { @class = "form-control", @id = "PAYMENT_MODE" })
-
-                            </div>
-                            @Html.Hidden("total_fees", total_fees, htmlAttributes: new { @id = "total_fees" })
-                        </div>
-                        <div class="label-field-pair">
-                            <div class="label-container">@Html.Label("PAYMENT_NOTE", "Payment Notes", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                            <div class="text-input-bg"><input type="text" name="PAYMENT_NOTE" id="PAYMENT_NOTE" /></div>
-                            @Html.ValidationMessage("PAYMENT_NOTE", "", new { @class = "text-danger" })
-                        </div>
-                        <div class="label-field-pair">
-                            <div class="label-container">@Html.Label("PAYMENT_AMOUNT", "Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                            <div class="text-input-bg"><input type="text" name="PAYMENT_AMOUNT" id="PAYMENT_AMOUNT" value="@total_fees.ToString("0.00")" /></div>
-                            @Html.ValidationMessage("PAYMENT_AMOUNT", "", new { @class = "text-danger" })
-                        </div>
-                        <div class="label-field-pair">
-                            <div class="label-container">@Html.Label("PAYMENT_DATE", "Payment Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                            <div class="text-input-bg-admission">
-                                @Html.Editor("PAYMENT_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.ReturnDate } })
-                                @Html.ValidationMessage("PAYMENT_DATE", "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                            <div class="pay_fees_buttons">
-                                <input type="submit" value="► Pay Fees" id="submit-button1" class="submit_button" />
-                                @if (financefee != null && financefee.Count() != 0)
-                                {
-                                    @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
-                                }
-                            </div>
+                        </tr>
+                        foreach (var item in batch_discounts)
+                        {
+                            string discount_text = item.IS_AMT == "Y" ? item.NAME : string.Concat(item.NAME, ": ", item.DISC, "%");
+                            decimal discount = item.IS_AMT == "Y" ? (decimal)item.DISC : ViewBag.total_payable * (decimal)item.DISC / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@discount_text</td>
+                                <td class="col-6">@discount</td>
+                            </tr>
+                            i = i + 1;
+                        }
+                        foreach (var item2 in student_discounts)
+                        {
+                            string discount_text2 = item2.IS_AMT == "Y" ? item2.NAME : string.Concat(item2.NAME, ": ", item2.DISC, "%");
+                            decimal discount2 = item2.IS_AMT == "Y" ? (decimal)item2.DISC : ViewBag.total_payable * (decimal)item2.DISC / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@discount_text2</td>
+                                <td class="col-6">@discount2</td>
+                            </tr>
+                            i = i + 1;
+                        }
+                        foreach (var item3 in category_discounts)
+                        {
+                            string discount_text3 = item3.IS_AMT == "Y" ? item3.NAME : string.Concat(item3.NAME, ": ", item3.DISC, "%");
+                            decimal discount3 = item3.IS_AMT == "Y" ? (decimal)item3.DISC : ViewBag.total_payable * (decimal)item3.DISC / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@discount_text3</td>
+                                <td class="col-6">@discount3</td>
+                                `
+                            </tr>
+                            i = i + 1;
+                        }
+                        if (i % 2 == 0)
+                        {
+                            nextRow = "tr-even";
+                            nextToNextRow = "tr-odd";
+                        }
+                        else
+                        {
+                            nextRow = "tr-odd";
+                            nextToNextRow = "tr-even";
+                        }
+                        <tr class="tr-blank"></tr>
+                        <tr class="tr-blank"></tr>
+                        <tr class="@nextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-8" colspan="2">Total Discount</td>
+                            <td class="col-6">@ViewBag.total_discount</td>
+                        </tr>
+                        <tr class="tr-blank"></tr>
+                        <tr class="tr-blank"></tr>
+                        { total_fees -= total_fees * @ViewBag.total_discount_percentage / 100; }
+                        <tr class="@nextToNextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-8" colspan="2">Total Fees</td>
+                            <td class="col-6">@total_fees.ToString("0.00")</td>
+                        </tr>
+                    }
+                    <tr class="tr-blank"></tr>
+                    <tr class="tr-blank"></tr>
+                    @if (i % 2 == 0)
+                    {
+                        nextRow = "tr-even";
+                        nextToNextRow = "tr-odd";
                     }
                     else
                     {
-                        <h4>Fees Paid</h4>
+                        nextRow = "tr-odd";
+                        nextToNextRow = "tr-even";
                     }
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                @if (paid_fees != null && total_fees == 0)
-                {
-                    @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
-                }
-            </td>
-        </tr>
-    </table>
-    <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+
+                    @if (@ViewBag.total_fine != 0)
+                    {
+                        <tr class="tr-blank"></tr>
+                        <tr class="@nextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-1"></td>
+                            <td class="col-1" colspan="2"><span class="themed_text">Fine: </span></td>
+
+                        </tr>
+                        foreach (var item in batch_fine)
+                        {
+                            string fine_text = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                            decimal fine = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@fine_text</td>
+                                <td class="col-6">@fine</td>
+                            </tr>
+                            i = i + 1;
+                        }
+                        foreach (var item in student_fine)
+                        {
+                            string fine_text2 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                            decimal fine2 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@fine_text2</td>
+                                <td class="col-6">@fine2</td>
+                            </tr>
+                            i = i + 1;
+                        }
+                        foreach (var item in category_fine)
+                        {
+                            string fine_text3 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                            decimal fine3 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">@fine_text3</td>
+                                <td class="col-6">@fine3</td>
+                                `
+                            </tr>
+                            i = i + 1;
+                        }
+                        if (i % 2 == 0)
+                        {
+                            nextRow = "tr-even";
+                            nextToNextRow = "tr-odd";
+                        }
+                        else
+                        {
+                            nextRow = "tr-odd";
+                            nextToNextRow = "tr-even";
+                        }
+                        <tr class="tr-blank"></tr>
+                        <tr class="tr-blank"></tr>
+                        <tr class="@nextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-8" colspan="2">Total Fine</td>
+                            <td class="col-6">@ViewBag.total_fine</td>
+                        </tr>
+                        <tr class="tr-blank"></tr>
+                        <tr class="tr-blank"></tr>
+                        { total_fees += @ViewBag.total_fine; }
+
+                    }
+                    <tr class="tr-blank"></tr>
+                    @if (i % 2 == 0)
+                    {
+                        nextRow = "tr-even";
+                        nextToNextRow = "tr-odd";
+                    }
+                    else
+                    {
+                        nextRow = "tr-odd";
+                        nextToNextRow = "tr-even";
+                    }
+                    @if (paid_fees != null)
+                    {
+                        decimal paid = 0;
+                        <tr class="@nextRow" cellpadding="1" cellspacing="1">
+                            <td class="col-1"></td>
+                            <td class="col-1" colspan="2"><span class="themed_text">Payment Done: </span></td>
+
+                        </tr>
+                        foreach (var item13 in paid_fees)
+                        {
+                            paid += (decimal)item13.FinanceTransactionData.AMT;
+                            string selectedRow = "tr-even";
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1">@i</td>
+                                <td class="col-2">Partial Payment On : @item13.FinanceTransactionData.TRAN_DATE</td>
+                                <td class="col-6">@item13.FinanceTransactionData.AMT</td>
+                            </tr>
+                            i += 1;
+                        }
+                        total_fees -= paid;
+                    }
+                    <tr class="tr-blank"></tr>
+                    <tr class="tr-blank"></tr>
+                    @if (i % 2 == 0)
+                    {
+                        nextRow = "tr-even";
+                        nextToNextRow = "tr-odd";
+                    }
+                    else
+                    {
+                        nextRow = "tr-odd";
+                        nextToNextRow = "tr-even";
+                    }
+                    <tr class="@nextRow" cellpadding="1" cellspacing="1">
+                        <td class="col-8" colspan="2">Amount To Pay :</td>
+                        <td class="col-6">@total_fees.ToString("0.00")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <div class="pay_fees">
+                                @if (total_fees != 0)
+                                {
+                                    <div class="label-field-pair">
+                                        <div class="label-container">@Html.Label("PAYMENT_MODE", "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+
+                                        <div class="text-input-bg">
+                                            @Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))),"Select Mode of Payment",new { @class = "form-control", @id = "PAYMENT_MODE" })
+                                        </div>
+                                        @Html.Hidden("total_fees", total_fees, htmlAttributes: new { @id = "total_fees" })
+                                    </div>
+                                    <div class="label-field-pair">
+                                        <div class="label-container">@Html.Label("PAYMENT_NOTE", "Payment Notes", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                        <div class="text-input-bg"><input type="text" name="PAYMENT_NOTE" id="PAYMENT_NOTE" /></div>
+                                        @Html.ValidationMessage("PAYMENT_NOTE", "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="label-field-pair">
+                                        <div class="label-container">@Html.Label("PAYMENT_AMOUNT", "Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                        <div class="text-input-bg"><input type="text" name="PAYMENT_AMOUNT" id="PAYMENT_AMOUNT" value="@total_fees.ToString("0.00")" /></div>
+                                        @Html.ValidationMessage("PAYMENT_AMOUNT", "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="label-field-pair">
+                                        <div class="label-container">@Html.Label("PAYMENT_DATE", "Payment Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                        <div class="text-input-bg-admission">
+                                            @Html.Editor("PAYMENT_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.ReturnDate } })
+                                            @Html.ValidationMessage("PAYMENT_DATE", "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="pay_fees_buttons">
+                                        <input type="submit" value="► Pay Fees" id="submit-button1" class="submit_button" />
+                                        @if (financefee != null && financefee.Count() != 0)
+                                        {
+                                            @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <h4>Fees Paid</h4>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            @if (paid_fees != null && total_fees == 0)
+                            {
+                                @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
+                            }
+                        </td>
+                    </tr>
+                </table>
+                <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
             }
-<input type="hidden" value="@student.ID" id="studentID" name="studentID" />
-<input type="hidden" value="@ViewBag.prev_student_id" id="prev_studentID" name="prev_studentID" />
-<input type="hidden" value="@ViewBag.next_student_id" id="next_studentID" name="next_studentID" />
-<input type="hidden" value="@batch.FirstOrDefault().BatchData.ID" id="batch_id" name="batch_id" />
-<input type="hidden" value="@date.ID" id="date" name="date" />
-<input type="hidden" value='@ViewBag.fine' name="fine" id="fine" />
+                        <input type="hidden" value="@student.ID" id="studentID" name="studentID" />
+                            <input type="hidden" value="@ViewBag.prev_student_id" id="prev_studentID" name="prev_studentID" />
+                            <input type="hidden" value="@ViewBag.next_student_id" id="next_studentID" name="next_studentID" />
+                            <input type="hidden" value="@batch.FirstOrDefault().BatchData.ID" id="batch_id" name="batch_id" />
+                            <input type="hidden" value="@date.ID" id="date" name="date" />
+                            <input type="hidden" value='@ViewBag.fine' name="fine" id="fine" />
+  }
+
 
