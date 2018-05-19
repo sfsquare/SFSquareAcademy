@@ -31,21 +31,26 @@
 
 </script>
 <div id="content-header">
-    <img src="~/Content/images/student_details/student_details_logo.jpg" alt="Student Details Logo">
-    <h1>Student Details</h1>
-    <h3>View Details</h3>
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Finance</h1>
+    <h3>Fees Structure</h3>
     <div id="app-back-button">
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
-
-<div id="inner-tab-menu">
-    <ul>
-        <li>@Html.ActionLink("View All", "ViewAll")</li>
-        <li>@Html.ActionLink("Advanced", "AdvancedSearch")</li>
-    </ul>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Fees", "Fees_Index") &raquo;
+    Fee Structure
 </div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+            {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+
 <p class="flash-msg">*Enter First Name, Last Name, Admission Number or Grade Code to search students.</p>
 <div class="container">
     <div class="form-group">
@@ -91,7 +96,7 @@
                         @i
                     </td>
                     <td class="col-3">
-                        @Html.ActionLink(item.StudentData.ADMSN_NO, "Profiles", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
+                        @Html.ActionLink(item.StudentData.ADMSN_NO, "Fees_Structure_Dates", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
                     </td>
                     <td class="col-2" nowrap>
                         @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME) @Html.DisplayFor(modelItem => item.StudentData.MID_NAME) @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)

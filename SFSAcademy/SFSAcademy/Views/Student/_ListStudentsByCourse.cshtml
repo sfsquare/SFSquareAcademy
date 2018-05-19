@@ -66,7 +66,7 @@
                     @if (Html.CurrentUser_UserType().Equals("Admin"))
                     {
                         <td class="col-6" nowrap>
-                            @Html.ActionLink("Edit ", "Edit", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Details ", "Details", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink("Profile ", "Profiles", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
+                            @Html.ActionLink("Edit ", "Edit", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Details ", "Details", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink("Profile ", "Profiles", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
                         </td>
                     }
                 </tr>

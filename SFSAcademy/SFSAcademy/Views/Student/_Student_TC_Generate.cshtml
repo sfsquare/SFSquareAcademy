@@ -1,0 +1,22 @@
+﻿@model SFSAcademy.STUDENT
+@{
+    IEnumerable<SFSAcademy.Models.StundentFee> paid_fees = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["paid_fees"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+@if (ViewBag.TCErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.TCErrorMessage </p>
+}
+else
+{
+    <h4>Student Deleted Successfully</h4>
+    <br />
+    <br />
+    @Html.ActionLink("Generate TC", "Generate_TC_pdf", new { id = @ViewBag.ADMSN_NO, Status_Id = @ViewBag.Status_Id }, new { @target = "_blank", @class = "user_button", @id = "admission_button", @title = "Generate TC" })
+
+}
+

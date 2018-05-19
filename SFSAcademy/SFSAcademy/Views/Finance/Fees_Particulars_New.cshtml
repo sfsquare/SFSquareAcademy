@@ -11,18 +11,21 @@
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document.forms[0]).ready(function () {
-    $('#myDropDown').change(function () {
+        $(".LoaderBox2").hide();
+        $('#myDropDown').change(function () {
 
         /* Get the selected value of dropdownlist */
         var selectedID = $(this).val();
-
+        $(".LoaderBox2").show();
         /* Request the partial view with .get request. */
-        $.get('/Finance/_Select_Batch/' + selectedID, function (data) {
+        $.get('/Finance/Select_Batch_Particular/' + selectedID, function (data) {
 
             /* data is the pure html returned from action method, load it to your page */
             $('#partialPlaceHolder').html(data);
             /* little fade in effect */
             $('#partialPlaceHolder').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
         });
 
     });
@@ -66,6 +69,7 @@
                     <div class="label-container">@Html.Label("MASTER_CATGEORY_ID_LABLE", "Select Master Category", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                     <div class="text-input-bg">
                         @Html.DropDownList("MASTER_CATGEORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "myDropDown" })
+                        <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
                         @Html.ValidationMessage("MASTER_CATGEORY_ID", "", new { @class = "text-danger" })
                     </div>
                 </div>

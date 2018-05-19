@@ -1,0 +1,184 @@
+﻿@model IEnumerable<SFSAcademy.Models.StudentsGuardians>
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/student/generate_tc_pdf.css">
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <table>
+        <tr>
+            <td><img src="~/Content/images/login/SF_Square_Logo-Small.jpg" alt="Student Details Logo"></td>
+            <td><h2>Transfer Certificate</h2></td>
+            <td></td>
+        </tr>
+    </table>
+    <div class="hor_line"></div>
+    <div class="report">
+        <div id="pdf-info">
+            <table id="pdf-table" width="100%" cellspacing="0">
+                @{int i = 1;
+                    string selectedRow = "odd";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "even";
+                    }
+                }
+
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Name</td>
+                    <td class="col-pdf"> @Model.FirstOrDefault().StudentData.FIRST_NAME @Model.FirstOrDefault().StudentData.MID_NAME @Model.FirstOrDefault().StudentData.LAST_NAME </ td >
+                    @{i += 1;
+                      if (i % 2 == 0) { selectedRow = "even";} else {selectedRow = "odd";}
+                     }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Admission No.</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.ADMSN_NO</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Admission Date</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.ADMSN_DATE.Value.ToShortDateString()</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Date of Birth</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.DOB.Value.ToShortDateString()</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Last Course</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().CourseData.CODE - @Model.FirstOrDefault().BatchData.NAME</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Blood Group</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.BLOOD_GRP</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Gender</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.GNDR</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Nationality</td>
+                    <td class="col-pdf">@ViewBag.NTLTY_ID</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Language</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.LANG</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                @if (Model.FirstOrDefault().GuardianData != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        if (item.GuardianData.REL == "Father")
+                        {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">Father Name</td>
+                                <td class="col-pdf">@item.GuardianData.FIRST_NAME @item.GuardianData.LAST_NAME</td>
+                                @{i += 1;
+                                    if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                                }
+                            </tr>
+                         }
+                         else if (item.GuardianData.REL == "Mother")
+                         {
+                            <tr class="@selectedRow">
+                                 <td class="col-pdf">Mother Name</td>
+                                 <td class="col-pdf">@item.GuardianData.FIRST_NAME @item.GuardianData.LAST_NAME</td>
+                                 @{i += 1;
+                                   if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                                  }
+                             </tr>
+                          }
+                          else if (item.StudentData.IMMDT_CNTCT_ID != null)
+                         {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@item.GuardianData.REL</td>
+                                <td class="col-pdf">@item.GuardianData.FIRST_NAME @item.GuardianData.LAST_NAME</td>
+                                 @{i += 1;
+                                     if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                                  }
+                            </tr>
+                         }
+                     }
+                  }
+
+                @if (Model.FirstOrDefault().StudentData.STDNT_CAT_ID != null)
+                {
+                    <tr class="@selectedRow">
+                        <td class="col-pdf">Category</td>
+                        <td class="col-pdf">@ViewBag.STDNT_CAT_ID</td>
+                        @{i += 1;
+                            if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                        }
+                    </tr>
+                }
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Religion</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.RLGN</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Address</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.ADDR_LINE1<br />@Model.FirstOrDefault().StudentData.ADDR_LINE2</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">City</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.CITY</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">State</td>
+                    <td class="col-pdf">@Model.FirstOrDefault().StudentData.STATE</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Country</td>
+                    <td class="col-pdf">@ViewBag.CTRY_ID</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">Reason For Leaving</td>
+                    <td class="col-pdf">@ViewBag.Status_Descrition</td>
+                    @{i += 1;
+                        if (i % 2 == 0) { selectedRow = "even"; } else { selectedRow = "odd"; }
+                    }
+                </tr>
+            </table>
+            <input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" />
+        </div>
+    </div>
+</div>

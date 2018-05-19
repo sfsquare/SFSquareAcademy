@@ -327,3 +327,12 @@
 /SFSAcademy/packages/jQuery.Validation.1.16.0/jQuery.Validation.1.16.0.nupkg
 /SFSAcademy/.vs/SFSAcademy/v14/.suo
 /SFSAcademy/.vs/config/applicationhost.config
+/SFSAcademy/packages
+/SFSAcademy/SFSAcademy/obj
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.Context.cs
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.Context.tt
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.cs
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.Designer.cs
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.edmx
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.edmx.diagram
+/SFSAcademy/SFSAcademy/ModelSFSAcademy.tt
