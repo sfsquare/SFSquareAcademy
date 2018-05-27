@@ -467,7 +467,7 @@ else
                                         <input type="submit" value="► Pay Fees" id="submit-button1" class="submit_button" />
                                         @if (financefee != null && financefee.Count() != 0)
                                         {
-                                            @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
+                                            @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID }, new { @class = "user_button", @target = "_blank" })
                                         }
                                     </div>
                                 }
@@ -482,7 +482,7 @@ else
                         <td colspan="3">
                             @if (paid_fees != null && total_fees == 0)
                             {
-                                @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID })
+                                @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID }, new { @class = "user_button", @target = "_blank" })
                             }
                         </td>
                     </tr>

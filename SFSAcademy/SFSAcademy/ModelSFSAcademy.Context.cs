@@ -68,7 +68,6 @@ namespace SFSAcademy
         public virtual DbSet<FINANCE_FEE_PARTICULAR> FINANCE_FEE_PARTICULAR { get; set; }
         public virtual DbSet<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
         public virtual DbSet<FINANCE_TRANSACTION_CATEGORY> FINANCE_TRANSACTION_CATEGORY { get; set; }
-        public virtual DbSet<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
         public virtual DbSet<GRADING_LEVEL> GRADING_LEVEL { get; set; }
         public virtual DbSet<GUARDIAN> GUARDIANs { get; set; }
         public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
@@ -118,5 +117,6 @@ namespace SFSAcademy
         public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
         public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<STUDENT> STUDENTs { get; set; }
+        public virtual DbSet<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
     }
 }

@@ -1,0 +1,18 @@
+﻿@model IEnumerable<SFSAcademy.Models.TransactionTriggers>
+
+<ul id="category-list">
+    @{int i = 1; }
+    @foreach (var item in Model)
+    {
+        string selectedRow = "listeven";
+        if (i % 2 == 0)
+        {
+            selectedRow = "listodd";
+        }
+        <li class="@selectedRow">
+            <div class="category-name">@item.TransactionCategoryData.NAME - @item.TransactionTriggerData.PCT</div>
+            <div class="category-delete">@Html.ActionLink("Edit", "Transaction_Trigger_Edit",new { id=item.TransactionTriggerData.ID})</div>
+            <div class="category-delete">@Html.ActionLink("Delete", "Transaction_Trigger_Delete", new { id = item.TransactionTriggerData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+        </li>
+    }
+</ul>

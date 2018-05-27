@@ -1,0 +1,333 @@
+﻿@model IEnumerable<SFSAcademy.EMPLOYEE>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EMP_NUM)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.JOINING_DATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FIRST_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MID_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LAST_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GNDR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.JOB_TIL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QUAL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXPNC_DETL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXPNC_YEAR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EXPNC_MONTH)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.STAT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.STAT_DESCR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DOB)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MARITAL_STAT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CHLD_CNT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FTHR_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MTHR_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HUSBND_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BLOOD_GRP)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_ADDR_LINE1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_ADDR_LINE2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_CITY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_STATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_PIN_CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_ADDR_LINE1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_ADDR_LINE2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_CITY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_STATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_PIN_CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_PH1)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OFF_PH2)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MOBL_PH)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HOME_PH)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EML)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FAX)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PHTO_FILENAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PHTO_CNTNT_TYPE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PHTO_DATA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PHTO_FILE_SIZE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.COUNTRY.CTRY_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.COUNTRY1.CTRY_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.COUNTRY2.CTRY_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE_CATEGORY.NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE_POSITION.POS_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE_DEPARTMENT.CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE2.EMP_NUM)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE_GRADE.GRADE_CODE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.USER.USRNAME)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMP_NUM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.JOINING_DATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FIRST_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MID_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LAST_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GNDR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.JOB_TIL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QUAL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXPNC_DETL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXPNC_YEAR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EXPNC_MONTH)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.STAT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.STAT_DESCR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DOB)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MARITAL_STAT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CHLD_CNT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FTHR_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MTHR_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HUSBND_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BLOOD_GRP)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_ADDR_LINE1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_ADDR_LINE2)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_CITY)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_STATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_PIN_CODE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_ADDR_LINE1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_ADDR_LINE2)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_CITY)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_STATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_PIN_CODE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_PH1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OFF_PH2)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MOBL_PH)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HOME_PH)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EML)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FAX)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PHTO_FILENAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PHTO_CNTNT_TYPE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PHTO_DATA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CREATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UPDATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PHTO_FILE_SIZE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.COUNTRY.CTRY_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.COUNTRY1.CTRY_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.COUNTRY2.CTRY_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE_CATEGORY.NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE_POSITION.POS_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE_DEPARTMENT.CODE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE2.EMP_NUM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE_GRADE.GRADE_CODE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.USER.USRNAME)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -2165,6 +2165,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dropzone.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -2404,6 +2405,44 @@
     <Content Include="Views\Finance\Fee_Fine_New.cshtml" />
     <Content Include="Views\Finance\Edit_Fee_Fine.cshtml" />
     <Content Include="Views\Finance\Delete_Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Transactions.cshtml" />
+    <Content Include="Views\Finance\Expense_Create.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Create_Form.cshtml" />
+    <Content Include="Views\Finance\Income_Create.cshtml" />
+    <Content Include="Views\Finance\Expense_List.cshtml" />
+    <Content Include="Views\Finance\Expense_List_Update.cshtml" />
+    <Content Include="Views\Finance\Expense_Edit.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Edit_Form.cshtml" />
+    <Content Include="Views\Finance\Income_List.cshtml" />
+    <Content Include="Views\Finance\Income_List_Update.cshtml" />
+    <Content Include="Views\Finance\Income_Edit.cshtml" />
+    <Content Include="Views\Finance\Income_List_pdf.cshtml" />
+    <Content Include="Views\Finance\Expense_List_pdf.cshtml" />
+    <Content Include="Views\Finance\Monthly_Report.cshtml" />
+    <Content Include="Views\Finance\Update_Monthly_Report.cshtml" />
+    <Content Include="Views\Finance\Transaction_pdf.cshtml" />
+    <Content Include="Views\Finance\Salary_Department.cshtml" />
+    <Content Include="Views\Finance\Donations_Report.cshtml" />
+    <Content Include="Views\Finance\Fees_Report.cshtml" />
+    <Content Include="Views\Finance\Batch_Fees_Report.cshtml" />
+    <Content Include="Views\Finance\Income_Details.cshtml" />
+    <Content Include="Views\Finance\Income_Details_pdf.cshtml" />
+    <Content Include="Views\Finance\Compare_Report.cshtml" />
+    <Content Include="Views\Finance\Report_Compare.cshtml" />
+    <Content Include="Views\Finance\Donation.cshtml" />
+    <Content Include="Views\Finance\Donation_Receipt.cshtml" />
+    <Content Include="Views\Finance\Donation_Receipt_pdf.cshtml" />
+    <Content Include="Views\Finance\Donors.cshtml" />
+    <Content Include="Views\Finance\Donation_Edit.cshtml" />
+    <Content Include="Views\Finance\Automatic_Transactions.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Trigger_Create_Form.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Triggers_List.cshtml" />
+    <Content Include="Views\Finance\Transaction_Trigger_Edit.cshtml" />
+    <Content Include="Views\Employee\Create.cshtml" />
+    <Content Include="Views\Employee\Delete.cshtml" />
+    <Content Include="Views\Employee\Details.cshtml" />
+    <Content Include="Views\Employee\Edit.cshtml" />
+    <Content Include="Views\Employee\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2462,6 +2501,7 @@
     </Compile>
     <Compile Include="Controllers\BATCHController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\newsController.cs" />

@@ -2833,8 +2833,10 @@ namespace SFSAcademy.Controllers
         // GET: Fee Index
         public ActionResult Fees_Student_Search()
         {
-
-            return View();
+            var StudentVal = (from st in db.STUDENTs
+                              where st.IS_DEL=="N" && st.IS_ACT == "Y"
+                              select st ).OrderBy(x => x.ID).Distinct();
+            return View(StudentVal.ToList());
 
         }
 
@@ -3119,7 +3121,8 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
                 return View(fINANCEcATEGORY);
             }
-            return RedirectToAction("Categories");
+            ViewBag.ErrorMessage = "Finance Category Deleted Sucessfully!";
+            return View(fINANCEcATEGORY);
         }
 
         // GET: Student/Edit/5
@@ -3168,8 +3171,10 @@ namespace SFSAcademy.Controllers
                     ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
                     return View(fINANCEcATEGORY);
                 }
-                return RedirectToAction("Categories");
+                ViewBag.ErrorMessage = "Finance Category Edited Sucessfully!";
+                return View(fINANCEcATEGORY);
             }
+            ViewBag.ErrorMessage = "There seems to be some issue with view state.";
             return View(fINANCEcATEGORY);
         }
 
@@ -3431,7 +3436,10 @@ namespace SFSAcademy.Controllers
         public ActionResult Fees_Defaulters_Student_Search()
         {
 
-            return View();
+            var StudentVal = (from st in db.STUDENTs
+                              where st.IS_DEL == "N" && st.IS_ACT == "Y"
+                              select st).OrderBy(x => x.ID).Distinct();
+            return View(StudentVal.ToList());
 
         }
   
@@ -3895,6 +3903,1161 @@ namespace SFSAcademy.Controllers
                 total_fees += total_fine_val;
             }
             return View();
+        }
+
+        // GET: Finance
+        public ActionResult Transactions()
+        {
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Expense_Create(string TransactionTitle)
+        {
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                              select new Models.FinanceTransaction {FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.TransactionTitle = TransactionTitle;
+
+            string[] search = { "Fee", "Salary", "Donation" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x=>x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.CAT_ID = options;
+            return View();
+        }
+
+ 
+        // POST: Student/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Transaction_Create([Bind(Include = "ID,MSTRTRAN_ID,TIL,DESCR,AMT,FINE_INCLD,CAT_ID,STDNT_ID,FIN_FE_ID,CRETAED_AT,UPDATED_AT,TRAN_DATE,FINE_AMT,FIN_ID,FIN_TYPE,PAYEE_ID,PAYEE_TYPE,RCPT_NO,VCHR_NO")] FINANCE_TRANSACTION fINANCEtRANSACTIONS, string PageName)
+        {
+            if(PageName == "Expense_Create")
+            {
+                string[] search = { "Fee", "Salary", "Donation" };
+                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+                options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+                ViewBag.CAT_ID = options;
+            }
+            else if (PageName == "Income_Create")
+            {
+                string[] search = { "Fee", "Salary", "Donation" };
+                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "Y" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+                options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+                ViewBag.CAT_ID = options;
+            }
+            else
+            {
+                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N").OrderBy(x => x.ID), "ID", "NAME").ToList();
+                options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+                ViewBag.CAT_ID = options;
+            }
+            ViewBag.PageName = PageName;
+            if (ModelState.IsValid)
+            {
+                fINANCEtRANSACTIONS.CRETAED_AT = System.DateTime.Now;
+                fINANCEtRANSACTIONS.UPDATED_AT = System.DateTime.Now;
+                db.FINANCE_TRANSACTION.Add(fINANCEtRANSACTIONS);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return View(PageName);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(PageName);
+                }
+                ViewBag.ErrorMessage = "Transaction Added Successfully!";
+                return View(PageName);
+            }
+
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State.";
+            return View(PageName);
+        }
+
+        // GET: Finance
+        public ActionResult Income_Create(string TransactionTitle)
+        {
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.TransactionTitle = TransactionTitle;
+            string[] search = { "Fee", "Salary", "Donation" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "Y" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.CAT_ID = options;
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Expense_List(string ErrorMessage)
+        {
+            ViewBag.ErrorMessage = ErrorMessage;
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Expense_List_Update(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == "N"
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Expense_List_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == "Y"
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE.ToShortDateString();
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE.ToShortDateString();
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Delete_Transaction(int? id)
+        {
+            FINANCE_TRANSACTION TransToDelete = db.FINANCE_TRANSACTION.Find(id);
+            FINANCE_TRANSACTION_CATEGORY TranCatToDelete = db.FINANCE_TRANSACTION_CATEGORY.Find(TransToDelete.CAT_ID);
+            string IncomeType = TranCatToDelete.IS_INCM;
+            if (IncomeType == "Y")
+            {
+                var DependentTrans = (from tr in db.FINANCE_TRANSACTION
+                                      where tr.MSTRTRAN_ID == TransToDelete.ID
+                                      select tr).Distinct().ToList();
+                foreach (var item in DependentTrans)
+                {
+                    FINANCE_TRANSACTION DepTransToDelete = db.FINANCE_TRANSACTION.Find(item.ID);
+                    db.FINANCE_TRANSACTION.Remove(DepTransToDelete);
+                    try { db.SaveChanges(); }
+                    catch (Exception e)
+                    {
+                        ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return RedirectToAction("Expense_List_Update", "Finance", new ViewDataDictionary { { "Warn_Notice", ViewData["Warn_Notice"] } });
+                    }
+                }
+                ViewBag.ErrorMessage = string.Concat("All Dependent Transactions Removed from System!");
+            }
+            db.FINANCE_TRANSACTION.Remove(TransToDelete);
+            try { db.SaveChanges(); }
+            catch (Exception e)
+            {
+                ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                if (IncomeType == "Y")
+                {
+                    return RedirectToAction("Income_List", "Finance", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                else
+                {
+                    return RedirectToAction("Expense_List", "Finance", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
+            ViewBag.ErrorMessage = string.Concat("Selected Transactions Removed from System Successfully!");
+            if(IncomeType == "Y")
+            {
+                return RedirectToAction("Income_List", "Finance", new { ErrorMessage = ViewBag.ErrorMessage });
+            }
+            else
+            {
+                return RedirectToAction("Expense_List", "Finance", new {ErrorMessage = ViewBag.ErrorMessage });
+            }
+        }
+
+        // GET: Finance
+        public ActionResult Expense_Edit(int? id, string ErrorMessage )
+        {
+            FINANCE_TRANSACTION TransToEdit = db.FINANCE_TRANSACTION.Find(id);
+            FINANCE_TRANSACTION_CATEGORY TranCatToEdit = db.FINANCE_TRANSACTION_CATEGORY.Find(TransToEdit.CAT_ID);
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x =>x.IS_INCM == "N").OrderBy(x => x.ID), "ID", "NAME", TransToEdit.CAT_ID).ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewData["CAT_ID"] = options;
+            ViewData["SpecialCategory"] = null;
+            if (TranCatToEdit.NAME == "Salary")
+            { ViewData["SpecialCategory"] = "Y"; }
+            ViewBag.ErrorMessage = ErrorMessage;
+            return View(TransToEdit);
+        }
+
+        // POST: Student/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Transaction_Edit([Bind(Include = "ID,MSTRTRAN_ID,TIL,DESCR,AMT,FINE_INCLD,CAT_ID,STDNT_ID,FIN_FE_ID,CRETAED_AT,UPDATED_AT,TRAN_DATE,FINE_AMT,FIN_ID,FIN_TYPE,PAYEE_ID,PAYEE_TYPE,RCPT_NO,VCHR_NO")] FINANCE_TRANSACTION fINANCEtRANSACTIONS, string PageName)
+        {
+            ViewBag.PageName = PageName;
+            FINANCE_TRANSACTION fINANCEtRANSACTIONS_UPD = db.FINANCE_TRANSACTION.Find(fINANCEtRANSACTIONS.ID);
+            fINANCEtRANSACTIONS_UPD.TIL = fINANCEtRANSACTIONS.TIL;
+            fINANCEtRANSACTIONS_UPD.DESCR = fINANCEtRANSACTIONS.DESCR;
+            fINANCEtRANSACTIONS_UPD.AMT = fINANCEtRANSACTIONS.AMT;
+            fINANCEtRANSACTIONS_UPD.CAT_ID = fINANCEtRANSACTIONS.CAT_ID;
+            fINANCEtRANSACTIONS_UPD.UPDATED_AT = System.DateTime.Now;
+            db.Entry(fINANCEtRANSACTIONS_UPD).State = EntityState.Modified;
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                return RedirectToAction(PageName, "Finance", new { id = fINANCEtRANSACTIONS.ID, ErrorMessage = ViewBag.ErrorMessage });
+                //return View(PageName);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return RedirectToAction(PageName, "Finance", new { id = fINANCEtRANSACTIONS.ID, ErrorMessage = ViewBag.ErrorMessage });
+                //return View(PageName);
+            }
+            ViewBag.ErrorMessage = "Transaction Updated Successfully!";
+            return RedirectToAction(PageName, "Finance", new { id = fINANCEtRANSACTIONS.ID, ErrorMessage = ViewBag.ErrorMessage });
+            //return View(PageName);
+        }
+
+        // GET: Finance
+        public ActionResult Income_List(string ErrorMessage)
+        {
+            ViewBag.ErrorMessage = ErrorMessage;
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Income_List_Update(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == "Y"
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Income_Edit(int? id, string ErrorMessage)
+        {
+            FINANCE_TRANSACTION TransToEdit = db.FINANCE_TRANSACTION.Find(id);
+            FINANCE_TRANSACTION_CATEGORY TranCatToEdit = db.FINANCE_TRANSACTION_CATEGORY.Find(TransToEdit.CAT_ID);
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.IS_INCM == "Y").OrderBy(x => x.ID), "ID", "NAME", TransToEdit.CAT_ID).ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewData["CAT_ID"] = options;
+            ViewData["SpecialCategory"] = null;
+            if (TranCatToEdit.NAME == "Fees" || TranCatToEdit.NAME == "Salary" || TranCatToEdit.NAME == "Donation")
+            { ViewData["SpecialCategory"] = "Y"; }
+            ViewBag.ErrorMessage = ErrorMessage;
+            return View(TransToEdit);
+        }
+
+        // GET: Finance
+        public ActionResult Income_List_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == "Y"
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE.ToShortDateString();
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE.ToShortDateString();
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Monthly_Report()
+        {
+            return View();
+        }
+
+
+        public ActionResult Update_Monthly_Report(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            ViewData["transactions"] = TransactionVal;
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+
+            /*int grand_total = 0;
+            foreach (var item in TransactionVal)
+            {
+                grand_total = grand_total + Convert.ToInt32(item.FinanceTransactionData.AMT);
+            }
+
+            ViewBag.grand_total = grand_total;*/
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if(item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+            decimal transactions_fees_income = 0;
+            decimal transactions_fees_expense = 0;
+            decimal transactions_fees = 0;
+            foreach (var item in TransactionVal)
+            {
+                if(item.TransactionCategoryData.NAME.Contains("Fee"))
+                {
+                    if(item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        transactions_fees_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        transactions_fees_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            transactions_fees = transactions_fees_income - transactions_fees_expense;
+            ViewBag.transactions_fees = transactions_fees;
+
+            decimal salary = 0;
+            decimal salary_income = 0;
+            decimal salary_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Salary"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        salary_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        salary_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            salary = salary_expense - salary_income;
+            ViewBag.salary = salary;
+
+            decimal donations_total = 0;
+            decimal donations_income = 0;
+            decimal donations_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Donation"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        donations_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        donations_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            donations_total = donations_income - donations_expense;
+            ViewBag.donations_total = donations_total;
+
+            var TotalTrans = db.FINANCE_TRANSACTION.Where(x=>x.TRAN_DATE >= START_TRAN_DATE && x.TRAN_DATE <= END_TRAN_DATE).GroupBy(o => o.CAT_ID)
+                .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
+
+
+            string[] search = { "Fee", "Salary", "Donation" };
+
+            var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
+                            join tt in TotalTrans on ct.ID equals tt.membername
+                            where !search.Any(val => ct.NAME.Contains(val))
+                            orderby ct.NAME
+                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+
+            ViewData["other_transaction_categories"] = CatTrans;
+
+            ViewBag.graph = null;
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Transaction_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            ViewData["transactions"] = TransactionVal;
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+
+            /*int grand_total = 0;
+            foreach (var item in TransactionVal)
+            {
+                grand_total = grand_total + Convert.ToInt32(item.FinanceTransactionData.AMT);
+            }
+
+            ViewBag.grand_total = grand_total;*/
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+            decimal transactions_fees_income = 0;
+            decimal transactions_fees_expense = 0;
+            decimal transactions_fees = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        transactions_fees_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        transactions_fees_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            transactions_fees = transactions_fees_income - transactions_fees_expense;
+            ViewBag.transactions_fees = transactions_fees;
+
+            decimal salary = 0;
+            decimal salary_income = 0;
+            decimal salary_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Salary"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        salary_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        salary_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            salary = salary_expense - salary_income;
+            ViewBag.salary = salary;
+
+            decimal donations_total = 0;
+            decimal donations_income = 0;
+            decimal donations_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Donation"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        donations_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        donations_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            donations_total = donations_income - donations_expense;
+            ViewBag.donations_total = donations_total;
+
+            var TotalTrans = db.FINANCE_TRANSACTION.Where(x => x.TRAN_DATE >= START_TRAN_DATE && x.TRAN_DATE <= END_TRAN_DATE).GroupBy(o => o.CAT_ID)
+                .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
+
+
+            string[] search = { "Fee", "Salary", "Donation" };
+
+            var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
+                            join tt in TotalTrans on ct.ID equals tt.membername
+                            where !search.Any(val => ct.NAME.Contains(val))
+                            orderby ct.NAME
+                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+
+            ViewData["other_transaction_categories"] = CatTrans;
+
+            ViewBag.graph = null;
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Salary_Department(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.ErrorMessage = "HR System is not set-up yet for this intitution.";
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Donations_Report(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Donation")
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            decimal donations_income = 0; decimal donations_expenses = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.FinanceTransactionData.MSTRTRAN_ID == null)
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        donations_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        donations_expenses += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+                else
+                {
+                    donations_expenses += (decimal)item.FinanceTransactionData.AMT;
+
+                }
+            }
+            ViewBag.donations_income = donations_income;
+            ViewBag.donations_expenses = donations_expenses;
+            decimal donations_total = donations_income - donations_expenses;
+            ViewBag.donations_total = donations_total;
+            return View(TransactionVal.ToList());
+        }
+
+
+        // GET: Finance
+        public ActionResult Fees_Report(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            var TransactionVal = (from ff in db.FINANCE_FEE
+                                   join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on ft.CAT_ID equals tc.ID
+                                   join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                   where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Fee")
+                                   select new Models.FeeTransaction { FinanceTransactionData = ft,FinanceFeeData = ff, FeeCollectionData=fc, TransactionCategoryData= tc })
+                                   .GroupBy(o => o.FeeCollectionData.ID)
+                                   .Select(g => new { membername = g.Key, total = g.Sum(p => p.FinanceTransactionData.AMT) });
+
+            var CollectionTrans = (from fc in db.FINANCE_FEE_COLLECTION
+                                   join bt in db.BATCHes on fc.BTCH_ID equals bt.ID
+                                   join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                   join tt in TransactionVal on fc.ID equals tt.membername
+                            orderby fc.NAME
+                            select new Models.FeeCollectionTransactions { FeeCollectionData = fc, BatchData = bt, CourseData=cs, TRANS_AMNT = tt.total }).Distinct();
+
+            ViewData["fee_collection"] = CollectionTrans;
+
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Batch_Fees_Report(int? id, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            var TransactionVal = (from ff in db.FINANCE_FEE
+                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on ft.CAT_ID equals tc.ID
+                                  join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                  join bt in db.BATCHes on fc.BTCH_ID equals bt.ID
+                                  join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                  where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Fee") && fc.ID == id
+                                  select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st ,FinanceFeeData = ff, FeeCollectionData = fc, TransactionCategoryData = tc, BatchData = bt, CourseData = cs }).Distinct();
+
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Income_Details(int? id, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.ID == id
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Income_Details_pdf(int? id, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.ID == id
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Compare_Report()
+        {
+           
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Report_Compare(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, DateTime START_TRAN_DATE2, DateTime END_TRAN_DATE2)
+        {
+
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorMessage = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            if (END_TRAN_DATE2 < START_TRAN_DATE2)
+            {
+                ViewBag.ErrorMessage = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.START_TRAN_DATE2 = START_TRAN_DATE2;
+            ViewBag.END_TRAN_DATE2 = END_TRAN_DATE2;
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+            var TransactionVal = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            ViewData["transactions"] = TransactionVal;
+
+            var TransactionVal2 = (from tr in db.FINANCE_TRANSACTION
+                                  join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  where tr.TRAN_DATE >= START_TRAN_DATE2 && tr.TRAN_DATE <= END_TRAN_DATE2
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+
+            ViewData["transactions"] = TransactionVal2;
+
+            decimal transactions_fees_income = 0;
+            decimal transactions_fees_expense = 0;
+            decimal transactions_fees = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        transactions_fees_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        transactions_fees_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            transactions_fees = transactions_fees_income - transactions_fees_expense;
+            ViewBag.transactions_fees = transactions_fees;
+
+            decimal transactions_fees_income2 = 0;
+            decimal transactions_fees_expense2 = 0;
+            decimal transactions_fees2 = 0;
+            foreach (var item in TransactionVal2)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        transactions_fees_income2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        transactions_fees_expense2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            transactions_fees2 = transactions_fees_income2 - transactions_fees_expense2;
+            ViewBag.transactions_fees2 = transactions_fees2;
+
+            decimal salary = 0;
+            decimal salary_income = 0;
+            decimal salary_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Salary"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        salary_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        salary_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            salary = salary_expense - salary_income;
+            ViewBag.salary = salary;
+
+            decimal salary2 = 0;
+            decimal salary_income2 = 0;
+            decimal salary_expense2 = 0;
+            foreach (var item in TransactionVal2)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Salary"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        salary_income2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        salary_expense2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            salary2 = salary_expense2 - salary_income2;
+            ViewBag.salary2 = salary2;
+
+            decimal donations_total = 0;
+            decimal donations_income = 0;
+            decimal donations_expense = 0;
+            foreach (var item in TransactionVal)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Donation"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        donations_income += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        donations_expense += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            donations_total = donations_income - donations_expense;
+            ViewBag.donations_total = donations_total;
+
+            decimal donations_total2 = 0;
+            decimal donations_income2 = 0;
+            decimal donations_expense2 = 0;
+            foreach (var item in TransactionVal2)
+            {
+                if (item.TransactionCategoryData.NAME.Contains("Donation"))
+                {
+                    if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        donations_income2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                    else
+                    {
+                        donations_expense2 += (decimal)item.FinanceTransactionData.AMT;
+                    }
+                }
+
+            }
+            donations_total2 = donations_income2 - donations_expense2;
+            ViewBag.donations_total2 = donations_total2;
+
+            var TotalTrans = db.FINANCE_TRANSACTION.Where(x => x.TRAN_DATE >= START_TRAN_DATE && x.TRAN_DATE <= END_TRAN_DATE).GroupBy(o => o.CAT_ID)
+                .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
+
+
+            string[] search = { "Fee", "Salary", "Donation" };
+
+            var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
+                            join tt in TotalTrans on ct.ID equals tt.membername
+                            where !search.Any(val => ct.NAME.Contains(val))
+                            orderby ct.NAME
+                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+
+            ViewData["other_transaction_categories"] = CatTrans;
+
+            var TotalTrans2 = db.FINANCE_TRANSACTION.Where(x => x.TRAN_DATE >= START_TRAN_DATE2 && x.TRAN_DATE <= END_TRAN_DATE2).GroupBy(o => o.CAT_ID)
+                .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
+
+
+            string[] search2 = { "Fee", "Salary", "Donation" };
+
+            var CatTrans2 = (from ct in db.FINANCE_TRANSACTION_CATEGORY
+                            join tt in TotalTrans2 on ct.ID equals tt.membername
+                            where !search2.Any(val => ct.NAME.Contains(val))
+                            orderby ct.NAME
+                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+
+            ViewData["other_transaction_categories2"] = CatTrans2;
+
+            ViewBag.graph = null;
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Donation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Donation([Bind(Include = "ID,DNR,DESCR,AMT,TRAN_ID,CREATED_AT,UPDATED_AT,TRAN_DATE")] FINANCE_DONATION fINANCEdONATION)
+        {
+            if (ModelState.IsValid)
+            {
+                var TransactionCatVal = (from tc in db.FINANCE_TRANSACTION_CATEGORY
+                                      where tc.NAME== "Donation" && tc.DEL == "N"
+                                      select tc).Distinct();
+
+                var transaction = new FINANCE_TRANSACTION()
+                {
+                    TIL = fINANCEdONATION.DNR,
+                    CAT_ID = TransactionCatVal.FirstOrDefault().ID,
+                    DESCR = fINANCEdONATION.DESCR,
+                    PAYEE_ID = null,
+                    PAYEE_TYPE = null,
+                    AMT = (decimal)fINANCEdONATION.AMT,
+                    FINE_AMT = null,
+                    FINE_INCLD = null,
+                    FIN_FE_ID = null,
+                    MSTRTRAN_ID = null,
+                    RCPT_NO = null,
+                    TRAN_DATE = fINANCEdONATION.TRAN_DATE,
+                    CRETAED_AT = System.DateTime.Now,
+                    UPDATED_AT = System.DateTime.Now
+                };
+                db.FINANCE_TRANSACTION.Add(transaction);
+                fINANCEdONATION.CREATED_AT = System.DateTime.Now;
+                fINANCEdONATION.UPDATED_AT = System.DateTime.Now;
+                fINANCEdONATION.TRAN_ID = transaction.ID;
+                db.FINANCE_DONATION.Add(fINANCEdONATION);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return View(fINANCEdONATION);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(fINANCEdONATION);
+                }
+                ViewBag.Notice = "Donation added in system sucessfully!";
+                return RedirectToAction("Donation_Receipt", new { id = fINANCEdONATION .ID, Notice = ViewBag.Notice});
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please try again later.";
+            return View(fINANCEdONATION);
+        }
+
+        // GET: Finance
+        public ActionResult Donation_Receipt(int? id, string Notice)
+        {
+            FINANCE_DONATION donation = db.FINANCE_DONATION.Find(id);
+            ViewBag.Notice = Notice;
+            return View(donation);
+        }
+        // GET: Finance
+        public ActionResult Donation_Receipt_pdf(int? id)
+        {
+            FINANCE_DONATION donation = db.FINANCE_DONATION.Find(id);
+            return View(donation);
+        }
+        // GET: Finance
+        public ActionResult Donors(string Notice)
+        {
+            ViewBag.Notice = Notice;
+            var donation = (from dn in db.FINANCE_DONATION
+                            select dn).OrderBy(x=>x.TRAN_DATE).Distinct();
+            return View(donation.ToList());
+        }
+        // GET: Finance
+        public ActionResult Donation_Edit(int? id)
+        {
+            FINANCE_DONATION donor = db.FINANCE_DONATION.Find(id);
+            return View(donor);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Donation_Edit([Bind(Include = "ID,DNR,DESCR,AMT,TRAN_ID,CREATED_AT,UPDATED_AT,TRAN_DATE")] FINANCE_DONATION fINANCEdONATION)
+        {
+            if (ModelState.IsValid)
+            {
+                FINANCE_TRANSACTION tRANSACTION_tO_uPDATE = db.FINANCE_TRANSACTION.Find(fINANCEdONATION.TRAN_ID);
+                tRANSACTION_tO_uPDATE.TIL = fINANCEdONATION.DNR;
+                tRANSACTION_tO_uPDATE.DESCR = fINANCEdONATION.DESCR;
+                tRANSACTION_tO_uPDATE.AMT = fINANCEdONATION.AMT;
+                tRANSACTION_tO_uPDATE.TRAN_DATE = fINANCEdONATION.TRAN_DATE;
+                tRANSACTION_tO_uPDATE.UPDATED_AT = System.DateTime.Now;
+                db.Entry(tRANSACTION_tO_uPDATE).State = EntityState.Modified;
+
+                FINANCE_DONATION fINANCEdONATION_tO_uPDATE = db.FINANCE_DONATION.Find(fINANCEdONATION.ID);
+                fINANCEdONATION_tO_uPDATE.DNR = fINANCEdONATION.DNR;
+                fINANCEdONATION_tO_uPDATE.DESCR = fINANCEdONATION.DESCR;
+                fINANCEdONATION_tO_uPDATE.AMT = fINANCEdONATION.AMT;
+                fINANCEdONATION_tO_uPDATE.TRAN_DATE = fINANCEdONATION.TRAN_DATE;
+                fINANCEdONATION_tO_uPDATE.UPDATED_AT = System.DateTime.Now;
+                db.Entry(fINANCEdONATION_tO_uPDATE).State = EntityState.Modified;
+
+
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return View(fINANCEdONATION);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(fINANCEdONATION);
+                }
+                ViewBag.Notice = "Donation updated in system sucessfully!";
+                return RedirectToAction("Donors", new { Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please try again later.";
+            return View(fINANCEdONATION);
+        }
+
+        // GET: Finance
+        public ActionResult Donation_Delete(int? id)
+        {
+            var donation = db.FINANCE_DONATION.Find(id);
+            var transaction = db.FINANCE_TRANSACTION.Find(donation.TRAN_ID);
+            db.FINANCE_TRANSACTION.Remove(transaction);
+            try { db.SaveChanges(); }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View(donation);
+            }
+            db.FINANCE_DONATION.Remove(donation);
+            try { db.SaveChanges(); }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View(donation);
+            }
+            ViewBag.Notice = "Donation deleted from system sucessfully!";
+            return RedirectToAction("Donors", new {Notice = ViewBag.Notice });
+        }
+
+        // GET: Finance
+        public ActionResult Automatic_Transactions(string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            string[] search = { "Fee", "Salary"};
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.FIN_CAT_ID = options;
+            var TansactionTrigger = (from tt in db.FINANCE_TRANSACTION_TRIGGERS
+                                     join tc in db.FINANCE_TRANSACTION_CATEGORY on tt.FIN_CAT_ID equals tc.ID
+                                     select new Models.TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc}).OrderBy(x=>x.TransactionTriggerData.TIL).Distinct();
+            return View(TansactionTrigger.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Transaction_Trigger_Create_Form()
+        {
+            string[] search = { "Fee", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.FIN_CAT_ID = options;
+            return PartialView("_Transaction_Trigger_Create_Form");
+        }
+
+        // POST: Student/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Transaction_Trigger_Create([Bind(Include = "ID,FIN_CAT_ID,PCT,TIL,DESCR")] FINANCE_TRANSACTION_TRIGGERS fINANCEtRANStRIGGER)
+        {
+            string[] search = { "Fee", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.FIN_CAT_ID = options;
+
+            if (ModelState.IsValid)
+            {
+                db.FINANCE_TRANSACTION_TRIGGERS.Add(fINANCEtRANStRIGGER);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                ViewBag.Notice = "Transaction Trigger added in system sucessfully!";
+                return RedirectToAction("Automatic_Transactions", new { Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please try again later.";
+            return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
+        }
+
+        // GET: Finance
+        public ActionResult Transaction_Trigger_Edit(int? id, string ErrorMessage)
+        {
+            ViewBag.ErrorMessage = ErrorMessage;
+            FINANCE_TRANSACTION_TRIGGERS TansactionTrigger = db.FINANCE_TRANSACTION_TRIGGERS.Find(id);
+            string[] search = { "Fee", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == "N" && x.IS_INCM == "N" && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME", TansactionTrigger.FIN_CAT_ID).ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
+            ViewBag.FIN_CAT_ID = options;
+            /*var TansactionTrigger = (from tt in db.FINANCE_TRANSACTION_TRIGGERS
+                                     join tc in db.FINANCE_TRANSACTION_CATEGORY on tt.FIN_CAT_ID equals tc.ID
+                                     select new Models.TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc }).OrderBy(x => x.TransactionTriggerData.TIL).Distinct();*/
+            return View(TansactionTrigger);
+        }
+
+        // GET: Finance
+        public ActionResult Transaction_Trigger_Update([Bind(Include = "ID,FIN_CAT_ID,PCT,TIL,DESCR")] FINANCE_TRANSACTION_TRIGGERS fINANCEtRANStRIGGER)
+        {
+            if (ModelState.IsValid)
+            {
+                FINANCE_TRANSACTION_TRIGGERS fINANCEtRANStRIGGER_tO_uPDATE = db.FINANCE_TRANSACTION_TRIGGERS.Find(fINANCEtRANStRIGGER.ID);
+                fINANCEtRANStRIGGER_tO_uPDATE.TIL = fINANCEtRANStRIGGER.TIL;
+                fINANCEtRANStRIGGER_tO_uPDATE.FIN_CAT_ID = fINANCEtRANStRIGGER.FIN_CAT_ID;
+                fINANCEtRANStRIGGER_tO_uPDATE.PCT = fINANCEtRANStRIGGER.PCT;
+                fINANCEtRANStRIGGER_tO_uPDATE.DESCR = fINANCEtRANStRIGGER.DESCR;
+                db.Entry(fINANCEtRANStRIGGER_tO_uPDATE).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Transaction_Trigger_Edit", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Transaction_Trigger_Edit", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                ViewBag.Notice = "Transaction Trigger updated in system sucessfully!";
+                return RedirectToAction("Automatic_Transactions", new { Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please try again later.";
+            return RedirectToAction("Transaction_Trigger_Edit", new { ErrorMessage = ViewBag.ErrorMessage });
+        }
+
+
+        // GET: Finance
+        public ActionResult Transaction_Trigger_Delete(int? id)
+        {
+            var transaction_trigger = db.FINANCE_TRANSACTION_TRIGGERS.Find(id);
+            db.FINANCE_TRANSACTION_TRIGGERS.Remove(transaction_trigger);
+            try { db.SaveChanges(); }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
+            }
+            ViewBag.Notice = "Donation deleted from system sucessfully!";
+            return RedirectToAction("Automatic_Transactions", new { Notice = ViewBag.Notice });
         }
     }
 }

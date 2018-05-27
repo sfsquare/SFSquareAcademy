@@ -127,7 +127,7 @@
             i = i + 1;
         }
     </table>
-    @Html.ActionLink("► pdf Report", "Fee_Defaulters_pdf", new { batch_id = @batch.FirstOrDefault().BatchData.ID, date = @date.ID }, new { @style = "text-decoration:underline", @class = "user_button", @target = "_blank" })
+    @Html.ActionLink("► pdf Report", "Fee_Defaulters_pdf", new { batch_id = @batch.FirstOrDefault().BatchData.ID, date = @date.ID }, new { @class = "user_button", @target = "_blank" })
 }
 else
 {

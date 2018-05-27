@@ -1,6 +1,8 @@
 ﻿@using SFSAcademy.Models
 @{    Layout = null;}
-
+@{
+    ViewBag.Title = "Fee_Defaulters_pdf";
+}
 @{
     IEnumerable<SFSAcademy.Models.StundentFee> student = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["student"];
     FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
@@ -14,13 +16,7 @@
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
 }
-@{
-    ViewBag.Title = "Fee_Defaulters_pdf";
-}
-@{
-    Layout = null;
-}
-
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/fee_defaulters_pdf.css">
 
 <div id="page-yield">
     <div class="hor_line"></div>
@@ -35,7 +31,7 @@
         <div id="pdf-info">
             <table id="pdf-table" style="width:100%;" cellspacing="0">
                 <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Admission Number</td><td class="col-pdf">Name</td><td class="col-pdf">Amount</td></tr>
-                @{int i = 0; int index = 0; }
+                @{int i = 1; int index = 1; }
                 @foreach (var item in student)
                 {
                     string selectedRow = "even";
@@ -151,6 +147,10 @@
                     i = i + 1;
                     index += 1;
                 }
+                <tr class="even" cellpadding="1" cellspacing="1">
+                    <td class="col-8" colspan="3"></td>
+                    <td class="col-pdf"><input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" /></td>
+                </tr>
             </table>
         </div>
     </div>

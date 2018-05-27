@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SFSAcademy.Models.FinanceTransaction>
+
+@{
+    ViewBag.Title = "Income_List_Update";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Income</h1>
+    <h3>Income List</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Transactions", "Transactions") &raquo;
+    @Html.ActionLink("Income", "Income_Create") &raquo;
+    Income List
+</div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("pdf Report", "Income_List_pdf", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }, new { @target = "_blank" })</li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (Model != null)
+    {
+        <br />
+        <table id="listing">
+            <tr class="tr-head">
+                <td>Name</td>
+                <td>Description</td>
+                <td>Voucher No.</td>
+                <td>Amount</td>
+                <td>Transaction Date</td>
+                <td></td>
+            </tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-1"> @item.FinanceTransactionData.TIL</td>
+                    <td class="col-2">@item.FinanceTransactionData.DESCR</td>
+                    <td class="col-6">@item.FinanceTransactionData.VCHR_NO</td>
+                    <td class="col-6">@item.FinanceTransactionData.AMT</td>
+                    <td class="col-6">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+                    <td class="col-6"><small>    @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID }, new { style = "text-decoration:underline" }) |
+    @Html.ActionLink("Edit", "Income_Edit", new { id = item.FinanceTransactionData.ID }, new { style = "text-decoration:underline" })</small></td>
+                </tr>
+                i = i + 1;
+            }
+        </table>
+                }
+                else
+                {
+                    <br />
+                    <p class="flash-msg">No Transaction for the given period.</p>
+                }
+
+</div>

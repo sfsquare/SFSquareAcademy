@@ -1,0 +1,82 @@
+﻿@model IEnumerable<SFSAcademy.Models.FinanceTransaction>
+@{
+    ViewBag.Title = "Income_List_pdf";
+}
+@{    Layout = null;}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/income_list_pdf.css">
+<div id="page-yield" class="available_sections1">
+    <div class="page1"></div>
+    <div class="section1 row">
+        <center>
+            <div class="hor_line"></div>
+            <h2>Finance Income Report</h2>
+            <div class="hor_line"></div>
+            <div class="extender"> </div>
+            <div class="report">
+                <div id="main_info">
+                    <h4> From @ViewBag.START_TRAN_DATE To @ViewBag.END_TRAN_DATE</h4>
+                </div>
+            </div>
+        </center>
+    </div>
+    <div class="section1 row">
+        <center>
+            <table id="pdf-table" style="width:100%;">
+                <tr class="table-header">
+                    <td class="col-pdf sl_no">Sl. No.</td>
+                    <td class="col-pdf name"> Name </td>
+                    <td class="col-pdf desc"> Description </td>
+                    <td class="col-pdf rcpt_no"> Receipt No.</td>
+                    <td class="col-pdf amnt">Amount</td>
+                    <td class="col-pdf t_date"> Transaction Date</td>
+                </tr>
+            </table>
+        </center>
+    </div>
+    @{ decimal total = 0; int i = 0;}
+    @foreach (var item in Model)
+    {
+        string selectedRow = "even";
+        if (i % 2 == 0)
+        {
+            selectedRow = "odd";
+        }
+        <div class="section1 row">
+            <center>
+                <table id="pdf-table" style="width:100%;">
+                    <tr class="@selectedRow">
+                        <td class="col-pdf sl_no">@i</td>
+                        <td class="col-pdf name">@item.FinanceTransactionData.TIL</td>
+                        <td class="col-pdf desc">@item.FinanceTransactionData.DESCR</td>
+                        <td class="col-pdf rcpt_no">@item.FinanceTransactionData.RCPT_NO</td>
+                        <td class="col-pdf amnt">@item.FinanceTransactionData.AMT</td>
+                        <td class="col-pdf t_date">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+                    </tr>
+                </table>
+            </center>
+        </div>
+        total += (decimal)item.FinanceTransactionData.AMT;
+        i += 1;
+    }
+    @{string selectedRow2 = "even"; }
+    @if (i % 2 == 0)
+    {
+        selectedRow2 = "odd";
+    }    
+    <div class="section1 row">
+        <center>
+            <table id="pdf-table" class="grand_total" style="width:100%;">
+                <tr class="@selectedRow2">
+                    <td class="col-pdf sl_no">&nbsp;</td>
+                    <td class="col-pdf name">&nbsp;</td>
+                    <td class="col-pdf desc">&nbsp; </td>
+                    <td class="col-pdf rcpt_no">Grand Total</td>
+                    <td class="col-pdf total_amnt">@total</td>
+                    <td class="col-pdf t_date">&nbsp;</td>
+                </tr>
+            </table>
+        </center>
+    </div>
+</div>
+
+

@@ -106,14 +106,24 @@ namespace SFSAcademy.Models
     {
         public STUDENT StudentData { get; set; }
         public FINANCE_TRANSACTION FinanceTransactionData { get; set; }
+        public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
         public FINANCE_FEE FinanceFeeData { get; set; }
         public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
+        public COURSE CourseData { get; set; }
+        public BATCH BatchData { get; set; }
     }
     public class StundentFee
     {
         public STUDENT StudentData { get; set; }
         public FINANCE_FEE FinanceFeeData { get; set; }
         public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
+    }
+
+    public class FinanceTransaction
+    {
+        public FINANCE_TRANSACTION FinanceTransactionData { get; set; }
+        public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
+        public FINANCE_TRANSACTION_TRIGGERS TransactionTriggersData { get; set; }
     }
 
     public class FeeCollectionFee
@@ -132,5 +142,32 @@ namespace SFSAcademy.Models
         Check,
         BankDeposite,
         Others
+    }
+
+    public enum FinCategoryIncomeTypes
+    {
+        Y,
+        N
+    }
+
+    public class CategoryTransactions
+    {
+        public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
+        public decimal? TRANS_AMNT { get; set; }
+    }
+
+
+    public class FeeCollectionTransactions
+    {
+        public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
+        public BATCH BatchData { get; set; }
+        public COURSE CourseData { get; set; }
+        public decimal? TRANS_AMNT { get; set; }
+    }
+
+    public class TransactionTriggers
+    {
+        public FINANCE_TRANSACTION_TRIGGERS TransactionTriggerData { get; set; }
+        public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
     }
 }
