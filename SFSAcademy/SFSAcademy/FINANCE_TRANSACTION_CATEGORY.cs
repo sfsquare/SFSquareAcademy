@@ -18,6 +18,7 @@ namespace SFSAcademy
         public FINANCE_TRANSACTION_CATEGORY()
         {
             this.FINANCE_TRANSACTION = new HashSet<FINANCE_TRANSACTION>();
+            this.FINANCE_TRANSACTION_TRIGGERS = new HashSet<FINANCE_TRANSACTION_TRIGGERS>();
         }
     
         public int ID { get; set; }
@@ -28,5 +29,7 @@ namespace SFSAcademy
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
     }
 }

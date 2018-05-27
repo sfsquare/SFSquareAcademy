@@ -20,6 +20,6 @@ namespace SFSAcademy
         public string TIL { get; set; }
         public string DESCR { get; set; }
     
-        public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }
+        public virtual FINANCE_TRANSACTION_CATEGORY FINANCE_TRANSACTION_CATEGORY { get; set; }
     }
 }

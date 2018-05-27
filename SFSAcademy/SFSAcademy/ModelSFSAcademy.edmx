@@ -1983,10 +1983,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           </ReferentialConstraint>
         </Association>
         <Association Name="FIN_C_FINA_FINA_NI">
-          <End Role="FINANCE_FEE_CATGEORY" Type="Self.FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Role="FINANCE_TRANSACTION_CATEGORY" Type="Self.FINANCE_TRANSACTION_CATEGORY" Multiplicity="0..1" />
           <End Role="FINANCE_TRANSACTION_TRIGGERS" Type="Self.FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
+            <Principal Role="FINANCE_TRANSACTION_CATEGORY">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
@@ -3094,7 +3094,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
           <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="Self.FIN_C_FINA_FINA_NI">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
             <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
           </AssociationSet>
           <AssociationSet Name="FIN_F_FINA_FEE__NI" Association="Self.FIN_F_FINA_FEE__NI">
@@ -4053,17 +4053,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_INCM" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="FINANCE_TRANSACTION" Relationship="SFSAcademyModel.CAT_I_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_CATEGORY" ToRole="FINANCE_TRANSACTION" />
-        </EntityType>
-        <EntityType Name="FINANCE_TRANSACTION_TRIGGERS">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FIN_CAT_ID" Type="Int32" />
-          <Property Name="PCT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_TRIGGERS" ToRole="FINANCE_FEE_CATGEORY" />
+          <NavigationProperty Name="FINANCE_TRANSACTION_TRIGGERS" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_CATEGORY" ToRole="FINANCE_TRANSACTION_TRIGGERS" />
         </EntityType>
         <EntityType Name="GRADING_LEVEL">
           <Key>
@@ -5399,7 +5389,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="FINANCE_FEE_PARTICULAR" EntityType="Self.FINANCE_FEE_PARTICULAR" />
           <EntitySet Name="FINANCE_FEE_STRUCTURE_ELEMENT" EntityType="Self.FINANCE_FEE_STRUCTURE_ELEMENT" />
           <EntitySet Name="FINANCE_TRANSACTION_CATEGORY" EntityType="Self.FINANCE_TRANSACTION_CATEGORY" />
-          <EntitySet Name="FINANCE_TRANSACTION_TRIGGERS" EntityType="Self.FINANCE_TRANSACTION_TRIGGERS" />
           <EntitySet Name="GRADING_LEVEL" EntityType="Self.GRADING_LEVEL" />
           <EntitySet Name="GUARDIANs" EntityType="Self.GUARDIAN" />
           <EntitySet Name="INDIVIDUAL_PAYSLIP_CATGEORY" EntityType="Self.INDIVIDUAL_PAYSLIP_CATGEORY" />
@@ -5790,10 +5779,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FINANCE_FEE_COLLECTION" EntitySet="FINANCE_FEE_COLLECTION" />
           </AssociationSet>
-          <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="SFSAcademyModel.FIN_C_FINA_FINA_NI">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
-          </AssociationSet>
           <AssociationSet Name="FIN_F_FINA_FINA_NI" Association="SFSAcademyModel.FIN_F_FINA_FINA_NI">
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FINANCE_FEE_PARTICULAR" EntitySet="FINANCE_FEE_PARTICULAR" />
@@ -5944,6 +5929,11 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="USRID_USER_STUD_NI" Association="SFSAcademyModel.USRID_USER_STUD_NI">
             <End Role="USER" EntitySet="USERS" />
             <End Role="STUDENT" EntitySet="STUDENTs" />
+          </AssociationSet>
+          <EntitySet Name="FINANCE_TRANSACTION_TRIGGERS" EntityType="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" />
+          <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="SFSAcademyModel.FIN_C_FINA_FINA_NI">
+            <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
+            <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FEE_COLLECTION_PARTICULAR">
@@ -6222,7 +6212,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="BATCH" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_COLLECTION_DISCOUNT" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.FEE_C_FINA_FINA_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_COLLECTION" />
-          <NavigationProperty Name="FINANCE_TRANSACTION_TRIGGERS" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_TRANSACTION_TRIGGERS" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.FIN_F_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_PARTICULAR" />
           <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
           <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_FINE" />
@@ -6260,18 +6249,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FINANCE_FEE_COLLECTION">
               <PropertyRef Name="FEE_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FIN_C_FINA_FINA_NI">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" Role="FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
-              <PropertyRef Name="FIN_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6958,6 +6935,29 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="FINANCE_TRANSACTION_TRIGGERS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FIN_CAT_ID" Type="Int32" />
+          <Property Name="PCT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FINANCE_TRANSACTION_CATEGORY" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_TRIGGERS" ToRole="FINANCE_TRANSACTION_CATEGORY" />
+        </EntityType>
+        <Association Name="FIN_C_FINA_FINA_NI">
+          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_CATEGORY" Role="FINANCE_TRANSACTION_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" Role="FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_TRANSACTION_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
+              <PropertyRef Name="FIN_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7578,17 +7578,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="DESCR" ColumnName="DESCR" />
                 <ScalarProperty Name="IS_INCM" ColumnName="IS_INCM" />
                 <ScalarProperty Name="DEL" ColumnName="DEL" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FINANCE_TRANSACTION_TRIGGERS">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS">
-              <MappingFragment StoreEntitySet="FINANCE_TRANSACTION_TRIGGERS">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="FIN_CAT_ID" ColumnName="FIN_CAT_ID" />
-                <ScalarProperty Name="PCT" ColumnName="PCT" />
-                <ScalarProperty Name="TIL" ColumnName="TIL" />
-                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8328,6 +8317,17 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
                 <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
                 <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FINANCE_TRANSACTION_TRIGGERS">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS">
+              <MappingFragment StoreEntitySet="FINANCE_TRANSACTION_TRIGGERS">
+                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
+                <ScalarProperty Name="TIL" ColumnName="TIL" />
+                <ScalarProperty Name="PCT" ColumnName="PCT" />
+                <ScalarProperty Name="FIN_CAT_ID" ColumnName="FIN_CAT_ID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -1,0 +1,34 @@
+﻿@model SFSAcademy.FINANCE_TRANSACTION
+@{
+    ViewBag.Title = "Expense_Create";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Create Expense</h1>
+    <h3>Create New Expense</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("Expense", "Expense_List")</li>
+    </ul>
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Transactions", "Transactions") &raquo;
+    Create Expenses
+</div>
+<div id="page-yield">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="box">
+        @Html.Partial("~/Views/Finance/_Transaction_Create_Form.cshtml", new SFSAcademy.FINANCE_TRANSACTION(), new ViewDataDictionary { { "PageName", "Expense_Create" }, { "CAT_ID", @ViewBag.CAT_ID } })
+    </div>
+</div>
+
