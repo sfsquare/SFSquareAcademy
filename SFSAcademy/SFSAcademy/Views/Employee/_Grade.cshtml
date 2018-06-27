@@ -1,0 +1,52 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeeGrade> grades = (IList<SFSAcademy.Models.EmployeeGrade>)ViewData["grades"];
+    IList<SFSAcademy.Models.EmployeeGrade> inactive_grades = (IList<SFSAcademy.Models.EmployeeGrade>)ViewData["inactive_grades"];
+}
+<ul id="grade-list">
+    @if (grades != null && grades.Count() != 0)
+    {
+        <li class="listheading"> <div class="grade-name">Active Position</div> </li>
+        int i = 1;
+        foreach (var item in grades)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.PRIR)</div>
+                <div class="grade-edit">@Html.ActionLink("Edit", "Edit_Grade", new { id = item.GradeData.ID })</div>
+                <div class="grade-edit">@Html.ActionLink("Delete", "Delete_Grade", new { id = item.GradeData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+            </li>
+        }
+
+        if (inactive_grades != null && inactive_grades.Count() != 0)
+        {
+            <li class="listheading"><div class="grade-name">Inactive Position</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_grades)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.PRIR)</div>
+                    <div class="grade-edit">@Html.ActionLink("Edit", "Edit_Grade", new { id = item.GradeData.ID })</div>
+                    <div class="grade-edit">@Html.ActionLink("Delete", "Delete_Grade", new { id = item.GradeData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Position Record Found</p>
+    }
+
+</ul>
+

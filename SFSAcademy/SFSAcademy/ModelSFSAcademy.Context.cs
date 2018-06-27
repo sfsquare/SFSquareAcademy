@@ -45,16 +45,13 @@ namespace SFSAcademy
         public virtual DbSet<DESCRIPTIVE_INDICATOR> DESCRIPTIVE_INDICATOR { get; set; }
         public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
         public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
-        public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         public virtual DbSet<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_CATEGORY> EMPLOYEE_CATEGORY { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT> EMPLOYEE_DEPARTMENT { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT_EVENT> EMPLOYEE_DEPARTMENT_EVENT { get; set; }
-        public virtual DbSet<EMPLOYEE_GRADE> EMPLOYEE_GRADE { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
-        public virtual DbSet<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
         public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         public virtual DbSet<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         public virtual DbSet<EVENT> EVENTs { get; set; }
@@ -77,7 +74,6 @@ namespace SFSAcademy
         public virtual DbSet<NEWS_COMMENTS> NEWS_COMMENTS { get; set; }
         public virtual DbSet<OBSERVATION> OBSERVATIONs { get; set; }
         public virtual DbSet<OBSERVATION_GROUP> OBSERVATION_GROUP { get; set; }
-        public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
         public virtual DbSet<SMS_MESSAGE> SMS_MESSAGE { get; set; }
         public virtual DbSet<SMS_SETTING> SMS_SETTING { get; set; }
@@ -118,5 +114,10 @@ namespace SFSAcademy
         public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
+        public virtual DbSet<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
+        public virtual DbSet<EMPLOYEE_GRADE> EMPLOYEE_GRADE { get; set; }
+        public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
+        public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
+        public virtual DbSet<EMPLOYEE_ADDITIONAL_FIELD> EMPLOYEE_ADDITIONAL_FIELD { get; set; }
     }
 }

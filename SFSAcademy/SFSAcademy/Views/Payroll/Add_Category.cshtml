@@ -1,0 +1,88 @@
+﻿@model SFSAcademy.PAYROLL_CATEGORY
+
+@{
+    ViewBag.Title = "Add_Category";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Payroll</h1>
+    <h3>Add New Category</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+
+
+
+<div id="page-yield">
+    <div class="box">
+        <div class="bread_crumb">
+            <a href="@Url.Action("HR", "Employee")">HR</a>  &raquo;
+            <a href="@Url.Action("Settings", "Employee")">HR Setting</a> &raquo;
+            Add New Payroll Category
+        </div>
+        @if (ViewBag.ErrorMessage != null)
+            {
+            <div id="errorExplanation1">
+                <ul>
+                    <li> @ViewBag.ErrorMessage</li>
+                </ul>
+            </div>
+        }
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div id="flash_box">
+                @if (ViewBag.Notice != null)
+                {
+                    <p class="flash-msg"> @ViewBag.Notice </p>
+                }
+            </div>
+            <div id="page-yield">
+                <div id="form-content">
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.NAME, "Category Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.PCT, "Percentage", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.PCT, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PCT, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.PYRL_CAT_ID, "Percentage Of", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.DropDownList("PYRL_CAT_ID", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.PYRL_CAT_ID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-radio-pair">
+                        <label class="status" for="status">Status:</label>
+                        <div id="radio-buttons">
+                            @Html.RadioButton("STAT", "Y", true)@Html.Label("Active", new { @class = "label_for_status" })
+                            @Html.RadioButton("STAT", "N", false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                        </div>
+                    </div>
+                    <div class="label-checkbox">
+                        @Html.CheckBoxFor(model => model.IS_DED) <label>Is Deduction? </label>
+                    </div>
+                    <div class="extender"></div>
+
+                    <div id="submit-button">
+                        <input type="submit" value="► Create" class="user_button" />
+                    </div>
+                </div>
+            </div>
+        }
+        <div id="category-list">
+            @Html.Partial("~/Views/Payroll/_Category.cshtml", Model)
+        </div>
+    </div>
+</div>

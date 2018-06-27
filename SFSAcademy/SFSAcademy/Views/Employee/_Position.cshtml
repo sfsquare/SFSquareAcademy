@@ -1,0 +1,51 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeePosition> positions = (IList<SFSAcademy.Models.EmployeePosition>)ViewData["positions"];
+    IList<SFSAcademy.Models.EmployeePosition> inactive_positions = (IList<SFSAcademy.Models.EmployeePosition>)ViewData["inactive_positions"];
+}
+<ul id="position-list">
+    @if (positions != null && positions.Count() != 0)
+    {
+        <li class="listheading"> <div class="position-name">Active Position</div> </li>
+        int i = 1;
+        foreach (var item in positions)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="position-name">@item.PositionData.POS_NAME (@item.CategoryData.PRFX)</div>
+                <div class="position-edit">@Html.ActionLink("Edit", "Edit_Position", new { id = item.PositionData.ID })</div>
+                <div class="position-edit">@Html.ActionLink("Delete", "Delete_Position", new { id = item.PositionData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+            </li>
+        }
+
+        if (inactive_positions != null && inactive_positions.Count() != 0)
+        {
+            <li class="listheading"><div class="position-name">Inactive Position</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_positions)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="position-name">@item.PositionData.POS_NAME (@item.CategoryData.PRFX)</div>
+                    <div class="position-edit">@Html.ActionLink("Edit", "Edit_Position", new { id = item.PositionData.ID })</div>
+                    <div class="position-edit">@Html.ActionLink("Delete", "Delete_Position", new { id = item.PositionData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Position Record Found</p>
+    }
+
+</ul>

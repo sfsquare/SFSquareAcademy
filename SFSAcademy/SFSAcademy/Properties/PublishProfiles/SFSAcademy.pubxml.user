@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\sudhi\Documents\Visual Studio 2015\Projects\SFSAcademy Artifects\Published\05-27-2018</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\sudhi\Documents\Visual Studio 2015\Projects\SFSAcademy Artifects\Published\06-27-2018</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
@@ -148,7 +148,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>05/27/2018 15:37:47</publishTime>
+      <publishTime>06/27/2018 12:55:10</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -6214,7 +6214,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/21/2018 11:31:03</publishTime>
     </File>
     <File Include="ModelSFSAcademy.edmx.diagram">
-      <publishTime>05/26/2018 23:22:43</publishTime>
+      <publishTime>05/29/2018 20:01:48</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>05/21/2018 11:31:04</publishTime>
@@ -6327,6 +6327,24 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Courses/ManageCourse.cshtml">
       <publishTime>05/21/2018 11:31:03</publishTime>
     </File>
+    <File Include="Views/Employee/Add_Additional_Details.cshtml">
+      <publishTime>05/29/2018 20:32:11</publishTime>
+    </File>
+    <File Include="Views/Employee/Add_Bank_Details.cshtml">
+      <publishTime>05/29/2018 19:13:54</publishTime>
+    </File>
+    <File Include="Views/Employee/Add_Category.cshtml">
+      <publishTime>05/28/2018 23:27:28</publishTime>
+    </File>
+    <File Include="Views/Employee/Add_Department.cshtml">
+      <publishTime>05/29/2018 12:23:53</publishTime>
+    </File>
+    <File Include="Views/Employee/Add_Grade.cshtml">
+      <publishTime>05/29/2018 15:22:07</publishTime>
+    </File>
+    <File Include="Views/Employee/Add_Position.cshtml">
+      <publishTime>05/29/2018 12:23:21</publishTime>
+    </File>
     <File Include="Views/Employee/Create.cshtml">
       <publishTime>05/27/2018 15:03:15</publishTime>
     </File>
@@ -6339,8 +6357,50 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Employee/Edit.cshtml">
       <publishTime>05/27/2018 15:03:19</publishTime>
     </File>
+    <File Include="Views/Employee/Edit_Additional_Details.cshtml">
+      <publishTime>05/29/2018 20:40:16</publishTime>
+    </File>
+    <File Include="Views/Employee/Edit_Bank_Details.cshtml">
+      <publishTime>05/29/2018 19:14:41</publishTime>
+    </File>
+    <File Include="Views/Employee/Edit_Category.cshtml">
+      <publishTime>05/29/2018 11:21:29</publishTime>
+    </File>
+    <File Include="Views/Employee/Edit_Department.cshtml">
+      <publishTime>05/29/2018 12:39:29</publishTime>
+    </File>
+    <File Include="Views/Employee/Edit_Grade.cshtml">
+      <publishTime>05/29/2018 15:22:28</publishTime>
+    </File>
+    <File Include="Views/Employee/Edit_Position.cshtml">
+      <publishTime>05/29/2018 11:46:33</publishTime>
+    </File>
+    <File Include="Views/Employee/HR.cshtml">
+      <publishTime>05/28/2018 23:13:27</publishTime>
+    </File>
     <File Include="Views/Employee/Index.cshtml">
       <publishTime>05/27/2018 15:03:20</publishTime>
+    </File>
+    <File Include="Views/Employee/Settings.cshtml">
+      <publishTime>05/29/2018 00:20:24</publishTime>
+    </File>
+    <File Include="Views/Employee/_Additional_Fields.cshtml">
+      <publishTime>05/29/2018 20:37:44</publishTime>
+    </File>
+    <File Include="Views/Employee/_Bank_Fields.cshtml">
+      <publishTime>05/29/2018 19:16:52</publishTime>
+    </File>
+    <File Include="Views/Employee/_Category.cshtml">
+      <publishTime>05/29/2018 11:07:40</publishTime>
+    </File>
+    <File Include="Views/Employee/_Department.cshtml">
+      <publishTime>05/29/2018 12:29:31</publishTime>
+    </File>
+    <File Include="Views/Employee/_Grade.cshtml">
+      <publishTime>05/29/2018 13:52:54</publishTime>
+    </File>
+    <File Include="Views/Employee/_Position.cshtml">
+      <publishTime>05/29/2018 11:48:23</publishTime>
     </File>
     <File Include="Views/Finance/Automatic_Transactions.cshtml">
       <publishTime>05/26/2018 23:44:35</publishTime>
@@ -6663,6 +6723,24 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/news/_NewsSearchPartial.cshtml">
       <publishTime>05/21/2018 11:31:04</publishTime>
     </File>
+    <File Include="Views/Payroll/Add_Category.cshtml">
+      <publishTime>05/29/2018 18:16:29</publishTime>
+    </File>
+    <File Include="Views/Payroll/Delete_Category.cshtml">
+      <publishTime>05/29/2018 16:04:51</publishTime>
+    </File>
+    <File Include="Views/Payroll/Details.cshtml">
+      <publishTime>05/29/2018 16:04:52</publishTime>
+    </File>
+    <File Include="Views/Payroll/Edit_Category.cshtml">
+      <publishTime>05/29/2018 18:33:34</publishTime>
+    </File>
+    <File Include="Views/Payroll/Index.cshtml">
+      <publishTime>05/29/2018 16:04:55</publishTime>
+    </File>
+    <File Include="Views/Payroll/_Category.cshtml">
+      <publishTime>05/29/2018 18:17:54</publishTime>
+    </File>
     <File Include="Views/Shared/_Layout/Application.cshtml">
       <publishTime>05/21/2018 11:31:03</publishTime>
     </File>
@@ -6691,7 +6769,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/21/2018 11:31:04</publishTime>
     </File>
     <File Include="Views/Shared/_Partial/Main_Menu.cshtml">
-      <publishTime>05/21/2018 11:31:04</publishTime>
+      <publishTime>05/28/2018 23:00:02</publishTime>
     </File>
     <File Include="Views/Shared/_Partial/News_Bar.cshtml">
       <publishTime>05/21/2018 11:31:04</publishTime>
@@ -6793,7 +6871,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/21/2018 11:31:04</publishTime>
     </File>
     <File Include="Views/Student/AdvancedSearch.cshtml">
-      <publishTime>05/21/2018 11:31:04</publishTime>
+      <publishTime>05/28/2018 19:31:32</publishTime>
     </File>
     <File Include="Views/Student/AdvancedSearchPdf.cshtml">
       <publishTime>05/21/2018 11:31:04</publishTime>
@@ -6907,7 +6985,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/21/2018 11:31:04</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/27/2018 15:38:06</publishTime>
+      <publishTime>06/27/2018 12:58:16</publishTime>
     </File>
   </ItemGroup>
 </Project>

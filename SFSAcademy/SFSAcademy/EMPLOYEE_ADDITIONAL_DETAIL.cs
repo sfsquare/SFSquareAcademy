@@ -20,6 +20,6 @@ namespace SFSAcademy
         public string ADDL_INFO { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }
-        public virtual STUDENT_ADDITIONAL_FIELD STUDENT_ADDITIONAL_FIELD { get; set; }
+        public virtual EMPLOYEE_ADDITIONAL_FIELD EMPLOYEE_ADDITIONAL_FIELD { get; set; }
     }
 }

@@ -1,0 +1,58 @@
+﻿@model SFSAcademy.PAYROLL_CATEGORY
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PAYROLL_CATEGORY</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PCT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PCT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PYRL_CAT_ID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PYRL_CAT_ID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IS_DED)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IS_DED)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.STAT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.STAT)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
