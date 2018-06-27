@@ -1,0 +1,52 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeeAdditionalDetail> additional_details = (IList<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["additional_details"];
+    IList<SFSAcademy.Models.EmployeeAdditionalDetail> inactive_additional_details = (IList<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["inactive_additional_details"];
+}
+<ul id="category-list">
+    @if (additional_details != null && additional_details.Count() != 0)
+    {
+        <li class="listheading"> <div class="category-name">Active Fields</div> </li>
+        int i = 1;
+        foreach (var item in additional_details)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="category-name">@item.AdditionalFieldData.NAME </div>
+                <div class="category-edit">@Html.ActionLink("Edit", "Edit_Additional_Details", new { id = item.AdditionalFieldData.ID })</div>
+                <div class="category-edit">@Html.ActionLink("Delete", "Delete_Additional_Details", new { id = item.AdditionalFieldData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+            </li>
+        }
+
+        if (inactive_additional_details != null && inactive_additional_details.Count() != 0)
+        {
+            <li class="listheading"><div class="category-name">Inactive Fields</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_additional_details)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="category-name">@item.AdditionalFieldData.NAME</div>
+                    <div class="category-edit">@Html.ActionLink("Edit", "Edit_Additional_Details", new { id = item.AdditionalFieldData.ID })</div>
+                    <div class="category-edit">@Html.ActionLink("Delete", "Delete_Additional_Details", new { id = item.AdditionalFieldData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Position Record Found</p>
+    }
+
+</ul>
+

@@ -1,0 +1,56 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeeCategory> categories = (IList<SFSAcademy.Models.EmployeeCategory>)ViewData["categories"];
+    IList<SFSAcademy.Models.EmployeeCategory> inactive_categories = (IList<SFSAcademy.Models.EmployeeCategory>)ViewData["inactive_categories"];
+}
+
+<ul id="category-list">
+    @if (categories != null && categories.Count() != 0)
+    {
+        <li class="listheading"> <div class="category-name">Active Category</div> </li>
+        int i = 1;
+        foreach (var item in categories)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="category-name">@item.CategoryData.NAME (@item.CategoryData.PRFX)</div>
+                <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.CategoryData.ID })</div>
+                <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.CategoryData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+            </li>
+        }
+
+        if (inactive_categories != null && inactive_categories.Count() != 0)
+        {
+            <li class="listheading"><div class="category-name">Inactive Category</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_categories)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="category-name">@item.CategoryData.NAME (@item.CategoryData.PRFX)</div>
+                    <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.CategoryData.ID })</div>
+                    <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.CategoryData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Category Record Found</p>
+    }
+    
+
+</ul>
+
+
+

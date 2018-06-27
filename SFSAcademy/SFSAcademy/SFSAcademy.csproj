@@ -1585,8 +1585,8 @@
     <Content Include="Content\stylesheets\observation_groups\assign_courses.css" />
     <Content Include="Content\stylesheets\observation_groups\index.css" />
     <Content Include="Content\stylesheets\observation_groups\show.css" />
-    <Content Include="Content\stylesheets\payroll\add_category.css" />
-    <Content Include="Content\stylesheets\payroll\edit_category.css" />
+    <Content Include="Content\stylesheets\payroll\Add_Category.css" />
+    <Content Include="Content\stylesheets\payroll\Edit_Category.css" />
     <Content Include="Content\stylesheets\payroll\edit_payroll_details.css" />
     <Content Include="Content\stylesheets\payroll\index.css" />
     <Content Include="Content\stylesheets\payroll\manage_payroll.css" />
@@ -2443,6 +2443,32 @@
     <Content Include="Views\Employee\Details.cshtml" />
     <Content Include="Views\Employee\Edit.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Employee\HR.cshtml" />
+    <Content Include="Views\Employee\Settings.cshtml" />
+    <Content Include="Views\Employee\Add_Category.cshtml" />
+    <Content Include="Views\Employee\_Category.cshtml" />
+    <Content Include="Views\Employee\Edit_Category.cshtml" />
+    <Content Include="Views\Employee\Add_Position.cshtml" />
+    <Content Include="Views\Employee\_Position.cshtml" />
+    <Content Include="Views\Employee\Edit_Position.cshtml" />
+    <Content Include="Views\Employee\Add_Department.cshtml" />
+    <Content Include="Views\Employee\_Department.cshtml" />
+    <Content Include="Views\Employee\Edit_Department.cshtml" />
+    <Content Include="Views\Employee\Add_Grade.cshtml" />
+    <Content Include="Views\Employee\Edit_Grade.cshtml" />
+    <Content Include="Views\Employee\_Grade.cshtml" />
+    <Content Include="Views\Payroll\Add_Category.cshtml" />
+    <Content Include="Views\Payroll\Delete_Category.cshtml" />
+    <Content Include="Views\Payroll\Details.cshtml" />
+    <Content Include="Views\Payroll\Edit_Category.cshtml" />
+    <Content Include="Views\Payroll\Index.cshtml" />
+    <Content Include="Views\Payroll\_Category.cshtml" />
+    <Content Include="Views\Employee\Add_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\_Bank_Fields.cshtml" />
+    <Content Include="Views\Employee\Edit_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\Add_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\_Additional_Fields.cshtml" />
+    <Content Include="Views\Employee\Edit_Additional_Details.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2505,6 +2531,7 @@
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\newsController.cs" />
+    <Compile Include="Controllers\PayrollController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\USERsController.cs" />
@@ -2527,6 +2554,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="EMPLOYEE_ADDITIONAL_DETAIL.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EMPLOYEE_ADDITIONAL_FIELD.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="EMPLOYEE_ATTENDENCES.cs">
@@ -2661,6 +2691,8 @@
     <Compile Include="Models\CommonModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Courses.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\Payroll.cs" />
     <Compile Include="Models\Privilege.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\PictureUpload.cs" />

@@ -1,0 +1,73 @@
+﻿@model SFSAcademy.Models.Employee
+@{
+    ViewBag.Title = "HR";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>HR Management</h1>
+    <h3>Human Resource</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div id="box">
+        @if (Html.Permitted_To("Settings", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Setting", "Settings")</div>
+                <div class="link-descr">HR Setting</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Employee_Management", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Employee Management", "Employee_Management")</div>
+                <div class="link-descr">Manage All Employee</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Employee_Attendance", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Employee Leave Management", "Employee_Attendance")</div>
+                <div class="link-descr">Manage All Employee Attendance And Leave</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Payslip", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Create Payslip", "Payslip")</div>
+                <div class="link-descr">Create Employee Monthly Payslip</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Search", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Employee Search", "Search")</div>
+                <div class="link-descr">Create Employee Monthly Payslip</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Department_Payslip", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Employee Payslip", "Department_Payslip")</div>
+                <div class="link-descr">View Department Wise Payslip</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Payslip_Approve", "Employee"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("One Click Aprove Payslip", "Payslip_Approve")</div>
+                <div class="link-descr">Aprove Monthly Payslip</div>
+            </div>
+        }
+    </div>
+</div>
