@@ -1,0 +1,29 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.Employee> employees = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["employees"];
+}
+
+<ul id="employee-list">
+    @if (employees != null && employees.Count() != 0)
+    {
+        int i = 1;
+        <li class="heading">Employee Name</li>
+        foreach (var item in employees)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="employee-name">@Html.ActionLink(string.Concat(item.EmployeeData.FIRST_NAME, " ", item.EmployeeData.LAST_NAME, " ", item.EmployeeData.EMP_NUM), "View_Rejected_Payslip", new { id = item.EmployeeData.ID, id2=item.Salary_date })</div>
+            </li>
+            i += 1;
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No employees added under this category</p>
+    }
+</ul>
+

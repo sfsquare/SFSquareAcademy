@@ -1,0 +1,32 @@
+﻿@using SFSAcademy.Models
+@{
+    COUNTRY home_country = (COUNTRY)ViewData["home_country"];
+    COUNTRY office_country = (COUNTRY)ViewData["office_country"];
+    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+}
+<table width="700">
+    <tr class="odd left"><td>Home Address</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE1 &nbsp;@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE2</td></tr>
+    <tr class="even left"><td>City</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_CITY</td></tr>
+    <tr class="odd left"><td>State</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_STATE</td></tr>
+    <tr class="even left"><td>Country</td><td class="right">@home_country.CTRY_NAME</td></tr>
+    <tr class="odd left"><td>Zip</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_PIN_CODE</td></tr>
+    <tr class="even left"><td>Office Address</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE1 &nbsp;@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE2</td></tr>
+    <tr class="odd left"><td>City</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_CITY </td></tr>
+    <tr class="even left"><td>Country</td><td class="right">@office_country.CTRY_NAME</td></tr>
+    <tr class="odd left"><td>Zip</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_PIN_CODE</td></tr>
+</table>
+<div class="extender"></div>
+<div class="edit-pdf-group">
+    @if (Html.Permitted_To("Edit2", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► Edit", "Edit2", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class = "user_button" })
+        </div>
+    }
+    @if (Html.Permitted_To("Profile_pdf", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► pdf Report", "Profile_pdf", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class = "user_button", @target = "_blank" })
+        </div>
+    }
+</div>

@@ -18,8 +18,8 @@ namespace SFSAcademy
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<System.DateTime> SAL_DATE { get; set; }
         public string NAME { get; set; }
-        public string AMT { get; set; }
-        public string IS_DED { get; set; }
+        public Nullable<decimal> AMT { get; set; }
+        public bool IS_DED { get; set; }
         public string INCL_EVRY_MONTH { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }

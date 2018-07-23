@@ -1,0 +1,56 @@
+﻿
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $jq = jQuery.noConflict();
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+    /* This is change event for your dropdownlist */
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('.submit_button').click(function () {
+
+            /* Get the selected value of dropdownlist */
+            var SelectedDate = $('#datepicker').val();
+            $(".LoaderBox").show();
+            /* Request the partial view with .get request. */
+            $.get('/Employee/One_Click_Payslip_Revert?SALARY_DATE=' + SelectedDate, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#message-div').html(data);
+                /* little fade in effect */
+                $('#message-div').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+</script>
+@using (Html.BeginForm())
+{
+    <div class="label-field-pair label">
+        <div class="label-container label">@Html.Label("SALARY_DATE", "Salary Month :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+        <div class="text-input-bg">
+            @Html.DropDownList("SALARY_DATE", null, htmlAttributes: new { @class = "form-control", @id = "datepicker" })
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            @Html.ValidationMessage("SALARY_DATE", "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="extender"></div>
+    <br />
+    <div id="submit-button">
+        <input type="button" value="► Go" class="submit_button" />
+    </div>
+}
+
+

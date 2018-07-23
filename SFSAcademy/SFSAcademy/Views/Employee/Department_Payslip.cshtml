@@ -1,0 +1,105 @@
+﻿@using SFSAcademy.Models
+@{
+    ViewBag.Title = "Department_Payslip";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee</h1>
+    <h3>Department Wise Payslip</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("HR", "HR") &raquo;
+        Employee Payslip
+    </div>
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div id="box">
+            <div class="label-field-pair label">
+                <label for="student_course">Select Department:</label>
+                <div class="text-input-bg">
+                    @Html.DropDownList("departments", null, htmlAttributes: new { @class = "form-control", @id = "DepDropDown" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <label for="student_course">Select Month:</label>
+                <div class="text-input-bg">
+                    @Html.DropDownList("Salary_Date", null, htmlAttributes: new { @class = "form-control", @id = "SalDropDown" })
+                </div>
+            </div>
+            <input type="submit" value="► View" class="submit_button" />
+        </div>
+    }
+
+    <div id="payslip">
+        @if (ViewBag.IsPost == true)
+        {
+            IEnumerable<SFSAcademy.Models.Payslip> payslips = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["payslips"];
+            if (payslips != null && payslips.Count() != 0)
+            {
+                <table id="listing" width="100%">
+                    <tr class="tr-head">
+                        <td>Sl No</td>
+                        <td>Employee</td>
+                        <td>Employee No.</td>
+                        <td>Net Salary</td>
+                        <td>Payslip Status</td>
+                        <td></td>
+                    </tr>
+                    @{ decimal? total_salary = 0; decimal? total_approved_salary = 0; decimal? total_employees = 0; int i = 0;}
+
+                    @if (payslips.FirstOrDefault().Monthy_Payslip_Amount != null)
+                    {
+                        foreach (var item in payslips)
+                        {
+                            string selectedRow = "tr-even";
+                            total_salary += (decimal)item.Net_Amount;
+                            if (item.Aapproved_Amount != null)
+                            {
+                                total_approved_salary += (decimal)item.Aapproved_Amount;
+                            }
+                            total_employees = i;
+                            if (i % 2 == 0)
+                            {
+                                selectedRow = "tr-odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-1"> @i</td>
+                                <td class="col-1"> @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</td>
+                                <td class="col-1"> @item.EmployeeData.EMP_NUM</td>
+                                <td class="col-1"> @item.Net_Amount</td>
+                                <td class="col-1"> @item.Status</td>
+                                <td class="col-5">@Html.ActionLink("View", "View_Employee_Payslip", new { id = item.EmployeeData.ID, salary_date = ViewBag.Selected_Salary_Date }) </td>
+                            </tr>
+                            i += 1;
+                        }
+                    }
+                    <tr class="tr-head">
+                        <td class="col-1">Total Employees: </td>
+                        <td class="col-1">@total_employees </td>
+                        <td class="col-1">Total Salary : </td>
+                        <td class="col-1">@total_salary</td>
+                        <td class="col-1">Approved Salary: </td>
+                        <td class="col-1">@total_approved_salary</td>
+                    </tr>
+                </table>
+                        }
+                        else
+                        {
+                <p class="flash-msg"> No payslip found</p>
+            }
+        }
+    </div>
+</div>
+
+

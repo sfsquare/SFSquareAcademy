@@ -1,0 +1,147 @@
+﻿@using SFSAcademy.Models
+@{
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+    EMPLOYEE Reporting_Manager = (EMPLOYEE)ViewData["Reporting_Manager"];
+    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+    COUNTRY home_country = (COUNTRY)ViewData["home_country"];
+    COUNTRY office_country = (COUNTRY)ViewData["office_country"];
+    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+    IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetail> additional_details = (IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["additional_details"];
+}
+@{ Layout = null;}
+@{
+    ViewBag.Title = "Profile_pdf";
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/employee/profile_pdf.css">
+
+
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <div id="main_info">
+        <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME </h2>
+        <h4>Employee Profile (General)</h4>
+    </div>
+    <div id="general_info">
+        <table id="pdf-table" width="100%" cellspacing="0">
+            <tr class="odd"><td class="col-pdf">Employee Number</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.EMP_NUM</td></tr>
+            <tr class="even"><td class="col-pdf">Joining Date</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.JOINING_DATE.Value.ToShortDateString()</td></tr>
+            <tr class="odd"><td class="col-pdf">Department</td><td class="col-pdf">@Employee.FirstOrDefault().DepartmentData.NAMES</td></tr>
+            <tr class="even"><td class="col-pdf">Category</td><td class="col-pdf">@Employee.FirstOrDefault().CategoryData.NAME</td></tr>
+            <tr class="odd"><td class="col-pdf">Position</td><td class="col-pdf">@Employee.FirstOrDefault().PositionData.POS_NAME</td></tr>
+            <tr class="even"><td class="col-pdf">Job Title</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.JOB_TIL</td></tr>
+            @if (Reporting_Manager != null)
+            {
+                <tr class="odd"><td class="col-pdf">Manager</td><td class="col-pdf">@Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME</td></tr>
+            }
+            else
+            {
+                <tr class="odd"><td class="col-pdf">Manager</td><td class="col-pdf"></td></tr>
+            }
+            <tr class="even"><td class="col-pdf">Gender</td><td class="col-pdf">@ViewBag.gender</td></tr>
+            <tr class="odd"><td class="col-pdf">Status</td><td class="col-pdf">@ViewBag.status</td></tr>
+            <tr class="even"><td class="col-pdf">Qualification</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.QUAL</td></tr>
+            <tr class="odd"><td class="col-pdf">Total Experience</td><td class="col-pdf">@ViewBag.total_years Years @ViewBag.total_months Months </td></tr>
+            <tr class="even"><td class="col-pdf">Experience Info</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.EXPNC_DETL</td></tr>
+        </table>
+    </div>
+    <div id="page-extender"></div>
+    <div id="main_info">
+        <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME  </h2>
+        <h4> Employee Profile (Personal)</h4>
+    </div>
+    <div id="personal_info">
+        <table id="pdf-table" width="100%" cellspacing="0">
+            <tr class="odd"><td class="col-pdf">Date of Birth</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.DOB.Value.ToShortDateString()</td></tr>
+            <tr class="even"><td class="col-pdf">Marital Status</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.MARITAL_STAT</td></tr>
+            <tr class="odd"><td class="col-pdf">No. of Children</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.CHLD_CNT</td></tr>
+            <tr class="even"><td class="col-pdf">Father Name</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.FTHR_NAME</td></tr>
+            <tr class="odd"><td class="col-pdf">Mother Name</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.MTHR_NAME</td></tr>
+            <tr class="even"><td class="col-pdf">Spouse Name</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HUSBND_NAME</td></tr>
+            <tr class="odd"><td class="col-pdf">Blood Group</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.BLOOD_GRP</td></tr>
+            <tr class="even"><td class="col-pdf">Nationality</td><td class="col-pdf">@Employee.FirstOrDefault().NationalityData.CTRY_NAME</td></tr>
+        </table>
+    </div>
+    <div id="page-extender"></div>
+    <div id="main_info">
+        <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME  </h2>
+        <h4> Employee Profile (Address Details)</h4>
+    </div>
+    <div id="personal_info">
+        <table id="pdf-table" width="100%" cellspacing="0">
+            <tr class="odd"><td class="col-pdf">Home Address</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE1<br />@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE2</td></tr>
+            <tr class="even"><td class="col-pdf">City</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_CITY</td></tr>
+            <tr class="odd"><td class="col-pdf">State</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_STATE</td></tr>
+            <tr class="even"><td class="col-pdf">Country</td><td class="col-pdf">@home_country.CTRY_NAME</td></tr>
+            <tr class="odd"><td class="col-pdf">Home PIN Code</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_PIN_CODE</td></tr>
+            <tr class="even"><td class="col-pdf">Office Address</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE1<br />@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE2</td></tr>
+            <tr class="odd"><td class="col-pdf">City</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_CITY</td></tr>
+            <tr class="even"><td class="col-pdf">State</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_STATE</td></tr>
+            <tr class="odd"><td class="col-pdf">Country</td><td class="col-pdf">@office_country.CTRY_NAME</td></tr>
+            <tr class="even"><td class="col-pdf">Office PIN Code</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_PIN_CODE</td></tr>
+        </table>
+    </div>
+
+    <div id="page-extender"></div>
+    <div id="main_info">
+        <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME  </h2>
+        <h4> Employee Profile (Contact Details)</h4>
+    </div>
+    <div id="personal_info">
+        <table id="pdf-table" width="100%" cellspacing="0">
+            <tr class="odd"><td class="col-pdf">Office Phone1</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_PH1</td></tr>
+            <tr class="even"><td class="col-pdf">Office Phone2</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_PH2</td></tr>
+            <tr class="odd"><td class="col-pdf">Mobile</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.MOBL_PH</td></tr>
+            <tr class="even"><td class="col-pdf">Home Phone</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_PH</td></tr>
+            <tr class="odd"><td class="col-pdf">Email</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.EML</td></tr>
+            <tr class="even"><td class="col-pdf">Fax</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.FAX</td></tr>
+        </table>
+    </div>
+
+    @{int i = 1; string cycle = "even";}
+    @if (bank_details != null && bank_details.Count() != 0)
+    {
+
+        <div id="page-extender"></div>
+        <div id="main_info">
+            <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME </h2>
+            <h4> Employee Profile (Bank Account Details)</h4>
+        </div>
+        <div id="personal_info">
+            <table id="pdf-table" width="100%" cellspacing="0">
+                @foreach (var item in bank_details)
+                {
+                    cycle = "even";
+                    if (i % 2 == 0)
+                    {
+                        cycle = "odd";
+                    }
+                    <tr class="@cycle"><td class="col-pdf">@item.BankFieldData.NAME</td><td class="col-pdf">@item.BankDetailData.BANK_INFO</td></tr>
+                    i = i + 1;
+                }
+            </table>
+        </div>
+    }
+
+    @if (additional_details != null && additional_details.Count() != 0)
+    {
+        <div id="page-extender"></div>
+        <div id="main_info">
+            <h2> @Employee.FirstOrDefault().EmployeeData.FIRST_NAME @Employee.FirstOrDefault().EmployeeData.MID_NAME @Employee.FirstOrDefault().EmployeeData.LAST_NAME  </h2>
+            <h4> Employee Profile (Additional Details)</h4>
+        </div>
+        <div id="personal_info">
+            <table id="pdf-table" width="100%" cellspacing="0">
+                @foreach (var item in additional_details)
+                {
+                    cycle = "even";
+                    if (i % 2 == 0)
+                    {
+                        cycle = "odd";
+                    }
+                    <tr class="@cycle"><td class="col-pdf">@item.AdditionalFieldData.NAME</td><td class="col-pdf">@item.AdditionalDetailData.ADDL_INFO</td></tr>
+                    i = i + 1;
+                }
+            </table>
+        </div>
+    }
+</div>

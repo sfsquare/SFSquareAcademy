@@ -1849,11 +1849,6 @@ namespace SFSAcademy.Controllers
             ViewBag.COLLECTION_ID = options2;
             ViewBag.STUDENT_ID = null;
 
-            //List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_COLLECTION.OrderBy(x => x.NAME).Distinct(), "NAME", "NAME").ToList();
-            // add the 'ALL' option
-            //options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Collection Date" });
-            //ViewBag.COLLECTION_ID = options2;
-
             return PartialView("_fees_collection_dates");
 
         }

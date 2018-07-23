@@ -18,7 +18,7 @@ namespace SFSAcademy
         public Nullable<System.DateTime> SAL_DATE { get; set; }
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<int> PYRL_CAT_ID { get; set; }
-        public string AMT { get; set; }
+        public Nullable<decimal> AMT { get; set; }
         public string IS_APPR { get; set; }
         public Nullable<int> APRV_ID { get; set; }
         public string IS_RJCT { get; set; }

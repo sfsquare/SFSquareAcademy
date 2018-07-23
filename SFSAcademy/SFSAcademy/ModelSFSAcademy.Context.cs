@@ -44,7 +44,6 @@ namespace SFSAcademy
         public virtual DbSet<COURSE> COURSEs { get; set; }
         public virtual DbSet<DESCRIPTIVE_INDICATOR> DESCRIPTIVE_INDICATOR { get; set; }
         public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
-        public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
         public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         public virtual DbSet<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_CATEGORY> EMPLOYEE_CATEGORY { get; set; }
@@ -52,7 +51,6 @@ namespace SFSAcademy
         public virtual DbSet<EMPLOYEE_DEPARTMENT_EVENT> EMPLOYEE_DEPARTMENT_EVENT { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
-        public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         public virtual DbSet<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         public virtual DbSet<EVENT> EVENTs { get; set; }
         public virtual DbSet<EXAM> EXAMs { get; set; }
@@ -67,9 +65,7 @@ namespace SFSAcademy
         public virtual DbSet<FINANCE_TRANSACTION_CATEGORY> FINANCE_TRANSACTION_CATEGORY { get; set; }
         public virtual DbSet<GRADING_LEVEL> GRADING_LEVEL { get; set; }
         public virtual DbSet<GUARDIAN> GUARDIANs { get; set; }
-        public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
         public virtual DbSet<LIABILITY> LIABILITies { get; set; }
-        public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
         public virtual DbSet<NEWS> NEWS { get; set; }
         public virtual DbSet<NEWS_COMMENTS> NEWS_COMMENTS { get; set; }
         public virtual DbSet<OBSERVATION> OBSERVATIONs { get; set; }
@@ -101,8 +97,6 @@ namespace SFSAcademy
         public virtual DbSet<FINANCE_FEE> FINANCE_FEE { get; set; }
         public virtual DbSet<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
         public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
-        public virtual DbSet<Privilege> Privileges { get; set; }
-        public virtual DbSet<Privileges_Users> Privileges_Users { get; set; }
         public virtual DbSet<Gallery_Master> Gallery_Master { get; set; }
         public virtual DbSet<PHOTO_MASTER> PHOTO_MASTER { get; set; }
         public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
@@ -119,5 +113,11 @@ namespace SFSAcademy
         public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
         public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_ADDITIONAL_FIELD> EMPLOYEE_ADDITIONAL_FIELD { get; set; }
+        public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
+        public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
+        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
+        public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
+        public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
+        public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
     }
 }

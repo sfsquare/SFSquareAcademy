@@ -17,11 +17,11 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public USER()
         {
-            this.EMPLOYEEs = new HashSet<EMPLOYEE>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
             this.USERS_ACCESS = new HashSet<USERS_ACCESS>();
             this.STUDENTs = new HashSet<STUDENT>();
+            this.EMPLOYEEs = new HashSet<EMPLOYEE>();
         }
     
         public int ID { get; set; }
@@ -41,8 +41,6 @@ namespace SFSAcademy
         public string PARNT_IND { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GUARDIAN> GUARDIANs { get; set; }
@@ -50,5 +48,7 @@ namespace SFSAcademy
         public virtual ICollection<USERS_ACCESS> USERS_ACCESS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STUDENT> STUDENTs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
     }
 }

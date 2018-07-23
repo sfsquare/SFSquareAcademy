@@ -162,7 +162,7 @@ namespace SFSAcademy.Controllers
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.current_user = UserId;
             newsDetail = GetNewsDetails(id);
-            ViewBag.isModerator = (userdetails.privilage.Select(p => p.Name == "ManageNews").FirstOrDefault()) ? true : false;
+            ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
             ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
             return View("view", newsDetail);
         }
@@ -257,7 +257,7 @@ namespace SFSAcademy.Controllers
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             var newsComment = db.NEWS_COMMENTS.Find(commentId);
             ViewBag.current_user = userId;
-            ViewBag.isModerator = (userdetails.privilage.Select(p => p.Name == "ManageNews").FirstOrDefault()) ? true : false;
+            ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
             ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
             db.NEWS_COMMENTS.Remove(newsComment);
             db.SaveChanges();
@@ -276,7 +276,7 @@ namespace SFSAcademy.Controllers
                 //Configuration config = new Configuration();
                 int userId = Convert.ToInt32(this.Session["UserId"]);
                 var userdetails = this.Session["CurrentUser"] as UserDetails;
-                var priv = userdetails.privilage.Where(p => p.Name == "ManageNews").FirstOrDefault();
+                var priv = userdetails.privilages.Where(p => p.NAME == "ManageNews").FirstOrDefault();
                 NEWS_COMMENTS newsComment = new NEWS_COMMENTS();
                 //newsComment.CNTNT = comments.commentContent;
                 newsComment.CNTNT = news_Comment;
@@ -294,7 +294,7 @@ namespace SFSAcademy.Controllers
                 //ViewBag.isModerator = (newsDetail.isUserAdmin == "Y") ? true : false;
                 //ViewBag.isAdminUser = (newsDetail.isUserAdmin == "Y") ? true : false;
 
-                ViewBag.isModerator = (userdetails.privilage.Select(p => p.Name == "ManageNews").FirstOrDefault()) ? true : false;
+                ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
                 ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
             }
             catch (Exception ex)

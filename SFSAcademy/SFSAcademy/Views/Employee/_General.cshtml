@@ -1,0 +1,71 @@
+﻿@using SFSAcademy.Models
+@{
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+    EMPLOYEE Reporting_Manager = (EMPLOYEE)ViewData["Reporting_Manager"];
+    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+}
+
+<div class="profile_top_banner">
+    <span class="profile">Details</span>
+    <div class="profile-topbanner"></div>
+</div>
+<table width="700">
+    <tr class="odd left"><td>Joining Date</td><td class="right">@Employee.FirstOrDefault().EmployeeData.JOINING_DATE.Value.ToShortDateString()</td></tr>
+    <tr class="even left"><td>Department</td><td class="right">@Employee.FirstOrDefault().DepartmentData.NAMES</td></tr>
+    <tr class="odd left"><td>Category</td><td class="right">@Employee.FirstOrDefault().CategoryData.NAME</td></tr>
+    <tr class="even left"><td>Position</td><td class="right">@Employee.FirstOrDefault().PositionData.POS_NAME</td></tr>
+    @if (Employee.FirstOrDefault().GradeData.GRADE_NAME != null)
+    {
+        <tr class="odd left"><td>Grade</td><td class="right">@Employee.FirstOrDefault().GradeData.GRADE_NAME</td></tr>
+    }
+    else
+    {
+        <tr class="odd left"><td>Grade</td><td class="right"></td></tr>
+    }
+    <tr class="even left"><td>Job Title</td><td class="right">@Employee.FirstOrDefault().EmployeeData.JOB_TIL</td></tr>
+    <tr class="odd left">
+        <td>Manager</td>
+        @if (Html.CurrentUser_UserType().Equals("Admin"))
+            {
+            <td class="right">
+                <a href="@Url.Action("Profile", "Employee", new { id = Reporting_Manager.ID })" id="RepManager">@Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME</a>
+                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
+            </td>
+        }
+        else if (Html.Permitted_To("Change_Reporting_Manager", "Employee"))
+        {
+            <td class="right">
+                @Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME
+                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
+            </td>
+
+        }
+        else
+        {
+            <td class="right">
+                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
+            </td>
+        }
+    </tr>
+    <tr class="even left"><td>Gender</td><td class="right">@Employee.FirstOrDefault().EmployeeData.GNDR</td></tr>
+    <tr class="odd left"><td>Email</td><td class="right">@Employee.FirstOrDefault().EmployeeData.EML</td></tr>
+    <tr class="even left"><td>Status</td><td class="right">@Employee.FirstOrDefault().EmployeeData.STAT</td></tr>
+    <tr class="odd left"><td>Qualification</td><td class="right">@Employee.FirstOrDefault().EmployeeData.QUAL</td></tr>
+    <tr class="even left"><td>Total Experience</td><td class="right">@ViewBag.total_years Year @ViewBag.total_months Months</td></tr>
+    <tr class="odd left"><td>Experience Info</td><td class="right">@Employee.FirstOrDefault().EmployeeData.EXPNC_DETL</td></tr>
+</table>
+<div class="edit-pdf-group">
+    @if (Html.Permitted_To("Change_Reporting_Manager", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► Edit", "Edit1", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class= "user_button" })
+        </div>
+    }
+    @if (Html.Permitted_To("Profile_pdf", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► pdf Report", "Profile_pdf", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class = "user_button", @target = "_blank" })
+        </div>
+    }
+</div>
+

@@ -1,0 +1,164 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+}
+@{
+    ViewBag.Title = "Profiles";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadUserEditPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#profile-infos').html(data);
+            /* little fade in effect */
+            $('#profile-infos').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee Profile</h1>
+    <h3>Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+</div>
+
+<div id="nav">
+    <ul>
+        <li>
+            <a href="#" class="drops" id="link_one">Profile &#9660;</a>
+            <ul id="box_one" class="scriptaculously">
+                <li><a href="@Url.Action("Profile_General", "Employee", new { id = Model.ID })" class="Profile_Menu" id="General" onclick='LoadUserEditPartialPage(this.href); return false;'>General</a></li>
+                <li><a href="@Url.Action("Profile_Personal", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Personal" onclick='LoadUserEditPartialPage(this.href); return false;'>Personal</a></li>
+                <li><a href="@Url.Action("Profile_Address", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Address" onclick='LoadUserEditPartialPage(this.href); return false;'>Address</a></li>
+                <li><a href="@Url.Action("Profile_Contact", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Contact" onclick='LoadUserEditPartialPage(this.href); return false;'>Contact</a></li>
+                <li><a href="@Url.Action("Profile_Bank_Details", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Bank_Details" onclick='LoadUserEditPartialPage(this.href); return false;'>Bank Info</a></li>
+                <li><a href="@Url.Action("Profile_Additional_Details", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Additional_Details" onclick='LoadUserEditPartialPage(this.href); return false;'>Additional Info</a></li>
+            </ul>
+        </li>
+        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        {
+            <li>
+                <a href="#" class="drops" id="link_two">Salary &#9660;</a>
+                <ul id="box_two" class="scriptaculously">
+                    <li><a href="@Url.Action("Profile_Payroll_Details", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Payroll_Details" onclick='LoadUserEditPartialPage(this.href); return false;'>Payroll</a></li>
+                    <li><a href="@Url.Action("View_Payslip", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Payslip" onclick='LoadUserEditPartialPage(this.href); return false;'>Payslip</a></li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            if (Html.Permitted_To("Payslip", "Employee"))
+            {
+                <li>
+                    <a href="#" class="drops" id="link_two">Salary &#9660;</a>
+                    <ul id="box_two" class="scriptaculously">
+                        <li><a href="@Url.Action("Profile_Payroll_Details", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Payroll_Details" onclick='LoadUserEditPartialPage(this.href); return false;'>Payroll</a></li>
+                        <li><a href="@Url.Action("View_Payslip", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Payslip" onclick='LoadUserEditPartialPage(this.href); return false;'>Payslip</a></li>
+                    </ul>
+                </li>
+            }
+        }
+        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        {
+            <li>
+                <a href="#" class="drops" id="link_three">Leaves &#9660;</a>
+                <ul id="box_three" class="scriptaculously">
+                    <li><a href="@Url.Action("View_Attendance", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Attendance" onclick='LoadUserEditPartialPage(this.href); return false;'>Attendance</a></li>
+                    <li><a href="@Url.Action("Employee_Attendance", "Employee", new { id = Model.ID })" id="Employee_Attendance">Leaves</a></li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            if (Html.Permitted_To("Employee_Attendance", "Employee"))
+            {
+                <li>
+                    <a href="#" class="drops" id="link_three">Leaves &#9660;</a>
+                    <ul id="box_three" class="scriptaculously">
+                        <li><a href="@Url.Action("View_Attendance", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Attendance" onclick='LoadUserEditPartialPage(this.href); return false;'>Attendance</a></li>
+                    </ul>
+                </li>
+            }
+        }
+        @if (Html.Permitted_To("Employee_Timetable", "Timetable"))
+        {
+            if (Model.EMP_DEPT_ID != null)
+            {
+                <li><a href="@Url.Action("Employee_Timetable", "Timetable", new { id = Model.ID })" id="Timetable">Timetable</a></li>
+            }
+        }
+        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        {
+            if (@ViewBag.new_reminder_count == 0)
+            {
+                <li><a href="@Url.Action("Index", "Reminder", new { id = Model.ID })" id="Reminder">Reminder</a></li>
+            }
+            else
+            {
+                <li><a href="@Url.Action("Index", "Reminder", new { id = Model.ID })" id="Reminder">Reminder @ViewBag.new_reminder_count</a></li>
+            }
+
+        }
+        @if (Html.CurrentUser_UserType().Equals("Admin"))
+        {
+            <li><a href="@Url.Action("Remove", "Employee", new { id = Model.ID })" id="Reminder">Delete</a></li>
+        }
+    </ul>
+</div>
+<div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none" hidden="hidden"></div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+
+    <div id="employee_profile_heading">
+        <div id="profile_picture_display">
+            @if (Model.IMAGE_DOCUMENTS_ID != null)
+            {
+                <img src="/Employee/Show/@Model.IMAGE_DOCUMENTS_ID" alt="" height=150 width=150 />
+            }
+            else
+            {
+                <img src="~/Content/images/HR/default_employee.png" alt="" height=150 width=150 />
+            }
+        </div>
+        <div id="employee_main_info">
+            <h3> @Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME  </h3>
+            <h4> Employee ID : @Model.EMP_NUM </h4>
+        </div>
+        <div id="profile-general-info" style="display:none;">
+
+        </div>
+        <div class="extender"></div>
+    </div>
+
+
+    <div id="profile-infos" style="display:none;">
+
+    </div>
+    <div class="extender"> </div>
+    <input type="hidden" value="@Model.ID" id="Std_Id" name="Std_Id" />
+</div>

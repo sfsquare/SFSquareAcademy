@@ -19,7 +19,7 @@ namespace SFSAcademy
         public Nullable<int> ADDL_FLD_ID { get; set; }
         public string ADDL_INFO { get; set; }
     
-        public virtual EMPLOYEE EMPLOYEE { get; set; }
         public virtual EMPLOYEE_ADDITIONAL_FIELD EMPLOYEE_ADDITIONAL_FIELD { get; set; }
+        public virtual EMPLOYEE EMPLOYEE { get; set; }
     }
 }

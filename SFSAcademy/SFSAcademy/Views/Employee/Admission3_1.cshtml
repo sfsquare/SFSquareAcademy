@@ -1,0 +1,61 @@
+﻿@model IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetailValue>
+
+@{
+    ViewBag.Title = "Admission3_1";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee Admission</h1>
+    <h3>Step_4</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+</div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+
+        <div id="form-contents">
+            <span class="span-sub-heading">Additional Detail</span>
+            <hr class="sub-heading" />
+            @{
+                for (int i = 0; i < Model.Count(); i++)
+                {
+                    <div class="label-field-pair">
+                        @Html.LabelFor(X => X.ElementAt(i).AdditionalFieldData.NAME, Model.ElementAt(i).AdditionalFieldData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].ADDITIONAL_DETAIL_VALUE")
+                            @Html.Hidden("[" + i + "].EMPLOYEE_ID", Model.ElementAt(i).EMPLOYEE_ID)
+                            @Html.Hidden("[" + i + "].ADDITIONAL_DETAIL_ID", Model.ElementAt(i).ADDITIONAL_DETAIL_ID)
+                            @Html.ValidationMessageFor(X => X.ElementAt(i).ADDITIONAL_DETAIL_VALUE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <hr class="label-underline" />
+                }
+            }
+
+        </div>
+        <div class="save-proceed-button">
+            <input type="submit" value="► Save And Proceed" class="submit_button" />
+        </div>
+   }
+</div>
+<input type="hidden" value=@ViewBag.edit_request id="edit_request" name="edit_request" />

@@ -1371,7 +1371,7 @@
     <Content Include="Content\stylesheets\employee\leave_management.css" />
     <Content Include="Content\stylesheets\employee\payslip.css" />
     <Content Include="Content\stylesheets\employee\payslip_approve.css" />
-    <Content Include="Content\stylesheets\employee\profile.css" />
+    <Content Include="Content\stylesheets\employee\Profiles.css" />
     <Content Include="Content\stylesheets\employee\profile_pdf.css" />
     <Content Include="Content\stylesheets\employee\rejected_payslip.css" />
     <Content Include="Content\stylesheets\employee\remove.css" />
@@ -2469,6 +2469,50 @@
     <Content Include="Views\Employee\Add_Additional_Details.cshtml" />
     <Content Include="Views\Employee\_Additional_Fields.cshtml" />
     <Content Include="Views\Employee\Edit_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\Employee_Management.cshtml" />
+    <Content Include="Views\Employee\Admission1.cshtml" />
+    <Content Include="Views\Employee\Admission2.cshtml" />
+    <Content Include="Views\Employee\Admission3.cshtml" />
+    <Content Include="Views\Employee\Admission3_1.cshtml" />
+    <Content Include="Views\Employee\Admission4.cshtml" />
+    <Content Include="Views\Employee\_Update_Reporting_Manager_Name.cshtml" />
+    <Content Include="Views\Payroll\Manage_Payroll.cshtml" />
+    <Content Include="Views\Employee\Profiles.cshtml" />
+    <Content Include="Views\Employee\Search.cshtml" />
+    <Content Include="Views\Employee\_General.cshtml" />
+    <Content Include="Views\Employee\_Personal.cshtml" />
+    <Content Include="Views\Employee\_Address.cshtml" />
+    <Content Include="Views\Employee\_Contact.cshtml" />
+    <Content Include="Views\Employee\_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\_Payroll_Details.cshtml" />
+    <Content Include="Views\Employee\_Select_Dates.cshtml" />
+    <Content Include="Views\Employee\Profile_pdf.cshtml" />
+    <Content Include="Views\Employee\View_All.cshtml" />
+    <Content Include="Views\Employee\_employee_view_all_list.cshtml" />
+    <Content Include="Views\Employee\Advanced_Search.cshtml" />
+    <Content Include="Views\Employee\Payslip.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Date.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Generation.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Revert_Date.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Revert.cshtml" />
+    <Content Include="Views\Employee\Select_Department_Employee.cshtml" />
+    <Content Include="Views\Employee\_Employee_Select_List.cshtml" />
+    <Content Include="Views\Employee\Create_Monthly_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Payslip_Category_List.cshtml" />
+    <Content Include="Views\Employee\_Payslip_Category_Form.cshtml" />
+    <Content Include="Views\Employee\_List_Payslip_Category.cshtml" />
+    <Content Include="Views\Employee\Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Rejected_Employee_Select_List.cshtml" />
+    <Content Include="Views\Employee\View_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\Edit_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\Department_Payslip.cshtml" />
+    <Content Include="Views\Employee\View_Employee_Payslip.cshtml" />
+    <Content Include="Views\Employee\Employee_Individual_Payslip_pdf.cshtml" />
+    <Content Include="Views\Employee\Payslip_Approve.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Approve.cshtml" />
+    <Content Include="Views\Employee\Employee_Attendance.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2662,13 +2706,13 @@
     <Compile Include="IMAGE_DOCUMENTS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
+    <Compile Include="INDIVIDUAL_PAYSLIP_CATGEORY.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Infrastructure\HtmlHelpers\ApplicationHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\AssetsHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\PdfTabularReport.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\ReportConfiguration.cs" />
-    <Compile Include="INDIVIDUAL_PAYSLIP_CATGEORY.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
     <Compile Include="Infrastructure\HandleErrorAttribute.cs" />
     <Compile Include="LIABILITY.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
@@ -2693,7 +2737,6 @@
     <Compile Include="Models\Courses.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Payroll.cs" />
-    <Compile Include="Models\Privilege.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\PictureUpload.cs" />
     <Compile Include="Models\Finance.cs" />
@@ -2721,10 +2764,10 @@
     <Compile Include="PHOTO_MASTER.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="Privilege.cs">
+    <Compile Include="PRIVILEGE.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="Privileges_Users.cs">
+    <Compile Include="PRIVILEGES_USERS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

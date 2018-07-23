@@ -15,7 +15,7 @@ namespace SFSAcademy
     public partial class EMPLOYEE_SALARY_STRUCTURE
     {
         public int ID { get; set; }
-        public string AMT { get; set; }
+        public Nullable<decimal> AMT { get; set; }
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<int> PYRL_CAT_ID { get; set; }
     
