@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Employee_Attendance";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
+    <h1>Manage Attendance</h1>
+    <h3>Leave Attendance</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div id="box">
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Add_Leave_Types", "Employee_Attendance")">Add Type</a></div>
+            <div class="link-descr">Add and edit employee attendance types.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "Employee_Attendance")">Attendance Register</a></div>
+            <div class="link-descr">Register attendance.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Report", "Employee_Attendance")">Attendance_Report</a></div>
+            <div class="link-descr">Attendance reports.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset Leave</a> </div>
+            <div class="link-descr">Reset employee leaves.</div>
+        </div>
+
+    </div>
+
+</div>
+

@@ -9,6 +9,7 @@ using System.Web.UI.WebControls;
 using PagedList;
 using SFSAcademy.Models;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 
 namespace SFSAcademy.Controllers
 {
@@ -265,9 +266,9 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Forgot_Password()
         {
-            //var Config = new Models.Configuration();
-            //ViewBag.network_state = Config.find_by_config_key("NetworkState");
-            ViewBag.network_state = "Active";
+            var Config = new Models.Configuration();
+            ViewBag.network_state = Config.find_by_config_key("NetworkState");
+            //ViewBag.network_state = "Active";
             return View();
 
         }
@@ -287,7 +288,7 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Edit_Privilege(int? id)
+        public ActionResult Edit_Privilege(int? id, string Calling_Method)
         {
             if (id == null)
             {
@@ -305,6 +306,7 @@ namespace SFSAcademy.Controllers
                                   from p in grp
                                   where p.AccessList.ID == MaxOrderDatePerPerson
                                   select p).ToList();
+            ViewBag.Calling_Method = Calling_Method;
             return View(uSERaCCESfINAL);
 
         }
@@ -315,10 +317,11 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Privilege(IList<SelectUserAccess> model)
+        public ActionResult Edit_Privilege(IList<SelectUserAccess> model, string Calling_Method)
         {
             if (ModelState.IsValid)
             {
+                int UserId = model.FirstOrDefault().AccessList.USRS_ID;
                 foreach (SelectUserAccess item in model)
                 {
                     if (item.Selected)
@@ -339,6 +342,11 @@ namespace SFSAcademy.Controllers
                         uSERaCCCESS.IS_ACCBLE = "N";
                         db.SaveChanges();
                     }
+                }
+                if(Calling_Method == "Employee")
+                {
+                    int Employee_ID = db.EMPLOYEEs.Where(x => x.USRID == UserId).SingleOrDefault().ID;
+                    return RedirectToAction("Admission4", "Employee", new { Emp_id = Employee_ID });
                 }
             }
             return RedirectToAction("Index");

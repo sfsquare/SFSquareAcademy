@@ -1,0 +1,36 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+}
+<table width="700">
+    <tr class="odd left"><td>Date of Birth</td><td class="right">@Employee.FirstOrDefault().EmployeeData.DOB.Value.ToShortDateString()</td></tr>
+    <tr class="even left"><td>Marital Status</td><td class="right">@Employee.FirstOrDefault().EmployeeData.MARITAL_STAT</td></tr>
+    <tr class="odd left"><td>No of Children</td><td class="right">@Employee.FirstOrDefault().EmployeeData.CHLD_CNT</td></tr>
+    <tr class="even left"><td>Father Name</td><td class="right">@Employee.FirstOrDefault().EmployeeData.FTHR_NAME</tr>
+    <tr class="odd left"><td>Mother Name</td><td class="right">@Employee.FirstOrDefault().EmployeeData.MTHR_NAME</td></tr>
+    <tr class="even left"><td>Spouse Name</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HUSBND_NAME</td></tr>
+    <tr class="odd left"><td>Blood Group</td><td class="right">@Employee.FirstOrDefault().EmployeeData.BLOOD_GRP</td></tr>
+    @if (Employee.FirstOrDefault().EmployeeData.NTLTY_ID != null)
+    {
+        <tr class="even left"><td>Nationality</td><td class="right">@Employee.FirstOrDefault().NationalityData.CTRY_NAME</td></tr>
+    }
+    else
+    {
+        <tr class="even left"><td>Nationality</td><td class="right"></td></tr>
+    }
+    
+</table>
+<div class="edit-pdf-group">
+    @if (Html.Permitted_To("Edit_Personal", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► Edit", "Edit_Personal", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class = "user_button" })
+        </div>
+    }
+    @if (Html.Permitted_To("Profile_pdf", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► pdf Report", "Profile_pdf", new { id = Employee.FirstOrDefault().EmployeeData.ID }, new { @class = "user_button", @target = "_blank" })
+        </div>
+    }
+</div>

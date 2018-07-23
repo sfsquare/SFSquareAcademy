@@ -149,14 +149,14 @@ namespace SFSAcademy.HtmlHelpers
             HttpContext context = HttpContext.Current;
             int UserId = Convert.ToInt32(context.Session["UserId"]);
             int Count = 0;
-            var SubjectBatch = (from EV in db.EVENTs
+            var EventReminder = (from EV in db.EVENTs
                                 join EDE in db.EMPLOYEE_DEPARTMENT_EVENT on EV.ID equals EDE.EV_ID
                                 join ED in db.EMPLOYEE_DEPARTMENT on EDE.EMP_DEPT_ID equals ED.ID
                                 join EP in db.EMPLOYEEs on ED.ID equals EP.EMP_DEPT_ID
-                                where EP.USRID == UserId
+                                where EP.USRID == UserId && EV.IS_DUE =="Y"
                                 select new { EVENT_ID = EV.ID }).ToList();
 
-            foreach (var entity in SubjectBatch.ToList())
+            foreach (var entity in EventReminder.ToList())
             {
                 Count = Count + 1;
             }

@@ -23,7 +23,7 @@ namespace SFSAcademy
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
-        public virtual EMPLOYEE EMPLOYEE { get; set; }
         public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
+        public virtual EMPLOYEE EMPLOYEE { get; set; }
     }
 }

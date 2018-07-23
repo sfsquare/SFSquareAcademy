@@ -1,0 +1,67 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<MONTHLY_PAYSLIP> payslips = (IEnumerable<MONTHLY_PAYSLIP>)ViewData["payslips"];
+}
+@{
+    ViewBag.Title = "View_Rejected_Payslip";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SalDateDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+        var selectedID = $(this).val();
+        var SelectedEmp = $('#EmployeeID').val();
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Employee/Update_Rejected_Payslip?emp_id=' + SelectedEmp + "&salary_date=" + selectedID , function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#rejected_payslip').html(data);
+            /* little fade in effect */
+            $('#rejected_payslip').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Rejected Payslip</h1>
+    <h3>Individual Employee</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("HR", "HR") &raquo;
+        @Html.ActionLink("Create Payslip", "Payslip") &raquo;
+        @Html.ActionLink("Rejected Payslip", "Rejected_Payslip") &raquo;
+        @employee.FIRST_NAME @employee.MID_NAME @employee.LAST_NAME
+    </div>
+    <div class="drop-down-box">
+        <label for="category_prefix">Select Payslip Month Year</label>
+        <div class="text-input-bg">
+            @Html.DropDownList("Salary_Date", null, htmlAttributes: new { @class = "form-control", @id = "SalDateDropDown" })
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            @Html.ValidationMessage("Salary_Date", "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="extender"></div>
+    <div id="rejected_payslip" style="display:none"></div>
+</div>
+<input type="hidden" value="@employee.ID" id="EmployeeID" name="EmployeeID" />
+

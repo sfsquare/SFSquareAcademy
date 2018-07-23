@@ -1,0 +1,140 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.Models.MonthyPayslip>)ViewData["monthly_payslips"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual_payslips = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual_payslips"];
+    IEnumerable<SFSAcademy.Models.Payslip> salary = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["salary"];
+}
+@{
+    ViewBag.Title = "View_Employee_Payslip";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee</h1>
+    <h3>Employee Payslip</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <ul class="item-list">
+        <li class="heading">@Model.FIRST_NAME @Model.MID_NAME  @Model.LAST_NAME </li>
+        <li class="heading">Payslip generated on: @ViewBag.Selected_Salary_Date <span class="themed_text">(Status: @ViewBag.Status)</span></li>
+    </ul>
+    <ul class="item-list">
+        <li class="heading1">Salary</li>
+        @{ int i = 0;}
+        @foreach (var item in monthly_payslips)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            if (!item.PayrollCatogaryData.ID.Equals(null) && item.PayrollCatogaryData.ID != 0)
+            {
+                if (item.PayrollCatogaryData.IS_DED == false)
+                {
+                    <li class="@selectedRow">
+                        <div class="item-name">@item.PayrollCatogaryData.NAME </div>
+                        <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.MonthlyPayslipData.AMT</div>
+                    </li>
+                }
+            }
+            i += 1;
+        }
+        @if (individual_payslips != null && individual_payslips.Count() != 0)
+        {
+            foreach (var item in individual_payslips)
+            {
+                string selectedRow = "listeven";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                if (item.IS_DED == false)
+                {
+                    <li class="@selectedRow">
+                        <div class="item-name">@item.NAME</div>
+                        <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+                    </li>
+                }
+                i += 1;
+            }
+        }
+        @{string selectedRow2 = "listeven"; }
+        @if (i % 2 == 0)
+        {
+            selectedRow2 = "listodd";
+        }
+        <li class="@selectedRow2">
+            <div class="item-name"><b>Total Salary</b></div>
+            <div class="item-edit"><b><span class="currency-type">@ViewBag.currency_type</span> @salary.FirstOrDefault().Net_Non_Deductionable_Amount</b></div>
+        </li>
+    </ul>
+    <ul class="item-list">
+        <li class="heading1">Deductions</li>
+        @{ int j = 0;}
+        @foreach (var item in monthly_payslips)
+        {
+            string selectedRow = "listeven";
+            if (j % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            if (!item.PayrollCatogaryData.ID.Equals(null) && item.PayrollCatogaryData.ID != 0)
+            {
+                if (item.PayrollCatogaryData.IS_DED == true)
+                {
+                    <li class="@selectedRow">
+                        <div class="item-name">@item.PayrollCatogaryData.NAME </div>
+                        <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.MonthlyPayslipData.AMT</div>
+                    </li>
+                }
+            }
+            j += 1;
+        }
+        @if (individual_payslips != null && individual_payslips.Count() != 0)
+        {
+            foreach (var item in individual_payslips)
+            {
+                string selectedRow = "listeven";
+                if (j % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                if (item.IS_DED == false)
+                {
+                    <li class="@selectedRow">
+                        <div class="item-name">@item.NAME</div>
+                        <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+                    </li>
+                }
+                j += 1;
+            }
+        }
+        @{string selectedRow3 = "listeven"; }
+        @if (j % 2 == 0)
+        {
+            selectedRow3 = "listodd";
+        }
+        <li class="@selectedRow3">
+            <div class="item-name"><b>Total Deduction</b></div>
+            <div class="item-edit"><b><span class="currency-type">@ViewBag.currency_type</span> @salary.FirstOrDefault().Net_Deductionable_Amount</b></div>
+        </li>
+    </ul>
+    <ul class="item-list">
+        <li class="heading1">Total</li>
+        <li class="listeven">
+            <div class="item-name"><b>Net Salary</b></div>
+            <div class="item-edit"><span class="currency-type"><b>@ViewBag.currency_type</b></span><b> @salary.FirstOrDefault().Net_Amount</b></div>
+        </li>
+    </ul>
+
+    <div class="pdf-report">
+        @Html.ActionLink("pdf Report", "Employee_Individual_Payslip_pdf", new { id = Model.ID, salary_date = ViewBag.Salary_Date }, new { @target = "_blank", @class="user_button" })
+    </div>
+</div>
+

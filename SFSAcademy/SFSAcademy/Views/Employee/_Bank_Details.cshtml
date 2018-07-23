@@ -1,0 +1,51 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+}
+
+@if (bank_details != null && bank_details.Count() != 0)
+{
+    <table width="700">
+        @{int i = 1;}
+        @foreach (var item in bank_details)
+        {
+            string code = "even";
+            if (i % 2 == 0)
+            {
+                code = "odd";
+            }
+            <tr class="@code left"><td>@item.BankFieldData.NAME</td><td class="right">@item.BankDetailData.BANK_INFO</td></tr>
+            i += 1;
+        }
+
+    </table>
+        <div class="edit-pdf-group">
+            @if (Html.Permitted_To("Edit3", "Employee"))
+            {
+                <div>
+                    @Html.ActionLink("► Edit", "Edit3", new { id = Employee.ID }, new { @class = "user_button" })
+                </div>
+            }
+            @if (Html.Permitted_To("Profile_pdf", "Employee"))
+            {
+                <div>
+                    @Html.ActionLink("► pdf Report", "Profile_pdf", new { id = Employee.ID }, new { @class = "user_button", @target = "_blank" })
+                </div>
+            }
+        </div>
+            }
+            else
+            {
+                <table width="700">
+                    @if (Html.Permitted_To("Edit3", "Employee"))
+                    {
+                        <p class="flash-msg">No Bank Details entered for @Employee.FIRST_NAME. @Html.ActionLink("Add", "Edit3", new { id = Employee.ID }, new { @class = "user_button" })</p>
+                    }
+                    else
+                    {
+                        <p class="flash-msg">No Bank Details entered for @Employee.FIRST_NAME. @Html.ActionLink("Add", "Edit3", new { id = Employee.ID }, new { @class = "user_button" })</p>
+                    }
+                </table>
+            }
+            

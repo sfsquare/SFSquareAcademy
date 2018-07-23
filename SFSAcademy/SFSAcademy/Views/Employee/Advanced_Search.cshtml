@@ -1,0 +1,276 @@
+﻿@model PagedList.IPagedList<SFSAcademy.Models.Employee>
+@using PagedList.Mvc;
+@using SFSAcademy.Models
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Advanced_Search";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee</h1>
+    <h3>Advanced Search</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Employee Details", "HR") &raquo;
+    @Html.ActionLink("Employee Search", "Search") &raquo;
+    Advance Search
+</div>
+<div id="page-yield">
+    <div id="search-form">
+        @using (Html.BeginForm("Advanced_Search", "Employee", FormMethod.Get))
+        {
+            <table>
+                <tr>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="name">Name</label>
+                            <div class="text-input-bg">
+                                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Employee Number</label>
+                            <div class="text-input-bg">
+                                @Html.TextBox("EmployeeNumber", ViewBag.CurrentFilter2 as string)
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Grade</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("Employee_Grade_Id", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Blood Group</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("BloodGroup", new List<SelectListItem>
+                                            { new SelectListItem{Text="A+", Value="A+"},
+                                                new SelectListItem{Text="A-", Value="A-"},
+                                                new SelectListItem { Text = "B+", Value = "B+" },
+                                                new SelectListItem { Text = "B-", Value = "B-" },
+                                                new SelectListItem{Text="O+", Value="O+"},
+                                                new SelectListItem{Text="O-", Value="O-"},
+                                                new SelectListItem{Text="AB+", Value="AB+"},
+                                                new SelectListItem{Text="AB-", Value="AB-"}}, "Select Blood Group")
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Category</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("Employee_Category_Id", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Country</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("Nationality_Id", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Department</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("Employee_Department_Id", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Position</label>
+                            <div class="text-input-bg">
+                                @Html.DropDownList("Employee_Position_Id", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Joining Date From:</label>
+                            <div class="text-input-bg">
+                                @Html.Editor("EmployeeJoinFromDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.CurrentFilter9 } })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label-field-pair">
+                            <label for="student_admission_no">Joining Date To:</label>
+                            <div class="text-input-bg">
+                                @Html.Editor("EmployeeJoinToDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @Value = ViewBag.CurrentFilter10 } })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label_field_pair">
+                            <label class="label_for_student">Gender</label>
+                            <div class="student_gender_value">
+                                @Html.RadioButton("EmployeeGender", "M", ViewBag.CurrentFilter6 == "M" ? true : false)@Html.Label("Male", new { @class = "label_for_gender" })
+                                @Html.RadioButton("EmployeeGender", "F", ViewBag.CurrentFilter6 == "F" ? true : false)@Html.Label("Female", new { @class = "label_for_gender" })
+                                @Html.RadioButton("EmployeeGender", "All", ViewBag.CurrentFilter6 == "All" || ViewBag.CurrentFilter6 == null ? true : false)@Html.Label("All", new { @class = "label_for_gender" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="label_field_pair">
+                            <label class="label_for_student">Marital Status</label>
+                            <div class="student_gender_value">
+                                @Html.RadioButton("MaritalStatus", "Single", ViewBag.CurrentFilter3 == "Single" ? true : false)@Html.Label("Single", new { @class = "label_for_gender" })
+                                @Html.RadioButton("MaritalStatus", "Married", ViewBag.CurrentFilter3 == "Married" ? true : false)@Html.Label("Married", new { @class = "label_for_gender" })
+                                @Html.RadioButton("MaritalStatus", "Divorced", ViewBag.CurrentFilter3 == "Divorced" ? true : false)@Html.Label("Divorced", new { @class = "label_for_gender" })
+                                @Html.RadioButton("MaritalStatus", "All", ViewBag.CurrentFilter3 == "All" || ViewBag.CurrentFilter3 == null ? true : false)@Html.Label("All", new { @class = "label_for_gender" })
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="label_field_pair">
+                            <label class="label_for_student" for="student_gender">Status</label>
+                            <div class="student_gender_value">
+                                @Html.RadioButton("Status", "Y", ViewBag.CurrentFilter13 == "Y" ? true : false)@Html.Label("Present", new { @class = "label_for_gender" })
+                                @Html.RadioButton("Status", "N", ViewBag.CurrentFilter13 == "N" ? true : false)@Html.Label("Former", new { @class = "label_for_gender" })
+                                @Html.RadioButton("Status", "All", ViewBag.CurrentFilter13 == "All" || ViewBag.CurrentFilter13 == null ? true : false)@Html.Label("All", new { @class = "label_for_gender" })
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Search" class="submit" />
+            <a href="@Url.Action("Advanced_Search_pdf", "Student",new { searchString = ViewBag.CurrentFilter, EmployeeNumber = ViewBag.CurrentFilter2, MaritalStatus = ViewBag.CurrentFilter3, Nationality_Id = ViewBag.CurrentFilter4, Category = ViewBag.CurrentFilter5, EmployeeGender= ViewBag.CurrentFilter6, Employee_Department_Id = ViewBag.CurrentFilter7, Employee_Grade_Id = ViewBag.CurrentFilter8, Employee_Position_Id = ViewBag.CurrentFilter9, BloodGroup= ViewBag.CurrentFilter10 , EmployeeJoinFromDate = ViewBag.CurrentFilter11 , EmployeeJoinToDate = ViewBag.CurrentFilter12, Status = ViewBag.CurrentFilter13 })" alt="View PDF Report" target="_blank" class="user_button">PDF Report</a>
+        }
+    </div>
+    <script type="text/javascript">
+        Event.observe(window, 'load', function () { $('search-form').hide(); });
+    </script>
+    <div id="search-result">
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+            @if (Model != null && Model.Count() != 0)
+            {
+                <tr class="tr-head">
+                    <td>
+                        Sl. No.
+                    </td>
+                    <td>
+                        @Html.ActionLink("First Name", "Advanced_Search", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 })
+                    </td>
+                    <td>
+                        Middle Name
+                    </td>
+                    <td>
+                        @Html.ActionLink("Last Name", "Advanced_Search", new { sortOrder = ViewBag.NameSortParm2, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 })
+                    </td>
+                    <td>
+                        @Html.ActionLink("Employee Id", "Advanced_Search", new { sortOrder = ViewBag.NameSortParm3, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 })
+                    </td>
+                    <td>
+                        Employee Department
+                    </td>
+                    <td>
+                        @Html.ActionLink("Date of Birth", "Advanced_Search", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 })
+                    </td>
+                    <td>
+                        @Html.ActionLink("Employement Date", "AdvancedSearch", new { sortOrder = ViewBag.DateSortParm2, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 })
+                    </td>
+                    <td>
+                        Employee Status
+                    </td>
+                </tr>
+                <tr class="tr-blank"></tr>
+                int i = 1;
+                foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="@selectedRow">
+                        <td class="col-1">@i</td>
+                        @if (item.EmployeeData.STAT == "N")
+                        {
+                            <td class="col-4">
+                                <a href="@Url.Action("Profiles", "Archived_Employee", new { id = item.EmployeeData.ID })">@item.EmployeeData.FIRST_NAME</a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="col-4">
+                                <a href="@Url.Action("Profiles", "Employee", new { id = item.EmployeeData.ID  })">@item.EmployeeData.FIRST_NAME</a>
+                            </td>
+                        }
+                        <td class="col-4">@Html.DisplayFor(modelItem => item.EmployeeData.MID_NAME)</td>
+                        <td class="col-4">@Html.DisplayFor(modelItem => item.EmployeeData.LAST_NAME)</td>
+                        <td class="col-3">@Html.DisplayFor(modelItem => item.EmployeeData.EMP_NUM)</td>
+                        <td class="col-4">@Html.DisplayFor(modelItem => item.DepartmentData.NAMES)</td>
+                        <td class="col-5" nowrap>@item.EmployeeData.DOB.Value.ToShortDateString()</td>
+                        <td class="col-4">@item.EmployeeData.JOINING_DATE.Value.ToShortDateString()</td>
+                        <td class="col-4">@Html.DisplayFor(modelItem => item.EmployeeData.STAT)</td>
+                    </tr>
+                    i += 1;
+                }
+
+            }
+            else
+            {
+                <tr class="tr-odd">
+                    <td class="col-2">No Employee Found</td>
+                </tr>
+            }
+        </table>
+        <br />
+        @Html.PagedListPager(Model, page => Url.Action("AdvancedSearch",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter6 = ViewBag.CurrentFilter6, currentFilter7 = ViewBag.CurrentFilter7, currentFilter8 = ViewBag.CurrentFilter8, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10, currentFilter11 = ViewBag.CurrentFilter11, currentFilter12 = ViewBag.CurrentFilter12, currentFilter13 = ViewBag.CurrentFilter13 }))
+        <div class="extender"></div>
+    </div>
+</div>

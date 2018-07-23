@@ -1,0 +1,63 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["independent_categories"];
+    IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll>)ViewData["dependent_categories"];
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+}
+@{
+    ViewBag.Title = "Manage Payroll";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Manage Payroll</h1>
+    <h3>Enter Payroll Detail</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+</div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+
+    <div id="form-content">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            for (int i = 0; i < independent_categories.Count(); i++)
+                {
+                <div class="payroll-field-pair">
+                    @Html.Label("[" + i + "].PayrollCatData.NAME", independent_categories.ElementAt(i).PayrollCatData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="payroll-input-bg">
+                        @Html.TextBox("[" + i + "].Amount", independent_categories.ElementAt(i).Amount)
+                        @Html.Hidden("[" + i + "].EmployeeId", Model.ID)
+                        @Html.Hidden("[" + i + "].PayrollCategoryId", independent_categories.ElementAt(i).PayrollCatData.ID)
+                    </div>
+                </div>
+            }
+
+            for (int j = 0; j < dependent_categories.Count(); j++)
+                {
+                <div class="payroll-field-pair">
+                    @Html.Label("[" + j + "].DependentPayrollCatData.NAME", dependent_categories.ElementAt(j).DependentPayrollCatData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="payroll-input-bg">
+                        @Html.TextBox("[" + j + "].DependentAmount", dependent_categories.ElementAt(j).DependentAmount) <span class="necessary-field" style="font-size:small">@string.Concat(dependent_categories.ElementAt(j).DependentPayrollCatData.PCT, "% of ", dependent_categories.ElementAt(j).PayrollCatData.NAME) </span>
+                        @Html.Hidden("[" + j + "].DependentEmployeeId", Model.ID)
+                        @Html.Hidden("[" + j + "].DependentPayrollCategoryId", dependent_categories.ElementAt(j).DependentPayrollCatData.ID)
+                    </div>
+                </div>
+            }
+            <div id="submit-button">
+                <input type="submit" value="► Finish" class="submit_button" />
+            </div>
+        }
+    </div>
+</div>

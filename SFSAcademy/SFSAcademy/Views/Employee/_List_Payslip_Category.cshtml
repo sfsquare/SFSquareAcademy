@@ -1,0 +1,54 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> new_payslip_category = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["new_payslip_category"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#list-payslip-category').html(data);
+            /* little fade in effect */
+            $('#list-payslip-category').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+
+</script>
+<ul class="payslip_category_list">
+    @foreach (var item in new_payslip_category)
+    {
+        <li class="new_category">
+            <div class="name">@item.NAME</div>
+            <div class="val themed_text"> <span>:</span>@item.AMT</div>
+            <div class="del-button">
+                <a href="@Url.Action("Remove_New_Paylist_Category", "Employee", new { id = item.ID, id3 = ViewBag.salary_date, CallingAction = ViewBag.CallingAction})" onclick="return confirm('are you sure?'); LoadPartialPage(this.href); return false;"><img src="~/Content/images/buttons/delete-new.png" alt="Delete"></a>
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none" hidden="hidden"></div>
+            </div>
+        </li>
+    }
+    
+    @foreach (var item in individual)
+    {
+        <li class="new_category">
+            <div class="name">@item.NAME</div>
+            <div class="val themed_text"> <span>:</span>@item.AMT</div>
+            <div class="del-button">
+                <a href="@Url.Action("Remove_New_Paylist_Category", "Employee", new { id = item.ID, id3 = ViewBag.salary_date})" onclick="return confirm('are you sure?'); LoadPartialPage(this.href);"><img src="~/Content/images/buttons/delete-new.png" alt="Delete"></a>
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none" hidden="hidden"></div>
+            </div>
+        </li>
+    }
+
+</ul>

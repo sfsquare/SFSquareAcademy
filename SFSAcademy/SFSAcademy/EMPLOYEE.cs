@@ -18,20 +18,18 @@ namespace SFSAcademy
         public EMPLOYEE()
         {
             this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
-            this.NEWS = new HashSet<NEWS>();
-            this.NEWS_COMMENTS = new HashSet<NEWS_COMMENTS>();
-            this.EMPLOYEE1 = new HashSet<EMPLOYEE>();
-            this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
-            this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
-            this.EMPLOYEE_SALARY_STRUCTURE = new HashSet<EMPLOYEE_SALARY_STRUCTURE>();
-            this.EMPLOYEES_SUBJECT = new HashSet<EMPLOYEES_SUBJECT>();
+            this.EMPLOYEE_ADDITIONAL_DETAIL = new HashSet<EMPLOYEE_ADDITIONAL_DETAIL>();
             this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
+            this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
             this.EMPLOYEE_LEAVE = new HashSet<EMPLOYEE_LEAVE>();
-            this.INDIVIDUAL_PAYSLIP_CATGEORY = new HashSet<INDIVIDUAL_PAYSLIP_CATGEORY>();
+            this.EMPLOYEES_SUBJECT = new HashSet<EMPLOYEES_SUBJECT>();
+            this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
+            this.EMPLOYEE1 = new HashSet<EMPLOYEE>();
+            this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
+            this.EMPLOYEE_SALARY_STRUCTURE = new HashSet<EMPLOYEE_SALARY_STRUCTURE>();
             this.MONTHLY_PAYSLIP = new HashSet<MONTHLY_PAYSLIP>();
             this.MONTHLY_PAYSLIP1 = new HashSet<MONTHLY_PAYSLIP>();
-            this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
-            this.EMPLOYEE_ADDITIONAL_DETAIL = new HashSet<EMPLOYEE_ADDITIONAL_DETAIL>();
+            this.INDIVIDUAL_PAYSLIP_CATGEORY = new HashSet<INDIVIDUAL_PAYSLIP_CATGEORY>();
         }
     
         public int ID { get; set; }
@@ -73,10 +71,10 @@ namespace SFSAcademy
         public string OFF_STATE { get; set; }
         public Nullable<int> OFF_CTRY_ID { get; set; }
         public string OFF_PIN_CODE { get; set; }
-        public string OFF_PH1 { get; set; }
-        public string OFF_PH2 { get; set; }
-        public string MOBL_PH { get; set; }
-        public string HOME_PH { get; set; }
+        public Nullable<long> OFF_PH1 { get; set; }
+        public Nullable<long> OFF_PH2 { get; set; }
+        public Nullable<long> MOBL_PH { get; set; }
+        public Nullable<long> HOME_PH { get; set; }
         public string EML { get; set; }
         public string FAX { get; set; }
         public string PHTO_FILENAME { get; set; }
@@ -86,45 +84,42 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> PHTO_FILE_SIZE { get; set; }
         public Nullable<int> USRID { get; set; }
+        public Nullable<int> IMAGE_DOCUMENTS_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual COUNTRY COUNTRY1 { get; set; }
         public virtual COUNTRY COUNTRY2 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NEWS> NEWS { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<NEWS_COMMENTS> NEWS_COMMENTS { get; set; }
         public virtual EMPLOYEE_CATEGORY EMPLOYEE_CATEGORY { get; set; }
         public virtual EMPLOYEE_DEPARTMENT EMPLOYEE_DEPARTMENT { get; set; }
+        public virtual EMPLOYEE_GRADE EMPLOYEE_GRADE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE> EMPLOYEE1 { get; set; }
-        public virtual EMPLOYEE EMPLOYEE2 { get; set; }
-        public virtual USER USER { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
+        public virtual ICollection<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
+        public virtual ICollection<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
+        public virtual EMPLOYEE_POSITION EMPLOYEE_POSITION { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE> EMPLOYEE1 { get; set; }
+        public virtual EMPLOYEE EMPLOYEE2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
+        public virtual USER USER { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
-        public virtual EMPLOYEE_POSITION EMPLOYEE_POSITION { get; set; }
-        public virtual EMPLOYEE_GRADE EMPLOYEE_GRADE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
+        public virtual ICollection<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
     }
 }

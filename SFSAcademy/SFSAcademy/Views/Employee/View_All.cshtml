@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "View_All";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#DepDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+         var selectedID =  $(this).val();
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Employee/Employees_List/' + selectedID, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#employee_list').html(data);
+            /* little fade in effect */
+            $('#employee_list').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+  });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>View All</h1>
+    <h3>View All Employee</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+</div>
+<div id="page-yield">
+    <div class="label-field-pair">
+        @Html.Label("departments", "Select Department :", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="text-input-bg">
+            @Html.DropDownList("departments", null, htmlAttributes: new { @class = "form-control", @id = "DepDropDown" })
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            @Html.ValidationMessage("departments", "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="extender"></div>
+    <div id="employee_list" style="display:none;">
+
+    </div>
+</div>
+

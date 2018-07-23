@@ -390,6 +390,7 @@ namespace SFSAcademy.Controllers
         // GET: Student
         public ActionResult AdvancedSearch(string sortOrder, string currentFilter, string searchString, int? page, string currentFilter2, string AdmissionNumber, string currentFilter3, string HadPdFees, int? currentFilter4, int? CourseBatches, string currentFilter5, string Category, string currentFilter6, string StudentGender, string currentFilter7, string BloodGroup, string currentFilter8, string StudentGrade, string currentFilter9, string StudentBirthFromDate, string currentFilter10, string StudentBirthToDate, string currentFilter11, string ActiveStudent, string currentFilter12, string MissingDetl)
         {
+            DateTime NullDate = DateTime.Parse("31-12-9999");
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.NameSortParm2 = sortOrder == "FName" ? "name_desc_2" : "FName";
@@ -524,7 +525,7 @@ namespace SFSAcademy.Controllers
                 switch (MissingDetl)
                 {
                     case "DateOfBirth":
-                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null));
+                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null) || s.StudentData.DOB == NullDate);
                         break;
                     case "PhoneNumber":
                         StudentS = StudentS.Where(s => s.StudentData.PH1.Equals(null) && s.StudentData.PH2.Equals(null));
@@ -613,7 +614,7 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult AdvancedSearchPdf(string searchString, string AdmissionNumber, string HadPdFees, int? CourseBatches, string Category, string StudentGender, string BloodGroup, string StudentGrade, string StudentBirthFromDate, string StudentBirthToDate, string ActiveStudent, string MissingDetl)
         {
-
+            DateTime NullDate = DateTime.Parse("31-12-9999");
             DateTime? dFrom; DateTime dtFrom;
             dFrom = DateTime.TryParse(StudentBirthFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             DateTime? dTo; DateTime dtTo;
@@ -692,7 +693,7 @@ namespace SFSAcademy.Controllers
                 switch (MissingDetl)
                 {
                     case "DateOfBirth":
-                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null));
+                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null) || s.StudentData.DOB == NullDate);
                         break;
                     case "PhoneNumber":
                         StudentS = StudentS.Where(s => s.StudentData.PH1.Equals(null) && s.StudentData.PH2.Equals(null));
@@ -935,10 +936,7 @@ namespace SFSAcademy.Controllers
                 var StdResult = from u in db.STUDENTs where (u.ADMSN_NO == sTUDENT.ADMSN_NO) select u;
                 if (StdResult.Count() != 0)
                 {
-                    //var StdRecord = StdResult.First();
-                    var StdUserFinal = from u in db.USERS where (u.USRNAME == FullName) select u;
-
-                    StdResult.First().USRID = StdUserFinal.First().ID;
+                    StdResult.First().USRID = StdUser.ID;
                     db.SaveChanges();
                 }
                 // some code 
