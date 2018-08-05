@@ -1,0 +1,28 @@
+﻿@model SFSAcademy.Models.Employee
+@{
+    ViewBag.Title = "Employee_Management";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee Management</h1>
+    <h3>Manage All Employee</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+
+<div id="page-yield">
+    <div id="box">
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Employee Admission", "Admission1")</div>
+            <div class="link-descr">Employee Admission Form</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Employee Subject Association", "Subject_Assignment")</div>
+            <div class="link-descr">Assign An Employee</div>
+        </div>
+    </div>
+</div>
+

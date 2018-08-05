@@ -24,6 +24,7 @@
             buttonImageOnly: true
         });
     });
+
 </script>
 <script type="text/javascript">
     $('.open-datetimepicker').click(function (event) {
@@ -65,20 +66,21 @@
             <div id="autofill-area">
                 @Html.HiddenFor(model => model.ID)
                 @Html.HiddenFor(model => model.PHTO_DATA)
-                <div class="student_admission_date">
+                <div class="label-field-pair-edit">
                     @Html.LabelFor(model => model.ADMSN_NO, "Admission Number", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="text-input-bg-admission">
+                    <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADMSN_NO, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.ADMSN_NO, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="student_admission_date">
+                <div class="label-field-pair-edit">
                     @Html.LabelFor(model => model.ADMSN_DATE, "Admission Date", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="text-input-bg-admission">
+                    <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADMSN_DATE, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.ADMSN_DATE, "", new { @class = "text-danger" })
                     </div>
                 </div>
+                <div class="extender"></div>
             </div>
             <span class="span-sub-heading">Personal Details</span>
             <hr class="sub-heading">
@@ -86,7 +88,6 @@
             <div class="label-field-pair">
                 @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
-                <span class="necessary-field">*</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.FIRST_NAME, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
@@ -116,10 +117,10 @@
             <div id="admission1_form_vertical_block_left">
                 <div class="label-field-pair">
                     @Html.LabelFor(model => model.BTCH_ID, "Course And Batch", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
-                        @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.DropDownList("BTCH_ID_VAL", null, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
                         @Html.ValidationMessageFor(model => model.BTCH_ID, "", new { @class = "text-danger" })
+                        @Html.Hidden("BTCH_ID")
                     </div>
                 </div>
                 <hr class="label-underline">
@@ -135,12 +136,13 @@
                 </div>
                 <hr class="label-underline">
 
-                <div class="label_field_pair">
-                    <label class="label_for_student_gender" for="student_gender">Gender</label>
-                    <div class="student_gender_value">
-                        @Html.EditorFor(model => model.GNDR, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.GNDR, "", new { @class = "text-danger" })
+                <div class="label-field-pair-gender">
+                    <label class="label-gender-edit" for="student_gender">Gender</label>
+                    <div class="edit_student_gender">
+                        @Html.RadioButtonFor(model => model.GNDR, "M", false)@Html.Label("Male", new { htmlAttributes = new { @class = "label_for_gender" } })
+                        @Html.RadioButtonFor(model => model.GNDR, "F", false)@Html.Label("Female", new { htmlAttributes = new { @class = "label_for_gender" } })
                     </div>
+                    <div class="extender"></div>
                 </div>
                 <hr class="label-underline">
 

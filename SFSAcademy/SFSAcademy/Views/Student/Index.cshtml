@@ -57,7 +57,7 @@
         </div>
         <div class="input-group">
             <img src="~/Content/images/search_icon.png">
-            <input type="text" id="Search" placeholder="Search" class="form-control"/>
+            <input type="text" id="Search" placeholder="Search" class="form-control" />
         </div>
     </div>
     <br />
@@ -65,13 +65,13 @@
         <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1" class="table table-striped">
             <tr class="tr-head">
                 <th>
-                    Ad. No.
+                    Sl. No.
                 </th>
                 <th>
-                    Last Name
+                    Admission No.
                 </th>
                 <th>
-                    First Name
+                    Name
                 </th>
                 <th>
                     Batch
@@ -88,13 +88,13 @@
                 }
                 <tr class="Search @selectedRow">
                     <td class="col-1">
-                        @Html.ActionLink(item.StudentData.ADMSN_NO, "Profiles", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })                        
+                        @i
                     </td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
+                    <td class="col-3">
+                        @Html.ActionLink(item.StudentData.ADMSN_NO, "Profiles", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
                     </td>
-                    <td class="col-3" nowrap>
-                        @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME)
+                    <td class="col-2" nowrap>
+                        @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME) @Html.DisplayFor(modelItem => item.StudentData.MID_NAME) @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
                     </td>
                     <td class="col-4" nowrap>
                         @Html.DisplayFor(modelItem => item.CourseData.CODE)

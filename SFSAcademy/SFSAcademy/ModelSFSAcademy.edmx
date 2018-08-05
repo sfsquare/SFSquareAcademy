@@ -291,11 +291,11 @@
           <Property Name="OFF_STATE" Type="varchar" MaxLength="20" />
           <Property Name="OFF_CTRY_ID" Type="int" />
           <Property Name="OFF_PIN_CODE" Type="varchar" MaxLength="20" />
-          <Property Name="OFF_PH1" Type="varchar" MaxLength="20" />
-          <Property Name="OFF_PH2" Type="varchar" MaxLength="20" />
-          <Property Name="MOBL_PH" Type="varchar" MaxLength="20" />
-          <Property Name="HOME_PH" Type="varchar" MaxLength="20" />
-          <Property Name="EML" Type="varchar" MaxLength="20" />
+          <Property Name="OFF_PH1" Type="bigint" />
+          <Property Name="OFF_PH2" Type="bigint" />
+          <Property Name="MOBL_PH" Type="bigint" />
+          <Property Name="HOME_PH" Type="bigint" />
+          <Property Name="EML" Type="varchar" MaxLength="100" />
           <Property Name="FAX" Type="varchar" MaxLength="20" />
           <Property Name="PHTO_FILENAME" Type="varchar" MaxLength="50" />
           <Property Name="PHTO_CNTNT_TYPE" Type="varchar" MaxLength="20" />
@@ -304,6 +304,7 @@
           <Property Name="UPDATED_AT" Type="datetime" />
           <Property Name="PHTO_FILE_SIZE" Type="int" />
           <Property Name="USRID" Type="int" />
+          <Property Name="IMAGE_DOCUMENTS_ID" Type="int" />
         </EntityType>
         <EntityType Name="EMPLOYEE_ADDITIONAL_DETAIL">
           <Key>
@@ -313,6 +314,14 @@
           <Property Name="EMP_ID" Type="int" />
           <Property Name="ADDL_FLD_ID" Type="int" />
           <Property Name="ADDL_INFO" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="EMPLOYEE_ADDITIONAL_FIELD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="varchar" MaxLength="50" />
+          <Property Name="STAT" Type="varchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="EMPLOYEE_ATTENDENCES">
           <Key>
@@ -371,6 +380,9 @@
           <Property Name="GRADE_NAME" Type="varchar" MaxLength="20" />
           <Property Name="DESCR" Type="varchar" MaxLength="50" />
           <Property Name="IS_ACT" Type="varchar" MaxLength="1" />
+          <Property Name="PRIR" Type="int" />
+          <Property Name="MAX_DILY_HRS" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="MAX_WKILY_HRS" Type="decimal" Precision="10" Scale="2" />
         </EntityType>
         <EntityType Name="EMPLOYEE_LEAVE">
           <Key>
@@ -404,13 +416,14 @@
           <Property Name="POS_NAME" Type="varchar" MaxLength="20" />
           <Property Name="POS_DESCR" Type="varchar" MaxLength="50" />
           <Property Name="IS_ACT" Type="varchar" MaxLength="1" />
+          <Property Name="EMP_CAT_ID" Type="int" />
         </EntityType>
         <EntityType Name="EMPLOYEE_SALARY_STRUCTURE">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AMT" Type="varchar" MaxLength="20" />
+          <Property Name="AMT" Type="decimal" Precision="10" Scale="2" />
           <Property Name="EMP_ID" Type="int" />
           <Property Name="PYRL_CAT_ID" Type="int" />
         </EntityType>
@@ -765,8 +778,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.Gallery_Master' does not have a pri
           <Property Name="EMP_ID" Type="int" />
           <Property Name="SAL_DATE" Type="datetime" />
           <Property Name="NAME" Type="varchar" MaxLength="50" />
-          <Property Name="AMT" Type="varchar" MaxLength="20" />
-          <Property Name="IS_DED" Type="varchar" MaxLength="1" />
+          <Property Name="AMT" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="IS_DED" Type="bit" Nullable="false" />
           <Property Name="INCL_EVRY_MONTH" Type="varchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="LIABILITY">
@@ -790,7 +803,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.Gallery_Master' does not have a pri
           <Property Name="SAL_DATE" Type="datetime" />
           <Property Name="EMP_ID" Type="int" />
           <Property Name="PYRL_CAT_ID" Type="int" />
-          <Property Name="AMT" Type="varchar" MaxLength="20" />
+          <Property Name="AMT" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IS_APPR" Type="varchar" MaxLength="1" />
           <Property Name="APRV_ID" Type="int" />
           <Property Name="IS_RJCT" Type="varchar" MaxLength="1" />
@@ -857,7 +870,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.Gallery_Master' does not have a pri
           <Property Name="NAME" Type="varchar" MaxLength="50" />
           <Property Name="PCT" Type="float" />
           <Property Name="PYRL_CAT_ID" Type="int" />
-          <Property Name="IS_DED" Type="varchar" MaxLength="1" />
+          <Property Name="IS_DED" Type="bit" Nullable="false" />
           <Property Name="STAT" Type="varchar" MaxLength="1" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -875,28 +888,24 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="PhotoName" Type="varchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="Privileges">
+        <EntityType Name="PRIVILEGES">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="AddedDate" Type="datetime" />
-          <Property Name="AddedBy" Type="bigint" />
-          <Property Name="ModifiedBy" Type="bigint" />
-          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="varchar" MaxLength="50" />
+          <Property Name="DESCRIPTION" Type="varchar" MaxLength="2000" />
+          <Property Name="PRIVILEGE_TAG" Type="varchar" MaxLength="50" />
+          <Property Name="CREATED_AT" Type="datetime" />
+          <Property Name="UPDATED_AT" Type="datetime" />
         </EntityType>
-        <EntityType Name="Privileges_Users">
+        <EntityType Name="PRIVILEGES_USERS">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserId" Type="bigint" Nullable="false" />
-          <Property Name="PrivilegeId" Type="bigint" Nullable="false" />
-          <Property Name="AddedBy" Type="bigint" />
-          <Property Name="AddedDate" Type="datetime" />
-          <Property Name="ModifiedBy" Type="bigint" />
-          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USER_ID" Type="bigint" />
+          <Property Name="PRIVILEGE_ID" Type="bigint" />
         </EntityType>
         <EntityType Name="RANKING_LEVEL">
           <Key>
@@ -1127,7 +1136,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="varchar" MaxLength="1" />
           <Property Name="CREATED_AT" Type="datetime" />
           <Property Name="UPDATED_AT" Type="datetime" />
-          <Property Name="HAS_PD_FE" Type="varchar" MaxLength="1" />
+          <Property Name="HAS_PD_FE" Type="bit" Nullable="false" />
           <Property Name="PHTO_FILE_SIZE" Type="int" />
           <Property Name="USRID" Type="int" Nullable="false" />
           <Property Name="STDNT_CAT_ID" Type="int" />
@@ -1287,10 +1296,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="varchar" MaxLength="1" />
         </EntityType>
         <Association Name="ADDL__STUD_EMPL_NI">
-          <End Role="STUDENT_ADDITIONAL_FIELD" Type="Self.STUDENT_ADDITIONAL_FIELD" Multiplicity="0..1" />
+          <End Role="EMPLOYEE_ADDITIONAL_FIELD" Type="Self.EMPLOYEE_ADDITIONAL_FIELD" Multiplicity="0..1" />
           <End Role="EMPLOYEE_ADDITIONAL_DETAIL" Type="Self.EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="STUDENT_ADDITIONAL_FIELD">
+            <Principal Role="EMPLOYEE_ADDITIONAL_FIELD">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
@@ -1646,6 +1655,18 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="EMP_C_EMPL_POS_NI">
+          <End Role="EMPLOYEE_CATEGORY" Type="Self.EMPLOYEE_CATEGORY" Multiplicity="0..1" />
+          <End Role="EMPLOYEE_POSITION" Type="Self.EMPLOYEE_POSITION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_POSITION">
+              <PropertyRef Name="EMP_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="EMP_D_EMPL_EMPL_NI">
           <End Role="EMPLOYEE_DEPARTMENT" Type="Self.EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
           <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
@@ -1982,23 +2003,11 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FEE_RCVR_FEE__NI2">
-          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="0..1" />
-          <End Role="FEE_FINE" Type="Self.FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FIN_C_FINA_FINA_NI">
-          <End Role="FINANCE_FEE_CATGEORY" Type="Self.FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Role="FINANCE_TRANSACTION_CATEGORY" Type="Self.FINANCE_TRANSACTION_CATEGORY" Multiplicity="0..1" />
           <End Role="FINANCE_TRANSACTION_TRIGGERS" Type="Self.FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
+            <Principal Role="FINANCE_TRANSACTION_CATEGORY">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
@@ -2242,18 +2251,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="FEE_COLLECTION_DISCOUNT">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RCVR__STUD_FEE__NI2">
-          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="0..1" />
-          <End Role="FEE_DISCOUNT" Type="Self.FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
               <PropertyRef Name="RCVR_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -2796,6 +2793,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="ELECTIVE_GROUP" EntityType="Self.ELECTIVE_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMPLOYEE" EntityType="Self.EMPLOYEE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMPLOYEE_ADDITIONAL_DETAIL" EntityType="Self.EMPLOYEE_ADDITIONAL_DETAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EMPLOYEE_ADDITIONAL_FIELD" EntityType="Self.EMPLOYEE_ADDITIONAL_FIELD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="Self.EMPLOYEE_ATTENDENCES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMPLOYEE_BANK_DETAIL" EntityType="Self.EMPLOYEE_BANK_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMPLOYEE_CATEGORY" EntityType="Self.EMPLOYEE_CATEGORY" Schema="dbo" store:Type="Tables" />
@@ -2837,8 +2835,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="OBSERVATION" EntityType="Self.OBSERVATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OBSERVATION_GROUP" EntityType="Self.OBSERVATION_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAYROLL_CATEGORY" EntityType="Self.PAYROLL_CATEGORY" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Privileges" EntityType="Self.Privileges" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Privileges_Users" EntityType="Self.Privileges_Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRIVILEGES" EntityType="Self.PRIVILEGES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRIVILEGES_USERS" EntityType="Self.PRIVILEGES_USERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RANKING_LEVEL" EntityType="Self.RANKING_LEVEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SMS_MESSAGE" EntityType="Self.SMS_MESSAGE" Schema="dbo" store:Type="Tables" />
@@ -2886,7 +2884,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
     FROM [dbo].[PHOTO_MASTER] AS [PHOTO_MASTER]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="ADDL__STUD_EMPL_NI" Association="Self.ADDL__STUD_EMPL_NI">
-            <End Role="STUDENT_ADDITIONAL_FIELD" EntitySet="STUDENT_ADDITIONAL_FIELD" />
+            <End Role="EMPLOYEE_ADDITIONAL_FIELD" EntitySet="EMPLOYEE_ADDITIONAL_FIELD" />
             <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
           </AssociationSet>
           <AssociationSet Name="ADDL__STUD_STUD_NI" Association="Self.ADDL__STUD_STUD_NI">
@@ -3005,6 +3003,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
           </AssociationSet>
+          <AssociationSet Name="EMP_C_EMPL_POS_NI" Association="Self.EMP_C_EMPL_POS_NI">
+            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
+            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
+          </AssociationSet>
           <AssociationSet Name="EMP_D_EMPL_EMPL_NI" Association="Self.EMP_D_EMPL_EMPL_NI">
             <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
@@ -3117,12 +3119,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
-          <AssociationSet Name="FEE_RCVR_FEE__NI2" Association="Self.FEE_RCVR_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENT" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
-          </AssociationSet>
           <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="Self.FIN_C_FINA_FINA_NI">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
             <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
           </AssociationSet>
           <AssociationSet Name="FIN_F_FINA_FEE__NI" Association="Self.FIN_F_FINA_FEE__NI">
@@ -3204,10 +3202,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="RCVR__STUD_FEE__NI" Association="Self.RCVR__STUD_FEE__NI">
             <End Role="STUDENT" EntitySet="STUDENT" />
             <End Role="FEE_COLLECTION_DISCOUNT" EntitySet="FEE_COLLECTION_DISCOUNT" />
-          </AssociationSet>
-          <AssociationSet Name="RCVR__STUD_FEE__NI2" Association="Self.RCVR__STUD_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENT" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
           </AssociationSet>
           <AssociationSet Name="RPTG__EMPL_EMPL_NI" Association="Self.RPTG__EMPL_EMPL_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
@@ -3400,8 +3394,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="APPR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="VW_BY_MGR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="MGR_RMRK" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_95" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_96" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_APPL_NI" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="ARCHIVED_STUDENT">
           <Key>
@@ -3640,11 +3634,11 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ARCHIVED_STUDENT" Relationship="Self.R_28" FromRole="COUNTRY" ToRole="ARCHIVED_STUDENT" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_27" FromRole="COUNTRY" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="EMPLOYEEs1" Relationship="Self.R_30" FromRole="COUNTRY" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="EMPLOYEEs2" Relationship="Self.R_31" FromRole="COUNTRY" ToRole="EMPLOYEE" />
           <Property Name="CTRY_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="STUDENTs" Relationship="SFSAcademyModel.NTLTY_COUN_STUD_NI" FromRole="COUNTRY" ToRole="STUDENT" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.HOME__COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEEs1" Relationship="SFSAcademyModel.NTLTY_COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEEs2" Relationship="SFSAcademyModel.OFF_C_COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="COURSE">
           <Key>
@@ -3679,98 +3673,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="ELECTIVE_GRP_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="ELECTIVE_GRP_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="EMPLOYEE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RPTG_MGR_ID" Type="Int32" />
-          <Property Name="EMP_CAT_ID" Type="Int32" />
-          <Property Name="EMP_NUM" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="JOINING_DATE" Type="DateTime" Precision="3" />
-          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MID_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GNDR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="JOB_TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EMP_POS_ID" Type="Int32" />
-          <Property Name="EMP_DEPT_ID" Type="Int32" />
-          <Property Name="EMP_GRADE_ID" Type="Int32" />
-          <Property Name="QUAL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EXPNC_DETL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EXPNC_YEAR" Type="Int32" />
-          <Property Name="EXPNC_MONTH" Type="Int32" />
-          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="STAT_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DOB" Type="DateTime" Precision="3" />
-          <Property Name="MARITAL_STAT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CHLD_CNT" Type="Int32" />
-          <Property Name="FTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HUSBND_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="BLOOD_GRP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NTLTY_ID" Type="Int32" />
-          <Property Name="HOME_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_CTRY_ID" Type="Int32" />
-          <Property Name="HOME_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_CTRY_ID" Type="Int32" />
-          <Property Name="OFF_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_PH1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_PH2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="MOBL_PH" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_PH" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EML" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="FAX" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_FILENAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_CNTNT_TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_DATA" Type="String" MaxLength="2000" Unicode="false" FixedLength="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="PHTO_FILE_SIZE" Type="Int32" />
-          <Property Name="USRID" Type="Int32" />
-          <NavigationProperty Name="APPLY_LEAVE" Relationship="Self.R_95" FromRole="EMPLOYEE" ToRole="APPLY_LEAVE" />
-          <NavigationProperty Name="COUNTRY" Relationship="Self.R_27" FromRole="EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="COUNTRY1" Relationship="Self.R_30" FromRole="EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="COUNTRY2" Relationship="Self.R_31" FromRole="EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="NEWS" Relationship="Self.R_101" FromRole="EMPLOYEE" ToRole="NEWS" />
-          <NavigationProperty Name="NEWS_COMMENTS" Relationship="Self.R_103" FromRole="EMPLOYEE" ToRole="NEWS_COMMENTS" />
-          <NavigationProperty Name="EMPLOYEE_CATEGORY" Relationship="Self.R_22" FromRole="EMPLOYEE" ToRole="EMPLOYEE_CATEGORY" />
-          <NavigationProperty Name="EMPLOYEE_POSITION" Relationship="Self.R_23" FromRole="EMPLOYEE" ToRole="EMPLOYEE_POSITION" />
-          <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="Self.R_24" FromRole="EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
-          <NavigationProperty Name="EMPLOYEE1" Relationship="Self.R_25" FromRole="EMPLOYEE" ToRole="EMPLOYEE1" />
-          <NavigationProperty Name="EMPLOYEE2" Relationship="Self.R_25" FromRole="EMPLOYEE1" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="Self.R_26" FromRole="EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
-          <NavigationProperty Name="USER" Relationship="Self.R_32" FromRole="EMPLOYEE" ToRole="USERS" />
-          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="Self.R_33" FromRole="EMPLOYEE" ToRole="SUBJECT_LEAVE" />
-          <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="Self.R_78" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
-          <NavigationProperty Name="EMPLOYEE_BANK_DETAIL" Relationship="Self.R_80" FromRole="EMPLOYEE" ToRole="EMPLOYEE_BANK_DETAIL" />
-          <NavigationProperty Name="EMPLOYEE_SALARY_STRUCTURE" Relationship="Self.R_81" FromRole="EMPLOYEE" ToRole="EMPLOYEE_SALARY_STRUCTURE" />
-          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="Self.R_83" FromRole="EMPLOYEE" ToRole="EMPLOYEES_SUBJECT" />
-          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="Self.R_85" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="Self.R_89" FromRole="EMPLOYEE" ToRole="EMPLOYEE_LEAVE" />
-          <NavigationProperty Name="INDIVIDUAL_PAYSLIP_CATGEORY" Relationship="Self.R_91" FromRole="EMPLOYEE" ToRole="INDIVIDUAL_PAYSLIP_CATGEORY" />
-          <NavigationProperty Name="MONTHLY_PAYSLIP" Relationship="Self.R_92" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
-          <NavigationProperty Name="MONTHLY_PAYSLIP1" Relationship="Self.R_94" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
-          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="EMPLOYEE" ToRole="STORE_PURCHAGE_ORDER" />
-        </EntityType>
-        <EntityType Name="EMPLOYEE_ADDITIONAL_DETAIL">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="ADDL_FLD_ID" Type="Int32" />
-          <Property Name="ADDL_INFO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_78" FromRole="EMPLOYEE_ADDITIONAL_DETAIL" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="STUDENT_ADDITIONAL_FIELD" Relationship="Self.R_79" FromRole="EMPLOYEE_ADDITIONAL_DETAIL" ToRole="STUDENT_ADDITIONAL_FIELD" />
-        </EntityType>
         <EntityType Name="EMPLOYEE_ATTENDENCES">
           <Key>
             <PropertyRef Name="ID" />
@@ -3781,8 +3683,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
           <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="IS_HALF_DAY" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_85" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_86" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_BANK_DETAIL">
           <Key>
@@ -3792,7 +3694,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="BANK_FLD_ID" Type="Int32" />
           <Property Name="BANK_INFO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_80" FromRole="EMPLOYEE_BANK_DETAIL" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" FromRole="EMPLOYEE_BANK_DETAIL" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_CATEGORY">
           <Key>
@@ -3802,7 +3704,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PRFX" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_22" FromRole="EMPLOYEE_CATEGORY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE_POSITION" Relationship="SFSAcademyModel.EMP_C_EMPL_POS_NI" FromRole="EMPLOYEE_CATEGORY" ToRole="EMPLOYEE_POSITION" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.EMP_C_EMPL_EMPL_NI" FromRole="EMPLOYEE_CATEGORY" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_DEPARTMENT">
           <Key>
@@ -3812,8 +3715,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="NAMES" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_24" FromRole="EMPLOYEE_DEPARTMENT" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEE_DEPARTMENT_EVENT" Relationship="Self.R_88" FromRole="EMPLOYEE_DEPARTMENT" ToRole="EMPLOYEE_DEPARTMENT_EVENT" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" FromRole="EMPLOYEE_DEPARTMENT" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_DEPARTMENT_EVENT">
           <Key>
@@ -3827,17 +3730,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="Self.R_88" FromRole="EMPLOYEE_DEPARTMENT_EVENT" ToRole="EMPLOYEE_DEPARTMENT" />
           <NavigationProperty Name="EVENT" Relationship="Self.R_87" FromRole="EMPLOYEE_DEPARTMENT_EVENT" ToRole="EVENT" />
         </EntityType>
-        <EntityType Name="EMPLOYEE_GRADE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GRADE_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="GRADE_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_26" FromRole="EMPLOYEE_GRADE" ToRole="EMPLOYEE" />
-        </EntityType>
         <EntityType Name="EMPLOYEE_LEAVE">
           <Key>
             <PropertyRef Name="ID" />
@@ -3850,8 +3742,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="RST_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_89" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_90" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_LEAVE_TYPE">
           <Key>
@@ -3867,27 +3759,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="Self.R_86" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
           <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="Self.R_90" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_LEAVE" />
         </EntityType>
-        <EntityType Name="EMPLOYEE_POSITION">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="POS_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="POS_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_23" FromRole="EMPLOYEE_POSITION" ToRole="EMPLOYEE" />
-        </EntityType>
-        <EntityType Name="EMPLOYEE_SALARY_STRUCTURE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AMT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="PYRL_CAT_ID" Type="Int32" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_81" FromRole="EMPLOYEE_SALARY_STRUCTURE" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="PAYROLL_CATEGORY" Relationship="Self.R_82" FromRole="EMPLOYEE_SALARY_STRUCTURE" ToRole="PAYROLL_CATEGORY" />
-        </EntityType>
         <EntityType Name="EMPLOYEES_SUBJECT">
           <Key>
             <PropertyRef Name="ID" />
@@ -3895,8 +3766,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_83" FromRole="EMPLOYEES_SUBJECT" ToRole="EMPLOYEE" />
           <NavigationProperty Name="SUBJECT" Relationship="Self.R_84" FromRole="EMPLOYEES_SUBJECT" ToRole="SUBJECT" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6" FromRole="EMPLOYEES_SUBJECT" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EVENT">
           <Key>
@@ -4023,20 +3894,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FEE_COLLECTION_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI" FromRole="FEE_COLLECTION_DISCOUNT" ToRole="STUDENT" />
         </EntityType>
-        <EntityType Name="FEE_DISCOUNT">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
-          <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI2" FromRole="FEE_DISCOUNT" ToRole="STUDENT" />
-        </EntityType>
         <EntityType Name="FINANCE_DONATION">
           <Key>
             <PropertyRef Name="ID" />
@@ -4099,17 +3956,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_INCM" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="FINANCE_TRANSACTION" Relationship="SFSAcademyModel.CAT_I_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_CATEGORY" ToRole="FINANCE_TRANSACTION" />
-        </EntityType>
-        <EntityType Name="FINANCE_TRANSACTION_TRIGGERS">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FIN_CAT_ID" Type="Int32" />
-          <Property Name="PCT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_TRIGGERS" ToRole="FINANCE_FEE_CATGEORY" />
+          <NavigationProperty Name="FINANCE_TRANSACTION_TRIGGERS" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_CATEGORY" ToRole="FINANCE_TRANSACTION_TRIGGERS" />
         </EntityType>
         <EntityType Name="GRADING_LEVEL">
           <Key>
@@ -4157,19 +4004,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="USER" Relationship="Self.R_5" FromRole="GUARDIAN" ToRole="USERS" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.WARD__STUD_GUAR_NI" FromRole="GUARDIAN" ToRole="STUDENT" />
         </EntityType>
-        <EntityType Name="INDIVIDUAL_PAYSLIP_CATGEORY">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="SAL_DATE" Type="DateTime" Precision="3" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="AMT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="INCL_EVRY_MONTH" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_91" FromRole="INDIVIDUAL_PAYSLIP_CATGEORY" ToRole="EMPLOYEE" />
-        </EntityType>
         <EntityType Name="LIABILITY">
           <Key>
             <PropertyRef Name="ID" />
@@ -4183,25 +4017,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="MONTHLY_PAYSLIP">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SAL_DATE" Type="DateTime" Precision="3" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="PYRL_CAT_ID" Type="Int32" />
-          <Property Name="AMT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IS_APPR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="APRV_ID" Type="Int32" />
-          <Property Name="IS_RJCT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="RJCT_ID" Type="Int32" />
-          <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="RMRK" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_92" FromRole="MONTHLY_PAYSLIP" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="EMPLOYEE1" Relationship="Self.R_94" FromRole="MONTHLY_PAYSLIP" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="PAYROLL_CATEGORY" Relationship="Self.R_93" FromRole="MONTHLY_PAYSLIP" ToRole="PAYROLL_CATEGORY" />
-        </EntityType>
         <EntityType Name="NEWS">
           <Key>
             <PropertyRef Name="ID" />
@@ -4212,7 +4027,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <Property Name="AUTH_ID" Type="Int32" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_101" FromRole="NEWS" ToRole="EMPLOYEE" />
           <NavigationProperty Name="NEWS_COMMENTS" Relationship="Self.R_102" FromRole="NEWS" ToRole="NEWS_COMMENTS" />
         </EntityType>
         <EntityType Name="NEWS_COMMENTS">
@@ -4226,7 +4040,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <Property Name="IS_APPR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_103" FromRole="NEWS_COMMENTS" ToRole="EMPLOYEE" />
           <NavigationProperty Name="NEWS" Relationship="Self.R_102" FromRole="NEWS_COMMENTS" ToRole="NEWS" />
         </EntityType>
         <EntityType Name="OBSERVATION">
@@ -4260,19 +4073,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CCE_GRADE_SET" Relationship="Self.R_59" FromRole="OBSERVATION_GROUP" ToRole="CCE_GRADE_SET" />
           <NavigationProperty Name="OBSERVATIONs" Relationship="Self.R_60" FromRole="OBSERVATION_GROUP" ToRole="OBSERVATION" />
-        </EntityType>
-        <EntityType Name="PAYROLL_CATEGORY">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PCT" Type="Double" />
-          <Property Name="PYRL_CAT_ID" Type="Int32" />
-          <Property Name="IS_DED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE_SALARY_STRUCTURE" Relationship="Self.R_82" FromRole="PAYROLL_CATEGORY" ToRole="EMPLOYEE_SALARY_STRUCTURE" />
-          <NavigationProperty Name="MONTHLY_PAYSLIP" Relationship="Self.R_93" FromRole="PAYROLL_CATEGORY" ToRole="MONTHLY_PAYSLIP" />
         </EntityType>
         <EntityType Name="SMS_LOG">
           <Key>
@@ -4322,7 +4122,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="Self.R_79" FromRole="STUDENT_ADDITIONAL_FIELD" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
           <NavigationProperty Name="STUDENT_ADDITIONAL_DETAIL" Relationship="Self.R_6" FromRole="STUDENT_ADDITIONAL_FIELD" ToRole="STUDENT_ADDITIONAL_DETAIL" />
         </EntityType>
         <EntityType Name="STUDENT_CATGEORY">
@@ -4413,9 +4212,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="BTCH_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="Self.R_36" FromRole="SUBJECT_LEAVE" ToRole="BATCH" />
           <NavigationProperty Name="CLASS_TIMING" Relationship="Self.R_35" FromRole="SUBJECT_LEAVE" ToRole="CLASS_TIMING" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="Self.R_33" FromRole="SUBJECT_LEAVE" ToRole="EMPLOYEE" />
           <NavigationProperty Name="SUBJECT" Relationship="Self.R_21" FromRole="SUBJECT_LEAVE" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="STUDENT" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="TIMETABLE">
           <Key>
@@ -4457,11 +4256,11 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <Property Name="PARNT_IND" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEEs" Relationship="Self.R_32" FromRole="USERS" ToRole="EMPLOYEE" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="Self.R_120" FromRole="USERS" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
           <NavigationProperty Name="GUARDIANs" Relationship="Self.R_5" FromRole="USERS" ToRole="GUARDIAN" />
           <NavigationProperty Name="USERS_ACCESS" Relationship="SFSAcademyModel.USRS__USER_USER_ID" FromRole="USER" ToRole="USERS_ACCESS" />
           <NavigationProperty Name="STUDENTs" Relationship="SFSAcademyModel.USRID_USER_STUD_NI" FromRole="USER" ToRole="STUDENT" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.USRID_USER_EMPL_NI" FromRole="USER" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="WEEKDAY">
           <Key>
@@ -4477,18 +4276,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="BATCH" Relationship="Self.R_98" FromRole="WEEKDAY" ToRole="BATCH" />
           <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="Self.R_99" FromRole="WEEKDAY" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
-        <Association Name="R_95">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="APPLY_LEAVE" Type="Self.APPLY_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="APPLY_LEAVE">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_96">
           <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
           <End Role="APPLY_LEAVE" Type="Self.APPLY_LEAVE" Multiplicity="*" />
@@ -4825,270 +4612,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_27">
-          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="NTLTY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_30">
-          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="HOME_CTRY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_31">
-          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="OFF_CTRY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_101">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="NEWS" Type="Self.NEWS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="NEWS">
-              <PropertyRef Name="AUTH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_103">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="NEWS_COMMENTS" Type="Self.NEWS_COMMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="NEWS_COMMENTS">
-              <PropertyRef Name="AUTH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_22">
-          <End Role="EMPLOYEE_CATEGORY" Type="Self.EMPLOYEE_CATEGORY" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="EMP_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_23">
-          <End Role="EMPLOYEE_POSITION" Type="Self.EMPLOYEE_POSITION" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_POSITION">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="EMP_POS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_24">
-          <End Role="EMPLOYEE_DEPARTMENT" Type="Self.EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_DEPARTMENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="EMP_DEPT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_25">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE1" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE1">
-              <PropertyRef Name="RPTG_MGR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_26">
-          <End Role="EMPLOYEE_GRADE" Type="Self.EMPLOYEE_GRADE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_GRADE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="EMP_GRADE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_32">
-          <End Role="USERS" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USERS">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE">
-              <PropertyRef Name="USRID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_33">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="SUBJECT_LEAVE" Type="Self.SUBJECT_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT_LEAVE">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_78">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_ADDITIONAL_DETAIL" Type="Self.EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_80">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_BANK_DETAIL" Type="Self.EMPLOYEE_BANK_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_BANK_DETAIL">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_81">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_SALARY_STRUCTURE" Type="Self.EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_SALARY_STRUCTURE">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_83">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEES_SUBJECT" Type="Self.EMPLOYEES_SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEES_SUBJECT">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_85">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_ATTENDENCES" Type="Self.EMPLOYEE_ATTENDENCES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ATTENDENCES">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_89">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_LEAVE" Type="Self.EMPLOYEE_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_LEAVE">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_91">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="INDIVIDUAL_PAYSLIP_CATGEORY" Type="Self.INDIVIDUAL_PAYSLIP_CATGEORY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="INDIVIDUAL_PAYSLIP_CATGEORY">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_92">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="MONTHLY_PAYSLIP" Type="Self.MONTHLY_PAYSLIP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MONTHLY_PAYSLIP">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_94">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="MONTHLY_PAYSLIP" Type="Self.MONTHLY_PAYSLIP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MONTHLY_PAYSLIP">
-              <PropertyRef Name="APRV_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_79">
-          <End Role="STUDENT_ADDITIONAL_FIELD" Type="Self.STUDENT_ADDITIONAL_FIELD" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_ADDITIONAL_DETAIL" Type="Self.EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT_ADDITIONAL_FIELD">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
-              <PropertyRef Name="ADDL_FLD_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_86">
           <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
           <End Role="EMPLOYEE_ATTENDENCES" Type="Self.EMPLOYEE_ATTENDENCES" Multiplicity="*" />
@@ -5134,18 +4657,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="EMPLOYEE_LEAVE">
               <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_82">
-          <End Role="PAYROLL_CATEGORY" Type="Self.PAYROLL_CATEGORY" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_SALARY_STRUCTURE" Type="Self.EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PAYROLL_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_SALARY_STRUCTURE">
-              <PropertyRef Name="PYRL_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5293,18 +4804,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_93">
-          <End Role="PAYROLL_CATEGORY" Type="Self.PAYROLL_CATEGORY" Multiplicity="0..1" />
-          <End Role="MONTHLY_PAYSLIP" Type="Self.MONTHLY_PAYSLIP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PAYROLL_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="MONTHLY_PAYSLIP">
-              <PropertyRef Name="PYRL_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_102">
           <End Role="NEWS" Type="Self.NEWS" Multiplicity="0..1" />
           <End Role="NEWS_COMMENTS" Type="Self.NEWS_COMMENTS" Multiplicity="*" />
@@ -5421,18 +4920,13 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="COURSEs" EntityType="Self.COURSE" />
           <EntitySet Name="DESCRIPTIVE_INDICATOR" EntityType="Self.DESCRIPTIVE_INDICATOR" />
           <EntitySet Name="ELECTIVE_GROUP" EntityType="Self.ELECTIVE_GROUP" />
-          <EntitySet Name="EMPLOYEEs" EntityType="Self.EMPLOYEE" />
-          <EntitySet Name="EMPLOYEE_ADDITIONAL_DETAIL" EntityType="Self.EMPLOYEE_ADDITIONAL_DETAIL" />
           <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="Self.EMPLOYEE_ATTENDENCES" />
           <EntitySet Name="EMPLOYEE_BANK_DETAIL" EntityType="Self.EMPLOYEE_BANK_DETAIL" />
           <EntitySet Name="EMPLOYEE_CATEGORY" EntityType="Self.EMPLOYEE_CATEGORY" />
           <EntitySet Name="EMPLOYEE_DEPARTMENT" EntityType="Self.EMPLOYEE_DEPARTMENT" />
           <EntitySet Name="EMPLOYEE_DEPARTMENT_EVENT" EntityType="Self.EMPLOYEE_DEPARTMENT_EVENT" />
-          <EntitySet Name="EMPLOYEE_GRADE" EntityType="Self.EMPLOYEE_GRADE" />
           <EntitySet Name="EMPLOYEE_LEAVE" EntityType="Self.EMPLOYEE_LEAVE" />
           <EntitySet Name="EMPLOYEE_LEAVE_TYPE" EntityType="Self.EMPLOYEE_LEAVE_TYPE" />
-          <EntitySet Name="EMPLOYEE_POSITION" EntityType="Self.EMPLOYEE_POSITION" />
-          <EntitySet Name="EMPLOYEE_SALARY_STRUCTURE" EntityType="Self.EMPLOYEE_SALARY_STRUCTURE" />
           <EntitySet Name="EMPLOYEES_SUBJECT" EntityType="Self.EMPLOYEES_SUBJECT" />
           <EntitySet Name="EVENTs" EntityType="Self.EVENT" />
           <EntitySet Name="EXAMs" EntityType="Self.EXAM" />
@@ -5441,22 +4935,17 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="FA_CRITERIAS" EntityType="Self.FA_CRITERIAS" />
           <EntitySet Name="FA_GROUP" EntityType="Self.FA_GROUP" />
           <EntitySet Name="FEE_COLLECTION_DISCOUNT" EntityType="Self.FEE_COLLECTION_DISCOUNT" />
-          <EntitySet Name="FEE_DISCOUNT" EntityType="Self.FEE_DISCOUNT" />
           <EntitySet Name="FINANCE_DONATION" EntityType="Self.FINANCE_DONATION" />
           <EntitySet Name="FINANCE_FEE_PARTICULAR" EntityType="Self.FINANCE_FEE_PARTICULAR" />
           <EntitySet Name="FINANCE_FEE_STRUCTURE_ELEMENT" EntityType="Self.FINANCE_FEE_STRUCTURE_ELEMENT" />
           <EntitySet Name="FINANCE_TRANSACTION_CATEGORY" EntityType="Self.FINANCE_TRANSACTION_CATEGORY" />
-          <EntitySet Name="FINANCE_TRANSACTION_TRIGGERS" EntityType="Self.FINANCE_TRANSACTION_TRIGGERS" />
           <EntitySet Name="GRADING_LEVEL" EntityType="Self.GRADING_LEVEL" />
           <EntitySet Name="GUARDIANs" EntityType="Self.GUARDIAN" />
-          <EntitySet Name="INDIVIDUAL_PAYSLIP_CATGEORY" EntityType="Self.INDIVIDUAL_PAYSLIP_CATGEORY" />
           <EntitySet Name="LIABILITies" EntityType="Self.LIABILITY" />
-          <EntitySet Name="MONTHLY_PAYSLIP" EntityType="Self.MONTHLY_PAYSLIP" />
           <EntitySet Name="NEWS" EntityType="Self.NEWS" />
           <EntitySet Name="NEWS_COMMENTS" EntityType="Self.NEWS_COMMENTS" />
           <EntitySet Name="OBSERVATIONs" EntityType="Self.OBSERVATION" />
           <EntitySet Name="OBSERVATION_GROUP" EntityType="Self.OBSERVATION_GROUP" />
-          <EntitySet Name="PAYROLL_CATEGORY" EntityType="Self.PAYROLL_CATEGORY" />
           <EntitySet Name="SMS_LOG" EntityType="Self.SMS_LOG" />
           <EntitySet Name="SMS_MESSAGE" EntityType="Self.SMS_MESSAGE" />
           <EntitySet Name="SMS_SETTING" EntityType="Self.SMS_SETTING" />
@@ -5472,10 +4961,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="TIMETABLE_ENTRY" EntityType="Self.TIMETABLE_ENTRY" />
           <EntitySet Name="USERS" EntityType="Self.USER" />
           <EntitySet Name="WEEKDAYs" EntityType="Self.WEEKDAY" />
-          <AssociationSet Name="R_95" Association="Self.R_95">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
-          </AssociationSet>
           <AssociationSet Name="R_96" Association="Self.R_96">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
             <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
@@ -5588,94 +5073,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
             <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
           </AssociationSet>
-          <AssociationSet Name="R_27" Association="Self.R_27">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_30" Association="Self.R_30">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_31" Association="Self.R_31">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_101" Association="Self.R_101">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="NEWS" EntitySet="NEWS" />
-          </AssociationSet>
-          <AssociationSet Name="R_103" Association="Self.R_103">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="NEWS_COMMENTS" EntitySet="NEWS_COMMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="R_22" Association="Self.R_22">
-            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_23" Association="Self.R_23">
-            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_24" Association="Self.R_24">
-            <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_25" Association="Self.R_25">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE1" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_26" Association="Self.R_26">
-            <End Role="EMPLOYEE_GRADE" EntitySet="EMPLOYEE_GRADE" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_32" Association="Self.R_32">
-            <End Role="USERS" EntitySet="USERS" />
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-          </AssociationSet>
-          <AssociationSet Name="R_33" Association="Self.R_33">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_78" Association="Self.R_78">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="R_80" Association="Self.R_80">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_BANK_DETAIL" EntitySet="EMPLOYEE_BANK_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="R_81" Association="Self.R_81">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
-          </AssociationSet>
-          <AssociationSet Name="R_83" Association="Self.R_83">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
-          </AssociationSet>
-          <AssociationSet Name="R_85" Association="Self.R_85">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
-          </AssociationSet>
-          <AssociationSet Name="R_89" Association="Self.R_89">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_LEAVE" EntitySet="EMPLOYEE_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_91" Association="Self.R_91">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="INDIVIDUAL_PAYSLIP_CATGEORY" EntitySet="INDIVIDUAL_PAYSLIP_CATGEORY" />
-          </AssociationSet>
-          <AssociationSet Name="R_92" Association="Self.R_92">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
-          </AssociationSet>
-          <AssociationSet Name="R_94" Association="Self.R_94">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
-          </AssociationSet>
-          <AssociationSet Name="R_79" Association="Self.R_79">
-            <End Role="STUDENT_ADDITIONAL_FIELD" EntitySet="STUDENT_ADDITIONAL_FIELD" />
-            <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
-          </AssociationSet>
           <AssociationSet Name="R_86" Association="Self.R_86">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
             <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
@@ -5691,10 +5088,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="R_90" Association="Self.R_90">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
             <End Role="EMPLOYEE_LEAVE" EntitySet="EMPLOYEE_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_82" Association="Self.R_82">
-            <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
-            <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
           </AssociationSet>
           <AssociationSet Name="R_84" Association="Self.R_84">
             <End Role="SUBJECT" EntitySet="SUBJECTs" />
@@ -5743,10 +5136,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="R_5" Association="Self.R_5">
             <End Role="USERS" EntitySet="USERS" />
             <End Role="GUARDIAN" EntitySet="GUARDIANs" />
-          </AssociationSet>
-          <AssociationSet Name="R_93" Association="Self.R_93">
-            <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
-            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
           </AssociationSet>
           <AssociationSet Name="R_102" Association="Self.R_102">
             <End Role="NEWS" EntitySet="NEWS" />
@@ -5833,17 +5222,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FEE_COLLECTION_DISCOUNT" EntitySet="FEE_COLLECTION_DISCOUNT" />
           </AssociationSet>
-          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
-          </AssociationSet>
           <AssociationSet Name="FEE_C_FINA_FINA_NI3" Association="SFSAcademyModel.FEE_C_FINA_FINA_NI3">
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
             <End Role="FINANCE_FEE_COLLECTION" EntitySet="FINANCE_FEE_COLLECTION" />
-          </AssociationSet>
-          <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="SFSAcademyModel.FIN_C_FINA_FINA_NI">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
           </AssociationSet>
           <AssociationSet Name="FIN_F_FINA_FINA_NI" Association="SFSAcademyModel.FIN_F_FINA_FINA_NI">
             <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
@@ -5853,11 +5234,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="FEE_C_FINA_FINA_NI" Association="SFSAcademyModel.FEE_C_FINA_FINA_NI">
             <End Role="FINANCE_FEE_COLLECTION" EntitySet="FINANCE_FEE_COLLECTION" />
             <End Role="FINANCE_FEE" EntitySet="FINANCE_FEE" />
-          </AssociationSet>
-          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
-          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
           <EntitySet Name="FINANCE_TRANSACTION" EntityType="SFSAcademyModel.FINANCE_TRANSACTION" />
           <AssociationSet Name="TRAN__FINA_FINA_NI" Association="SFSAcademyModel.TRAN__FINA_FINA_NI">
@@ -5873,6 +5249,47 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="FINANCE_TRANSACTION" EntitySet="FINANCE_TRANSACTION" />
           </AssociationSet>
           <EntitySet Name="IMAGE_DOCUMENTS" EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" />
+          <EntitySet Name="Gallery_Master" EntityType="SFSAcademyModel.Gallery_Master" />
+          <EntitySet Name="PHOTO_MASTER" EntityType="SFSAcademyModel.PHOTO_MASTER" />
+          <EntitySet Name="STORE_PURCHAGE_BACKUP" EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" />
+          <EntitySet Name="STORE_SUB_CATEGORY" EntityType="SFSAcademyModel.STORE_SUB_CATEGORY" />
+          <AssociationSet Name="STSUBCAT_STCAT_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI">
+            <End Role="STORE_CATEGORY" EntitySet="STORE_CATEGORY" />
+            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
+          </AssociationSet>
+          <AssociationSet Name="STPROD_STPURBKUP_ASSE_NI" Association="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI">
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+            <End Role="STORE_PURCHAGE_BACKUP" EntitySet="STORE_PURCHAGE_BACKUP" />
+          </AssociationSet>
+          <AssociationSet Name="STSUBCAT_STPROD_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI">
+            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+          </AssociationSet>
+          <EntitySet Name="STORE_PURCHAGE_STATUS" EntityType="SFSAcademyModel.STORE_PURCHAGE_STATUS" />
+          <EntitySet Name="STORE_PURCHAGE_VENDOR" EntityType="SFSAcademyModel.STORE_PURCHAGE_VENDOR" />
+          <EntitySet Name="STORE_PURCHAGE_ORDER" EntityType="SFSAcademyModel.STORE_PURCHAGE_ORDER" />
+          <AssociationSet Name="STPURPO_PRD_ASSE_NI" Association="SFSAcademyModel.STPURPO_PRD_ASSE_NI">
+            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <AssociationSet Name="STPURPO_STS_ASSE_NI" Association="SFSAcademyModel.STPURPO_STS_ASSE_NI">
+            <End Role="STORE_PURCHAGE_STATUS" EntitySet="STORE_PURCHAGE_STATUS" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <AssociationSet Name="STPURPO_VDR_ASSE_NI" Association="SFSAcademyModel.STPURPO_VDR_ASSE_NI">
+            <End Role="STORE_PURCHAGE_VENDOR" EntitySet="STORE_PURCHAGE_VENDOR" />
+            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          </AssociationSet>
+          <EntitySet Name="FEE_DISCOUNT" EntityType="SFSAcademyModel.FEE_DISCOUNT" />
+          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
+          </AssociationSet>
+          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
+          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
+          </AssociationSet>
           <EntitySet Name="STUDENTs" EntityType="SFSAcademyModel.STUDENT" />
           <AssociationSet Name="FRM_I_STUD_ARCH_NI" Association="SFSAcademyModel.FRM_I_STUD_ARCH_NI">
             <End Role="STUDENT" EntitySet="STUDENTs" />
@@ -5905,14 +5322,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="STDNT_STUD_FEE__NI2" Association="SFSAcademyModel.STDNT_STUD_FEE__NI2">
             <End Role="STUDENT" EntitySet="STUDENTs" />
             <End Role="FEE_COLLECTION_PARTICULAR" EntitySet="FEE_COLLECTION_PARTICULAR" />
-          </AssociationSet>
-          <AssociationSet Name="RCVR__STUD_FEE__NI2" Association="SFSAcademyModel.RCVR__STUD_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENTs" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
-          </AssociationSet>
-          <AssociationSet Name="FEE_RCVR_FEE__NI2" Association="SFSAcademyModel.FEE_RCVR_FEE__NI2">
-            <End Role="STUDENT" EntitySet="STUDENTs" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
           </AssociationSet>
           <AssociationSet Name="STDNT_STUD_FINA_NI" Association="SFSAcademyModel.STDNT_STUD_FINA_NI">
             <End Role="STUDENT" EntitySet="STUDENTs" />
@@ -5962,42 +5371,121 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="USER" EntitySet="USERS" />
             <End Role="STUDENT" EntitySet="STUDENTs" />
           </AssociationSet>
-          <EntitySet Name="Privileges" EntityType="SFSAcademyModel.Privilege" />
-          <EntitySet Name="Privileges_Users" EntityType="SFSAcademyModel.Privileges_Users" />
-          <EntitySet Name="Gallery_Master" EntityType="SFSAcademyModel.Gallery_Master" />
-          <EntitySet Name="PHOTO_MASTER" EntityType="SFSAcademyModel.PHOTO_MASTER" />
-          <EntitySet Name="STORE_PURCHAGE_BACKUP" EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" />
-          <EntitySet Name="STORE_SUB_CATEGORY" EntityType="SFSAcademyModel.STORE_SUB_CATEGORY" />
-          <AssociationSet Name="STSUBCAT_STCAT_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI">
-            <End Role="STORE_CATEGORY" EntitySet="STORE_CATEGORY" />
-            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
+          <EntitySet Name="FINANCE_TRANSACTION_TRIGGERS" EntityType="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" />
+          <AssociationSet Name="FIN_C_FINA_FINA_NI" Association="SFSAcademyModel.FIN_C_FINA_FINA_NI">
+            <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
+            <End Role="FINANCE_TRANSACTION_TRIGGERS" EntitySet="FINANCE_TRANSACTION_TRIGGERS" />
           </AssociationSet>
-          <AssociationSet Name="STPROD_STPURBKUP_ASSE_NI" Association="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI">
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
-            <End Role="STORE_PURCHAGE_BACKUP" EntitySet="STORE_PURCHAGE_BACKUP" />
+          <EntitySet Name="EMPLOYEE_POSITION" EntityType="SFSAcademyModel.EMPLOYEE_POSITION" />
+          <AssociationSet Name="EMP_C_EMPL_POS_NI" Association="SFSAcademyModel.EMP_C_EMPL_POS_NI">
+            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
+            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
           </AssociationSet>
-          <AssociationSet Name="STSUBCAT_STPROD_ASSE_NI" Association="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI">
-            <End Role="STORE_SUB_CATEGORY" EntitySet="STORE_SUB_CATEGORY" />
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
+          <EntitySet Name="EMPLOYEE_GRADE" EntityType="SFSAcademyModel.EMPLOYEE_GRADE" />
+          <EntitySet Name="PAYROLL_CATEGORY" EntityType="SFSAcademyModel.PAYROLL_CATEGORY" />
+          <EntitySet Name="EMPLOYEE_ADDITIONAL_DETAIL" EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL" />
+          <EntitySet Name="EMPLOYEE_ADDITIONAL_FIELD" EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD" />
+          <AssociationSet Name="ADDL__STUD_EMPL_NI" Association="SFSAcademyModel.ADDL__STUD_EMPL_NI">
+            <End Role="EMPLOYEE_ADDITIONAL_FIELD" EntitySet="EMPLOYEE_ADDITIONAL_FIELD" />
+            <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
           </AssociationSet>
-          <EntitySet Name="STORE_PURCHAGE_STATUS" EntityType="SFSAcademyModel.STORE_PURCHAGE_STATUS" />
-          <EntitySet Name="STORE_PURCHAGE_VENDOR" EntityType="SFSAcademyModel.STORE_PURCHAGE_VENDOR" />
-          <EntitySet Name="STORE_PURCHAGE_ORDER" EntityType="SFSAcademyModel.STORE_PURCHAGE_ORDER" />
+          <EntitySet Name="EMPLOYEEs" EntityType="SFSAcademyModel.EMPLOYEE" />
+          <AssociationSet Name="EMP_I_EMPL_APPL_NI" Association="SFSAcademyModel.EMP_I_EMPL_APPL_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="HOME__COUN_EMPL_NI" Association="SFSAcademyModel.HOME__COUN_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="NTLTY_COUN_EMPL_NI" Association="SFSAcademyModel.NTLTY_COUN_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="OFF_C_COUN_EMPL_NI" Association="SFSAcademyModel.OFF_C_COUN_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_C_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_C_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_D_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_D_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_G_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_G_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_GRADE" EntitySet="EMPLOYEE_GRADE" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI3" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_BANK_DETAIL" EntitySet="EMPLOYEE_BANK_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI4" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_LEAVE" EntitySet="EMPLOYEE_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI6" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_SUBJ_NI" Association="SFSAcademyModel.EMP_I_EMPL_SUBJ_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_P_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_P_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
+          <AssociationSet Name="RPTG__EMPL_EMPL_NI" Association="SFSAcademyModel.RPTG__EMPL_EMPL_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE1" EntitySet="EMPLOYEEs" />
+          </AssociationSet>
           <AssociationSet Name="STPURPO_EMP_ASSE_NI" Association="SFSAcademyModel.STPURPO_EMP_ASSE_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
           </AssociationSet>
-          <AssociationSet Name="STPURPO_PRD_ASSE_NI" Association="SFSAcademyModel.STPURPO_PRD_ASSE_NI">
-            <End Role="STORE_PRODUCTS" EntitySet="STORE_PRODUCTS" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          <AssociationSet Name="USRID_USER_EMPL_NI" Association="SFSAcademyModel.USRID_USER_EMPL_NI">
+            <End Role="USER" EntitySet="USERS" />
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
           </AssociationSet>
-          <AssociationSet Name="STPURPO_STS_ASSE_NI" Association="SFSAcademyModel.STPURPO_STS_ASSE_NI">
-            <End Role="STORE_PURCHAGE_STATUS" EntitySet="STORE_PURCHAGE_STATUS" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          <EntitySet Name="EMPLOYEE_SALARY_STRUCTURE" EntityType="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE" />
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI5" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI5">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
           </AssociationSet>
-          <AssociationSet Name="STPURPO_VDR_ASSE_NI" Association="SFSAcademyModel.STPURPO_VDR_ASSE_NI">
-            <End Role="STORE_PURCHAGE_VENDOR" EntitySet="STORE_PURCHAGE_VENDOR" />
-            <End Role="STORE_PURCHAGE_ORDER" EntitySet="STORE_PURCHAGE_ORDER" />
+          <AssociationSet Name="PYRL__PAYR_EMPL_NI" Association="SFSAcademyModel.PYRL__PAYR_EMPL_NI">
+            <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
+            <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
+          </AssociationSet>
+          <EntitySet Name="PRIVILEGES" EntityType="SFSAcademyModel.PRIVILEGE" />
+          <EntitySet Name="PRIVILEGES_USERS" EntityType="SFSAcademyModel.PRIVILEGES_USERS" />
+          <EntitySet Name="MONTHLY_PAYSLIP" EntityType="SFSAcademyModel.MONTHLY_PAYSLIP" />
+          <AssociationSet Name="APRV__EMPL_MONT_NI" Association="SFSAcademyModel.APRV__EMPL_MONT_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_EMPL_MONT_NI" Association="SFSAcademyModel.EMP_I_EMPL_MONT_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
+          </AssociationSet>
+          <AssociationSet Name="PYRL__PAYR_MONT_NI" Association="SFSAcademyModel.PYRL__PAYR_MONT_NI">
+            <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
+            <End Role="MONTHLY_PAYSLIP" EntitySet="MONTHLY_PAYSLIP" />
+          </AssociationSet>
+          <EntitySet Name="INDIVIDUAL_PAYSLIP_CATGEORY" EntityType="SFSAcademyModel.INDIVIDUAL_PAYSLIP_CATGEORY" />
+          <AssociationSet Name="EMP_I_EMPL_INDI_NI" Association="SFSAcademyModel.EMP_I_EMPL_INDI_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="INDIVIDUAL_PAYSLIP_CATGEORY" EntitySet="INDIVIDUAL_PAYSLIP_CATGEORY" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FEE_COLLECTION_PARTICULAR">
@@ -6275,10 +5763,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="MSTR_CATGRY_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="BATCH" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_COLLECTION_DISCOUNT" />
-          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.FEE_C_FINA_FINA_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_COLLECTION" />
-          <NavigationProperty Name="FINANCE_TRANSACTION_TRIGGERS" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_TRANSACTION_TRIGGERS" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.FIN_F_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_PARTICULAR" />
+          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
           <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_FINE" />
         </EntityType>
         <Association Name="BTCH__BATC_FINA_NI">
@@ -6305,18 +5792,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FIN_F_FINA_FEE__NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FEE_C_FINA_FINA_NI3">
           <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.FINANCE_FEE_COLLECTION" Role="FINANCE_FEE_COLLECTION" Multiplicity="*" />
@@ -6326,18 +5801,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FINANCE_FEE_COLLECTION">
               <PropertyRef Name="FEE_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FIN_C_FINA_FINA_NI">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" Role="FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
-              <PropertyRef Name="FIN_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6375,33 +5838,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FINANCE_FEE">
               <PropertyRef Name="FEE_CLCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="FEE_FINE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
-          <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.FEE_RCVR_FEE__NI2" FromRole="FEE_FINE" ToRole="STUDENT" />
-        </EntityType>
-        <Association Name="FEE_F_FINA_FEE_NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6482,6 +5918,236 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Gallery_Master">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Gallery_Name" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Gallery_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Gallery_Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PHOTO_MASTER">
+          <Key>
+            <PropertyRef Name="PhotoId" />
+            <PropertyRef Name="GalleryId" />
+          </Key>
+          <Property Name="PhotoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GalleryId" Type="Int64" Nullable="false" />
+          <Property Name="Decription" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ThumbPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ImagePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="PhotoName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_BACKUP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PRODUCT_ID" Type="Int32" Nullable="false" />
+          <Property Name="UNIT_SOLD" Type="Int32" />
+          <Property Name="SOLD_PRICE" Type="Int32" />
+          <Property Name="SOLD_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SOLD_ON" Type="DateTime" Precision="3" />
+          <Property Name="STUDENT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="STUDENT_CONTACT_NO" Type="Int64" />
+          <Property Name="MONEY_RECEIVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEPOSITED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI" FromRole="STORE_PURCHAGE_BACKUP" ToRole="STORE_PRODUCTS" />
+        </EntityType>
+        <EntityType Name="STORE_SUB_CATEGORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STORE_CATEGORY_ID" Type="Int32" Nullable="false" />
+          <Property Name="NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STORE_CATEGORY" Relationship="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_CATEGORY" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_PRODUCTS" />
+        </EntityType>
+        <Association Name="STSUBCAT_STCAT_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_CATEGORY" Role="STORE_CATEGORY" Multiplicity="1" />
+          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_SUB_CATEGORY">
+              <PropertyRef Name="STORE_CATEGORY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPROD_STPURBKUP_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Role="STORE_PURCHAGE_BACKUP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PRODUCTS">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_BACKUP">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STSUBCAT_STPROD_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_SUB_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PRODUCTS">
+              <PropertyRef Name="SUB_CATEGORY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="STORE_PURCHAGE_STATUS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="START_DATE" Type="DateTime" Precision="3" />
+          <Property Name="END_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_STATUS" ToRole="STORE_PURCHAGE_ORDER" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_VENDOR">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="START_DATE" Type="DateTime" Precision="3" />
+          <Property Name="END_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_VENDOR" ToRole="STORE_PURCHAGE_ORDER" />
+        </EntityType>
+        <EntityType Name="STORE_PURCHAGE_ORDER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PO_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PRODUCT_ID" Type="Int32" />
+          <Property Name="REVISION_NUMBER" Type="Int32" Nullable="false" />
+          <Property Name="STATUS_ID" Type="Int32" />
+          <Property Name="EMPLOYEE_ID" Type="Int32" />
+          <Property Name="VENDOR_ID" Type="Int32" />
+          <Property Name="SHIP_METHOD_ID" Type="Int32" />
+          <Property Name="ORDER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="ORDER_QUANTITY" Type="Int32" />
+          <Property Name="SHIP_DATE" Type="DateTime" Precision="3" />
+          <Property Name="SUB_TOTAL" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TAX_AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FREIGHT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TOTAL_DUE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPURPO_PRD_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PRODUCTS" />
+          <NavigationProperty Name="STORE_PURCHAGE_STATUS" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_STATUS" />
+          <NavigationProperty Name="STORE_PURCHAGE_VENDOR" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_VENDOR" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="EMPLOYEE" />
+        </EntityType>
+        <Association Name="STPURPO_PRD_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PRODUCTS">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="PRODUCT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPURPO_STS_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_STATUS" Role="STORE_PURCHAGE_STATUS" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PURCHAGE_STATUS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="STATUS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="STPURPO_VDR_ASSE_NI">
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_VENDOR" Role="STORE_PURCHAGE_VENDOR" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STORE_PURCHAGE_VENDOR">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STORE_PURCHAGE_ORDER">
+              <PropertyRef Name="VENDOR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FEE_DISCOUNT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FIN_F_FINA_FEE__NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_DISCOUNT">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FEE_FINE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FEE_F_FINA_FEE_NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_FINE">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="STUDENT">
           <Key>
             <PropertyRef Name="ID" />
@@ -6519,7 +6185,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="HAS_PD_FE" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="HAS_PD_FE" Type="Boolean" Nullable="false" />
           <Property Name="PHTO_FILE_SIZE" Type="Int32" />
           <Property Name="USRID" Type="Int32" Nullable="false" />
           <Property Name="STDNT_CAT_ID" Type="Int32" />
@@ -6533,8 +6199,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="EXAM_SCORE" Relationship="SFSAcademyModel.STDNT_STUD_EXAM_NI" FromRole="STUDENT" ToRole="EXAM_SCORE" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI" FromRole="STUDENT" ToRole="FEE_COLLECTION_DISCOUNT" />
           <NavigationProperty Name="FEE_COLLECTION_PARTICULAR" Relationship="SFSAcademyModel.STDNT_STUD_FEE__NI2" FromRole="STUDENT" ToRole="FEE_COLLECTION_PARTICULAR" />
-          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.RCVR__STUD_FEE__NI2" FromRole="STUDENT" ToRole="FEE_DISCOUNT" />
-          <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_RCVR_FEE__NI2" FromRole="STUDENT" ToRole="FEE_FINE" />
           <NavigationProperty Name="FINANCE_FEE" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI" FromRole="STUDENT" ToRole="FINANCE_FEE" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI4" FromRole="STUDENT" ToRole="FINANCE_FEE_PARTICULAR" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="SFSAcademyModel.STDNT_STUD_FINA_NI6" FromRole="STUDENT" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
@@ -6641,30 +6305,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="FEE_COLLECTION_PARTICULAR">
               <PropertyRef Name="STDNT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RCVR__STUD_FEE__NI2">
-          <End Type="SFSAcademyModel.STUDENT" Role="STUDENT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
-              <PropertyRef Name="RCVR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FEE_RCVR_FEE__NI2">
-          <End Type="SFSAcademyModel.STUDENT" Role="STUDENT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STUDENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="RCVR_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6812,172 +6452,372 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Privilege">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="AddedDate" Type="DateTime" Precision="3" />
-          <Property Name="AddedBy" Type="Int64" />
-          <Property Name="ModifiedBy" Type="Int64" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Privileges_Users">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int64" Nullable="false" />
-          <Property Name="PrivilegeId" Type="Int64" Nullable="false" />
-          <Property Name="AddedBy" Type="Int64" />
-          <Property Name="AddedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int64" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Gallery_Master">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Gallery_Name" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Gallery_Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Gallery_Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="PHOTO_MASTER">
-          <Key>
-            <PropertyRef Name="PhotoId" />
-            <PropertyRef Name="GalleryId" />
-          </Key>
-          <Property Name="PhotoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GalleryId" Type="Int64" Nullable="false" />
-          <Property Name="Decription" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="ThumbPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="ImagePath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-          <Property Name="PhotoName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="STORE_PURCHAGE_BACKUP">
+        <EntityType Name="FINANCE_TRANSACTION_TRIGGERS">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PRODUCT_ID" Type="Int32" Nullable="false" />
-          <Property Name="UNIT_SOLD" Type="Int32" />
-          <Property Name="SOLD_PRICE" Type="Int32" />
-          <Property Name="SOLD_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SOLD_ON" Type="DateTime" Precision="3" />
-          <Property Name="STUDENT_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="STUDENT_CONTACT_NO" Type="Int64" />
-          <Property Name="MONEY_RECEIVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEPOSITED" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPROD_STPURBKUP_ASSE_NI" FromRole="STORE_PURCHAGE_BACKUP" ToRole="STORE_PRODUCTS" />
+          <Property Name="FIN_CAT_ID" Type="Int32" />
+          <Property Name="PCT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FINANCE_TRANSACTION_CATEGORY" Relationship="SFSAcademyModel.FIN_C_FINA_FINA_NI" FromRole="FINANCE_TRANSACTION_TRIGGERS" ToRole="FINANCE_TRANSACTION_CATEGORY" />
         </EntityType>
-        <EntityType Name="STORE_SUB_CATEGORY">
+        <Association Name="FIN_C_FINA_FINA_NI">
+          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_CATEGORY" Role="FINANCE_TRANSACTION_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS" Role="FINANCE_TRANSACTION_TRIGGERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_TRANSACTION_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FINANCE_TRANSACTION_TRIGGERS">
+              <PropertyRef Name="FIN_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EMPLOYEE_POSITION">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="STORE_CATEGORY_ID" Type="Int32" Nullable="false" />
-          <Property Name="NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="POS_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="POS_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="STORE_CATEGORY" Relationship="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_CATEGORY" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI" FromRole="STORE_SUB_CATEGORY" ToRole="STORE_PRODUCTS" />
+          <Property Name="EMP_CAT_ID" Type="Int32" />
+          <NavigationProperty Name="EMPLOYEE_CATEGORY" Relationship="SFSAcademyModel.EMP_C_EMPL_POS_NI" FromRole="EMPLOYEE_POSITION" ToRole="EMPLOYEE_CATEGORY" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.EMP_P_EMPL_EMPL_NI" FromRole="EMPLOYEE_POSITION" ToRole="EMPLOYEE" />
         </EntityType>
-        <Association Name="STSUBCAT_STCAT_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_CATEGORY" Role="STORE_CATEGORY" Multiplicity="1" />
-          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="*" />
+        <Association Name="EMP_C_EMPL_POS_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_CATEGORY" Role="EMPLOYEE_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_POSITION" Role="EMPLOYEE_POSITION" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="STORE_CATEGORY">
+            <Principal Role="EMPLOYEE_CATEGORY">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="STORE_SUB_CATEGORY">
-              <PropertyRef Name="STORE_CATEGORY_ID" />
+            <Dependent Role="EMPLOYEE_POSITION">
+              <PropertyRef Name="EMP_CAT_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="STPROD_STPURBKUP_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Role="STORE_PURCHAGE_BACKUP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_PRODUCTS">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Principal>
-            <Dependent Role="STORE_PURCHAGE_BACKUP">
-              <PropertyRef Name="PRODUCT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="STSUBCAT_STPROD_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_SUB_CATEGORY" Role="STORE_SUB_CATEGORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="STORE_SUB_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STORE_PRODUCTS">
-              <PropertyRef Name="SUB_CATEGORY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="STORE_PURCHAGE_STATUS">
+        <EntityType Name="EMPLOYEE_GRADE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GRADE_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="GRADE_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="PRIR" Type="Int32" />
+          <Property Name="MAX_DILY_HRS" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="MAX_WKILY_HRS" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" FromRole="EMPLOYEE_GRADE" ToRole="EMPLOYEE" />
+        </EntityType>
+        <EntityType Name="PAYROLL_CATEGORY">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="START_DATE" Type="DateTime" Precision="3" />
-          <Property Name="END_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_STATUS" ToRole="STORE_PURCHAGE_ORDER" />
+          <Property Name="PCT" Type="Double" />
+          <Property Name="PYRL_CAT_ID" Type="Int32" />
+          <Property Name="IS_DED" Type="Boolean" Nullable="false" />
+          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE_SALARY_STRUCTURE" Relationship="SFSAcademyModel.PYRL__PAYR_EMPL_NI" FromRole="PAYROLL_CATEGORY" ToRole="EMPLOYEE_SALARY_STRUCTURE" />
+          <NavigationProperty Name="MONTHLY_PAYSLIP" Relationship="SFSAcademyModel.PYRL__PAYR_MONT_NI" FromRole="PAYROLL_CATEGORY" ToRole="MONTHLY_PAYSLIP" />
         </EntityType>
-        <EntityType Name="STORE_PURCHAGE_VENDOR">
+        <EntityType Name="EMPLOYEE_ADDITIONAL_DETAIL">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="ADDL_FLD_ID" Type="Int32" />
+          <Property Name="ADDL_INFO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE_ADDITIONAL_FIELD" Relationship="SFSAcademyModel.ADDL__STUD_EMPL_NI" FromRole="EMPLOYEE_ADDITIONAL_DETAIL" ToRole="EMPLOYEE_ADDITIONAL_FIELD" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" FromRole="EMPLOYEE_ADDITIONAL_DETAIL" ToRole="EMPLOYEE" />
+        </EntityType>
+        <EntityType Name="EMPLOYEE_ADDITIONAL_FIELD">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="START_DATE" Type="DateTime" Precision="3" />
-          <Property Name="END_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_VENDOR" ToRole="STORE_PURCHAGE_ORDER" />
+          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.ADDL__STUD_EMPL_NI" FromRole="EMPLOYEE_ADDITIONAL_FIELD" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
         </EntityType>
-        <EntityType Name="STORE_PURCHAGE_ORDER">
+        <Association Name="ADDL__STUD_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD" Role="EMPLOYEE_ADDITIONAL_FIELD" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL" Role="EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_ADDITIONAL_FIELD">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
+              <PropertyRef Name="ADDL_FLD_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EMPLOYEE">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PO_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PRODUCT_ID" Type="Int32" />
-          <Property Name="REVISION_NUMBER" Type="Int32" Nullable="false" />
-          <Property Name="STATUS_ID" Type="Int32" />
-          <Property Name="EMPLOYEE_ID" Type="Int32" />
-          <Property Name="VENDOR_ID" Type="Int32" />
-          <Property Name="SHIP_METHOD_ID" Type="Int32" />
-          <Property Name="ORDER_DATE" Type="DateTime" Precision="3" />
-          <Property Name="ORDER_QUANTITY" Type="Int32" />
-          <Property Name="SHIP_DATE" Type="DateTime" Precision="3" />
-          <Property Name="SUB_TOTAL" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TAX_AMT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="FREIGHT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="TOTAL_DUE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="RPTG_MGR_ID" Type="Int32" />
+          <Property Name="EMP_CAT_ID" Type="Int32" />
+          <Property Name="EMP_NUM" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="JOINING_DATE" Type="DateTime" Precision="3" />
+          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MID_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GNDR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_POS_ID" Type="Int32" />
+          <Property Name="EMP_DEPT_ID" Type="Int32" />
+          <Property Name="EMP_GRADE_ID" Type="Int32" />
+          <Property Name="QUAL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EXPNC_DETL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EXPNC_YEAR" Type="Int32" />
+          <Property Name="EXPNC_MONTH" Type="Int32" />
+          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="STAT_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DOB" Type="DateTime" Precision="3" />
+          <Property Name="MARITAL_STAT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CHLD_CNT" Type="Int32" />
+          <Property Name="FTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HUSBND_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BLOOD_GRP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NTLTY_ID" Type="Int32" />
+          <Property Name="HOME_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_CTRY_ID" Type="Int32" />
+          <Property Name="HOME_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_CTRY_ID" Type="Int32" />
+          <Property Name="OFF_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_PH1" Type="Int64" />
+          <Property Name="OFF_PH2" Type="Int64" />
+          <Property Name="MOBL_PH" Type="Int64" />
+          <Property Name="HOME_PH" Type="Int64" />
+          <Property Name="EML" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FAX" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_FILENAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_CNTNT_TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_DATA" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="STORE_PRODUCTS" Relationship="SFSAcademyModel.STPURPO_PRD_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PRODUCTS" />
-          <NavigationProperty Name="STORE_PURCHAGE_STATUS" Relationship="SFSAcademyModel.STPURPO_STS_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_STATUS" />
-          <NavigationProperty Name="STORE_PURCHAGE_VENDOR" Relationship="SFSAcademyModel.STPURPO_VDR_ASSE_NI" FromRole="STORE_PURCHAGE_ORDER" ToRole="STORE_PURCHAGE_VENDOR" />
+          <Property Name="PHTO_FILE_SIZE" Type="Int32" />
+          <Property Name="USRID" Type="Int32" />
+          <Property Name="IMAGE_DOCUMENTS_ID" Type="Int32" />
+          <NavigationProperty Name="APPLY_LEAVE" Relationship="SFSAcademyModel.EMP_I_EMPL_APPL_NI" FromRole="EMPLOYEE" ToRole="APPLY_LEAVE" />
+          <NavigationProperty Name="COUNTRY" Relationship="SFSAcademyModel.HOME__COUN_EMPL_NI" FromRole="EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="COUNTRY1" Relationship="SFSAcademyModel.NTLTY_COUN_EMPL_NI" FromRole="EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="COUNTRY2" Relationship="SFSAcademyModel.OFF_C_COUN_EMPL_NI" FromRole="EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="EMPLOYEE_CATEGORY" Relationship="SFSAcademyModel.EMP_C_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_CATEGORY" />
+          <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
+          <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
+          <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
+          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
+          <NavigationProperty Name="EMPLOYEE_BANK_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" FromRole="EMPLOYEE" ToRole="EMPLOYEE_BANK_DETAIL" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" FromRole="EMPLOYEE" ToRole="EMPLOYEE_LEAVE" />
+          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6" FromRole="EMPLOYEE" ToRole="EMPLOYEES_SUBJECT" />
+          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.EMP_I_EMPL_SUBJ_NI" FromRole="EMPLOYEE" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="EMPLOYEE_POSITION" Relationship="SFSAcademyModel.EMP_P_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_POSITION" />
+          <NavigationProperty Name="EMPLOYEE1" Relationship="SFSAcademyModel.RPTG__EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE1" />
+          <NavigationProperty Name="EMPLOYEE2" Relationship="SFSAcademyModel.RPTG__EMPL_EMPL_NI" FromRole="EMPLOYEE1" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="EMPLOYEE" ToRole="STORE_PURCHAGE_ORDER" />
+          <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_EMPL_NI" FromRole="EMPLOYEE" ToRole="USER" />
+          <NavigationProperty Name="EMPLOYEE_SALARY_STRUCTURE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI5" FromRole="EMPLOYEE" ToRole="EMPLOYEE_SALARY_STRUCTURE" />
+          <NavigationProperty Name="MONTHLY_PAYSLIP" Relationship="SFSAcademyModel.APRV__EMPL_MONT_NI" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
+          <NavigationProperty Name="MONTHLY_PAYSLIP1" Relationship="SFSAcademyModel.EMP_I_EMPL_MONT_NI" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
+          <NavigationProperty Name="INDIVIDUAL_PAYSLIP_CATGEORY" Relationship="SFSAcademyModel.EMP_I_EMPL_INDI_NI" FromRole="EMPLOYEE" ToRole="INDIVIDUAL_PAYSLIP_CATGEORY" />
         </EntityType>
+        <Association Name="EMP_I_EMPL_APPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.APPLY_LEAVE" Role="APPLY_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="APPLY_LEAVE">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="HOME__COUN_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="HOME_CTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="NTLTY_COUN_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="NTLTY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OFF_C_COUN_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="OFF_CTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_C_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_CATEGORY" Role="EMPLOYEE_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="EMP_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_D_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_DEPARTMENT" Role="EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="EMP_DEPT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_G_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_GRADE" Role="EMPLOYEE_GRADE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_GRADE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="EMP_GRADE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL" Role="EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_EMPL_NI2">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_EMPL_NI3">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_BANK_DETAIL" Role="EMPLOYEE_BANK_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_BANK_DETAIL">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_EMPL_NI4">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE" Role="EMPLOYEE_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_LEAVE">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_EMPL_NI6">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEES_SUBJECT" Role="EMPLOYEES_SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEES_SUBJECT">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_SUBJ_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_P_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_POSITION" Role="EMPLOYEE_POSITION" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_POSITION">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="EMP_POS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="RPTG__EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE1">
+              <PropertyRef Name="RPTG_MGR_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="STPURPO_EMP_ASSE_NI">
           <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
@@ -6990,39 +6830,149 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="STPURPO_PRD_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PRODUCTS" Role="STORE_PRODUCTS" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+        <Association Name="USRID_USER_EMPL_NI">
+          <End Type="SFSAcademyModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="STORE_PRODUCTS">
-              <PropertyRef Name="PRODUCT_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="PRODUCT_ID" />
+            <Dependent Role="EMPLOYEE">
+              <PropertyRef Name="USRID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="STPURPO_STS_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_STATUS" Role="STORE_PURCHAGE_STATUS" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+        <EntityType Name="EMPLOYEE_SALARY_STRUCTURE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="PYRL_CAT_ID" Type="Int32" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI5" FromRole="EMPLOYEE_SALARY_STRUCTURE" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="PAYROLL_CATEGORY" Relationship="SFSAcademyModel.PYRL__PAYR_EMPL_NI" FromRole="EMPLOYEE_SALARY_STRUCTURE" ToRole="PAYROLL_CATEGORY" />
+        </EntityType>
+        <Association Name="EMP_I_EMPL_EMPL_NI5">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE" Role="EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="STORE_PURCHAGE_STATUS">
+            <Principal Role="EMPLOYEE">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="STATUS_ID" />
+            <Dependent Role="EMPLOYEE_SALARY_STRUCTURE">
+              <PropertyRef Name="EMP_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="STPURPO_VDR_ASSE_NI">
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_VENDOR" Role="STORE_PURCHAGE_VENDOR" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STORE_PURCHAGE_ORDER" Role="STORE_PURCHAGE_ORDER" Multiplicity="*" />
+        <Association Name="PYRL__PAYR_EMPL_NI">
+          <End Type="SFSAcademyModel.PAYROLL_CATEGORY" Role="PAYROLL_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE" Role="EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="STORE_PURCHAGE_VENDOR">
+            <Principal Role="PAYROLL_CATEGORY">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="STORE_PURCHAGE_ORDER">
-              <PropertyRef Name="VENDOR_ID" />
+            <Dependent Role="EMPLOYEE_SALARY_STRUCTURE">
+              <PropertyRef Name="PYRL_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRIVILEGE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="PRIVILEGE_TAG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PRIVILEGES_USERS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USER_ID" Type="Int64" />
+          <Property Name="PRIVILEGE_ID" Type="Int64" />
+        </EntityType>
+        <EntityType Name="MONTHLY_PAYSLIP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SAL_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="PYRL_CAT_ID" Type="Int32" />
+          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_APPR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="APRV_ID" Type="Int32" />
+          <Property Name="IS_RJCT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="RJCT_ID" Type="Int32" />
+          <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="RMRK" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.APRV__EMPL_MONT_NI" FromRole="MONTHLY_PAYSLIP" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE1" Relationship="SFSAcademyModel.EMP_I_EMPL_MONT_NI" FromRole="MONTHLY_PAYSLIP" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="PAYROLL_CATEGORY" Relationship="SFSAcademyModel.PYRL__PAYR_MONT_NI" FromRole="MONTHLY_PAYSLIP" ToRole="PAYROLL_CATEGORY" />
+        </EntityType>
+        <Association Name="APRV__EMPL_MONT_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.MONTHLY_PAYSLIP" Role="MONTHLY_PAYSLIP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MONTHLY_PAYSLIP">
+              <PropertyRef Name="APRV_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_EMPL_MONT_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.MONTHLY_PAYSLIP" Role="MONTHLY_PAYSLIP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MONTHLY_PAYSLIP">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PYRL__PAYR_MONT_NI">
+          <End Type="SFSAcademyModel.PAYROLL_CATEGORY" Role="PAYROLL_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.MONTHLY_PAYSLIP" Role="MONTHLY_PAYSLIP" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAYROLL_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="MONTHLY_PAYSLIP">
+              <PropertyRef Name="PYRL_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="INDIVIDUAL_PAYSLIP_CATGEORY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="SAL_DATE" Type="DateTime" Precision="3" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_DED" Type="Boolean" Nullable="false" />
+          <Property Name="INCL_EVRY_MONTH" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_INDI_NI" FromRole="INDIVIDUAL_PAYSLIP_CATGEORY" ToRole="EMPLOYEE" />
+        </EntityType>
+        <Association Name="EMP_I_EMPL_INDI_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.INDIVIDUAL_PAYSLIP_CATGEORY" Role="INDIVIDUAL_PAYSLIP_CATGEORY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="INDIVIDUAL_PAYSLIP_CATGEORY">
+              <PropertyRef Name="EMP_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7294,74 +7244,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEEs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE">
-              <MappingFragment StoreEntitySet="EMPLOYEE">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="RPTG_MGR_ID" ColumnName="RPTG_MGR_ID" />
-                <ScalarProperty Name="EMP_CAT_ID" ColumnName="EMP_CAT_ID" />
-                <ScalarProperty Name="EMP_NUM" ColumnName="EMP_NUM" />
-                <ScalarProperty Name="JOINING_DATE" ColumnName="JOINING_DATE" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
-                <ScalarProperty Name="JOB_TIL" ColumnName="JOB_TIL" />
-                <ScalarProperty Name="EMP_POS_ID" ColumnName="EMP_POS_ID" />
-                <ScalarProperty Name="EMP_DEPT_ID" ColumnName="EMP_DEPT_ID" />
-                <ScalarProperty Name="EMP_GRADE_ID" ColumnName="EMP_GRADE_ID" />
-                <ScalarProperty Name="QUAL" ColumnName="QUAL" />
-                <ScalarProperty Name="EXPNC_DETL" ColumnName="EXPNC_DETL" />
-                <ScalarProperty Name="EXPNC_YEAR" ColumnName="EXPNC_YEAR" />
-                <ScalarProperty Name="EXPNC_MONTH" ColumnName="EXPNC_MONTH" />
-                <ScalarProperty Name="STAT" ColumnName="STAT" />
-                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="MARITAL_STAT" ColumnName="MARITAL_STAT" />
-                <ScalarProperty Name="CHLD_CNT" ColumnName="CHLD_CNT" />
-                <ScalarProperty Name="FTHR_NAME" ColumnName="FTHR_NAME" />
-                <ScalarProperty Name="MTHR_NAME" ColumnName="MTHR_NAME" />
-                <ScalarProperty Name="HUSBND_NAME" ColumnName="HUSBND_NAME" />
-                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
-                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
-                <ScalarProperty Name="HOME_ADDR_LINE1" ColumnName="HOME_ADDR_LINE1" />
-                <ScalarProperty Name="HOME_ADDR_LINE2" ColumnName="HOME_ADDR_LINE2" />
-                <ScalarProperty Name="HOME_CITY" ColumnName="HOME_CITY" />
-                <ScalarProperty Name="HOME_STATE" ColumnName="HOME_STATE" />
-                <ScalarProperty Name="HOME_CTRY_ID" ColumnName="HOME_CTRY_ID" />
-                <ScalarProperty Name="HOME_PIN_CODE" ColumnName="HOME_PIN_CODE" />
-                <ScalarProperty Name="OFF_ADDR_LINE1" ColumnName="OFF_ADDR_LINE1" />
-                <ScalarProperty Name="OFF_ADDR_LINE2" ColumnName="OFF_ADDR_LINE2" />
-                <ScalarProperty Name="OFF_CITY" ColumnName="OFF_CITY" />
-                <ScalarProperty Name="OFF_STATE" ColumnName="OFF_STATE" />
-                <ScalarProperty Name="OFF_CTRY_ID" ColumnName="OFF_CTRY_ID" />
-                <ScalarProperty Name="OFF_PIN_CODE" ColumnName="OFF_PIN_CODE" />
-                <ScalarProperty Name="OFF_PH1" ColumnName="OFF_PH1" />
-                <ScalarProperty Name="OFF_PH2" ColumnName="OFF_PH2" />
-                <ScalarProperty Name="MOBL_PH" ColumnName="MOBL_PH" />
-                <ScalarProperty Name="HOME_PH" ColumnName="HOME_PH" />
-                <ScalarProperty Name="EML" ColumnName="EML" />
-                <ScalarProperty Name="FAX" ColumnName="FAX" />
-                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
-                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
-                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
-                <ScalarProperty Name="USRID" ColumnName="USRID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_ADDITIONAL_DETAIL">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL">
-              <MappingFragment StoreEntitySet="EMPLOYEE_ADDITIONAL_DETAIL">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="ADDL_FLD_ID" ColumnName="ADDL_FLD_ID" />
-                <ScalarProperty Name="ADDL_INFO" ColumnName="ADDL_INFO" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EMPLOYEE_ATTENDENCES">
             <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ATTENDENCES">
               <MappingFragment StoreEntitySet="EMPLOYEE_ATTENDENCES">
@@ -7415,17 +7297,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_GRADE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_GRADE">
-              <MappingFragment StoreEntitySet="EMPLOYEE_GRADE">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="GRADE_CODE" ColumnName="GRADE_CODE" />
-                <ScalarProperty Name="GRADE_NAME" ColumnName="GRADE_NAME" />
-                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EMPLOYEE_LEAVE">
             <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_LEAVE">
               <MappingFragment StoreEntitySet="EMPLOYEE_LEAVE">
@@ -7449,26 +7320,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="STAT" ColumnName="STAT" />
                 <ScalarProperty Name="MAX_LEAVE_CNT" ColumnName="MAX_LEAVE_CNT" />
                 <ScalarProperty Name="CARR_FRWD" ColumnName="CARR_FRWD" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_POSITION">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_POSITION">
-              <MappingFragment StoreEntitySet="EMPLOYEE_POSITION">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="POS_NAME" ColumnName="POS_NAME" />
-                <ScalarProperty Name="POS_DESCR" ColumnName="POS_DESCR" />
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_SALARY_STRUCTURE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE">
-              <MappingFragment StoreEntitySet="EMPLOYEE_SALARY_STRUCTURE">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="AMT" ColumnName="AMT" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7592,19 +7443,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FEE_DISCOUNT">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
-              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="DISC" ColumnName="DISC" />
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FINANCE_DONATION">
             <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_DONATION">
               <MappingFragment StoreEntitySet="FINANCE_DONATION">
@@ -7662,17 +7500,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FINANCE_TRANSACTION_TRIGGERS">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS">
-              <MappingFragment StoreEntitySet="FINANCE_TRANSACTION_TRIGGERS">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="FIN_CAT_ID" ColumnName="FIN_CAT_ID" />
-                <ScalarProperty Name="PCT" ColumnName="PCT" />
-                <ScalarProperty Name="TIL" ColumnName="TIL" />
-                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="GRADING_LEVEL">
             <EntityTypeMapping TypeName="SFSAcademyModel.GRADING_LEVEL">
               <MappingFragment StoreEntitySet="GRADING_LEVEL">
@@ -7716,19 +7543,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="INDIVIDUAL_PAYSLIP_CATGEORY">
-            <EntityTypeMapping TypeName="SFSAcademyModel.INDIVIDUAL_PAYSLIP_CATGEORY">
-              <MappingFragment StoreEntitySet="INDIVIDUAL_PAYSLIP_CATGEORY">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="SAL_DATE" ColumnName="SAL_DATE" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="AMT" ColumnName="AMT" />
-                <ScalarProperty Name="IS_DED" ColumnName="IS_DED" />
-                <ScalarProperty Name="INCL_EVRY_MONTH" ColumnName="INCL_EVRY_MONTH" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="LIABILITies">
             <EntityTypeMapping TypeName="SFSAcademyModel.LIABILITY">
               <MappingFragment StoreEntitySet="LIABILITY">
@@ -7740,23 +7554,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
                 <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
                 <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MONTHLY_PAYSLIP">
-            <EntityTypeMapping TypeName="SFSAcademyModel.MONTHLY_PAYSLIP">
-              <MappingFragment StoreEntitySet="MONTHLY_PAYSLIP">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="SAL_DATE" ColumnName="SAL_DATE" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
-                <ScalarProperty Name="AMT" ColumnName="AMT" />
-                <ScalarProperty Name="IS_APPR" ColumnName="IS_APPR" />
-                <ScalarProperty Name="APRV_ID" ColumnName="APRV_ID" />
-                <ScalarProperty Name="IS_RJCT" ColumnName="IS_RJCT" />
-                <ScalarProperty Name="RJCT_ID" ColumnName="RJCT_ID" />
-                <ScalarProperty Name="RSN" ColumnName="RSN" />
-                <ScalarProperty Name="RMRK" ColumnName="RMRK" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7812,18 +7609,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="OBSV_KIND" ColumnName="OBSV_KIND" />
                 <ScalarProperty Name="MAX_MKS" ColumnName="MAX_MKS" />
                 <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PAYROLL_CATEGORY">
-            <EntityTypeMapping TypeName="SFSAcademyModel.PAYROLL_CATEGORY">
-              <MappingFragment StoreEntitySet="PAYROLL_CATEGORY">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="PCT" ColumnName="PCT" />
-                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
-                <ScalarProperty Name="IS_DED" ColumnName="IS_DED" />
-                <ScalarProperty Name="STAT" ColumnName="STAT" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8174,20 +7959,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FEE_FINE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
-              <MappingFragment StoreEntitySet="FEE_FINE">
-                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
-                <ScalarProperty Name="FINE" ColumnName="FINE" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FINANCE_TRANSACTION">
             <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION">
               <MappingFragment StoreEntitySet="FINANCE_TRANSACTION">
@@ -8224,76 +7995,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="Size" ColumnName="Size" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="DocumentId" ColumnName="DocumentId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="STUDENTs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.STUDENT">
-              <MappingFragment StoreEntitySet="STUDENT">
-                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
-                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
-                <ScalarProperty Name="STDNT_CAT_ID" ColumnName="STDNT_CAT_ID" />
-                <ScalarProperty Name="USRID" ColumnName="USRID" />
-                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
-                <ScalarProperty Name="HAS_PD_FE" ColumnName="HAS_PD_FE" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
-                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
-                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
-                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
-                <ScalarProperty Name="IS_SMS_ENABL" ColumnName="IS_SMS_ENABL" />
-                <ScalarProperty Name="IMMDT_CNTCT_ID" ColumnName="IMMDT_CNTCT_ID" />
-                <ScalarProperty Name="EML" ColumnName="EML" />
-                <ScalarProperty Name="PH2" ColumnName="PH2" />
-                <ScalarProperty Name="PH1" ColumnName="PH1" />
-                <ScalarProperty Name="CTRY_ID" ColumnName="CTRY_ID" />
-                <ScalarProperty Name="PIN_CODE" ColumnName="PIN_CODE" />
-                <ScalarProperty Name="STATE" ColumnName="STATE" />
-                <ScalarProperty Name="CITY" ColumnName="CITY" />
-                <ScalarProperty Name="ADDR_LINE2" ColumnName="ADDR_LINE2" />
-                <ScalarProperty Name="ADDR_LINE1" ColumnName="ADDR_LINE1" />
-                <ScalarProperty Name="RLGN" ColumnName="RLGN" />
-                <ScalarProperty Name="LANG" ColumnName="LANG" />
-                <ScalarProperty Name="BIRTH_PLACE" ColumnName="BIRTH_PLACE" />
-                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
-                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
-                <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
-                <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Privileges">
-            <EntityTypeMapping TypeName="SFSAcademyModel.Privilege">
-              <MappingFragment StoreEntitySet="Privileges">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Privileges_Users">
-            <EntityTypeMapping TypeName="SFSAcademyModel.Privileges_Users">
-              <MappingFragment StoreEntitySet="Privileges_Users">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
-                <ScalarProperty Name="AddedBy" ColumnName="AddedBy" />
-                <ScalarProperty Name="PrivilegeId" ColumnName="PrivilegeId" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8396,6 +8097,265 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="REVISION_NUMBER" ColumnName="REVISION_NUMBER" />
                 <ScalarProperty Name="PRODUCT_ID" ColumnName="PRODUCT_ID" />
                 <ScalarProperty Name="PO_NUMBER" ColumnName="PO_NUMBER" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_DISCOUNT">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
+              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="DISC" ColumnName="DISC" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_FINE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
+              <MappingFragment StoreEntitySet="FEE_FINE">
+                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="FINE" ColumnName="FINE" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STUDENTs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.STUDENT">
+              <MappingFragment StoreEntitySet="STUDENT">
+                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
+                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
+                <ScalarProperty Name="STDNT_CAT_ID" ColumnName="STDNT_CAT_ID" />
+                <ScalarProperty Name="USRID" ColumnName="USRID" />
+                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
+                <ScalarProperty Name="HAS_PD_FE" ColumnName="HAS_PD_FE" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
+                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
+                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
+                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
+                <ScalarProperty Name="IS_SMS_ENABL" ColumnName="IS_SMS_ENABL" />
+                <ScalarProperty Name="IMMDT_CNTCT_ID" ColumnName="IMMDT_CNTCT_ID" />
+                <ScalarProperty Name="EML" ColumnName="EML" />
+                <ScalarProperty Name="PH2" ColumnName="PH2" />
+                <ScalarProperty Name="PH1" ColumnName="PH1" />
+                <ScalarProperty Name="CTRY_ID" ColumnName="CTRY_ID" />
+                <ScalarProperty Name="PIN_CODE" ColumnName="PIN_CODE" />
+                <ScalarProperty Name="STATE" ColumnName="STATE" />
+                <ScalarProperty Name="CITY" ColumnName="CITY" />
+                <ScalarProperty Name="ADDR_LINE2" ColumnName="ADDR_LINE2" />
+                <ScalarProperty Name="ADDR_LINE1" ColumnName="ADDR_LINE1" />
+                <ScalarProperty Name="RLGN" ColumnName="RLGN" />
+                <ScalarProperty Name="LANG" ColumnName="LANG" />
+                <ScalarProperty Name="BIRTH_PLACE" ColumnName="BIRTH_PLACE" />
+                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
+                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="ADMSN_DATE" ColumnName="ADMSN_DATE" />
+                <ScalarProperty Name="CLS_ROLL_NO" ColumnName="CLS_ROLL_NO" />
+                <ScalarProperty Name="ADMSN_NO" ColumnName="ADMSN_NO" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FINANCE_TRANSACTION_TRIGGERS">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FINANCE_TRANSACTION_TRIGGERS">
+              <MappingFragment StoreEntitySet="FINANCE_TRANSACTION_TRIGGERS">
+                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
+                <ScalarProperty Name="TIL" ColumnName="TIL" />
+                <ScalarProperty Name="PCT" ColumnName="PCT" />
+                <ScalarProperty Name="FIN_CAT_ID" ColumnName="FIN_CAT_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_POSITION">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_POSITION">
+              <MappingFragment StoreEntitySet="EMPLOYEE_POSITION">
+                <ScalarProperty Name="EMP_CAT_ID" ColumnName="EMP_CAT_ID" />
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="POS_DESCR" ColumnName="POS_DESCR" />
+                <ScalarProperty Name="POS_NAME" ColumnName="POS_NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_GRADE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_GRADE">
+              <MappingFragment StoreEntitySet="EMPLOYEE_GRADE">
+                <ScalarProperty Name="MAX_WKILY_HRS" ColumnName="MAX_WKILY_HRS" />
+                <ScalarProperty Name="MAX_DILY_HRS" ColumnName="MAX_DILY_HRS" />
+                <ScalarProperty Name="PRIR" ColumnName="PRIR" />
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
+                <ScalarProperty Name="GRADE_NAME" ColumnName="GRADE_NAME" />
+                <ScalarProperty Name="GRADE_CODE" ColumnName="GRADE_CODE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAYROLL_CATEGORY">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PAYROLL_CATEGORY">
+              <MappingFragment StoreEntitySet="PAYROLL_CATEGORY">
+                <ScalarProperty Name="STAT" ColumnName="STAT" />
+                <ScalarProperty Name="IS_DED" ColumnName="IS_DED" />
+                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
+                <ScalarProperty Name="PCT" ColumnName="PCT" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_ADDITIONAL_DETAIL">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL">
+              <MappingFragment StoreEntitySet="EMPLOYEE_ADDITIONAL_DETAIL">
+                <ScalarProperty Name="ADDL_INFO" ColumnName="ADDL_INFO" />
+                <ScalarProperty Name="ADDL_FLD_ID" ColumnName="ADDL_FLD_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_ADDITIONAL_FIELD">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD">
+              <MappingFragment StoreEntitySet="EMPLOYEE_ADDITIONAL_FIELD">
+                <ScalarProperty Name="STAT" ColumnName="STAT" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEEs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE">
+              <MappingFragment StoreEntitySet="EMPLOYEE">
+                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
+                <ScalarProperty Name="USRID" ColumnName="USRID" />
+                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
+                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
+                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
+                <ScalarProperty Name="FAX" ColumnName="FAX" />
+                <ScalarProperty Name="EML" ColumnName="EML" />
+                <ScalarProperty Name="HOME_PH" ColumnName="HOME_PH" />
+                <ScalarProperty Name="MOBL_PH" ColumnName="MOBL_PH" />
+                <ScalarProperty Name="OFF_PH2" ColumnName="OFF_PH2" />
+                <ScalarProperty Name="OFF_PH1" ColumnName="OFF_PH1" />
+                <ScalarProperty Name="OFF_PIN_CODE" ColumnName="OFF_PIN_CODE" />
+                <ScalarProperty Name="OFF_CTRY_ID" ColumnName="OFF_CTRY_ID" />
+                <ScalarProperty Name="OFF_STATE" ColumnName="OFF_STATE" />
+                <ScalarProperty Name="OFF_CITY" ColumnName="OFF_CITY" />
+                <ScalarProperty Name="OFF_ADDR_LINE2" ColumnName="OFF_ADDR_LINE2" />
+                <ScalarProperty Name="OFF_ADDR_LINE1" ColumnName="OFF_ADDR_LINE1" />
+                <ScalarProperty Name="HOME_PIN_CODE" ColumnName="HOME_PIN_CODE" />
+                <ScalarProperty Name="HOME_CTRY_ID" ColumnName="HOME_CTRY_ID" />
+                <ScalarProperty Name="HOME_STATE" ColumnName="HOME_STATE" />
+                <ScalarProperty Name="HOME_CITY" ColumnName="HOME_CITY" />
+                <ScalarProperty Name="HOME_ADDR_LINE2" ColumnName="HOME_ADDR_LINE2" />
+                <ScalarProperty Name="HOME_ADDR_LINE1" ColumnName="HOME_ADDR_LINE1" />
+                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
+                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
+                <ScalarProperty Name="HUSBND_NAME" ColumnName="HUSBND_NAME" />
+                <ScalarProperty Name="MTHR_NAME" ColumnName="MTHR_NAME" />
+                <ScalarProperty Name="FTHR_NAME" ColumnName="FTHR_NAME" />
+                <ScalarProperty Name="CHLD_CNT" ColumnName="CHLD_CNT" />
+                <ScalarProperty Name="MARITAL_STAT" ColumnName="MARITAL_STAT" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
+                <ScalarProperty Name="STAT" ColumnName="STAT" />
+                <ScalarProperty Name="EXPNC_MONTH" ColumnName="EXPNC_MONTH" />
+                <ScalarProperty Name="EXPNC_YEAR" ColumnName="EXPNC_YEAR" />
+                <ScalarProperty Name="EXPNC_DETL" ColumnName="EXPNC_DETL" />
+                <ScalarProperty Name="QUAL" ColumnName="QUAL" />
+                <ScalarProperty Name="EMP_GRADE_ID" ColumnName="EMP_GRADE_ID" />
+                <ScalarProperty Name="EMP_DEPT_ID" ColumnName="EMP_DEPT_ID" />
+                <ScalarProperty Name="EMP_POS_ID" ColumnName="EMP_POS_ID" />
+                <ScalarProperty Name="JOB_TIL" ColumnName="JOB_TIL" />
+                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="JOINING_DATE" ColumnName="JOINING_DATE" />
+                <ScalarProperty Name="EMP_NUM" ColumnName="EMP_NUM" />
+                <ScalarProperty Name="EMP_CAT_ID" ColumnName="EMP_CAT_ID" />
+                <ScalarProperty Name="RPTG_MGR_ID" ColumnName="RPTG_MGR_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_SALARY_STRUCTURE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE">
+              <MappingFragment StoreEntitySet="EMPLOYEE_SALARY_STRUCTURE">
+                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="AMT" ColumnName="AMT" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRIVILEGES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE">
+              <MappingFragment StoreEntitySet="PRIVILEGES">
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PRIVILEGE_TAG" ColumnName="PRIVILEGE_TAG" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRIVILEGES_USERS">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGES_USERS">
+              <MappingFragment StoreEntitySet="PRIVILEGES_USERS">
+                <ScalarProperty Name="PRIVILEGE_ID" ColumnName="PRIVILEGE_ID" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MONTHLY_PAYSLIP">
+            <EntityTypeMapping TypeName="SFSAcademyModel.MONTHLY_PAYSLIP">
+              <MappingFragment StoreEntitySet="MONTHLY_PAYSLIP">
+                <ScalarProperty Name="RMRK" ColumnName="RMRK" />
+                <ScalarProperty Name="RSN" ColumnName="RSN" />
+                <ScalarProperty Name="RJCT_ID" ColumnName="RJCT_ID" />
+                <ScalarProperty Name="IS_RJCT" ColumnName="IS_RJCT" />
+                <ScalarProperty Name="APRV_ID" ColumnName="APRV_ID" />
+                <ScalarProperty Name="IS_APPR" ColumnName="IS_APPR" />
+                <ScalarProperty Name="AMT" ColumnName="AMT" />
+                <ScalarProperty Name="PYRL_CAT_ID" ColumnName="PYRL_CAT_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="SAL_DATE" ColumnName="SAL_DATE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="INDIVIDUAL_PAYSLIP_CATGEORY">
+            <EntityTypeMapping TypeName="SFSAcademyModel.INDIVIDUAL_PAYSLIP_CATGEORY">
+              <MappingFragment StoreEntitySet="INDIVIDUAL_PAYSLIP_CATGEORY">
+                <ScalarProperty Name="INCL_EVRY_MONTH" ColumnName="INCL_EVRY_MONTH" />
+                <ScalarProperty Name="IS_DED" ColumnName="IS_DED" />
+                <ScalarProperty Name="AMT" ColumnName="AMT" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="SAL_DATE" ColumnName="SAL_DATE" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

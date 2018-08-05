@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SFSAcademy.Models.FinanceTransaction>
+@{
+    ViewBag.Title = "Income_Details";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Income</h1>
+    <h3>Income List</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("pdf Report", "Income_Details_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE,id = Model.FirstOrDefault().TransactionCategoryData.ID }, new { @target = "_blank" })</li>
+    </ul>
+</div>
+@if (Model != null)
+{
+    <div id="page-yield">
+        <div class="bread_crumb">
+            @Html.ActionLink("Finance", "Index") &raquo;
+            @Html.ActionLink("Transactions", "Transactions") &raquo;
+            @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+            @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+            @Model.FirstOrDefault().TransactionCategoryData.NAME
+        </div>
+        <table id="listing" align="center" width="100%">
+            <tr class="tr-head">
+                <td class="name">Name</td>
+                <td class="description">Description</td>
+                <td class="amount">Amount</td>
+                <td class="transaction_date">Transaction Date</td>
+                <td class="transaction_date">Receipt No</td>
+                <td class="options"></td>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{ int index = 0; }
+            @foreach (var item in Model)
+            {
+                decimal tran_amount = item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == "Y" ? (decimal)item.FinanceTransactionData.AMT : -1 * (decimal)item.FinanceTransactionData.AMT;
+                string selectedRow = "tr-even";
+                if (index % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="name">@item.FinanceTransactionData.TIL</td>
+                    <td class="description">@item.FinanceTransactionData.DESCR</td>
+                    <td class="amount">@tran_amount</td>
+                    <td class="transaction_date">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+                    <td class="receipt_no">@item.FinanceTransactionData.RCPT_NO</td>
+                    @if (item.TransactionCategoryData.IS_INCM == "Y")
+                    {
+                        <td><small>@Html.ActionLink("Edit", "Income_Edit", new { id = item.FinanceTransactionData.ID }) | @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID })</small></td>
+                    }
+                    else
+                    {
+                        <td><small>@Html.ActionLink("Edit", "Expense_Edit", new { id = item.FinanceTransactionData.ID }) | @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID })</small></td>
+                    }
+                    
+                </tr>
+            }
+
+        </table>
+    </div>
+}
+else
+{
+    <br />
+    <br />
+    <p class="flash-msg">No Transaction for the given period.</p>
+}
+
+

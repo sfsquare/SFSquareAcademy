@@ -1,0 +1,66 @@
+﻿@model IEnumerable<SFSAcademy.Models.TransactionTriggers>
+@{
+    ViewBag.Title = "Automatic_Transactions";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $('#loadPartialView').click(function () {
+            /* Request the partial view with .get request. */
+            $(".LoaderBox2").show();
+        $.get('/Finance/Transaction_Trigger_Create_Form', function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#modal-box').html(data);
+            /* little fade in effect */
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+        });
+
+    });
+   });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Fianance</h1>
+    <h3>Automatic Transactions</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div id="flash_box">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
+    <div class="box">
+        <div class="link-heading">
+            <button id="loadPartialView" type="button" class="user_button">Create <span class="glyphicon glyphicon-play"></span></button>
+            <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            <div class="link-descr">Create Auto Transaction</div>
+        </div>
+        <div class="link-descr"></div>
+        <div id="transaction-triggers-list">
+            @Html.Partial("~/Views/Finance/_Transaction_Triggers_List.cshtml", Model)
+        </div>
+        <div id="modal-box" style="display:none;"></div>
+    </div>
+</div>
+

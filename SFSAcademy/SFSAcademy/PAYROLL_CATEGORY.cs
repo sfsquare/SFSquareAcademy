@@ -25,7 +25,7 @@ namespace SFSAcademy
         public string NAME { get; set; }
         public Nullable<double> PCT { get; set; }
         public Nullable<int> PYRL_CAT_ID { get; set; }
-        public string IS_DED { get; set; }
+        public bool IS_DED { get; set; }
         public string STAT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

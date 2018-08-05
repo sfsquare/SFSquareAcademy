@@ -23,6 +23,5 @@ namespace SFSAcademy
         public string IS_AMT { get; set; }
     
         public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }
-        public virtual STUDENT STUDENT { get; set; }
     }
 }

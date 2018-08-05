@@ -19,55 +19,16 @@ namespace SFSAcademy.Controllers
         private SFSAcademyEntities db = new SFSAcademyEntities();
 
         // GET: Student
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ActionResult Index()
         {
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = searchString;
-
             var StudentS = (from st in db.STUDENTs
                             join b in db.BATCHes on st.BTCH_ID equals b.ID
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                            where st.IS_DEL == "N" && st.IS_ACT == "Y"
+                            where st.IS_DEL == "N"
                             orderby st.LAST_NAME, b.NAME
                             select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                StudentS = StudentS.Where(s => s.StudentData.LAST_NAME.Contains(searchString)
-                                       || s.StudentData.FIRST_NAME.Contains(searchString) || s.StudentData.ADMSN_NO.Contains(searchString));
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    StudentS = StudentS.OrderByDescending(s => s.StudentData.LAST_NAME);
-                    break;
-                case "Date":
-                    StudentS = StudentS.OrderBy(s => s.StudentData.ADMSN_DATE);
-                    break;
-                case "date_desc":
-                    StudentS = StudentS.OrderByDescending(s => s.StudentData.ADMSN_DATE);
-                    break;
-                default:  // Name ascending 
-                    StudentS = StudentS.OrderBy(s => s.StudentData.LAST_NAME);
-                    break;
-            }
-
-            int pageSize = 100;
-            int pageNumber = (page ?? 1);
-            return View(StudentS.ToPagedList(pageNumber, pageSize));
-            //return View(db.USERS.ToList());
+            return View(StudentS.ToList());
         }
 
 
@@ -121,7 +82,7 @@ namespace SFSAcademy.Controllers
             var StudentS = (from st in db.STUDENTs
                             join b in db.BATCHes on st.BTCH_ID equals b.ID
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                            where st.IS_DEL == "N" && st.IS_ACT == "Y"
+                            where st.IS_DEL == "N"
                             orderby st.LAST_NAME, b.NAME
                             select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
@@ -331,7 +292,7 @@ namespace SFSAcademy.Controllers
             var StudentS = (from st in db.STUDENTs
                             join b in db.BATCHes on st.BTCH_ID equals b.ID
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                            where st.IS_DEL == "N" && st.IS_ACT == "Y"
+                            where st.IS_DEL == "N"
                             orderby st.LAST_NAME, b.NAME
                             select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
@@ -429,6 +390,7 @@ namespace SFSAcademy.Controllers
         // GET: Student
         public ActionResult AdvancedSearch(string sortOrder, string currentFilter, string searchString, int? page, string currentFilter2, string AdmissionNumber, string currentFilter3, string HadPdFees, int? currentFilter4, int? CourseBatches, string currentFilter5, string Category, string currentFilter6, string StudentGender, string currentFilter7, string BloodGroup, string currentFilter8, string StudentGrade, string currentFilter9, string StudentBirthFromDate, string currentFilter10, string StudentBirthToDate, string currentFilter11, string ActiveStudent, string currentFilter12, string MissingDetl)
         {
+            DateTime NullDate = DateTime.Parse("31-12-9999");
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.NameSortParm2 = sortOrder == "FName" ? "name_desc_2" : "FName";
@@ -521,7 +483,14 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(HadPdFees))
             {
-                StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE.Contains(HadPdFees));
+                if(HadPdFees == "N")
+                {
+                    StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE==false);
+                }
+                else
+                {
+                    StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE == true);
+                }
             }
             if (!CourseBatches.Equals(null))
             {
@@ -556,7 +525,7 @@ namespace SFSAcademy.Controllers
                 switch (MissingDetl)
                 {
                     case "DateOfBirth":
-                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null));
+                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null) || s.StudentData.DOB == NullDate);
                         break;
                     case "PhoneNumber":
                         StudentS = StudentS.Where(s => s.StudentData.PH1.Equals(null) && s.StudentData.PH2.Equals(null));
@@ -645,7 +614,7 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult AdvancedSearchPdf(string searchString, string AdmissionNumber, string HadPdFees, int? CourseBatches, string Category, string StudentGender, string BloodGroup, string StudentGrade, string StudentBirthFromDate, string StudentBirthToDate, string ActiveStudent, string MissingDetl)
         {
-
+            DateTime NullDate = DateTime.Parse("31-12-9999");
             DateTime? dFrom; DateTime dtFrom;
             dFrom = DateTime.TryParse(StudentBirthFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             DateTime? dTo; DateTime dtTo;
@@ -682,7 +651,14 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(HadPdFees))
             {
-                StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE.Contains(HadPdFees));
+                if(HadPdFees == "N")
+                {
+                    StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE==false);
+                }
+                else
+                {
+                    StudentS = StudentS.Where(s => s.StudentData.HAS_PD_FE==true);
+                }
             }
             if (!CourseBatches.Equals(null))
             {
@@ -717,7 +693,7 @@ namespace SFSAcademy.Controllers
                 switch (MissingDetl)
                 {
                     case "DateOfBirth":
-                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null));
+                        StudentS = StudentS.Where(s => s.StudentData.DOB.Equals(null) || s.StudentData.DOB == NullDate);
                         break;
                     case "PhoneNumber":
                         StudentS = StudentS.Where(s => s.StudentData.PH1.Equals(null) && s.StudentData.PH2.Equals(null));
@@ -844,6 +820,7 @@ namespace SFSAcademy.Controllers
 
                 sTUDENT.IS_ACT = "Y";
                 sTUDENT.IS_DEL = "N";
+                sTUDENT.HAS_PD_FE = false;
                 sTUDENT.CREATED_AT = System.DateTime.Now;
                 sTUDENT.UPDATED_AT = System.DateTime.Now;
                 db.STUDENTs.Add(sTUDENT);
@@ -959,10 +936,7 @@ namespace SFSAcademy.Controllers
                 var StdResult = from u in db.STUDENTs where (u.ADMSN_NO == sTUDENT.ADMSN_NO) select u;
                 if (StdResult.Count() != 0)
                 {
-                    //var StdRecord = StdResult.First();
-                    var StdUserFinal = from u in db.USERS where (u.USRNAME == FullName) select u;
-
-                    StdResult.First().USRID = StdUserFinal.First().ID;
+                    StdResult.First().USRID = StdUser.ID;
                     db.SaveChanges();
                 }
                 // some code 
@@ -1192,7 +1166,9 @@ namespace SFSAcademy.Controllers
             }
 
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Course and Batch" });
-            ViewBag.BTCH_ID = options;
+            ViewBag.BTCH_ID_VAL = options;
+
+            ViewBag.BTCH_ID = sTUDENT.BTCH_ID;
             //End of Code to get batch and Course
             return View(sTUDENT);
         }
@@ -1278,13 +1254,183 @@ namespace SFSAcademy.Controllers
                 }
 
                 options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Course and Batch" });
-                ViewBag.BTCH_ID = options;
+                ViewBag.BTCH_ID_VAL = options;
+
+                ViewBag.BTCH_ID = sTUDENT.BTCH_ID;
                 return View(sTUDENTtOuPDATE);
             }
             ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENT.NTLTY_ID);
             ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENT.STDNT_CAT_ID);
             ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME", sTUDENT.USRID);
             return View(sTUDENT);
+        }
+        public ActionResult Remove(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            STUDENT sTUDENT = db.STUDENTs.Find(id);
+            if (sTUDENT == null)
+            {
+                return HttpNotFound();
+            }
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where bt.ID == sTUDENT.BTCH_ID
+                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    .OrderBy(x => x.BatchData.ID).ToList();
+            ViewBag.BTCH_ID = string.Concat(queryCourceBatch.FirstOrDefault().CourseData.CODE, "-", queryCourceBatch.FirstOrDefault().BatchData.NAME);
+            return View(sTUDENT);
+        }
+
+        public ActionResult Change_To_Former(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            STUDENT sTUDENT = db.STUDENTs.Find(id);
+            if (sTUDENT == null)
+            {
+                return HttpNotFound();
+            }
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where bt.ID == sTUDENT.BTCH_ID
+                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    .OrderBy(x => x.BatchData.ID).ToList();
+            ViewBag.BTCH_ID = string.Concat(queryCourceBatch.FirstOrDefault().CourseData.CODE, "-", queryCourceBatch.FirstOrDefault().BatchData.NAME);
+
+            var paid_fees_val = (from ff in db.FINANCE_FEE
+                                 join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                 join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                 where ff.STDNT_ID== sTUDENT.ID && ff.IS_PD == "N"
+                                 select new Models.StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+            ViewData["paid_fees"] = paid_fees_val;
+            Session["STD_ID_FOR_TC"] = sTUDENT.ID;
+
+            return View(sTUDENT);
+        }
+
+        // GET: Fee Index
+        public ActionResult Student_TC_Generate(string id)
+        {
+            STUDENT sTUDENT = db.STUDENTs.Find(Convert.ToInt32(this.Session["STD_ID_FOR_TC"]));
+            Session.Remove("STD_ID_FOR_TC");
+            ViewBag.ADMSN_NO = sTUDENT.ADMSN_NO;
+            ViewBag.Status_Id = id;
+            var query = from m in db.GUARDIANs
+                        where m.WARD_ID == sTUDENT.ID
+                        select m;
+            foreach (var entity in query.ToList())
+            {
+                db.GUARDIANs.Remove(entity);
+                try { db.SaveChanges(); }
+                catch (Exception e)
+                {
+                    ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return PartialView("_Student_TC_Generate");
+                }
+
+            }
+
+            var aRCHIVEDsTD = new ARCHIVED_STUDENT() { ADMSN_NO = sTUDENT.ADMSN_NO, CLS_ROLL_NO = sTUDENT.CLS_ROLL_NO, ADMSN_DATE = sTUDENT.ADMSN_DATE, FIRST_NAME = sTUDENT.FIRST_NAME, MID_NAME = sTUDENT.MID_NAME, LAST_NAME = sTUDENT.LAST_NAME, BTCH_ID = sTUDENT.BTCH_ID, DOB = sTUDENT.DOB, GNDR = sTUDENT.GNDR, BLOOD_GRP = sTUDENT.BLOOD_GRP, BIRTH_PLACE = sTUDENT.BIRTH_PLACE, NTLTY_ID = sTUDENT.NTLTY_ID, LANG = sTUDENT.LANG, RLGN= sTUDENT.RLGN, ADDR_LINE1= sTUDENT.ADDR_LINE1, ADDR_LINE2= sTUDENT.ADDR_LINE2, CITY= sTUDENT.CITY, STATE= sTUDENT.STATE, PIN_CODE= sTUDENT.PIN_CODE, CTRY_ID= sTUDENT.CTRY_ID, PH1= sTUDENT.PH1.ToString(), PH2= sTUDENT.PH2.ToString(), EML= sTUDENT.EML, PHTO_FILENAME= sTUDENT.PHTO_FILENAME, PHTO_CNTNT_TYPE= sTUDENT.PHTO_CNTNT_TYPE, PHTO_DATA= sTUDENT.PHTO_DATA.ToString(), STAT_DESCR= id.ToString(), IS_ACT= sTUDENT.IS_ACT, IS_DEL= sTUDENT.IS_DEL, IMMDT_CNTCT_ID= sTUDENT.IMMDT_CNTCT_ID, IS_SMS_ENABL= sTUDENT.IS_SMS_ENABL, CREATED_AT= sTUDENT.CREATED_AT, UPDATED_AT= sTUDENT.UPDATED_AT, PHTO_FILE_SIZE= sTUDENT.PHTO_FILE_SIZE, FRM_ID= sTUDENT.ID, STDNT_CAT_ID = sTUDENT.STDNT_CAT_ID};
+            db.ARCHIVED_STUDENT.Add(aRCHIVEDsTD);
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.TCErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                return PartialView("_Student_TC_Generate");
+            }
+            catch (Exception e)
+            {
+                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                return PartialView("_Student_TC_Generate");
+            }
+
+
+            sTUDENT.IS_ACT = "N";
+            sTUDENT.IS_DEL = "Y";
+            sTUDENT.STAT_DESCR = id.ToString();
+            sTUDENT.UPDATED_AT = System.DateTime.Now;
+            db.Entry(sTUDENT).State = EntityState.Modified;
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.TCErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                return PartialView("_Student_TC_Generate");
+            }
+            catch (Exception e)
+            {
+                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                return PartialView("_Student_TC_Generate");
+            }
+
+
+            return PartialView("_Student_TC_Generate");
+        }
+
+        // GET: Fee Index
+        public ActionResult Generate_TC_pdf(string id, string Status_Id)
+        {
+
+            var StudentVal = (from st in db.STUDENTs
+                           join b in db.BATCHes on st.BTCH_ID equals b.ID into gi
+                           from subb in gi.DefaultIfEmpty()
+                           join c in db.COURSEs on subb.CRS_ID equals c.ID into gj
+                           from subc in gj.DefaultIfEmpty()
+                           join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
+                           from subemp in gm.DefaultIfEmpty()
+                           join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
+                           from subgrd in gd.DefaultIfEmpty()
+                           where st.ADMSN_NO == id
+                           orderby st.LAST_NAME, subb.NAME
+                           select new Models.StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+
+            if (StudentVal.FirstOrDefault().GuardianData == null)
+            {
+                ViewBag.GuardianMessage = "No Parents added to this Student yet. Please click on 'Add Parents' button to add parents.";
+            }
+            if (Status_Id == "1")
+            { ViewBag.Status_Descrition = "Not happy with studies"; }
+            else if (Status_Id == "2")
+            { ViewBag.Status_Descrition = "Not happy with environment"; }
+            else if(Status_Id == "3")
+            { ViewBag.Status_Descrition = "Cannot afford fee"; }
+            else if(Status_Id == "4")
+            { ViewBag.Status_Descrition = "Family moving to other place"; }
+            else if(Status_Id == "5")
+            { ViewBag.Status_Descrition = "Have concerns with teaching faculties"; }
+            else if(Status_Id == "6")
+            { ViewBag.Status_Descrition = "No transport facility from my place"; }
+            else if(Status_Id == "7")
+            { ViewBag.Status_Descrition = "Getting better options in other school"; }
+            else if(Status_Id == "8")
+            { ViewBag.Status_Descrition = "Have completed all the classes school offers"; }
+            else
+            { ViewBag.Status_Descrition = "Other reasons"; }
+            //ViewBag.Status_Descrition = Status_Id.Equals(1) ? "" : "";
+            var Nationality = db.COUNTRies.Find(StudentVal.FirstOrDefault().StudentData.NTLTY_ID);
+            ViewBag.NTLTY_ID = Nationality.NTLTY;
+            var Category = db.STUDENT_CATGEORY.Find(StudentVal.FirstOrDefault().StudentData.STDNT_CAT_ID);
+            ViewBag.STDNT_CAT_ID = Category.NAME;
+            var Country = db.COUNTRies.Find(StudentVal.FirstOrDefault().StudentData.CTRY_ID);
+            ViewBag.CTRY_ID = Country.CTRY_NAME;
+
+            return View(StudentVal.ToList());
         }
 
         // GET: Student/Delete/5
@@ -1324,22 +1470,50 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            STUDENT sTUDENT = db.STUDENTs.Find(id);
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    .OrderBy(x => x.BatchData.ID).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatch)
+            {
+                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = BatchFullName;
+                result.Value = item.BatchData.ID.ToString();
+                result.Selected = item.BatchData.ID == sTUDENT.BTCH_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            ViewBag.BTCH_ID = options;
+
             var query = from m in db.GUARDIANs
                         where m.WARD_ID == id
                         select m;
             foreach (var entity in query.ToList())
             {
                 db.GUARDIANs.Remove(entity);
-                db.SaveChanges();
+                try { db.SaveChanges();}
+                catch (Exception e)
+                {
+                    ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", e.InnerException.InnerException.Message);
+                    return View(sTUDENT);
+                }
 
-            }
-            STUDENT sTUDENT = db.STUDENTs.Find(id);
+            }           
             sTUDENT.IS_ACT = "N";
             sTUDENT.IS_DEL = "Y";
             sTUDENT.UPDATED_AT = System.DateTime.Now;
             db.Entry(sTUDENT).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            try { db.SaveChanges(); ViewBag.DeleteMessage = "Student deleted from system successfully"; }
+            catch (Exception e)
+            {
+                ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", e.InnerException.InnerException.Message);
+                return View(sTUDENT);
+            }
+            return View(sTUDENT);
         }
 
         protected override void Dispose(bool disposing)
@@ -1453,7 +1627,7 @@ namespace SFSAcademy.Controllers
                             from subemp in gm.DefaultIfEmpty()
                             join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
                             from subgrd in gd.DefaultIfEmpty()
-                           where st.ID == Std_id && st.IS_ACT =="Y" && st.IS_DEL == "N"
+                           where st.ID == Std_id && st.IS_DEL == "N"
                            orderby st.LAST_NAME, subb.NAME
                             select new Models.StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc),  EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
@@ -1712,6 +1886,275 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Admission2", "Student", new { Std_id = Std_id });
         }
 
+
+        // GET: Student/Guardian Details
+        public ActionResult Fees(int? id)
+        {
+            STUDENT student = db.STUDENTs.Find(id);
+            var StudentValDefaulters = (from ff in db.FINANCE_FEE
+                                        join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                        join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                        where st.ID== id && fc.IS_DEL == "N"
+                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+            ViewData["dates"] = StudentValDefaulters;
+            var batch_val = (from cs in db.COURSEs
+                             join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                             where bt.ID == student.BTCH_ID
+                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             .OrderBy(x => x.BatchData.ID).ToList();
+            ViewData["batch"] = batch_val;
+
+            var paid_fees_val = (from ff in db.FINANCE_FEE
+                                 join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                 join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                 join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                 where st.ID == id
+                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewData["paid_fees"] = paid_fees_val;
+
+            var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
+                                       join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
+                                       join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
+                                       where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == "N" || fc.IS_DEL != null)
+                                       select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+            ViewData["fee_particulars"] = fee_particulars_val;
+
+            var batch_discounts_val = (from ff in db.FEE_DISCOUNT
+                                       where ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                       select ff);
+            ViewData["batch_discounts"] = batch_discounts_val;
+            var student_discounts_val = (from ff in db.FEE_DISCOUNT
+                                         where ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                         select ff);
+            ViewData["student_discounts"] = student_discounts_val;
+            var category_discounts_val = (from ff in db.FEE_DISCOUNT
+                                          where ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                          select ff);
+            ViewData["category_discounts"] = category_discounts_val;
+
+
+
+            var batch_fine_val = (from ff in db.FEE_FINE
+                                  where ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                  select ff);
+            ViewData["batch_fine"] = batch_fine_val;
+            var student_fine_val = (from ff in db.FEE_FINE
+                                    where ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                    select ff);
+            ViewData["student_fine"] = student_fine_val;
+
+            var category_fine_val = (from ff in db.FEE_FINE
+                                     where ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                     select ff);
+            ViewData["category_fine"] = category_fine_val;
+
+            return View(student);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Fees([Bind(Include = "ID,ADMSN_NO,CLS_ROLL_NO,ADMSN_DATE,FIRST_NAME,MID_NAME,LAST_NAME,BTCH_ID,DOB,GNDR,BLOOD_GRP,BIRTH_PLACE,LANG,RLGN,ADDR_LINE1,ADDR_LINE2,CITY,STATE,PIN_CODE,CTRY_ID,PH1,PH2,EML,IMMDT_CNTCT_ID,IS_SMS_ENABL,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,STAT_DESCR,IS_ACT,IS_DEL,CREATED_AT,UPDATED_AT,HAS_PD_FE,PHTO_FILE_SIZE,USRID,STDNT_CAT_ID,NTLTY_ID,IMAGE_DOCUMENTS_ID")] STUDENT sTUDENT)
+        {
+            if (ModelState.IsValid)
+            {
+
+                STUDENT sTUDENTtOuPDATE = db.STUDENTs.Find(sTUDENT.ID);
+
+                sTUDENTtOuPDATE.HAS_PD_FE = sTUDENT.HAS_PD_FE;
+
+                sTUDENTtOuPDATE.UPDATED_AT = System.DateTime.Now;
+                db.Entry(sTUDENTtOuPDATE).State = EntityState.Modified;
+                try { db.SaveChanges(); ViewBag.ErrorMessage = "Student's Details updated successfully."; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+
+                STUDENT student = db.STUDENTs.Find(sTUDENT.ID);
+                var StudentValDefaulters = (from ff in db.FINANCE_FEE
+                                            join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                            join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                            where st.ID == sTUDENT.ID && fc.IS_DEL == "N"
+                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                ViewData["dates"] = StudentValDefaulters;
+                var batch_val = (from cs in db.COURSEs
+                                 join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                 where bt.ID == student.BTCH_ID
+                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 .OrderBy(x => x.BatchData.ID).ToList();
+                ViewData["batch"] = batch_val;
+
+                var paid_fees_val = (from ff in db.FINANCE_FEE
+                                     join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                     join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                     join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                     where st.ID == sTUDENT.ID
+                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                ViewData["paid_fees"] = paid_fees_val;
+
+                var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
+                                           join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
+                                           join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
+                                           where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == "N" || fc.IS_DEL != null)
+                                           select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                ViewData["fee_particulars"] = fee_particulars_val;
+
+                var batch_discounts_val = (from ff in db.FEE_DISCOUNT
+                                           where ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                           select ff);
+                ViewData["batch_discounts"] = batch_discounts_val;
+                var student_discounts_val = (from ff in db.FEE_DISCOUNT
+                                             where ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                             select ff);
+                ViewData["student_discounts"] = student_discounts_val;
+                var category_discounts_val = (from ff in db.FEE_DISCOUNT
+                                              where ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                              select ff);
+                ViewData["category_discounts"] = category_discounts_val;
+
+
+
+                var batch_fine_val = (from ff in db.FEE_FINE
+                                      where ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                      select ff);
+                ViewData["batch_fine"] = batch_fine_val;
+                var student_fine_val = (from ff in db.FEE_FINE
+                                        where ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                        select ff);
+                ViewData["student_fine"] = student_fine_val;
+
+                var category_fine_val = (from ff in db.FEE_FINE
+                                         where ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                         select ff);
+                ViewData["category_fine"] = category_fine_val;
+
+                return View(sTUDENTtOuPDATE);
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with ModelState.";
+            return View(sTUDENT);
+        }
+        // GET: Student/Guardian Details
+        public ActionResult Fee_Details(int? id, int? id2)
+        {
+            STUDENT student = db.STUDENTs.Find(id);
+            var StudentValDefaulters = (from ff in db.FINANCE_FEE
+                                        join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                        join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                        where st.ID == id && fc.IS_DEL == "N" && fc.ID==id2
+                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+            ViewData["dates"] = StudentValDefaulters;
+            var batch_val = (from cs in db.COURSEs
+                             join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                             where bt.ID == student.BTCH_ID
+                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             .OrderBy(x => x.BatchData.ID).ToList();
+            ViewData["batch"] = batch_val;
+
+            var paid_fees_val = (from ff in db.FINANCE_FEE
+                                 join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                 join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                 join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                 where st.ID == id && fc.ID == id2
+                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+            ViewData["paid_fees"] = paid_fees_val;
+
+            var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
+                                       join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
+                                       join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
+                                       where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == "N" || fc.IS_DEL != null) && fcol.ID == id2 && (ff.STDNT_ID == student.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == student.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                       select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+            ViewData["fee_particulars"] = fee_particulars_val;
+
+            var batch_discounts_val = (from ff in db.FEE_DISCOUNT
+                                       where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                       select ff);
+            ViewData["batch_discounts"] = batch_discounts_val;
+            var student_discounts_val = (from ff in db.FEE_DISCOUNT
+                                         where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                         select ff);
+            ViewData["student_discounts"] = student_discounts_val;
+            var category_discounts_val = (from ff in db.FEE_DISCOUNT
+                                          where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                          select ff);
+            ViewData["category_discounts"] = category_discounts_val;
+
+
+
+            var batch_fine_val = (from ff in db.FEE_FINE
+                                  where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == student.BTCH_ID
+                                  select ff);
+            ViewData["batch_fine"] = batch_fine_val;
+            var student_fine_val = (from ff in db.FEE_FINE
+                                    where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student.ID
+                                    select ff);
+            ViewData["student_fine"] = student_fine_val;
+
+            var category_fine_val = (from ff in db.FEE_FINE
+                                     where ff.FIN_FEE_CAT_ID == StudentValDefaulters.FirstOrDefault().FeeCollectionData.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
+                                     select ff);
+            ViewData["category_fine"] = category_fine_val;
+
+            decimal total_discount_val = 0;
+            decimal total_payable = 0;
+            foreach (var item in fee_particulars_val)
+            {
+                total_payable = total_payable + (decimal)item.FeeParticularData.AMT;
+            }
+            ViewBag.total_payable = total_payable;
+            if (batch_discounts_val != null && batch_discounts_val.Count() != 0)
+            {
+                foreach (var item in batch_discounts_val)
+                {
+                    total_discount_val += item.IS_AMT == "Y" ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                }
+            }
+            if (student_discounts_val != null && student_discounts_val.Count() != 0)
+            {
+                foreach (var item in student_discounts_val)
+                {
+                    total_discount_val += item.IS_AMT == "Y" ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                }
+            }
+            if (category_discounts_val != null && category_discounts_val.Count() != 0)
+            {
+                foreach (var item in category_discounts_val)
+                {
+                    total_discount_val += item.IS_AMT == "Y" ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                }
+            }
+            if (total_discount_val > total_payable && total_payable >= 0)
+            {
+                total_discount_val = total_payable;
+            }
+            ViewBag.total_discount = total_discount_val;
+            decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
+            ViewBag.total_discount_percentage = total_discount_percentage_val;
+
+            decimal total_fine_val = 0;
+            if (batch_fine_val != null && batch_fine_val.Count() != 0)
+            {
+                foreach (var item in batch_fine_val)
+                {
+                    total_fine_val += item.IS_AMT == "Y" ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                }
+
+            }
+            if (student_fine_val != null && student_fine_val.Count() != 0)
+            {
+                foreach (var item in student_fine_val)
+                {
+                    total_fine_val += item.IS_AMT == "Y" ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                }
+            }
+            if (category_fine_val != null && category_fine_val.Count() != 0)
+            {
+                foreach (var item in category_fine_val)
+                {
+                    total_fine_val += item.IS_AMT == "Y" ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                }
+            }
+            ViewBag.fine = 0;
+            ViewBag.total_fine = total_fine_val;
+
+            return View(student);
+        }
         /////Document Upload related methods////////////////////////////////////////////////////////////////
 
         [HttpGet]

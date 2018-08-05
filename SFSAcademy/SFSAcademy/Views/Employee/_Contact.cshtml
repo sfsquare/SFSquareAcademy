@@ -1,0 +1,25 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+}
+<table width="700">
+    <tr class="odd left"><td>Office Phone1</td><td class="right">@Employee.OFF_PH1</td></tr>
+    <tr class="even left"><td>Office Phone2</td><td class="right">@Employee.OFF_PH2</td></tr>
+    <tr class="odd left"><td>Mobile</td><td class="right">@Employee.MOBL_PH</td></tr>
+    <tr class="even left"><td>Home Phone</td><td class="right">@Employee.HOME_PH</td></tr>
+    <tr class="odd left"><td>Fax</td><td class="right">@Employee.FAX</td></tr>
+</table>
+<div class="edit-pdf-group">
+    @if (Html.Permitted_To("Edit_Contact", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► Edit", "Edit_Contact", new { id = Employee.ID }, new { @class = "user_button" })
+        </div>
+    }
+    @if (Html.Permitted_To("Profile_pdf", "Employee"))
+    {
+        <div>
+            @Html.ActionLink("► pdf Report", "Profile_pdf", new { id = Employee.ID }, new { @class = "user_button", @target = "_blank" })
+        </div>
+    }
+</div>

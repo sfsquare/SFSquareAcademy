@@ -1,0 +1,69 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('.submit_button').click(function () {
+
+            /* Get the selected value of dropdownlist */
+            var SelectedDate = $('#salary_date').val();
+            var SelectedId = $('#employee_id').val();
+            var SelectedName = $('#Name').val();
+            var SelectedAmount = $('#Amount').val();
+            var SelectedAction = $('#CallingAction').val();
+            var c = $('#Is_Deduction').is(":checked");
+            var SelectedDed = 'False';
+            if (c) {
+                SelectedDed = 'True';
+            }
+            else
+            {
+                SelectedDed = 'False';
+            }
+            $(".LoaderBox").show();
+            /* Request the partial view with .get request. */
+            $.get('/Employee/Create_Payslip_Category?employee_id=' + SelectedId + "&salary_date=" + SelectedDate + "&Name=" + SelectedName + "&Amount=" + SelectedAmount + "&Is_Deduction=" + SelectedDed + "&CallingAction=" + SelectedAction, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#individual-payslip-categories-list').html(data);
+                /* little fade in effect */
+                $('#individual-payslip-categories-list').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+</script>
+<br />
+@using (Html.BeginForm())
+{
+<div class="label-field-pair label">
+    <label for="category_name">Name</label>
+    <div class="text-input-bg"> @Html.Editor("Name", new { htmlAttributes = new { @class = "form-control", @id = "Name"  } })</div>
+</div>
+<div class="label-field-pair label">
+    <label for="category_amount">Amount</label>
+    <div class="text-input-bg">@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control", @id = "Amount" } }) </div>
+</div>
+<div class="label-field-pair label">
+    @Html.Label("category_amount", "Is Deduction?", htmlAttributes: new { @class = "label_for_employee_gender" })
+    <div class="text-input-bg">
+        @Html.CheckBox("Is_Deduction")
+    </div>
+</div>
+<div id="new-category-submit-button">
+    <input type="button" value="► Create" class="submit_button" />
+    <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+</div>
+}
+<input type="hidden" value="@employee.ID" id="employee_id" name="employee_id" />
+<input type="hidden" value="@ViewBag.salary_date" id="salary_date" name="salary_date" />
+<input type="hidden" value="@ViewBag.CallingAction" id="CallingAction" name="CallingAction" />

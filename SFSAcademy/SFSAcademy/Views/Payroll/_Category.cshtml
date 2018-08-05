@@ -1,0 +1,89 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.PayrollCategory> categories = (IList<SFSAcademy.Models.PayrollCategory>)ViewData["categories"];
+    IList<SFSAcademy.Models.PayrollCategory> deductionable_categories = (IList<SFSAcademy.Models.PayrollCategory>)ViewData["deductionable_categories"];
+}
+
+<ul class="category-list">
+    @if (categories != null && categories.Count() != 0)
+    {
+        <li class="heading">Earnings</li>
+        int i = 1;
+        foreach (var item in categories)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="category-name">@item.PayrollCatData.NAME </div>
+                <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.PayrollCatData.ID })</div>
+                <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                @if (item.PayrollCatData.STAT == "Y")
+                {
+                    <div class="category-edit">
+                        @Html.ActionLink("Inactivate", "Inactivate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })
+                    </div>
+                }
+                else
+                {
+                    <div class="category-edit">
+                        @Html.ActionLink("Activate", "Activate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })
+                    </div>
+                }
+            </li>
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Payroll Earning Category Record Found</p>
+    }
+
+</ul>
+<ul class="category-list">
+    @if (deductionable_categories != null && deductionable_categories.Count() != 0)
+    {
+        <li class="heading">Deductions</li>
+        int i2 = 1;
+        foreach (var item in deductionable_categories)
+        {
+            string selectedRow = "listeven";
+            if (i2 % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="category-name">@item.PayrollCatData.NAME </div>
+                <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.PayrollCatData.ID })</div>
+                <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                @if (item.PayrollCatData.STAT == "Y")
+                {
+                    <div class="category-edit">
+                        @Html.ActionLink("Inactivate", "Inactivate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })
+                    </div>
+                }
+                else
+                {
+                    <div class="category-edit">
+                        @Html.ActionLink("Activate", "Activate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })
+                    </div>
+                }
+            </li>
+        }
+
+    }
+    else
+    {
+        <p class="flash-msg">No Payroll Deduction Category Record Found</p>
+    }
+
+</ul>
+
+
+
+
+
+
+

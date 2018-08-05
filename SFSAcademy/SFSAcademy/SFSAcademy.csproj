@@ -792,6 +792,7 @@
     <Content Include="Content\javascripts\tiny_mce\utils\mctabs.js" />
     <Content Include="Content\javascripts\tiny_mce\utils\validate.js" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
     <Content Include="Content\stylesheets\store\create.css" />
     <Content Include="Content\stylesheets\store\edit.css" />
     <Content Include="Content\stylesheets\store\viewcart.css" />
@@ -1370,7 +1371,7 @@
     <Content Include="Content\stylesheets\employee\leave_management.css" />
     <Content Include="Content\stylesheets\employee\payslip.css" />
     <Content Include="Content\stylesheets\employee\payslip_approve.css" />
-    <Content Include="Content\stylesheets\employee\profile.css" />
+    <Content Include="Content\stylesheets\employee\Profiles.css" />
     <Content Include="Content\stylesheets\employee\profile_pdf.css" />
     <Content Include="Content\stylesheets\employee\rejected_payslip.css" />
     <Content Include="Content\stylesheets\employee\remove.css" />
@@ -1584,8 +1585,8 @@
     <Content Include="Content\stylesheets\observation_groups\assign_courses.css" />
     <Content Include="Content\stylesheets\observation_groups\index.css" />
     <Content Include="Content\stylesheets\observation_groups\show.css" />
-    <Content Include="Content\stylesheets\payroll\add_category.css" />
-    <Content Include="Content\stylesheets\payroll\edit_category.css" />
+    <Content Include="Content\stylesheets\payroll\Add_Category.css" />
+    <Content Include="Content\stylesheets\payroll\Edit_Category.css" />
     <Content Include="Content\stylesheets\payroll\edit_payroll_details.css" />
     <Content Include="Content\stylesheets\payroll\index.css" />
     <Content Include="Content\stylesheets\payroll\manage_payroll.css" />
@@ -2164,6 +2165,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\dropzone.js" />
+    <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -2188,6 +2190,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Views\Finance\_Select_Batch_Particular.cshtml" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2344,7 +2347,6 @@
     <Content Include="Views\BATCH\_Update_Batch.cshtml" />
     <Content Include="Views\Finance\Fee_Category_View.cshtml" />
     <Content Include="Views\Finance\Master_Category_Create.cshtml" />
-    <Content Include="Views\Finance\_Select_Batch.cshtml" />
     <Content Include="Views\Finance\_fees_collection_dates.cshtml" />
     <Content Include="Views\Finance\_fine_submission.cshtml" />
     <Content Include="Views\Finance\student_fee_receipt_pdf.cshtml" />
@@ -2374,6 +2376,143 @@
     <Content Include="Views\Student\admission3_1.cshtml" />
     <Content Include="Views\Student\Add_Existing_Guardian.cshtml" />
     <Content Include="Views\USERs\Forgot_Password.cshtml" />
+    <Content Include="Views\Finance\_Select_Batch_Collection.cshtml" />
+    <Content Include="Views\Finance\_Master_Category_List.cshtml" />
+    <Content Include="Views\Finance\_Fees_Structure.cshtml" />
+    <Content Include="Views\Finance\_Fees_Collection_Dates_Defaulters.cshtml" />
+    <Content Include="Views\Finance\_Student_Defaulters.cshtml" />
+    <Content Include="Views\Finance\_Students_Defaulted_Fees.cshtml" />
+    <Content Include="Views\Finance\Fee_Defaulters_pdf.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Batch.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Index.cshtml" />
+    <Content Include="Views\Finance\Fees_Defaulters_Student_Search.cshtml" />
+    <Content Include="Views\Finance\Fees_Structure_Dates.cshtml" />
+    <Content Include="Views\Finance\Fees_Student_Structure_Search.cshtml" />
+    <Content Include="Views\Finance\Master_Category_Particulars.cshtml" />
+    <Content Include="Views\Finance\Master_Category_Particulars_Edit.cshtml" />
+    <Content Include="Views\Finance\pdf_Fee_Structure.cshtml" />
+    <Content Include="Views\Student\_ListStudentsForTransfer.cshtml" />
+    <Content Include="Views\Student\_Student_TC_Generate.cshtml" />
+    <Content Include="Views\Student\AdvancedSearchPdf.cshtml" />
+    <Content Include="Views\Student\BatchTransfer.cshtml" />
+    <Content Include="Views\Student\Change_To_Former.cshtml" />
+    <Content Include="Views\Student\Fee_Details.cshtml" />
+    <Content Include="Views\Student\Fees.cshtml" />
+    <Content Include="Views\Student\Generate_TC_pdf.cshtml" />
+    <Content Include="Views\Student\ProfilePDF.cshtml" />
+    <Content Include="Views\Student\Remove.cshtml" />
+    <Content Include="Views\Finance\Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Fee_Fine_New.cshtml" />
+    <Content Include="Views\Finance\Edit_Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Delete_Fee_Fine.cshtml" />
+    <Content Include="Views\Finance\Transactions.cshtml" />
+    <Content Include="Views\Finance\Expense_Create.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Create_Form.cshtml" />
+    <Content Include="Views\Finance\Income_Create.cshtml" />
+    <Content Include="Views\Finance\Expense_List.cshtml" />
+    <Content Include="Views\Finance\Expense_List_Update.cshtml" />
+    <Content Include="Views\Finance\Expense_Edit.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Edit_Form.cshtml" />
+    <Content Include="Views\Finance\Income_List.cshtml" />
+    <Content Include="Views\Finance\Income_List_Update.cshtml" />
+    <Content Include="Views\Finance\Income_Edit.cshtml" />
+    <Content Include="Views\Finance\Income_List_pdf.cshtml" />
+    <Content Include="Views\Finance\Expense_List_pdf.cshtml" />
+    <Content Include="Views\Finance\Monthly_Report.cshtml" />
+    <Content Include="Views\Finance\Update_Monthly_Report.cshtml" />
+    <Content Include="Views\Finance\Transaction_pdf.cshtml" />
+    <Content Include="Views\Finance\Salary_Department.cshtml" />
+    <Content Include="Views\Finance\Donations_Report.cshtml" />
+    <Content Include="Views\Finance\Fees_Report.cshtml" />
+    <Content Include="Views\Finance\Batch_Fees_Report.cshtml" />
+    <Content Include="Views\Finance\Income_Details.cshtml" />
+    <Content Include="Views\Finance\Income_Details_pdf.cshtml" />
+    <Content Include="Views\Finance\Compare_Report.cshtml" />
+    <Content Include="Views\Finance\Report_Compare.cshtml" />
+    <Content Include="Views\Finance\Donation.cshtml" />
+    <Content Include="Views\Finance\Donation_Receipt.cshtml" />
+    <Content Include="Views\Finance\Donation_Receipt_pdf.cshtml" />
+    <Content Include="Views\Finance\Donors.cshtml" />
+    <Content Include="Views\Finance\Donation_Edit.cshtml" />
+    <Content Include="Views\Finance\Automatic_Transactions.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Trigger_Create_Form.cshtml" />
+    <Content Include="Views\Finance\_Transaction_Triggers_List.cshtml" />
+    <Content Include="Views\Finance\Transaction_Trigger_Edit.cshtml" />
+    <Content Include="Views\Employee\Create.cshtml" />
+    <Content Include="Views\Employee\Delete.cshtml" />
+    <Content Include="Views\Employee\Details.cshtml" />
+    <Content Include="Views\Employee\Edit.cshtml" />
+    <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Employee\HR.cshtml" />
+    <Content Include="Views\Employee\Settings.cshtml" />
+    <Content Include="Views\Employee\Add_Category.cshtml" />
+    <Content Include="Views\Employee\_Category.cshtml" />
+    <Content Include="Views\Employee\Edit_Category.cshtml" />
+    <Content Include="Views\Employee\Add_Position.cshtml" />
+    <Content Include="Views\Employee\_Position.cshtml" />
+    <Content Include="Views\Employee\Edit_Position.cshtml" />
+    <Content Include="Views\Employee\Add_Department.cshtml" />
+    <Content Include="Views\Employee\_Department.cshtml" />
+    <Content Include="Views\Employee\Edit_Department.cshtml" />
+    <Content Include="Views\Employee\Add_Grade.cshtml" />
+    <Content Include="Views\Employee\Edit_Grade.cshtml" />
+    <Content Include="Views\Employee\_Grade.cshtml" />
+    <Content Include="Views\Payroll\Add_Category.cshtml" />
+    <Content Include="Views\Payroll\Delete_Category.cshtml" />
+    <Content Include="Views\Payroll\Details.cshtml" />
+    <Content Include="Views\Payroll\Edit_Category.cshtml" />
+    <Content Include="Views\Payroll\Index.cshtml" />
+    <Content Include="Views\Payroll\_Category.cshtml" />
+    <Content Include="Views\Employee\Add_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\_Bank_Fields.cshtml" />
+    <Content Include="Views\Employee\Edit_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\Add_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\_Additional_Fields.cshtml" />
+    <Content Include="Views\Employee\Edit_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\Employee_Management.cshtml" />
+    <Content Include="Views\Employee\Admission1.cshtml" />
+    <Content Include="Views\Employee\Admission2.cshtml" />
+    <Content Include="Views\Employee\Admission3.cshtml" />
+    <Content Include="Views\Employee\Admission3_1.cshtml" />
+    <Content Include="Views\Employee\Admission4.cshtml" />
+    <Content Include="Views\Employee\_Update_Reporting_Manager_Name.cshtml" />
+    <Content Include="Views\Payroll\Manage_Payroll.cshtml" />
+    <Content Include="Views\Employee\Profiles.cshtml" />
+    <Content Include="Views\Employee\Search.cshtml" />
+    <Content Include="Views\Employee\_General.cshtml" />
+    <Content Include="Views\Employee\_Personal.cshtml" />
+    <Content Include="Views\Employee\_Address.cshtml" />
+    <Content Include="Views\Employee\_Contact.cshtml" />
+    <Content Include="Views\Employee\_Bank_Details.cshtml" />
+    <Content Include="Views\Employee\_Additional_Details.cshtml" />
+    <Content Include="Views\Employee\_Payroll_Details.cshtml" />
+    <Content Include="Views\Employee\_Select_Dates.cshtml" />
+    <Content Include="Views\Employee\Profile_pdf.cshtml" />
+    <Content Include="Views\Employee\View_All.cshtml" />
+    <Content Include="Views\Employee\_employee_view_all_list.cshtml" />
+    <Content Include="Views\Employee\Advanced_Search.cshtml" />
+    <Content Include="Views\Employee\Payslip.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Date.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Generation.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Revert_Date.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Payslip_Revert.cshtml" />
+    <Content Include="Views\Employee\Select_Department_Employee.cshtml" />
+    <Content Include="Views\Employee\_Employee_Select_List.cshtml" />
+    <Content Include="Views\Employee\Create_Monthly_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Payslip_Category_List.cshtml" />
+    <Content Include="Views\Employee\_Payslip_Category_Form.cshtml" />
+    <Content Include="Views\Employee\_List_Payslip_Category.cshtml" />
+    <Content Include="Views\Employee\Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Rejected_Employee_Select_List.cshtml" />
+    <Content Include="Views\Employee\View_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\Edit_Rejected_Payslip.cshtml" />
+    <Content Include="Views\Employee\Department_Payslip.cshtml" />
+    <Content Include="Views\Employee\View_Employee_Payslip.cshtml" />
+    <Content Include="Views\Employee\Employee_Individual_Payslip_pdf.cshtml" />
+    <Content Include="Views\Employee\Payslip_Approve.cshtml" />
+    <Content Include="Views\Employee\_One_Click_Approve.cshtml" />
+    <Content Include="Views\Employee\Employee_Attendance.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2432,9 +2571,11 @@
     </Compile>
     <Compile Include="Controllers\BATCHController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\newsController.cs" />
+    <Compile Include="Controllers\PayrollController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\USERsController.cs" />
@@ -2457,6 +2598,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="EMPLOYEE_ADDITIONAL_DETAIL.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EMPLOYEE_ADDITIONAL_FIELD.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="EMPLOYEE_ATTENDENCES.cs">
@@ -2562,13 +2706,13 @@
     <Compile Include="IMAGE_DOCUMENTS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
+    <Compile Include="INDIVIDUAL_PAYSLIP_CATGEORY.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Infrastructure\HtmlHelpers\ApplicationHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\AssetsHelper.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\PdfTabularReport.cs" />
     <Compile Include="Infrastructure\HtmlHelpers\ReportConfiguration.cs" />
-    <Compile Include="INDIVIDUAL_PAYSLIP_CATGEORY.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
     <Compile Include="Infrastructure\HandleErrorAttribute.cs" />
     <Compile Include="LIABILITY.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
@@ -2591,7 +2735,8 @@
     <Compile Include="Models\CommonModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Courses.cs" />
-    <Compile Include="Models\Privilege.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\Payroll.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\PictureUpload.cs" />
     <Compile Include="Models\Finance.cs" />
@@ -2619,10 +2764,10 @@
     <Compile Include="PHOTO_MASTER.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="Privilege.cs">
+    <Compile Include="PRIVILEGE.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="Privileges_Users.cs">
+    <Compile Include="PRIVILEGES_USERS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

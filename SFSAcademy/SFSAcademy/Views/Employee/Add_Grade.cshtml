@@ -1,0 +1,108 @@
+﻿@model SFSAcademy.EMPLOYEE_GRADE
+@using PagedList.Mvc;
+@using SFSAcademy.Models
+@{
+    ViewBag.Title = "Add_Grade";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee Settings</h1>
+    <h3>Add Grade</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="box">
+        <div class="bread_crumb">
+            @Html.ActionLink("HR", "HR") &raquo;
+            @Html.ActionLink("HR Setting", "Settings") &raquo;
+            Add Grade
+        </div>
+        @if (ViewBag.ErrorMessage != null)
+            {
+            <div id="errorExplanation1">
+                <ul>
+                    <li> @ViewBag.ErrorMessage</li>
+                </ul>
+            </div>
+        }
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div id="flash_box">
+                @if (ViewBag.Notice != null)
+                {
+                    <p class="flash-msg"> @ViewBag.Notice </p>
+                }
+            </div>
+            <div id="page-yield">
+                <div id="form-content">
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.GRADE_NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.GRADE_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.GRADE_NAME, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.GRADE_CODE, "Grade Code", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.GRADE_CODE, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.GRADE_CODE, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.DESCR, "Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.PRIR, "Priority", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.DropDownList("PRIR", new List<SelectListItem>
+                                            { new SelectListItem{Text="High", Value="1"},
+                                                new SelectListItem{Text="Medium", Value="2"},
+                                                new SelectListItem { Text = "Simple", Value = "3" }}, "Select Grade Priority")
+                            @Html.ValidationMessageFor(model => model.PRIR, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.MAX_DILY_HRS, "Max Period Per Day", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.MAX_DILY_HRS, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MAX_DILY_HRS, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.MAX_WKILY_HRS, "Max Period Per Week", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.MAX_WKILY_HRS, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MAX_WKILY_HRS, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="label-checkbox-pair">
+                        <label class="status" for="status">Status</label>
+                        <div id="radio-buttons">
+                            @Html.RadioButton("IS_ACT", "Y", true)@Html.Label("Active", new { @class = "label_for_status" })
+                            @Html.RadioButton("IS_ACT", "N", false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                        </div>
+                    </div>
+                    <div id="submit-button">
+                        <input type="submit" value="► Create" class="user_button" />
+                    </div>
+                </div>
+            </div>
+        }
+        <div id="position-list">
+            @Html.Partial("~/Views/Employee/_Grade.cshtml", Model)
+        </div>
+    </div>
+</div>
+
+
+

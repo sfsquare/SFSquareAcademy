@@ -21,7 +21,7 @@ namespace SFSAcademy
         public string RSN { get; set; }
         public string IS_HALF_DAY { get; set; }
     
-        public virtual EMPLOYEE EMPLOYEE { get; set; }
         public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
+        public virtual EMPLOYEE EMPLOYEE { get; set; }
     }
 }

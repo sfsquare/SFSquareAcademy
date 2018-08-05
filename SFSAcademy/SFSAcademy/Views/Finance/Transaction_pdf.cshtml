@@ -1,0 +1,147 @@
+﻿@using SFSAcademy.Models
+@{
+    Layout = null;
+}
+@{
+    IEnumerable<SFSAcademy.Models.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.Models.CategoryTransactions>)ViewData["other_transaction_categories"];
+    IEnumerable<SFSAcademy.Models.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.Models.FinanceTransaction>)ViewData["transactions"];
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/transaction_pdf.css">
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Finance Transaction Report</h2>
+    <div class="hor_line"></div>
+
+    <div class="extender"> </div>
+    <div class="report">
+        @{ DateTime FromDate = @Convert.ToDateTime(ViewBag.START_TRAN_DATE); DateTime ToDate = @Convert.ToDateTime(ViewBag.END_TRAN_DATE);}
+        <div id="main_info">
+            <h4> From @FromDate.ToShortDateString() to @ToDate.ToShortDateString()</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%;" cellspacing="0">
+                <tr class="table-header">
+                    <td class="col-pdf">Sl. No.</td>
+                    <td class="col-pdf">Particulars</td>
+                    <td class="col-pdf">Expenses</td>
+                    <td class="col-pdf">Income</td>
+                </tr>
+                @{int index = 1; int i = 0; string selectedRow = "even"; decimal income_total = 0; decimal expenses_total = 0;}
+                @if (index % 2 == 0)
+                {
+                    selectedRow = "odd";
+                }
+                @if (ViewBag.hr != null)
+                {
+                    <tr class="@selectedRow">
+                        <td class="col-pdf">@index</td>
+                        <td class="col-pdf2">Salary</td>
+                        <td class="col-pdf3">&nbsp;@ViewBag.salary</td>
+                        <td class="col-pdf3"></td>
+                    </tr>
+                    index += 1;
+                }
+                @{selectedRow = "even"; }
+                @if (index % 2 == 0)
+                {
+                    selectedRow = "odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-pdf">@index</td>
+                    <td class="col-pdf2">Donations</td>
+                    <td class="col-pdf3"></td>
+                    <td class="col-pdf3">&nbsp;@ViewBag.donations_total</td>
+                </tr>
+                @{index += 1; selectedRow = "even";}
+                @if (index % 2 == 0)
+                {
+                    selectedRow = "odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-pdf">@index</td>
+                    <td class="col-pdf2">Fees Account</td>
+                    <td class="col-pdf3"></td>
+                    <td class="col-pdf3">&nbsp;@ViewBag.transactions_fees</td>
+                </tr>
+                @{ i += 2;}
+                @foreach (var item in other_transaction_categories)
+                {
+                    index += 1;
+                    selectedRow = "even";
+                    decimal income = 0; decimal expense = 0;
+                    if (item.TransactionCategoryData.IS_INCM == "Y") { income = (decimal)item.TRANS_AMNT; }
+                    if (item.TransactionCategoryData.IS_INCM == "N") { expense = (decimal)item.TRANS_AMNT; }
+                    if (i == 19)
+                    {
+                        i = 0;
+                        <tr class="page-break"><td colspan="3"></td></tr>
+                        <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Particulars</td><td class="col-pdf">Expenses</td><td class="col-pdf">Income</td></tr>
+                    }
+                    if (index % 2 == 0)
+                    {
+                        selectedRow = "odd";
+                    }
+                    <tr class="@selectedRow">
+                        <td class="col-pdf">@index</td>
+                        <td class="col-pdf2">@item.TransactionCategoryData.NAME</td>
+                        @if (expense != 0)
+                        {
+                            <td class="col-pdf3">@expense</td>
+                        }
+                        else
+                        {
+                            <td class="col-pdf3"></td>
+                        }
+                        @if (income != 0)
+                        {
+                            <td class="col-pdf3">&nbsp;@income</td>
+                        }
+                        else
+                        {
+                            <td class="col-pdf3"> </td>
+                        }
+                    </tr>
+                    i += 1;
+                    income_total += income;
+                    expenses_total += expense;
+                }
+                @{ index += 1; selectedRow = "even";}
+                @if (index % 2 == 0)
+                {
+                selectedRow = "odd";
+                }
+                @{expenses_total += (decimal)ViewBag.salary; income_total += (decimal)ViewBag.donations_total; income_total += (decimal)ViewBag.transactions_fees;}
+                <tr class="@selectedRow">
+                    <td class="col-pdf"> </td>
+                    <td class="col-pdf1">Total</td>
+                    <td class="col-pdf3">@expenses_total</td>
+                    <td class="col-pdf3">@income_total</td>
+
+                </tr>
+                @{ index += 1; selectedRow = "even";}
+                @if (index % 2 == 0)
+                {
+                    selectedRow = "odd";
+                }
+                @{ decimal grand_total = income_total - expenses_total;}
+                @{ decimal grand_total_positive = grand_total * -1; }
+                <tr class="@selectedRow">
+                    <td class="col-pdf"> </td>
+                    <td class="col-pdf1">Grand Total</td>
+                    @if (grand_total >= 0)
+                    {
+                        <td class="col-pdf3"></td>
+                        <td class="col-pdf3">@grand_total.ToString("0.00")</td>
+                    }
+                    else
+                    {
+                        <td class="col-pdf3">@grand_total_positive.ToString("0.00")</td>
+                        <td class="col-pdf3"></td>
+                    }
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+

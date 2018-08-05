@@ -1,0 +1,26 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.Employee> employees = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["employees"];
+}
+<table id="listing" width="100%">
+    <tr class="tr-head">
+        <td>Name</td>
+        <td>Employee Number</td>
+        <td>Department</td>
+    </tr>
+    @{int i = 1; }
+    @foreach (var item in employees)
+    {
+        string selectedRow = "tr-even";
+        if (i % 2 == 0)
+        {
+            selectedRow = "tr-odd";
+        }
+        <tr class="@selectedRow">
+            <td class="col-3">@Html.ActionLink(string.Concat(item.EmployeeData.FIRST_NAME," ",item.EmployeeData.MID_NAME," ", item.EmployeeData.LAST_NAME), "Profiles", new { id = item.EmployeeData.ID }, new { style = "text-decoration:underline" })</td>
+            <td class="col-3">@item.EmployeeData.EMP_NUM</td>
+            <td class="col-3">@item.DepartmentData.NAMES</td>
+        </tr>
+        i += 1;
+    }
+</table>

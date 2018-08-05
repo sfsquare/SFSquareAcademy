@@ -24,13 +24,13 @@
         {
             <li class="a"><a href="@Url.Action("Guardians", "Student", new { Std_id = Model.StudentData.ID })">Guardian</a></li>
         }
-        @if (Html.CurrentUser_UserType().Equals("Admin"))
+        @if (Html.Permitted_To("Remove", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
         {
-            <li class="a"><a href="@Url.Action("Delete", "Student", new { id =Model.StudentData.ID })">Delete</a></li>
+            <li class="a"><a href="@Url.Action("Remove", "Student", new { id =Model.StudentData.ID })">Delete</a></li>
         }
         @if (Html.Permitted_To("Fees", "Finance") || Html.CurrentUser_UserType().Equals("Admin"))
         {
-            <li class="a"><a href="@Url.Action("Fees_Student_Search", "Finance")">Fees</a></li>
+            <li class="a"><a href="@Url.Action("Fees", "Student", new { id =Model.StudentData.ID })">Fees</a></li>
         }
         @if (Html.Permitted_To("BatchTransfer", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
         {
@@ -47,7 +47,14 @@
 
     <div id="student_profile_heading">
         <div id="profile_picture_display">
-            <img src="/Student/Show/@Model.StudentData.IMAGE_DOCUMENTS_ID" alt="" height=150 width=150 />
+            @if (Model.StudentData.IMAGE_DOCUMENTS_ID != null)
+            {
+                <img src="/Student/Show/@Model.StudentData.IMAGE_DOCUMENTS_ID" alt="" height=150 width=150 />
+            }
+            else
+            {
+                <img src="~/Content/images/master_student/profile/default_student.png" alt="" height=150 width=150 />
+            }
         </div>
         <div id="student_main_info">
             <h3> @Model.StudentData.FIRST_NAME  @Model.StudentData.MID_NAME @Model.StudentData.LAST_NAME</h3>

@@ -1,0 +1,45 @@
+﻿@model SFSAcademy.FINANCE_DONATION
+@{
+    ViewBag.Title = "Donation_Receipt";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Donations</h1>
+    <h3>Donation Receipt</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Donations", "Donation") &raquo;
+    Donation Receipt
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        <div class="field1">Donor:</div>
+        <div class="val themed_text"> @Model.DNR</div>
+        <div class="field1">Description: </div>
+        <div class="val themed_text">@Model.DESCR</div>
+        <div class="field1">Amount: </div>
+        <div class="val themed_text">@Model.AMT</div>
+        <div class="field1">Transaction Id: </div>
+        @if (Model.TRAN_ID != null)
+        {
+            <div class="val themed_text">@Model.TRAN_ID</div>
+        }
+        else
+        {
+            <div class="val themed_text"></div>
+        }
+        <div>
+            @Html.ActionLink("Print Receipt", "Donation_Receipt_pdf", new { id = Model.ID}, new { @class = "user_button", @target = "_blank" })
+        </div>
+    </div>
+</div>
+

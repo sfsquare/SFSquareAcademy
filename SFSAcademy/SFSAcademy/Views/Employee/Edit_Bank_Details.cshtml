@@ -1,0 +1,64 @@
+﻿@model SFSAcademy.BANK_FIELD
+@{
+    ViewBag.Title = "Edit_Bank_Details";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee Settings</h1>
+    <h3>Edit Bank Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    @if (ViewBag.ErrorMessage != null)
+            {
+        <div id="errorExplanation1">
+            <ul>
+                <li> @ViewBag.ErrorMessage</li>
+            </ul>
+        </div>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div id="page-yield">
+            @Html.HiddenFor(model => model.ID)
+            <div id="form-content">
+                <div class="label-field-pair">
+                    @Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-checkbox-pair">
+                    <label class="status" for="status">Status:</label>
+                    <div id="radio-buttons">
+                        @Html.RadioButton("STAT", "Y", Model.STAT == "Y" ? true : false)@Html.Label("Active", new { @class = "label_for_status" })
+                        @Html.RadioButton("STAT", "N", Model.STAT == "N" ? true : false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                    </div>
+                </div>
+                <div id="submit-button">
+                    <input type="submit" value="► Update" class="user_button" />
+                </div>
+            </div>
+        </div>
+    }
+
+
+</div>
+
+
+
+
+

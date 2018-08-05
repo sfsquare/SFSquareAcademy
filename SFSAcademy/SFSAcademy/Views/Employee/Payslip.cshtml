@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Payslip";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadOneClickPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#message-div').html(data);
+            /* little fade in effect */
+            $('#message-div').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Payslip</h1>
+    <h3>Create</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div class="bread_crumb">
+        @Html.ActionLink("HR", "HR") &raquo;
+        Create Payslip
+    </div>
+    <div id="box">
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Select Employee", "Select_Department_Employee")</div>
+            <div class="link-descr">Generate payslip of an employee.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Rejected Employee", "Rejected_Payslip")</div>
+            <div class="link-descr">Manage employee rejected payslips.</div>
+        </div>
+
+        <div class="link-box">
+            <div class="link-heading">
+                <a href="@Url.Action("Payslip_Date_Select", "Employee")" id="One_click_Payslip" onclick='LoadOneClickPartialPage(this.href); return false;'>One Click Payslip</a>
+            </div>
+            <div class="link-descr">One click payslip generation.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">
+                <a href="@Url.Action("Payslip_Revert_Date_Select", "Employee")" id="One_click_Revert_Payslip" onclick='LoadOneClickPartialPage(this.href); return false;'>One Click Payslip Revert</a>
+            </div>
+            <div class="link-descr">One click payslip revertion.</div>
+        </div>
+        <div class="extender"></div>
+        <div class="loader-image">
+            <img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none" hidden="hidden">
+        </div>
+        <div id="message-div" style="display:none;">
+
+            <div class="extender"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,107 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["independent_categories"];
+    IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll>)ViewData["dependent_categories"];
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<MONTHLY_PAYSLIP> MonthlyPayslip = (IEnumerable<MONTHLY_PAYSLIP>)ViewData["MonthlyPayslip"];
+}
+@{
+    ViewBag.Title = "Edit_Rejected_Payslip";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Monthly Payslip</h1>
+    <h3>Create</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+    function remote_function(cat_id) {
+        var amount = $(this).val();
+        $.post('@Url.Action("Update_Dependent_Fields", "Payroll")', { id: cat_id, AMT: amount }, function (data) {
+            //do whatever with the result.
+        });
+    }
+</script>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        @Html.ActionLink("HR", "HR") &raquo;
+        @Html.ActionLink("Create Payslip", "Payslip") &raquo;
+        @Html.ActionLink("Rejected Payslip", "Rejected_Payslip") &raquo;
+        @Html.ActionLink("Rejected Payslip", "Rejected_Payslip") &raquo;
+        Edit Rejected Payslip
+    </div>
+    <div id="form-content">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="payslip-field-pair">
+                <label for="salary_date">Salary Date</label>
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="payslip-input-bg">
+                    @Html.Editor("SAL_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker", required = "required", @Value = ViewBag.salary_date } })
+                </div>
+            </div>
+            @Html.Hidden("EMP_ID", employee.ID)
+            for (int i = 0; i < independent_categories.Count(); i++)
+            {
+                var val = MonthlyPayslip.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == independent_categories.ElementAt(i).PayrollCatData.ID && x.SAL_DATE == DateTime.Parse(ViewBag.salary_date)).FirstOrDefault();
+                decimal AmtValue = val == null ? 0 : (decimal)val.AMT;
+                <div class="payslip-field-pair">
+                    @Html.Label("[" + i + "].PayrollCatData.NAME", independent_categories.ElementAt(i).PayrollCatData.NAME)
+                    <div class="payslip-input-bg">
+                        @Html.TextBox("[" + i + "].Amount", AmtValue, new { htmlAttributes = new { onchange = "remote_function(" + independent_categories.ElementAt(i).PayrollCatData.ID + ");" } })
+                        @Html.Hidden("[" + i + "].EmployeeId", employee.ID)
+                        @Html.Hidden("[" + i + "].PayrollCategoryId", independent_categories.ElementAt(i).PayrollCatData.ID)
+                    </div>
+                </div>
+            }
+            for (int j = 0; j < dependent_categories.Count(); j++)
+            {
+                var val = MonthlyPayslip.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == dependent_categories.ElementAt(j).DependentPayrollCatData.ID && x.SAL_DATE == DateTime.Parse(ViewBag.salary_date)).FirstOrDefault();
+                decimal AmtValue = val == null ? 0 : (decimal)val.AMT;
+                <div class="payslip-field-pair">
+                    @Html.Label("[" + j + "].DependentPayrollCatData.NAME", dependent_categories.ElementAt(j).DependentPayrollCatData.NAME)
+                    <span class="necessary-field" style="font-size:small">@string.Concat(dependent_categories.ElementAt(j).DependentPayrollCatData.PCT, "% of ", dependent_categories.ElementAt(j).PayrollCatData.NAME) </span>
+                    <div class="payslip-input-bg">
+                        @Html.TextBox("[" + j + "].DependentAmount", AmtValue, new { htmlAttributes = new { onchange = "remote_function(" + dependent_categories.ElementAt(j).DependentPayrollCatData.ID + ");" } })
+                        @Html.Hidden("[" + j + "].DependentEmployeeId", employee.ID)
+                        @Html.Hidden("[" + j + "].DependentPayrollCategoryId", dependent_categories.ElementAt(j).DependentPayrollCatData.ID)
+                    </div>
+                </div>
+            }
+
+        <div id="submit-button">
+            <input type="submit" value="► Create" class="submit_button" />
+        </div>
+        <div class="extender"></div>
+        }
+    </div>
+    <div id="individual-payslip-categories">
+        <div id="individual-payslip-categories-list">
+            @Html.Partial("_Payslip_Category_List")
+        </div>
+    </div>
+    <div class="extender"></div>
+</div>

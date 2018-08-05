@@ -18,9 +18,9 @@
     @Html.ActionLink("View All", "ViewAll") &raquo;
     Delete
 </div>
-@if (ViewBag.ErrorMessage != null)
+@if (ViewBag.DeleteMessage != null)
 {
-    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    <p class="flash-msg"> @ViewBag.DeleteMessage </p>
 }
 
 <div id="page-yield">

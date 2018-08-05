@@ -1,0 +1,55 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeeDepartment> departments = (IList<SFSAcademy.Models.EmployeeDepartment>)ViewData["departments"];
+    IList<SFSAcademy.Models.EmployeeDepartment> inactive_departments = (IList<SFSAcademy.Models.EmployeeDepartment>)ViewData["inactive_departments"];
+}
+
+<ul id="department-list">
+    @if (departments != null && departments.Count() != 0)
+    {
+        <li class="listheading"> <div class="department-name">Active Department</div> </li>
+        int i = 1;
+        foreach (var item in departments)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="department-name">@item.DepartmentData.NAMES (@item.DepartmentData.CODE)</div>
+                <div class="department-edit">@Html.ActionLink("Edit", "Edit_Department", new { id = item.DepartmentData.ID })</div>
+                <div class="department-edit">@Html.ActionLink("Delete", "Delete_Department", new { id = item.DepartmentData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+            </li>
+        }
+
+        if (inactive_departments != null && inactive_departments.Count() != 0)
+        {
+            <li class="listheading"><div class="department-name">Inactive Department</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_departments)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="department-name">@item.DepartmentData.NAMES (@item.DepartmentData.CODE)</div>
+                    <div class="department-edit">@Html.ActionLink("Edit", "Edit_Department", new { id = item.DepartmentData.ID })</div>
+                    <div class="department-edit">@Html.ActionLink("Delete", "Delete_Department", new { id = item.DepartmentData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Department Record Found</p>
+    }
+</ul>
+
+
+
+

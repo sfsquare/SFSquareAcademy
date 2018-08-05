@@ -42,6 +42,11 @@ namespace SFSAcademy.Models
         public GUARDIAN GuardianList { get; set; }
         public bool Selected { get; set; }
     }
+    public class StudentTC
+    {
+        public STUDENT StundentData { get; set; }
+        public string Status_Descrition { get; set; }
+    }
 
     public enum MissingDetl
     {

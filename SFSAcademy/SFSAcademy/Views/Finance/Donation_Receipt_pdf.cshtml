@@ -1,0 +1,43 @@
+﻿@model SFSAcademy.FINANCE_DONATION
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/donation_receipt_pdf.css">
+
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Donation Receipt</h2>
+    <div class="hor_line"></div>
+
+    <div class="extender"> </div>
+    <div class="report">
+        <div id="main_info">
+            <h4> Donor: @Model.DNR</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" width="100%" cellspacing="0">
+                <tr class="even">
+                    <td class="col-pdf">Description</td>
+                    <td class="col-pdf">@Model.DESCR</td>
+                </tr>
+                <tr class="odd">
+                    <td class="col-pdf">Amount</td>
+                    <td class="col-pdf">@Model.AMT</td>
+                </tr>
+                <tr class="even">
+                    <td class="col-pdf">Transaction Id</td>
+                    @if (Model.TRAN_ID != null)
+                    {
+                        <td class="col-pdf">@Model.TRAN_ID</td>
+                    }
+                    else
+                    {
+                        <td class="col-pdf"></td>
+                    }                   
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+

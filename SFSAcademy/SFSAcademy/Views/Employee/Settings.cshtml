@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "Settings";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Setting</h1>
+    <h3>HR Setting</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div id="page-yield">
+    <div id="box">
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Employee Category", "Add_Category")</div>
+            <div class="link-descr">Add/Edit Employee Category</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Employee Position", "Add_Position")</div>
+            <div class="link-descr">Add/Edit Employee Position</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Employee Department", "Add_Department")</div>
+            <div class="link-descr">Add/Edit Employee Department</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Employee Grade", "Add_Grade")</div>
+            <div class="link-descr">Add/Edit Employee Grade</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Add_Category", "Payroll")">Add Payroll Category</a></div>
+            <div class="link-descr">Add/Edit Employee Payroll Category</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Bank Detail", "Add_Bank_Details")</div>
+            <div class="link-descr">Add/Edit Bank Detail</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Add Additional Detail", "Add_Additional_Details")</div>
+            <div class="link-descr">Add/Edit Additional Detail</div>
+        </div>
+        <div class="extender"></div>
+    </div>
+</div>

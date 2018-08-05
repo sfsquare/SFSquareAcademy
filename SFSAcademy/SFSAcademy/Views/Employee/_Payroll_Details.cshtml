@@ -1,0 +1,55 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Models.EmployeePayroll> payroll_details = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["payroll_details"];
+}
+@if (payroll_details.FirstOrDefault().SalaryStructureData != null)
+{
+    <ul class="item-list">
+        <li class="heading1">Basic Payroll Details</li>
+        @{decimal total = 0; int i = 1;}
+        @foreach (var item in payroll_details)
+        {
+            string cycle = "listeven";
+            if (i % 2 == 0)
+            {
+                cycle = "listeven";
+            }
+            if (item.PayrollCatData.STAT != "N")
+            {
+                <li class="@cycle">
+                    <div class="item-name">@item.PayrollCatData.NAME</div>
+                    <div class="item-edit"><span class="currency-type"></span>@item.SalaryStructureData.AMT</div>
+                    @if (item.PayrollCatData.IS_DED == false)
+                    {
+                        total += (decimal)item.SalaryStructureData.AMT;
+                    }
+                    else
+                    {
+                        total -= (decimal)item.SalaryStructureData.AMT;
+                    }
+                </li>
+            }
+            i += 1;
+        }
+        @{string cycle2 = "listeven";}
+        @if (i % 2 == 0)
+        {
+        cycle2 = "listeven";
+        }
+        <li class="@cycle2"><div class="item-name">Total :</div><div class="item-edit"><span class="currency-type"> </span> @total</div></li>
+    </ul>
+    if (Html.Permitted_To("Edit_Payroll_Details", "Payroll"))
+    {
+        <div>
+            @Html.ActionLink("► Edit", "Edit_Payroll_Details", "Payroll", new { id = Employee.ID }, new { @class = "user_button" })
+        </div>
+    }
+}
+else
+{
+   <p class="flash-msg">No Payroll Detail entered for @Employee.FIRST_NAME . <a href="@Url.Action("Manage_Payroll", "Payroll", new { id = Employee.ID })" id="Manage_Payroll">Add</a></p>
+}              
+
+
+

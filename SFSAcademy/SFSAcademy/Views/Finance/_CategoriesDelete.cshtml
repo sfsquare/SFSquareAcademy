@@ -9,7 +9,15 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
-
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Finance Categories", "Categories") &raquo;
+    Delete Finance Categories
+</div>
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div id="page-yield">
     <div id="edit_user_form">
         <div class="label-field-pair">
@@ -39,8 +47,7 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Categories")
+            <input type="submit" value="Delete" class="user_button" />
         </div>
     }
 

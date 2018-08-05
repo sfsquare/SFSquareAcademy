@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Entity.Validation;
 using System.Linq;
+using System.Web.Mvc;
 
 namespace SFSAcademy.Models
 {
     public class UserPreviligeDetails
     {
         public UserDetails user { get; set; }
-        public List<Privilege> privilage { get; set; }
+        public List<PRIVILEGE> privilages { get; set; }
         public List<USERS_ACCESS> useraccess { get; set; }
     }
     public class UserDetails
@@ -31,7 +33,7 @@ namespace SFSAcademy.Models
         public DateTime UPDATED_AT { get; set; }
         public string PARNT_IND { get; set; }
 
-        public List<Privilege> privilage { get; set; }
+        public List<PRIVILEGE> privilages { get; set; }
         public List<USERS_ACCESS> useraccess { get; set; }
     }
     public class User
@@ -67,9 +69,7 @@ namespace SFSAcademy.Models
             {
                 return false;
             }
-
             var v = db.USERS.Where(a => a.USRNAME.Equals(_username) && a.HASHED_PSWRD.Equals(_password)).FirstOrDefault();
-
 
             if (v != null)
             {
@@ -100,7 +100,7 @@ namespace SFSAcademy.Models
                 user.UPDATED_AT = Convert.ToDateTime(v.UPDATED_AT);
                 user.PARNT_IND = v.PARNT_IND;
 
-                user.privilage = GetUserPrivilage(Convert.ToInt32(v.ID));
+                user.privilages = GetUserPrivilage(Convert.ToInt32(v.ID));
                 //user.privilage = GetUserPrivilage(Convert.ToInt32(v.ID));
                 System.Web.HttpContext.Current.Session["CurrentUser"] = user;
                 //userrights.user = v;
@@ -112,18 +112,13 @@ namespace SFSAcademy.Models
             }
         }
 
-        public List<Privilege> GetUserPrivilage(int UserId)
+        public List<PRIVILEGE> GetUserPrivilage(int UserId)
         {
-            var userprevilege = (from userprevl in db.Privileges_Users
-                                 join prev in db.Privileges on userprevl.PrivilegeId equals prev.ID into userp
-                                 from subus in userp.DefaultIfEmpty()
-                                 where userprevl.UserId == UserId
-                                 orderby userprevl.PrivilegeId
-                                 select new Models.Privilege
-                                 {
-                                     privilegeId = userprevl.PrivilegeId,
-                                     Name = subus.Name,
-                                 }).ToList();
+            var userprevilege = (from userprevl in db.PRIVILEGES_USERS
+                                 join prev in db.PRIVILEGES on userprevl.PRIVILEGE_ID equals prev.ID 
+                                 where userprevl.USER_ID == UserId
+                                 orderby userprevl.PRIVILEGE_ID
+                                 select prev).ToList();
 
             return userprevilege;
         }
@@ -134,6 +129,13 @@ namespace SFSAcademy.Models
         public USERS_ACCESS AccessList { get; set; }
         public bool Selected { get; set; }
     }
+
+    public class SelectUserPrivilage
+    {
+        public PRIVILEGE PrivilageList { get; set; }
+        public bool Selected { get; set; }
+    }
+
 
 
 }

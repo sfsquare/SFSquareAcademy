@@ -1,0 +1,39 @@
+﻿@model SFSAcademy.STUDENT
+@{
+    ViewBag.Title = "Remove";
+}
+<div id="content-header">
+    <img src="~/Content/images/student_details/student_details_logo.jpg" alt="Student Details Logo">
+    <h1>Students</h1>
+    <h3>Remove Student</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Student Details", "Index") &raquo;
+    @Html.ActionLink("View All Students", "ViewAll") &raquo;
+    Delete Student
+</div>
+<div id="page-yield">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div id="student-details">
+        <h3>@Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME</h3>
+        <h4>Admission No. : @Model.ADMSN_NO</h4>
+        <h4>Class: @ViewBag.BTCH_ID</h4>
+    </div>
+    <div class="extender"> </div>
+    <div class="link-box">
+        <div class="link-heading"> @Html.ActionLink("Leaving Institution", "Change_To_Former", new { id = Model.ID}) </div>
+        <div class="link-descr">For students leaving the school, use this option to remove them from the list of active students and place them in the former students list.</div>
+    </div>
+    <div class="link-box">
+        <div class="link-heading"> @Html.ActionLink("Remove Stundet Record", "Delete", new { id = Model.ID }) </div>
+        <div class="link-descr">Completely delete student's records from the school's databases. Use this option only if you created the student record by accident and want to remove it completely.</div>
+    </div>
+</div>
+

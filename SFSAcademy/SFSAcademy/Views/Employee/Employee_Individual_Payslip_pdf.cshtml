@@ -1,0 +1,154 @@
+﻿@model SFSAcademy.Models.Employee
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.Models.MonthyPayslip>)ViewData["monthly_payslips"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual_payslips = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual_payslips"];
+    IEnumerable<SFSAcademy.Models.Payslip> salary = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["salary"];
+    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+}
+@{
+    ViewBag.Title = "Employee_Individual_Payslip_pdf";
+}
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/employee/employee_individual_payslip_pdf.css">
+<div id="page-yield">
+
+    <div class="hor_line"></div>
+    <h2>Employee Payslip-@ViewBag.Salary_Date</h2>
+    <div class="hor_line"></div>
+    <div class="extender"> </div>
+    <div class="report">
+        <div id="main_info">
+            <div class="info_left">
+                <div class="info"><div class="info-label">Name</div> <div class="info-data"><span>:</span>@Model.EmployeeData.FIRST_NAME @Model.EmployeeData.MID_NAME @Model.EmployeeData.LAST_NAME</div></div>
+                <div class="info"><div class="info-label">Employee Number</div> <div class="info-data"><span>:</span>@Model.EmployeeData.EMP_NUM</div></div>
+                <div class="info"><div class="info-label">Grade</div> <div class="info-data"><span>:</span>@Model.GradeData.GRADE_NAME</div></div>
+                <div class="info"><div class="info-label">Category</div> <div class="info-data"><span>:</span>@Model.CategoryData.NAME</div></div>
+                <div class="info"><div class="info-label">Department</div> <div class="info-data"><span>:</span>@Model.DepartmentData.NAMES</div></div>
+                <div class="info"><div class="info-label">Joining Date</div> <div class="info-data"><span>:</span>@Model.EmployeeData.JOINING_DATE.Value.ToShortDateString()</div></div>
+            </div>
+            <div class="info_right">
+                @foreach (var item in bank_details)
+                {
+                    <div class="info"><div class="info-label">@item.BankFieldData.NAME</div> <div class="info-data"><span>:</span>@item.BankDetailData.BANK_INFO</div></div>
+                }
+            </div>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
+                <tr class="table-header"><td colspan="2" class="col-pdf">Earnings</td></tr>
+                @{ int i = 0;}
+                @foreach (var item in monthly_payslips)
+                {
+                    string selectedRow = "even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "odd ";
+                    }
+                    if (!item.PayrollCatogaryData.ID.Equals(null) && item.PayrollCatogaryData.ID != 0)
+                    {
+                        if (item.PayrollCatogaryData.IS_DED == false)
+                        {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@item.PayrollCatogaryData.NAME</td>
+                                <td class="col-pdf">@ViewBag.currency_type @item.MonthlyPayslipData.AMT</td>
+                            </tr>
+                        }
+                    }
+                    i += 1;
+                }
+                @if (individual_payslips != null && individual_payslips.Count() != 0)
+                {
+                    foreach (var item in individual_payslips)
+                    {
+                        string selectedRow = "even";
+                        if (i % 2 == 0)
+                        {
+                            selectedRow = "odd ";
+                        }
+                        if (item.IS_DED == false)
+                        {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@item.NAME</td>
+                                <td class="col-pdf">@ViewBag.currency_type @item.AMT</td>
+                            </tr>
+                        }
+                        i += 1;
+                    }
+                }
+                @{string selectedRow2 = "even"; }
+                @if (i % 2 == 0)
+                {
+                    selectedRow2 = "odd ";
+                }
+                <tr class="@selectedRow2"><td class="col-pdf"><b>Total Salary</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Non_Deductionable_Amount</b></td></tr>
+
+                <tr class="table-header"><td colspan="2" class="col-pdf">Deductions</td></tr>
+                @{ int j = 0;}
+                @foreach (var item in monthly_payslips)
+                {
+                    string selectedRow = "even";
+                    if (j % 2 == 0)
+                    {
+                        selectedRow = "odd ";
+                    }
+                    if (!item.PayrollCatogaryData.ID.Equals(null) && item.PayrollCatogaryData.ID != 0)
+                    {
+                        if (item.PayrollCatogaryData.IS_DED == true)
+                        {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@item.PayrollCatogaryData.NAME</td>
+                                <td class="col-pdf">@ViewBag.currency_type @item.MonthlyPayslipData.AMT</td>
+                            </tr>
+                        }
+                    }
+                    j += 1;
+                }
+                @if (individual_payslips != null && individual_payslips.Count() != 0)
+                {
+                    foreach (var item in individual_payslips)
+                    {
+                        string selectedRow = "even";
+                        if (j % 2 == 0)
+                        {
+                            selectedRow = "odd ";
+                        }
+                        if (item.IS_DED == true)
+                        {
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@item.NAME</td>
+                                <td class="col-pdf">@ViewBag.currency_type @item.AMT</td>
+                            </tr>
+                        }
+                        j += 1;
+                    }
+                }
+                @if (j % 2 == 0)
+                {
+                    <tr class="odd "><td class="col-pdf"><b>Deductions</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Deductionable_Amount</b></td></tr>
+                    <tr class="table-header"><td colspan="2" class="col-pdf">Total</td></tr>
+                    <tr class="even"><td class="col-pdf"><b>Net Salary</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Amount</b></td></tr>
+                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == "Y" || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == "Y")
+                    {
+                        <tr class="odd "><td class="col-pdf"><b>Remark</b></td><td class="col-pdf"><b>@monthly_payslips.FirstOrDefault().MonthlyPayslipData.RMRK</b></td></tr>
+                    }
+                }
+                else
+                {
+                    <tr class="even"><td class="col-pdf"><b>Deductions</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Deductionable_Amount</b></td></tr>
+                    <tr class="table-header"><td colspan="2" class="col-pdf">Total</td></tr>
+                    <tr class="odd "><td class="col-pdf"><b>Net Salary</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Amount</b></td></tr>
+                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == "Y" || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == "Y")
+                    {
+                        <tr class="even"><td class="col-pdf"><b>Remark</b></td><td class="col-pdf"><b>@monthly_payslips.FirstOrDefault().MonthlyPayslipData.RMRK</b></td></tr>
+                    }
+                }
+            </table>
+            <input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" />
+        </div>
+    </div>
+</div>
+
+

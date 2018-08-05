@@ -1,0 +1,55 @@
+﻿@using SFSAcademy.Models
+@{    Layout = null;}
+@{
+    IList<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IList<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+    IList<SFSAcademy.Models.EmployeeBankDetail> inactive_bank_details = (IList<SFSAcademy.Models.EmployeeBankDetail>)ViewData["inactive_bank_details"];
+}
+<ul id="category-list">
+    @if ((bank_details != null && bank_details.Count() != 0) || (inactive_bank_details != null && inactive_bank_details.Count() != 0))
+    {
+        if (bank_details != null && bank_details.Count() != 0)
+        {
+            <li class="listheading"> <div class="category-name">Active Bank Field</div> </li>
+            int i = 1;
+            foreach (var item in bank_details)
+            {
+                string selectedRow = "listeven";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="category-name">@item.BankFieldData.NAME </div>
+                    <div class="category-edit">@Html.ActionLink("Edit", "Edit_Bank_Details", new { id = item.BankFieldData.ID })</div>
+                    <div class="category-edit">@Html.ActionLink("Delete", "Delete_Bank_Details", new { id = item.BankFieldData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+        }
+
+
+        if (inactive_bank_details != null && inactive_bank_details.Count() != 0)
+        {
+            <li class="listheading"><div class="category-name">Inactive Bank Field</div></li>
+            int i2 = 1;
+            foreach (var item in inactive_bank_details)
+            {
+                string selectedRow = "listeven";
+                if (i2 % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li class="@selectedRow">
+                    <div class="category-name">@item.BankFieldData.NAME</div>
+                    <div class="category-edit">@Html.ActionLink("Edit", "Edit_Bank_Details", new { id = item.BankFieldData.ID })</div>
+                    <div class="category-edit">@Html.ActionLink("Delete", "Delete_Bank_Details", new { id = item.BankFieldData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
+                </li>
+            }
+
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Bank Details Found</p>
+    }
+
+</ul>

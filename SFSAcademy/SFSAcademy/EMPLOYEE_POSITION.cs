@@ -24,7 +24,9 @@ namespace SFSAcademy
         public string POS_NAME { get; set; }
         public string POS_DESCR { get; set; }
         public string IS_ACT { get; set; }
+        public Nullable<int> EMP_CAT_ID { get; set; }
     
+        public virtual EMPLOYEE_CATEGORY EMPLOYEE_CATEGORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
     }

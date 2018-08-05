@@ -1,0 +1,88 @@
+﻿@model SFSAcademy.FINANCE_DONATION
+@{
+    ViewBag.Title = "Donation_Edit";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+  $(function() {
+      $("#datepicker").datepicker({
+          showOn: "button",
+          buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+          dateFormat: 'dd-mm-yy',
+          buttonImageOnly: true
+      });
+  });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Donations</h1>
+    <h3>Edit Donation</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Donations", "Donation") &raquo;
+    Edit Donation
+</div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("Donors", "Donors")</li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model=>model.TRAN_ID)
+            <div id="create_user_form">
+                <div class="label-field-pair">
+                    @Html.LabelFor(model => model.DNR, "Donor Name :", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.DNR, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DNR, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair">
+                    @Html.LabelFor(model => model.DESCR, "Description :", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair">
+                    @Html.LabelFor(model => model.TRAN_DATE, "Transaction Date :", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="input-container">
+                        @Html.EditorFor(model => model.TRAN_DATE, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.TRAN_DATE, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair">
+                    @Html.LabelFor(model => model.AMT, "Amount :", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.AMT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.AMT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <input type="submit" value="► Update" class="submit_button" />
+            </div>
+        }
+
+    </div>
+</div>
+

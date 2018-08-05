@@ -12,14 +12,10 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class Privileges_Users
+    public partial class PRIVILEGES_USERS
     {
-        public long ID { get; set; }
-        public long UserId { get; set; }
-        public long PrivilegeId { get; set; }
-        public Nullable<long> AddedBy { get; set; }
-        public Nullable<System.DateTime> AddedDate { get; set; }
-        public Nullable<long> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
+        public int ID { get; set; }
+        public Nullable<long> USER_ID { get; set; }
+        public Nullable<long> PRIVILEGE_ID { get; set; }
     }
 }

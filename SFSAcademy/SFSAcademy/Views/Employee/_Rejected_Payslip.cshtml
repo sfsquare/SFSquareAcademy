@@ -1,0 +1,133 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<MONTHLY_PAYSLIP> monthly_payslips = (IEnumerable<MONTHLY_PAYSLIP>)ViewData["monthly_payslips"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual_payslip_category = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual_payslip_category"];
+    IEnumerable<PAYROLL_CATEGORY> PayrollCategory = (IEnumerable<PAYROLL_CATEGORY>)ViewData["PayrollCategory"];
+}
+
+<ul class="item-list">
+    <!-- <li class="heading">@employee.FIRST_NAME @employee.MID_NAME @employee.LAST_NAME</li> -->
+    <li class="heading">Payslip Generated On: @Convert.ToDateTime(ViewBag.salary_date).ToString("dd-MM-yyyy")</li>
+</ul>
+<ul class="item-list">
+    <li class="heading1">Salary</li>
+    @{ int i = 1;}
+    @foreach (var item in monthly_payslips)
+    {
+        var category = PayrollCategory.Where(x => x.ID == item.PYRL_CAT_ID).FirstOrDefault();
+        string selectedRow = "listeven";
+        if (i % 2 == 0)
+        {
+            selectedRow = "listodd";
+        }
+        if (category.IS_DED == false)
+        {
+            <li class="@selectedRow">
+                <div class="item-name">@category.NAME </div>
+                <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+            </li>
+            i += 1;
+        }
+
+    }
+    @if (individual_payslip_category != null && individual_payslip_category.Count() != 0)
+    {
+        foreach (var item in individual_payslip_category)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            if (item.IS_DED == false)
+            {
+                <li class="@selectedRow">
+                    <div class="item-name">@item.NAME</div>
+                    <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+                </li>
+                i += 1;
+            }
+        }
+    }
+    @{ string selectedRow2 = "listeven";}
+    @if (i % 2 == 0)
+            {
+                selectedRow2 = "listodd";
+            }
+    <li class="@selectedRow2">
+        <div class="item-name"><b>Total Salary</b></div>
+        <div class="item-edit"><b><span class="currency-type">@ViewBag.currency_type</span> @ViewBag.net_non_deductionable_amount</b></div>
+    </li>
+</ul>
+<ul class="item-list">
+    <li class="heading1">Deductions</li>
+    @foreach (var item in monthly_payslips)
+    {
+        var category = PayrollCategory.Where(x => x.ID == item.PYRL_CAT_ID).FirstOrDefault();
+        ViewBag.reason = null;
+        if (item.RSN != null)
+        {
+            ViewBag.reason = string.Concat(ViewBag.reason, item.RSN, ",");
+        }
+        string selectedRow = "listeven";
+        if (i % 2 == 0)
+        {
+            selectedRow = "listodd";
+        }
+        if (category.IS_DED == true)
+        {
+            <li class="@selectedRow">
+                <div class="item-name">@category.NAME </div>
+                <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+            </li>
+            i += 1;
+        }
+
+    }
+    @if (individual_payslip_category != null && individual_payslip_category.Count() != 0)
+    {
+        foreach (var item in individual_payslip_category)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            if (item.IS_DED == true)
+            {
+                <li class="@selectedRow">
+                    <div class="item-name">@item.NAME</div>
+                    <div class="item-edit"><span class="currency-type">@ViewBag.currency_type</span> @item.AMT</div>
+                </li>
+                i += 1;
+            }
+        }
+    }
+    @{ string selectedRow3 = "listeven";}
+    @if (i % 2 == 0)
+            {
+                selectedRow3 = "listodd";
+            }
+    <li class="@selectedRow3">
+        <div class="item-name"><b>Total Deduction</b></div>
+        <div class="item-edit"><b><span class="currency-type">@ViewBag.currency_type</span> @ViewBag.net_deductionable_amount</b></div>
+    </li>
+</ul>
+<ul class="item-list">
+    <li class="heading1">Total</li>
+    <li class="listeven">
+        <div class="item-name"><b>Net Salary</b></div>
+        <div class="item-edit"><span class="currency-type"><b>@ViewBag.currency_type</b></span><b> @ViewBag.net_amount </b></div>
+    </li>
+</ul>
+<ul class="item-list">
+    <li class="heading1">Reason</li>
+    <li class="listeven">
+        <div class="item-name">@ViewBag.reason</div>
+        <div class="item-edit"></div>
+    </li>
+</ul>
+<div class="approve">
+    @Html.ActionLink("Edit", "Edit_Rejected_Payslip", new { id = employee.ID, id2 = ViewBag.salary_date }, new {@class = "user_button" })
+</div>

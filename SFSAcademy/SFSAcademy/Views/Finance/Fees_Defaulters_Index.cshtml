@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Fees_Defaulters_Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Fees Defaulters</h1>
+    <h3>Student Fee Defaulters</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="box">
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Fees Defaulters by Batch", "Fees_Defaulters_Batch")</div>
+            <div class="link-descr">View Defaulters List by Batch</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("Defaulted Fees For Student", "Fees_Defaulters_Student_Search")</div>
+            <div class="link-descr">View List of all Defaulted fees for a Student</div>
+        </div>
+    </div>
+</div>
