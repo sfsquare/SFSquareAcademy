@@ -1,0 +1,107 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> leave_count = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["leave_count"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> EmployeeLeaveType = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["EmployeeLeaveType"];
+}
+@{
+    ViewBag.Title = "Employee_Leave_Details";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#Reset_Leave').click(function () {
+
+        /* Get the selected value of dropdownlist */
+        var selectedID = $('#employeeID').val();
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Employee_Attendance/Employee_Wise_Leave_Reset?id=' + selectedID, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#Employee_reset').html(data);
+            /* little fade in effect */
+            $('#Employee_reset').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="HR Logo">
+    <h1>Reset Employee Leaves</h1>
+    <h3>Reset Employee Leave for @Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+        <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+        <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset Leave</a> &raquo;
+        <a href="@Url.Action("Employee_Leave_Reset_By_Employee", "Employee_Attendance")">Individual Reset</a> &raquo;
+        @Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME
+    </div>
+    <div id="list">
+        <table id="listing" width="100%">
+            <tr class="tr-head">
+                <td>Leave Types</td>
+                <td>Available Leave</td>
+                <td>Leave Taken</td>
+                <td>Last Reset Date</td>
+            </tr>
+            @{int i = 1;}
+            @if (leave_count != null && leave_count.Count() != 0)
+            {
+                foreach (var item in leave_count)
+                {
+                    var leave_type = EmployeeLeaveType.Where(x => x.ID == item.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                    string code = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        code = "tr-odd";
+                    }
+                    if (leave_type.STAT == "Y")
+                    {
+                        <tr class="@code">
+                            <td class="col-3">@leave_type.NAME</td>
+                            <td class="col-3">@item.LEAVE_CNT</td>
+                            <td class="col-3">@item.LEAVE_TAKE</td>
+                            @if (item.RST_DATE != null)
+                        {
+                                <td class="col-3">@item.RST_DATE.Value.ToShortDateString()</td>
+                            }
+                            else
+                            {
+                                <td class="col-3">-</td>
+                            }
+                        </tr>
+                    }
+                }
+            }
+ 
+        </table>
+        <div>
+            <input type="text" id="Reset_Leave" placeholder="Reset Leave" class="user_button" />
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        </div>
+        <div class="extender"></div>
+        <br />
+        <div id="Employee_reset" style="display:none;"> </div>
+    </div>
+</div>
+<input type="hidden" value="@Model.ID" id="employeeID" name="employeeID" />
+

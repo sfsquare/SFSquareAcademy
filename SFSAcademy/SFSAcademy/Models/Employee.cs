@@ -104,6 +104,20 @@ namespace SFSAcademy.Models
         public PAYROLL_CATEGORY PayrollCatogaryData { get; set; }
     }
 
+    public class LeaveReset
+    {
+        public bool automatic_leave_reset { get; set; }
+        public string leave_reset_period { get; set; }
+        public string last_reset_date { get; set; }
+        public string financial_year_start_date { get; set; }
+    }
+
+    public class EmployeeLeaveReset
+    {
+        public EMPLOYEE EmployeeData { get; set; }
+        public bool Selected { get; set; }
+    }
+
 
     public enum Priority
     {

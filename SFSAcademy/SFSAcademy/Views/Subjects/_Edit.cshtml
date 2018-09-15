@@ -1,0 +1,57 @@
+﻿@model SFSAcademy.SUBJECT
+@using SFSAcademy.Models
+@{
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+    GRADING_LEVEL greading_level = (GRADING_LEVEL)ViewData["greading_level"];
+}
+
+<div id="subjects-form">
+    @if (batch != null && batch.Count() != 0)
+    {
+        <p>@batch.FirstOrDefault().CourseData.CODE - @batch.FirstOrDefault().BatchData.NAME </p>
+    }
+
+    @using (Html.BeginForm("Edit", "Subjects", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        if (elective_group != null && elective_group.ID != 0)
+        {
+            @Html.Hidden("elective_group_id", elective_group.ID)
+        }
+
+        <div id="form-errors"></div>
+            <div class="label-field-pair label">
+                <div class="label-container label"><label>Name</label></div>
+                <div class="input-container">@Html.EditorFor(model => model.NAME)</div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label"><label>Code</label></div>
+                <div class="input-container"> @Html.EditorFor(model => model.CODE)</div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label"><label>Max Weekly Class</label></div>
+                <div class="input-container"> @Html.EditorFor(model => model.MAX_WKILY_CLSES)</div>
+            </div>
+        if (batch != null && greading_level != null)
+        {
+            if (greading_level.NAME == "CWA" || greading_level.NAME == "GPA")
+            {
+                <div class="label-field-pair label">
+                    <div class="label-container label">@Html.LabelFor(model => model.CR_HRS, "Credit Hours")</div>
+                    <div class="input-container">
+                        @Html.EditorFor(model => model.CR_HRS)
+                        @Html.ValidationMessageFor(model => model.CR_HRS, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+        }
+        <div class="label-field-pair label">
+            <div class="label-container label"><label>No Exam?</label></div>
+            <div class="input-container">@Html.CheckBoxFor(model => model.NO_EXAMS)</div>
+        </div>
+            <input type="submit" value="► Save" class="submit_button" />
+
+    }
+</div>

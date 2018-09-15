@@ -1,0 +1,70 @@
+﻿@model SFSAcademy.TIMETABLE
+
+@{
+    ViewBag.Title = "Create";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>New Timetable</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+        @if (ViewBag.ErrorMessage != null)
+            {
+            <div id="errorExplanation" class="errorExplanation"> @ViewBag.ErrorMessage </div>
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="label-field-pair label">
+                <label for="start_date"> Start Date </label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.START_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker"} })
+                    @Html.ValidationMessageFor(model => model.START_DATE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <label for="start_date"> End Date </label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.END_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2" } })
+                    @Html.ValidationMessageFor(model => model.END_DATE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <input type="submit" value="► Create" class="submit_button" />
+        }
+    </div>
+</div>
+

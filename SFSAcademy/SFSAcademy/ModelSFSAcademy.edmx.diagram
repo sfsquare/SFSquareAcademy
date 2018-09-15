@@ -18,19 +18,15 @@
         <EntityTypeShape EntityType="SFSAcademyModel.CCE_REPORTS" Width="3.5" PointX="13.25" PointY="61.125" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.CCE_WEIGHTAGE" Width="3.5" PointX="9.75" PointY="22.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.CLASS_DESIGNATION" Width="3.5" PointX="15" PointY="26.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING" Width="3.5" PointX="15" PointY="66.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.CONFIGURATION" Width="3.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.COUNTRY" Width="3.5" PointX="0.75" PointY="53.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.COURSE" Width="3.5" PointX="12.75" PointY="40" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.DESCRIPTIVE_INDICATOR" Width="3.5" PointX="15" PointY="31" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.ELECTIVE_GROUP" Width="3.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Width="3.5" PointX="11.25" PointY="57.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_BANK_DETAIL" Width="3.5" PointX="8.25" PointY="61.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_CATEGORY" Width="3.5" PointX="3.75" PointY="47.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_DEPARTMENT" Width="3.5" PointX="3.75" PointY="44.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_DEPARTMENT_EVENT" Width="3.5" PointX="12" PointY="36.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_LEAVE" Width="3.5" PointX="14.25" PointY="53.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Width="3.5" PointX="9" PointY="67.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEES_SUBJECT" Width="3.5" PointX="14.25" PointY="57.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EVENT" Width="3.5" PointX="9.75" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EXAM" Width="3.5" PointX="12" PointY="30.5" IsExpanded="true" />
@@ -59,13 +55,10 @@
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_PREVIOUS_DATA" Width="3.5" PointX="11.25" PointY="92.5" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" Width="3.5" PointX="19.25" PointY="62.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_SUBJECT" Width="3.5" PointX="22.25" PointY="62.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT" Width="3.5" PointX="15" PointY="70.25" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT_LEAVE" Width="3.5" PointX="17.25" PointY="52.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.TIMETABLE" Width="3.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.TIMETABLE_ENTRY" Width="3.5" PointX="20.5" PointY="36.125" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.USER" Width="3.5" PointX="6.75" PointY="65.125" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.WEEKDAY" Width="3.5" PointX="17.25" PointY="30.25" IsExpanded="true" />
-        <AssociationConnector Association="SFSAcademyModel.R_96" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_28" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_8" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_75" ManuallyRouted="false" />
@@ -74,14 +67,11 @@
         <AssociationConnector Association="SFSAcademyModel.R_134" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_117" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_12" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_14" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_17" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_34" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_36" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_37" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_49" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_63" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_97" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_98" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_39" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_65" ManuallyRouted="false" />
@@ -92,15 +82,10 @@
         <AssociationConnector Association="SFSAcademyModel.R_61" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_64" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_57" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_35" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_86" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_88" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_87" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_90" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_84" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_52" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_38" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_48" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_50" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_54" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_55" ManuallyRouted="false" />
@@ -113,10 +98,6 @@
         <AssociationConnector Association="SFSAcademyModel.R_60" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_132" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.R_6" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_19" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_15" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_21" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.R_99" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SFSAcademyModel.FEE_COLLECTION_PARTICULAR" Width="3.5" PointX="23.25" PointY="44.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.RANKING_LEVEL" Width="3.5" PointX="15" PointY="21.75" />
         <AssociationConnector Association="SFSAcademyModel.CRS_I_COUR_RANK_NI" />
@@ -202,7 +183,6 @@
         <AssociationConnector Association="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" />
-        <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6" />
@@ -222,6 +202,35 @@
         <AssociationConnector Association="SFSAcademyModel.PYRL__PAYR_MONT_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.INDIVIDUAL_PAYSLIP_CATGEORY" Width="1.5" PointX="25.25" PointY="72.75" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_INDI_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Width="1.5" PointX="28.5" PointY="71.75" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" />
+        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Width="1.5" PointX="15" PointY="12" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_APPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" />
+        <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT" Width="1.5" PointX="19.5" PointY="39" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ELECTIVE_GROUP" Width="1.5" PointX="14.375" PointY="0.75" />
+        <EntityTypeShape EntityType="SFSAcademyModel.PERIOD_ENTRIES" Width="1.5" PointX="25.625" PointY="58.875" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_PERE_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_PERD_ENTR_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING" Width="1.5" PointX="19.875" PointY="20" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_CLAS_NI" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI" />
+        <AssociationConnector Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.TIMETABLE_ENTRY" Width="1.5" PointX="26.625" PointY="37.125" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_TIME_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_SUBJ_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_TIME_T_NI" />
+        <AssociationConnector Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

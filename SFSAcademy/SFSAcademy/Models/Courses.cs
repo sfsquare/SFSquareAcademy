@@ -9,6 +9,8 @@ namespace SFSAcademy.Models
     {
         public COURSE CourseData { get; set; }
         public BATCH BatchData { get; set; }
+        public SUBJECT Elective_Batch_Subject { get; set; }
+        public int? Total_Time { get; set; }
     }
 
     public class SelectCourseBatch

@@ -1,0 +1,20 @@
+﻿@model SFSAcademy.Models.WeekdaysSelect
+
+<ul id="category-list">
+    @{string code = "listeven";}
+    @if (Model.Id % 2 == 0)
+    {
+        code = "listodd";
+    }
+    <li class="@code">
+        <div class="category-name">@Model.Day</div>
+        <div class="category-edit">@Html.CheckBoxFor(x => x.Select) <br /></div>
+
+    </li>
+    @Html.HiddenFor(x => x.Id)
+    @Html.HiddenFor(x => x.Day)
+</ul>
+
+
+
+

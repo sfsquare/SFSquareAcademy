@@ -545,6 +545,8 @@
     <Content Include="Content\javascripts\jquery\jquery-ui.min.js" />
     <Content Include="Content\javascripts\jquery\jquery.hotkeys.js" />
     <Content Include="Content\javascripts\jquery\jquery.min.js" />
+    <Content Include="Content\javascripts\jquery\jquery.timepicker.js" />
+    <Content Include="Content\javascripts\jquery\jquery.timepicker.min.js" />
     <Content Include="Content\javascripts\jquery\selectbox.js" />
     <Content Include="Content\javascripts\scripts\nicetitle.js" />
     <Content Include="Content\javascripts\tiny_mce\langs\en.js" />
@@ -800,6 +802,8 @@
     <Content Include="Content\stylesheets\store\new.css" />
     <Content Include="Content\stylesheets\store\purchase.css" />
     <Content Include="Content\stylesheets\store\show.css" />
+    <Content Include="Content\stylesheets\_styles\jquery.timepicker.css" />
+    <Content Include="Content\stylesheets\_styles\jquery.timepicker.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="ModelSFSAcademy.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -809,7 +813,7 @@
     <Content Include="ModelSFSAcademy.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>ModelSFSAcademy.edmx</DependentUpon>
-      <LastGenOutput>ModelSFSAcademy.cs</LastGenOutput>
+      <LastGenOutput>ModelSFSAcademy1.cs</LastGenOutput>
     </Content>
     <Content Include="packages.config" />
     <Content Include="Content\404.html" />
@@ -2176,6 +2180,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\stylesheets\_styles\jquery.timepicker.min.css.map" />
     <None Include="Properties\PublishProfiles\SFSAcademy.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
@@ -2513,6 +2518,67 @@
     <Content Include="Views\Employee\Payslip_Approve.cshtml" />
     <Content Include="Views\Employee\_One_Click_Approve.cshtml" />
     <Content Include="Views\Employee\Employee_Attendance.cshtml" />
+    <Content Include="Views\Employee_Attendance\Create.cshtml" />
+    <Content Include="Views\Employee_Attendance\Delete.cshtml" />
+    <Content Include="Views\Employee_Attendance\Details.cshtml" />
+    <Content Include="Views\Employee_Attendance\Index.cshtml" />
+    <Content Include="Views\Employee_Attendances\Create.cshtml" />
+    <Content Include="Views\Employee_Attendances\Details.cshtml" />
+    <Content Include="Views\Employee_Attendances\Index.cshtml" />
+    <Content Include="Views\Employee_Attendances\_Register.cshtml" />
+    <Content Include="Views\Employee_Attendances\_New.cshtml" />
+    <Content Include="Views\Employee_Attendances\_Edit.cshtml" />
+    <Content Include="Views\Employee_Attendance\Add_Leave_Types.cshtml" />
+    <Content Include="Views\Employee_Attendance\_Leave_Types.cshtml" />
+    <Content Include="Views\Employee_Attendance\Edit_Leave_Types.cshtml" />
+    <Content Include="Views\Employee_Attendance\Report.cshtml" />
+    <Content Include="Views\Employee_Attendance\_Attendance_Report.cshtml" />
+    <Content Include="Views\Employee_Attendance\Manual_Reset.cshtml" />
+    <Content Include="Views\Employee_Attendance\Leave_Reset_Settings.cshtml" />
+    <Content Include="Views\Employee_Attendance\Employee_Leave_Reset_All.cshtml" />
+    <Content Include="Views\Employee_Attendance\Employee_Leave_Reset_By_Department.cshtml" />
+    <Content Include="Views\Employee_Attendance\_Department_List.cshtml" />
+    <Content Include="Views\Employee_Attendance\Employee_Leave_Reset_By_Employee.cshtml" />
+    <Content Include="Views\Employee_Attendance\Employee_Leave_Details.cshtml" />
+    <Content Include="Views\Employee_Attendance\_Employee_Reset_Sucess.cshtml" />
+    <Content Include="Views\Configuration\Create.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\Subjects\Index.cshtml" />
+    <Content Include="Views\Subjects\_Subjects.cshtml" />
+    <Content Include="Views\Subjects\New.cshtml" />
+    <Content Include="Views\Subjects\_New.cshtml" />
+    <Content Include="Views\Elective_Groups\Edit.cshtml" />
+    <Content Include="Views\Elective_Groups\Index.cshtml" />
+    <Content Include="Views\Elective_Groups\New.cshtml" />
+    <Content Include="Views\Elective_Groups\Show.cshtml" />
+    <Content Include="Views\Subjects\_Edit.cshtml" />
+    <Content Include="Views\Student\Electives.cshtml" />
+    <Content Include="Views\Configuration\Settings.cshtml" />
+    <Content Include="Views\Student\Add_Additional_Details.cshtml" />
+    <Content Include="Views\Student\_Additional_Fields.cshtml" />
+    <Content Include="Views\Student\Edit_Additional_Details.cshtml" />
+    <Content Include="Views\Timetable\New_Timetable.cshtml" />
+    <Content Include="Views\Timetable\Edit.cshtml" />
+    <Content Include="Views\Timetable\Index.cshtml" />
+    <Content Include="Views\Weekday\New.cshtml" />
+    <Content Include="Views\Weekday\Index.cshtml" />
+    <Content Include="Views\Weekday\_Weekdays.cshtml" />
+    <Content Include="Views\Weekday\EditorTemplates\WeekdaysSelect.cshtml" />
+    <Content Include="Views\Class_Timings\Index.cshtml" />
+    <Content Include="Views\Class_Timings\_show_batch_timing.cshtml" />
+    <Content Include="Views\Class_Timings\_Edit.cshtml" />
+    <Content Include="Views\Class_Timings\_New.cshtml" />
+    <Content Include="Views\Timetable\Work_Allotment.cshtml" />
+    <Content Include="Views\Employee\Subject_Assignment.cshtml" />
+    <Content Include="Views\Employee\_Subjects.cshtml" />
+    <Content Include="Views\Employee\_Select_Department.cshtml" />
+    <Content Include="Views\Employee\_Employee_List.cshtml" />
+    <Content Include="Views\Timetable_Entries\Create.cshtml" />
+    <Content Include="Views\Timetable_Entries\Delete.cshtml" />
+    <Content Include="Views\Timetable_Entries\Details.cshtml" />
+    <Content Include="Views\Timetable_Entries\Edit.cshtml" />
+    <Content Include="Views\Timetable_Entries\Index.cshtml" />
+    <Content Include="Views\Timetable_Entries\New.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2570,15 +2636,24 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Controllers\BATCHController.cs" />
+    <Compile Include="Controllers\Class_TimingsController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
+    <Compile Include="Controllers\Elective_GroupsController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
+    <Compile Include="Controllers\Employee_AttendanceController.cs" />
+    <Compile Include="Controllers\Employee_AttendancesController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\newsController.cs" />
     <Compile Include="Controllers\PayrollController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\SubjectsController.cs" />
+    <Compile Include="Controllers\TimetableController.cs" />
+    <Compile Include="Controllers\Timetable_EntriesController.cs" />
     <Compile Include="Controllers\USERsController.cs" />
+    <Compile Include="Controllers\WeekdayController.cs" />
     <Compile Include="COUNTRY.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
@@ -2732,6 +2807,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelSFSAcademy.edmx</DependentUpon>
     </Compile>
+    <Compile Include="ModelSFSAcademy1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CommonModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Courses.cs" />
@@ -2742,6 +2822,8 @@
     <Compile Include="Models\Finance.cs" />
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\Subjects.cs" />
+    <Compile Include="Models\Timetable.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="MONTHLY_PAYSLIP.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
@@ -2759,6 +2841,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="PAYROLL_CATEGORY.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PERIOD_ENTRIES.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="PHOTO_MASTER.cs">

@@ -26,8 +26,8 @@ namespace SFSAcademy
         public string NAME { get; set; }
         public string CODE { get; set; }
         public string STAT { get; set; }
-        public string MAX_LEAVE_CNT { get; set; }
-        public string CARR_FRWD { get; set; }
+        public Nullable<decimal> MAX_LEAVE_CNT { get; set; }
+        public bool CARR_FRWD { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }

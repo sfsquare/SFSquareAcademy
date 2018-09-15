@@ -1,0 +1,83 @@
+﻿@model SFSAcademy.Models.LeaveReset
+@{
+    ViewBag.Title = "Leave_Reset_Settings";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="Leave Logo">
+    <h1>Reset Leave</h1>
+    <h3>Leave Reset Settings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+        <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+        <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset_Leave</a> &raquo;
+        Leave reset settings
+    </div>
+    <div class="box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="label-field-pair label">
+                <label for="category_name">Enable Automatic Reset</label>
+                @if (ViewBag.auto_reset == "1")
+                {
+                    <div class="check_box">@Html.CheckBoxFor(model => model.automatic_leave_reset, new { @checked = true })</div>
+                }
+                else
+                {
+                    <div class="check_box">@Html.CheckBoxFor(model => model.automatic_leave_reset)</div>
+                }
+
+            </div>
+            <div class="label-field-pair label">
+                <label for="configuration_currency_type">Leave Reset Period</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.leave_reset_period, new { htmlAttributes = new { @value = ViewBag.reset_period } })
+                    @Html.ValidationMessageFor(model => model.leave_reset_period, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <label for="configuration_currency_type">Count Begin Date</label>
+                <div class="text-input-bg">
+                    @if (ViewBag.last_reset == null)
+                    {
+                        ViewBag.last_reset = ViewBag.fin_start_date;
+                    }
+                    @Html.EditorFor(model => model.last_reset_date, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.last_reset } })
+                    @Html.ValidationMessageFor(model => model.last_reset_date, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div id="submit-button">
+                <input type="submit" value="► Update"/>
+            </div>
+        }
+
+    </div>
+</div>

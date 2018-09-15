@@ -1,0 +1,147 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    SFSAcademy.SUBJECT subject = (SFSAcademy.SUBJECT)ViewData["subject"];
+    IEnumerable<SFSAcademy.Models.ElectiveGroups> elective_groups = (IEnumerable<SFSAcademy.Models.ElectiveGroups>)ViewData["elective_groups"];
+    IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
+    IEnumerable<SFSAcademy.EXAM> Exam = (IEnumerable<SFSAcademy.EXAM>)ViewData["Exam"];
+    IEnumerable<SFSAcademy.Models.TimetableEntry> TimetableEntry = (IEnumerable<SFSAcademy.Models.TimetableEntry>)ViewData["TimetableEntry"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+
+    //Very similar function as before (except this time with an argument)
+    function LoadOneClickPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#modal-box').html(data);
+            /* little fade in effect */
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+@if (batch != null && batch.Count() != 0)
+{
+    <div class="add_sub">
+        <a href="@Url.Action("New", "Subjects",new { id = batch.FirstOrDefault().BatchData.ID})" id="Add_Sub" onclick='LoadOneClickPartialPage(this.href); return false;'>Add Normal Subject</a>
+    </div>
+}
+
+@if (subjects != null && subjects.Count() != 0)
+{
+    <ul id="category-list">
+        @if (subject != null)
+        {
+            if (subject.ELECTIVE_GRP_ID == null)
+            {
+                <div class="add_sub">
+                    <a href="@Url.Action("New", "Subjects",new { id = batch.FirstOrDefault().BatchData.ID , id2 = subject.ELECTIVE_GRP_ID})" id="Add_Sub_To_Elect" onclick='LoadOneClickPartialPage(this.href); return false;'>Add Subject to elective group</a>
+                </div>
+            }
+        }
+        @{int k = 1;}
+        @foreach (var item in subjects)
+        {
+            string selectedRow = "listeven";
+            if (k % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li id="subject-@item.ID" class="@selectedRow">
+                <div class="category-name">@item.NAME</div>
+                <div class="opt">
+                    <div class="category-code">@item.CODE</div>
+                    <div class="category-edit">
+                        <a href="@Url.Action("Edit", "Subjects",new {id=item.ID, id2=item.ELECTIVE_GRP_ID })" onclick='LoadOneClickPartialPage(this.href); return false;'>Edit</a>
+                    </div>
+                    <div class="category-delete">
+                        @{ var subject_exams = Exam.Where(x => x.SUBJ_ID == item.ID).ToList();
+                            var subject_timetable = TimetableEntry.Where(x => x.SubjectData.ID == item.ID);}
+                        @if ((subject_exams == null || subject_exams.Count() == 0) && (subject_timetable == null || subject_timetable.Count() == 0))
+                        {
+                            @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @onclick = "return confirm('are you sure?')" })
+                        }
+                        else
+                        {
+                            <s>Delete</s>
+                        }
+                    </div>
+                    @if (item.ELECTIVE_GRP_ID != null)
+                    {
+                        <div class="category-assign">
+                            <a href="@Url.Action("Electives", "Student",new {id=batch.FirstOrDefault().BatchData.ID, id2=item.ID })">Assign Student</a>
+                        </div>
+                    }
+                </div>
+            </li>
+          }
+    </ul>
+}
+
+@if (batch != null && batch.Count() !=0)
+{
+    <div class="add_sub">
+        <a href="@Url.Action("Index", "Elective_Groups", new { BatchId = batch.FirstOrDefault().BatchData.ID})">New Elective Group</a>
+    </div>
+}
+
+@if (elective_groups != null && elective_groups.Count() != 0)
+{
+    foreach (var item in elective_groups)
+    {
+        var esubjects = batch.Where(x => x.Elective_Batch_Subject.ELECTIVE_GRP_ID == item.ElectiveGroupData.ID).ToList();
+        <h5> @item.ElectiveGroupData.ELECTIVE_GRP_NAME </h5>
+        <div class="add_sub">
+            <a href="@Url.Action("New", "Subjects",new { id = batch.FirstOrDefault().BatchData.ID, id2= item.ElectiveGroupData.ID})" onclick='LoadOneClickPartialPage(this.href); return false;'>Add Subject to elective group</a>
+        </div>
+        <ul id="category-list">
+            @{int i = 1;}
+            @foreach (var item2 in esubjects)
+            {
+                string selectedRow = "listeven";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "listodd";
+                }
+                <li id="subject-@item2.Elective_Batch_Subject.ID" class="@selectedRow">
+                    <div class="category-name">@item2.Elective_Batch_Subject.NAME</div>
+                    <div class="opt">
+                        <div class="category-code">@item2.Elective_Batch_Subject.CODE</div>
+                        <div class="category-edit">
+                            <a href="@Url.Action("Edit", "Subjects",new {id=item2.Elective_Batch_Subject.ID, id2=item2.Elective_Batch_Subject.ELECTIVE_GRP_ID })" onclick='LoadOneClickPartialPage(this.href); return false;'>Edit</a>
+                        </div>
+                        <div class="category-delete">
+                            @{ var subject_exams = Exam.Where(x => x.SUBJ_ID == item2.Elective_Batch_Subject.ID).ToList();
+                                var subject_timetable = TimetableEntry.Where(x => x.SubjectData.ID == item2.Elective_Batch_Subject.ID);}
+                            @if ((subject_exams == null || subject_exams.Count() == 0) && (subject_timetable == null || subject_timetable.Count() == 0))
+                        {
+                                @Html.ActionLink("Delete", "Delete", new { id = item2.Elective_Batch_Subject.ID }, new { @onclick = "return confirm('are you sure?')" })
+                            }
+                            else
+                            {
+                                <s>Delete</s>
+                            }
+                        </div>
+                        @if (item2.Elective_Batch_Subject.ELECTIVE_GRP_ID != null)
+                        {
+                            <div class="category-assign">
+                                <a href="@Url.Action("Electives", "Student",new {id=batch.FirstOrDefault().BatchData.ID, id2=item2.Elective_Batch_Subject.ID })">Assign Student</a>
+                            </div>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+
+       }
+}
+<div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>

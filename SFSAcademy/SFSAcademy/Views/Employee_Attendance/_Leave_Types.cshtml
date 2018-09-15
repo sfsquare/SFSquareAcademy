@@ -1,0 +1,56 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> inactive_leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["inactive_leave_types"];
+}
+
+
+<ul class="leave-type-list">
+    @if (leave_types != null && leave_types.Count() !=0)
+    {
+        <li class="listheading"><div class="leave-type-name">Active Leave</div></li>
+        int i = 1;
+        foreach (var item in leave_types)
+        {
+            string code = "listeven";
+            if (i % 2 == 0)
+            {
+                code = "listeven";
+            }
+            <li class="@code">
+                <div class="leave-type-name">@item.CODE - @item.NAME</div>
+                <div class="leave-type-edit">@Html.ActionLink("Edit", "Edit_Leave_Types", new { id = item.ID })</div>
+                <div class="leave-type-edit">@Html.ActionLink("Delete", "Delete_Leave_Types", new { id = item.ID }, new { onclick = "return confirm('are you sure?')" })</div>
+                <div class="leave-type-edit">Active</div>
+            </li>
+            i += 1;
+        }
+
+        if (inactive_leave_types != null && inactive_leave_types.Count() != 0)
+        {
+            <li class="listheading"><div class="leave-type-name"> Inactive Leave</div></li>
+            int j = 1;
+            foreach (var item in inactive_leave_types)
+            {
+                string code = "listeven";
+                if (j % 2 == 0)
+                {
+                    code = "listeven";
+                }
+                <li class="@code">
+                    <div class="leave-type-name">@item.CODE - @item.NAME</div>
+                    <div class="leave-type-edit">@Html.ActionLink("Edit", "Edit_Leave_Types", new { id = item.ID })</div>
+                    <div class="leave-type-edit">@Html.ActionLink("Delete", "Delete_Leave_Types", new { id = item.ID }, new { onclick = "return confirm('are you sure?')" })</div>
+                    <div class="leave-type-edit">Inactive</div>
+                </li>
+                j += 1;
+            }
+        }
+    }
+    else
+    {
+        <p class="flash-msg">Employee leave types records</p>
+    }
+
+</ul>
+

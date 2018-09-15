@@ -195,9 +195,9 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BTCH_ID" Type="int" />
           <Property Name="NAME" Type="varchar" MaxLength="50" />
-          <Property Name="START_TIME" Type="datetime" />
-          <Property Name="END_TIME" Type="datetime" />
-          <Property Name="IS_BRK" Type="varchar" MaxLength="1" />
+          <Property Name="START_TIME" Type="time" Precision="7" />
+          <Property Name="END_TIME" Type="time" Precision="7" />
+          <Property Name="IS_BRK" Type="bit" Nullable="false" />
           <Property Name="IS_DEL" Type="varchar" MaxLength="1" />
         </EntityType>
         <EntityType Name="CONFIGURATION">
@@ -247,6 +247,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ELECTIVE_GRP_NAME" Type="varchar" MaxLength="20" />
           <Property Name="ELECTIVE_GRP_DESCR" Type="varchar" MaxLength="50" />
+          <Property Name="BTCH_ID" Type="int" />
         </EntityType>
         <EntityType Name="EMPLOYEE">
           <Key>
@@ -332,7 +333,7 @@
           <Property Name="EMP_ID" Type="int" />
           <Property Name="EMP_LEAVE_TYPE_ID" Type="int" />
           <Property Name="RSN" Type="varchar" MaxLength="20" />
-          <Property Name="IS_HALF_DAY" Type="varchar" MaxLength="1" />
+          <Property Name="IS_HALF_DAY" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="EMPLOYEE_BANK_DETAIL">
           <Key>
@@ -405,8 +406,8 @@
           <Property Name="NAME" Type="varchar" MaxLength="50" />
           <Property Name="CODE" Type="varchar" MaxLength="20" />
           <Property Name="STAT" Type="varchar" MaxLength="1" />
-          <Property Name="MAX_LEAVE_CNT" Type="varchar" MaxLength="20" />
-          <Property Name="CARR_FRWD" Type="varchar" MaxLength="1" />
+          <Property Name="MAX_LEAVE_CNT" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CARR_FRWD" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="EMPLOYEE_POSITION">
           <Key>
@@ -873,6 +874,17 @@ warning 6002: The table/view 'SFSAcademy.dbo.Gallery_Master' does not have a pri
           <Property Name="IS_DED" Type="bit" Nullable="false" />
           <Property Name="STAT" Type="varchar" MaxLength="1" />
         </EntityType>
+        <EntityType Name="PERIOD_ENTRIES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MONTH_DATE" Type="datetime" />
+          <Property Name="BTCH_ID" Type="int" />
+          <Property Name="SUBJ_ID" Type="int" />
+          <Property Name="CLASS_TIMING_ID" Type="int" />
+          <Property Name="EMP_ID" Type="int" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PHOTO_MASTER">
@@ -1205,7 +1217,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="NAME" Type="varchar" MaxLength="50" />
           <Property Name="CODE" Type="varchar" MaxLength="20" />
           <Property Name="BTCH_ID" Type="int" />
-          <Property Name="NO_EXAMS" Type="varchar" MaxLength="1" />
+          <Property Name="NO_EXAMS" Type="bit" Nullable="false" />
           <Property Name="MAX_WKILY_CLSES" Type="int" />
           <Property Name="ELECTIVE_GRP_ID" Type="int" />
           <Property Name="IS_DEL" Type="varchar" MaxLength="1" />
@@ -1248,6 +1260,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BTCH_ID" Type="int" />
           <Property Name="WK_DAY_ID" Type="int" />
+          <Property Name="EMP_ID" Type="int" />
+          <Property Name="SUBJ_ID" Type="int" />
+          <Property Name="TIMT_ID" Type="int" />
+          <Property Name="CLS_TMNG_ID" Type="int" />
         </EntityType>
         <EntityType Name="USERS">
           <Key>
@@ -1439,6 +1455,18 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="BTCH__BATC_PERE_NI">
+          <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
+          <End Role="PERIOD_ENTRIES" Type="Self.PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="BTCH__BATC_STUD_NI">
           <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
           <End Role="STUDENT_SUBJECT" Type="Self.STUDENT_SUBJECT" Multiplicity="*" />
@@ -1496,6 +1524,18 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="WEEKDAY">
               <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BTCH_CLASS_TIMG_NI">
+          <End Role="CLASS_TIMING" Type="Self.CLASS_TIMING" Multiplicity="0..1" />
+          <End Role="PERIOD_ENTRIES" Type="Self.PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="CLASS_TIMING_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1819,6 +1859,18 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_PERD_ENTR_NI">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+          <End Role="PERIOD_ENTRIES" Type="Self.PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
               <PropertyRef Name="EMP_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -2687,6 +2739,66 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="SUBJ_PERD_ENTR_NI">
+          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
+          <End Role="PERIOD_ENTRIES" Type="Self.PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_CLAS_TIMING_NI">
+          <End Role="CLASS_TIMING" Type="Self.CLASS_TIMING" Multiplicity="0..1" />
+          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="CLS_TMNG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_EMPL_NI">
+          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
+          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_SUBJ_NI">
+          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
+          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_TIME_T_NI">
+          <End Role="TIMETABLE" Type="Self.TIMETABLE" Multiplicity="0..1" />
+          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMETABLE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="TIMT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="TRAN__FINA_FINA_NI">
           <End Role="FINANCE_TRANSACTION" Type="Self.FINANCE_TRANSACTION" Multiplicity="0..1" />
           <End Role="FINANCE_DONATION" Type="Self.FINANCE_DONATION" Multiplicity="*" />
@@ -2835,6 +2947,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="OBSERVATION" EntityType="Self.OBSERVATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OBSERVATION_GROUP" EntityType="Self.OBSERVATION_GROUP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAYROLL_CATEGORY" EntityType="Self.PAYROLL_CATEGORY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PERIOD_ENTRIES" EntityType="Self.PERIOD_ENTRIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRIVILEGES" EntityType="Self.PRIVILEGES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRIVILEGES_USERS" EntityType="Self.PRIVILEGES_USERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RANKING_LEVEL" EntityType="Self.RANKING_LEVEL" Schema="dbo" store:Type="Tables" />
@@ -2931,6 +3044,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="BATCH" EntitySet="BATCH" />
             <End Role="GRADING_LEVEL" EntitySet="GRADING_LEVEL" />
           </AssociationSet>
+          <AssociationSet Name="BTCH__BATC_PERE_NI" Association="Self.BTCH__BATC_PERE_NI">
+            <End Role="BATCH" EntitySet="BATCH" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
           <AssociationSet Name="BTCH__BATC_STUD_NI" Association="Self.BTCH__BATC_STUD_NI">
             <End Role="BATCH" EntitySet="BATCH" />
             <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
@@ -2950,6 +3067,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="BTCH__BATC_WEEK_NI" Association="Self.BTCH__BATC_WEEK_NI">
             <End Role="BATCH" EntitySet="BATCH" />
             <End Role="WEEKDAY" EntitySet="WEEKDAY" />
+          </AssociationSet>
+          <AssociationSet Name="BTCH_CLASS_TIMG_NI" Association="Self.BTCH_CLASS_TIMG_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
           </AssociationSet>
           <AssociationSet Name="CAT_I_FINA_FINA_NI" Association="Self.CAT_I_FINA_FINA_NI">
             <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
@@ -3058,6 +3179,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="EMP_I_EMPL_SUBJ_NI" Association="Self.EMP_I_EMPL_SUBJ_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
             <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_PERD_ENTR_NI" Association="Self.EMP_I_PERD_ENTR_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
           </AssociationSet>
           <AssociationSet Name="EMP_L_EMPL_APPL_NI" Association="Self.EMP_L_EMPL_APPL_NI">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
@@ -3347,6 +3472,26 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="SUBJECT" EntitySet="SUBJECT" />
             <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
           </AssociationSet>
+          <AssociationSet Name="SUBJ_PERD_ENTR_NI" Association="Self.SUBJ_PERD_ENTR_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECT" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_CLAS_TIMING_NI" Association="Self.TIME_T_CLAS_TIMING_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_EMPL_NI" Association="Self.TIME_T_EMPL_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_SUBJ_NI" Association="Self.TIME_T_SUBJ_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECT" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_TIME_T_NI" Association="Self.TIME_T_TIME_T_NI">
+            <End Role="TIMETABLE" EntitySet="TIMETABLE" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
           <AssociationSet Name="TRAN__FINA_FINA_NI" Association="Self.TRAN__FINA_FINA_NI">
             <End Role="FINANCE_TRANSACTION" EntitySet="FINANCE_TRANSACTION" />
             <End Role="FINANCE_DONATION" EntitySet="FINANCE_DONATION" />
@@ -3394,8 +3539,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="APPR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="VW_BY_MGR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="MGR_RMRK" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_96" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_APPL_NI" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_EMPL_APPL_NI" FromRole="APPLY_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
         </EntityType>
         <EntityType Name="ARCHIVED_STUDENT">
           <Key>
@@ -3510,17 +3655,18 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="ATTENDENCEs" Relationship="Self.R_134" FromRole="BATCH" ToRole="ATTENDENCE" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="Self.R_117" FromRole="BATCH" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
           <NavigationProperty Name="COURSE" Relationship="Self.R_12" FromRole="BATCH" ToRole="COURSE" />
-          <NavigationProperty Name="SUBJECTs" Relationship="Self.R_14" FromRole="BATCH" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT_SUBJECT" Relationship="Self.R_17" FromRole="BATCH" ToRole="STUDENT_SUBJECT" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="Self.R_34" FromRole="BATCH" ToRole="CLASS_TIMING" />
           <NavigationProperty Name="SUBJECT_LEAVE" Relationship="Self.R_36" FromRole="BATCH" ToRole="SUBJECT_LEAVE" />
           <NavigationProperty Name="EXAM_GROUP" Relationship="Self.R_37" FromRole="BATCH" ToRole="EXAM_GROUP" />
           <NavigationProperty Name="GRADING_LEVEL" Relationship="Self.R_49" FromRole="BATCH" ToRole="GRADING_LEVEL" />
           <NavigationProperty Name="CCE_REPORTS" Relationship="Self.R_63" FromRole="BATCH" ToRole="CCE_REPORTS" />
-          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="Self.R_97" FromRole="BATCH" ToRole="TIMETABLE_ENTRY" />
           <NavigationProperty Name="WEEKDAYs" Relationship="Self.R_98" FromRole="BATCH" ToRole="WEEKDAY" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI2" FromRole="BATCH" ToRole="FINANCE_FEE_COLLECTION" />
           <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="BATCH" ToRole="FINANCE_FEE_CATGEORY" />
+          <NavigationProperty Name="SUBJECTs" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="BATCH" ToRole="SUBJECT" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.BTCH__BATC_PERE_NI" FromRole="BATCH" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="BATCH" ToRole="CLASS_TIMING" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.BTCH__BATC_TIME_NI" FromRole="BATCH" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
         <EntityType Name="CCE_EXAM_CATEGORY">
           <Key>
@@ -3602,20 +3748,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="CRS_ID" Type="Int32" />
           <NavigationProperty Name="COURSE" Relationship="Self.R_57" FromRole="CLASS_DESIGNATION" ToRole="COURSE" />
         </EntityType>
-        <EntityType Name="CLASS_TIMING">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="START_TIME" Type="DateTime" Precision="3" />
-          <Property Name="END_TIME" Type="DateTime" Precision="3" />
-          <Property Name="IS_BRK" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="BATCH" Relationship="Self.R_34" FromRole="CLASS_TIMING" ToRole="BATCH" />
-          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="Self.R_35" FromRole="CLASS_TIMING" ToRole="SUBJECT_LEAVE" />
-        </EntityType>
         <EntityType Name="CONFIGURATION">
           <Key>
             <PropertyRef Name="ID" />
@@ -3664,27 +3796,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ASSESSMENT_SCORE" Relationship="Self.R_77" FromRole="DESCRIPTIVE_INDICATOR" ToRole="ASSESSMENT_SCORE" />
-        </EntityType>
-        <EntityType Name="ELECTIVE_GROUP">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ELECTIVE_GRP_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="ELECTIVE_GRP_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="EMPLOYEE_ATTENDENCES">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ATNDENCE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
-          <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IS_HALF_DAY" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_86" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_BANK_DETAIL">
           <Key>
@@ -3742,22 +3853,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="RST_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="Self.R_90" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE" />
-        </EntityType>
-        <EntityType Name="EMPLOYEE_LEAVE_TYPE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="MAX_LEAVE_CNT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CARR_FRWD" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="APPLY_LEAVE" Relationship="Self.R_96" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="APPLY_LEAVE" />
-          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="Self.R_86" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="Self.R_90" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_LEAVE" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" FromRole="EMPLOYEE_LEAVE" ToRole="EMPLOYEE_LEAVE_TYPE" />
         </EntityType>
         <EntityType Name="EMPLOYEES_SUBJECT">
           <Key>
@@ -3766,8 +3863,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
-          <NavigationProperty Name="SUBJECT" Relationship="Self.R_84" FromRole="EMPLOYEES_SUBJECT" ToRole="SUBJECT" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6" FromRole="EMPLOYEES_SUBJECT" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" FromRole="EMPLOYEES_SUBJECT" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="EVENT">
           <Key>
@@ -3809,9 +3906,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="CCE_REPORTS" Relationship="Self.R_64" FromRole="EXAM" ToRole="CCE_REPORTS" />
           <NavigationProperty Name="EVENT" Relationship="Self.R_52" FromRole="EXAM" ToRole="EVENT" />
           <NavigationProperty Name="EXAM_GROUP" Relationship="Self.R_38" FromRole="EXAM" ToRole="EXAM_GROUP" />
-          <NavigationProperty Name="SUBJECT" Relationship="Self.R_48" FromRole="EXAM" ToRole="SUBJECT" />
           <NavigationProperty Name="GRADING_LEVEL" Relationship="Self.R_50" FromRole="EXAM" ToRole="GRADING_LEVEL" />
           <NavigationProperty Name="EXAM_SCORE" Relationship="Self.R_54" FromRole="EXAM" ToRole="EXAM_SCORE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="EXAM" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="EXAM_GROUP">
           <Key>
@@ -4157,8 +4254,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="STDNT_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
           <Property Name="MK" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="SUBJECT" Relationship="Self.R_19" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_STUD_NI4" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="STUDENT" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="STUDENT_SUBJECT">
           <Key>
@@ -4169,32 +4266,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="STDNT_ID" Type="Int32" />
           <Property Name="BTCH_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="Self.R_17" FromRole="STUDENT_SUBJECT" ToRole="BATCH" />
-          <NavigationProperty Name="SUBJECT" Relationship="Self.R_15" FromRole="STUDENT_SUBJECT" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_STUD_NI5" FromRole="STUDENT_SUBJECT" ToRole="STUDENT" />
-        </EntityType>
-        <EntityType Name="SUBJECT">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="NO_EXAMS" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="MAX_WKILY_CLSES" Type="Int32" />
-          <Property Name="ELECTIVE_GRP_ID" Type="Int32" />
-          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="CR_HRS" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="PREF_CNSC" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
-          <NavigationProperty Name="BATCH" Relationship="Self.R_14" FromRole="SUBJECT" ToRole="BATCH" />
-          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="Self.R_84" FromRole="SUBJECT" ToRole="EMPLOYEES_SUBJECT" />
-          <NavigationProperty Name="EXAMs" Relationship="Self.R_48" FromRole="SUBJECT" ToRole="EXAM" />
-          <NavigationProperty Name="STUDENT_PREVIOUS_SUBJECT_MARK" Relationship="Self.R_19" FromRole="SUBJECT" ToRole="STUDENT_PREVIOUS_SUBJECT_MARK" />
-          <NavigationProperty Name="STUDENT_SUBJECT" Relationship="Self.R_15" FromRole="SUBJECT" ToRole="STUDENT_SUBJECT" />
-          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="Self.R_21" FromRole="SUBJECT" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="STUDENT_SUBJECT" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="SUBJECT_LEAVE">
           <Key>
@@ -4211,10 +4284,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <Property Name="BTCH_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="Self.R_36" FromRole="SUBJECT_LEAVE" ToRole="BATCH" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="Self.R_35" FromRole="SUBJECT_LEAVE" ToRole="CLASS_TIMING" />
-          <NavigationProperty Name="SUBJECT" Relationship="Self.R_21" FromRole="SUBJECT_LEAVE" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="STUDENT" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="SUBJECT" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="CLASS_TIMING" />
         </EntityType>
         <EntityType Name="TIMETABLE">
           <Key>
@@ -4226,16 +4299,7 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="IS_ACT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="TIMETABLE_ENTRY">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="WK_DAY_ID" Type="Int32" />
-          <NavigationProperty Name="BATCH" Relationship="Self.R_97" FromRole="TIMETABLE_ENTRY" ToRole="BATCH" />
-          <NavigationProperty Name="WEEKDAY" Relationship="Self.R_99" FromRole="TIMETABLE_ENTRY" ToRole="WEEKDAY" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_TIME_T_NI" FromRole="TIMETABLE" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -4274,20 +4338,8 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <Property Name="DAY_OF_WK" Type="Int32" />
           <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="BATCH" Relationship="Self.R_98" FromRole="WEEKDAY" ToRole="BATCH" />
-          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="Self.R_99" FromRole="WEEKDAY" ToRole="TIMETABLE_ENTRY" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.WK_DA_WEEK_TIME_NI" FromRole="WEEKDAY" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
-        <Association Name="R_96">
-          <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
-          <End Role="APPLY_LEAVE" Type="Self.APPLY_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_LEAVE_TYPE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="APPLY_LEAVE">
-              <PropertyRef Name="EMP_LEAVE_TYPES_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_28">
           <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
           <End Role="ARCHIVED_STUDENT" Type="Self.ARCHIVED_STUDENT" Multiplicity="*" />
@@ -4384,18 +4436,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_14">
-          <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_17">
           <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
           <End Role="STUDENT_SUBJECT" Type="Self.STUDENT_SUBJECT" Multiplicity="*" />
@@ -4404,18 +4444,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="STUDENT_SUBJECT">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_34">
-          <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
-          <End Role="CLASS_TIMING" Type="Self.CLASS_TIMING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="CLASS_TIMING">
               <PropertyRef Name="BTCH_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -4464,18 +4492,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="CCE_REPORTS">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_97">
-          <End Role="BATCH" Type="Self.BATCH" Multiplicity="0..1" />
-          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TIMETABLE_ENTRY">
               <PropertyRef Name="BTCH_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -4600,30 +4616,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_35">
-          <End Role="CLASS_TIMING" Type="Self.CLASS_TIMING" Multiplicity="0..1" />
-          <End Role="SUBJECT_LEAVE" Type="Self.SUBJECT_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CLASS_TIMING">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT_LEAVE">
-              <PropertyRef Name="CLS_TMNG_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_86">
-          <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_ATTENDENCES" Type="Self.EMPLOYEE_ATTENDENCES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_LEAVE_TYPE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ATTENDENCES">
-              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_88">
           <End Role="EMPLOYEE_DEPARTMENT" Type="Self.EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
           <End Role="EMPLOYEE_DEPARTMENT_EVENT" Type="Self.EMPLOYEE_DEPARTMENT_EVENT" Multiplicity="*" />
@@ -4648,30 +4640,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_90">
-          <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
-          <End Role="EMPLOYEE_LEAVE" Type="Self.EMPLOYEE_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_LEAVE_TYPE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_LEAVE">
-              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_84">
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
-          <End Role="EMPLOYEES_SUBJECT" Type="Self.EMPLOYEES_SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEES_SUBJECT">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="R_52">
           <End Role="EVENT" Type="Self.EVENT" Multiplicity="0..1" />
           <End Role="EXAM" Type="Self.EXAM" Multiplicity="*" />
@@ -4693,18 +4661,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Principal>
             <Dependent Role="EXAM">
               <PropertyRef Name="EXAM_GRP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_48">
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
-          <End Role="EXAM" Type="Self.EXAM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EXAM">
-              <PropertyRef Name="SUBJ_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4852,54 +4808,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="R_19">
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
-          <End Role="STUDENT_PREVIOUS_SUBJECT_MARK" Type="Self.STUDENT_PREVIOUS_SUBJECT_MARK" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STUDENT_PREVIOUS_SUBJECT_MARK">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_15">
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
-          <End Role="STUDENT_SUBJECT" Type="Self.STUDENT_SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STUDENT_SUBJECT">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_21">
-          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
-          <End Role="SUBJECT_LEAVE" Type="Self.SUBJECT_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT_LEAVE">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="R_99">
-          <End Role="WEEKDAY" Type="Self.WEEKDAY" Multiplicity="0..1" />
-          <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WEEKDAY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TIMETABLE_ENTRY">
-              <PropertyRef Name="WK_DAY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="SFSAcademyEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="APPLY_LEAVE" EntityType="Self.APPLY_LEAVE" />
           <EntitySet Name="ARCHIVED_STUDENT" EntityType="Self.ARCHIVED_STUDENT" />
@@ -4914,19 +4822,15 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="CCE_REPORTS" EntityType="Self.CCE_REPORTS" />
           <EntitySet Name="CCE_WEIGHTAGE" EntityType="Self.CCE_WEIGHTAGE" />
           <EntitySet Name="CLASS_DESIGNATION" EntityType="Self.CLASS_DESIGNATION" />
-          <EntitySet Name="CLASS_TIMING" EntityType="Self.CLASS_TIMING" />
           <EntitySet Name="CONFIGURATIONs" EntityType="Self.CONFIGURATION" />
           <EntitySet Name="COUNTRies" EntityType="Self.COUNTRY" />
           <EntitySet Name="COURSEs" EntityType="Self.COURSE" />
           <EntitySet Name="DESCRIPTIVE_INDICATOR" EntityType="Self.DESCRIPTIVE_INDICATOR" />
-          <EntitySet Name="ELECTIVE_GROUP" EntityType="Self.ELECTIVE_GROUP" />
-          <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="Self.EMPLOYEE_ATTENDENCES" />
           <EntitySet Name="EMPLOYEE_BANK_DETAIL" EntityType="Self.EMPLOYEE_BANK_DETAIL" />
           <EntitySet Name="EMPLOYEE_CATEGORY" EntityType="Self.EMPLOYEE_CATEGORY" />
           <EntitySet Name="EMPLOYEE_DEPARTMENT" EntityType="Self.EMPLOYEE_DEPARTMENT" />
           <EntitySet Name="EMPLOYEE_DEPARTMENT_EVENT" EntityType="Self.EMPLOYEE_DEPARTMENT_EVENT" />
           <EntitySet Name="EMPLOYEE_LEAVE" EntityType="Self.EMPLOYEE_LEAVE" />
-          <EntitySet Name="EMPLOYEE_LEAVE_TYPE" EntityType="Self.EMPLOYEE_LEAVE_TYPE" />
           <EntitySet Name="EMPLOYEES_SUBJECT" EntityType="Self.EMPLOYEES_SUBJECT" />
           <EntitySet Name="EVENTs" EntityType="Self.EVENT" />
           <EntitySet Name="EXAMs" EntityType="Self.EXAM" />
@@ -4955,16 +4859,10 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <EntitySet Name="STUDENT_PREVIOUS_DATA" EntityType="Self.STUDENT_PREVIOUS_DATA" />
           <EntitySet Name="STUDENT_PREVIOUS_SUBJECT_MARK" EntityType="Self.STUDENT_PREVIOUS_SUBJECT_MARK" />
           <EntitySet Name="STUDENT_SUBJECT" EntityType="Self.STUDENT_SUBJECT" />
-          <EntitySet Name="SUBJECTs" EntityType="Self.SUBJECT" />
           <EntitySet Name="SUBJECT_LEAVE" EntityType="Self.SUBJECT_LEAVE" />
           <EntitySet Name="TIMETABLEs" EntityType="Self.TIMETABLE" />
-          <EntitySet Name="TIMETABLE_ENTRY" EntityType="Self.TIMETABLE_ENTRY" />
           <EntitySet Name="USERS" EntityType="Self.USER" />
           <EntitySet Name="WEEKDAYs" EntityType="Self.WEEKDAY" />
-          <AssociationSet Name="R_96" Association="Self.R_96">
-            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
-            <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
-          </AssociationSet>
           <AssociationSet Name="R_28" Association="Self.R_28">
             <End Role="COUNTRY" EntitySet="COUNTRies" />
             <End Role="ARCHIVED_STUDENT" EntitySet="ARCHIVED_STUDENT" />
@@ -4997,17 +4895,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="COURSE" EntitySet="COURSEs" />
             <End Role="BATCH" EntitySet="BATCHes" />
           </AssociationSet>
-          <AssociationSet Name="R_14" Association="Self.R_14">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-          </AssociationSet>
           <AssociationSet Name="R_17" Association="Self.R_17">
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
-          </AssociationSet>
-          <AssociationSet Name="R_34" Association="Self.R_34">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
           </AssociationSet>
           <AssociationSet Name="R_36" Association="Self.R_36">
             <End Role="BATCH" EntitySet="BATCHes" />
@@ -5024,10 +4914,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="R_63" Association="Self.R_63">
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="CCE_REPORTS" EntitySet="CCE_REPORTS" />
-          </AssociationSet>
-          <AssociationSet Name="R_97" Association="Self.R_97">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           <AssociationSet Name="R_98" Association="Self.R_98">
             <End Role="BATCH" EntitySet="BATCHes" />
@@ -5069,14 +4955,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="COURSE" EntitySet="COURSEs" />
             <End Role="CLASS_DESIGNATION" EntitySet="CLASS_DESIGNATION" />
           </AssociationSet>
-          <AssociationSet Name="R_35" Association="Self.R_35">
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
-            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_86" Association="Self.R_86">
-            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
-            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
-          </AssociationSet>
           <AssociationSet Name="R_88" Association="Self.R_88">
             <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
             <End Role="EMPLOYEE_DEPARTMENT_EVENT" EntitySet="EMPLOYEE_DEPARTMENT_EVENT" />
@@ -5085,24 +4963,12 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="EVENT" EntitySet="EVENTs" />
             <End Role="EMPLOYEE_DEPARTMENT_EVENT" EntitySet="EMPLOYEE_DEPARTMENT_EVENT" />
           </AssociationSet>
-          <AssociationSet Name="R_90" Association="Self.R_90">
-            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
-            <End Role="EMPLOYEE_LEAVE" EntitySet="EMPLOYEE_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_84" Association="Self.R_84">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
-          </AssociationSet>
           <AssociationSet Name="R_52" Association="Self.R_52">
             <End Role="EVENT" EntitySet="EVENTs" />
             <End Role="EXAM" EntitySet="EXAMs" />
           </AssociationSet>
           <AssociationSet Name="R_38" Association="Self.R_38">
             <End Role="EXAM_GROUP" EntitySet="EXAM_GROUP" />
-            <End Role="EXAM" EntitySet="EXAMs" />
-          </AssociationSet>
-          <AssociationSet Name="R_48" Association="Self.R_48">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
             <End Role="EXAM" EntitySet="EXAMs" />
           </AssociationSet>
           <AssociationSet Name="R_50" Association="Self.R_50">
@@ -5152,22 +5018,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="R_6" Association="Self.R_6">
             <End Role="STUDENT_ADDITIONAL_FIELD" EntitySet="STUDENT_ADDITIONAL_FIELD" />
             <End Role="STUDENT_ADDITIONAL_DETAIL" EntitySet="STUDENT_ADDITIONAL_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="R_19" Association="Self.R_19">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="STUDENT_PREVIOUS_SUBJECT_MARK" EntitySet="STUDENT_PREVIOUS_SUBJECT_MARK" />
-          </AssociationSet>
-          <AssociationSet Name="R_15" Association="Self.R_15">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
-          </AssociationSet>
-          <AssociationSet Name="R_21" Association="Self.R_21">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="R_99" Association="Self.R_99">
-            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
-            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           <EntitySet Name="FEE_COLLECTION_PARTICULAR" EntityType="SFSAcademyModel.FEE_COLLECTION_PARTICULAR" />
           <EntitySet Name="RANKING_LEVEL" EntityType="SFSAcademyModel.RANKING_LEVEL" />
@@ -5422,10 +5272,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="EMP_I_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
-          </AssociationSet>
           <AssociationSet Name="EMP_I_EMPL_EMPL_NI3" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="EMPLOYEE_BANK_DETAIL" EntitySet="EMPLOYEE_BANK_DETAIL" />
@@ -5486,6 +5332,101 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <AssociationSet Name="EMP_I_EMPL_INDI_NI" Association="SFSAcademyModel.EMP_I_EMPL_INDI_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="INDIVIDUAL_PAYSLIP_CATGEORY" EntitySet="INDIVIDUAL_PAYSLIP_CATGEORY" />
+          </AssociationSet>
+          <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" />
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <EntitySet Name="EMPLOYEE_LEAVE_TYPE" EntityType="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" />
+          <AssociationSet Name="EMP_L_EMPL_APPL_NI" Association="SFSAcademyModel.EMP_L_EMPL_APPL_NI">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_L_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_L_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="EMPLOYEE_LEAVE" EntitySet="EMPLOYEE_LEAVE" />
+          </AssociationSet>
+          <EntitySet Name="SUBJECTs" EntityType="SFSAcademyModel.SUBJECT" />
+          <AssociationSet Name="BTCH__BATC_SUBJ_NI" Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_EMPL_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_EXAM_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="EXAM" EntitySet="EXAMs" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_STUD_NI" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="STUDENT_PREVIOUS_SUBJECT_MARK" EntitySet="STUDENT_PREVIOUS_SUBJECT_MARK" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_STUD_NI2" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_SUBJ_NI" Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <EntitySet Name="ELECTIVE_GROUP" EntityType="SFSAcademyModel.ELECTIVE_GROUP" />
+          <EntitySet Name="PERIOD_ENTRIES" EntityType="SFSAcademyModel.PERIOD_ENTRIES" />
+          <AssociationSet Name="BTCH__BATC_PERE_NI" Association="SFSAcademyModel.BTCH__BATC_PERE_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_PERD_ENTR_NI" Association="SFSAcademyModel.EMP_I_PERD_ENTR_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ_PERD_ENTR_NI" Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <EntitySet Name="CLASS_TIMING" EntityType="SFSAcademyModel.CLASS_TIMING" />
+          <AssociationSet Name="BTCH__BATC_CLAS_NI" Association="SFSAcademyModel.BTCH__BATC_CLAS_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+          </AssociationSet>
+          <AssociationSet Name="BTCH_CLASS_TIMG_NI" Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="CLS_T_CLAS_SUBJ_NI" Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <EntitySet Name="TIMETABLE_ENTRY" EntityType="SFSAcademyModel.TIMETABLE_ENTRY" />
+          <AssociationSet Name="BTCH__BATC_TIME_NI" Association="SFSAcademyModel.BTCH__BATC_TIME_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_CLAS_TIMING_NI" Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_EMPL_NI" Association="SFSAcademyModel.TIME_T_EMPL_NI">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_SUBJ_NI" Association="SFSAcademyModel.TIME_T_SUBJ_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_TIME_T_NI" Association="SFSAcademyModel.TIME_T_TIME_T_NI">
+            <End Role="TIMETABLE" EntitySet="TIMETABLEs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <AssociationSet Name="WK_DA_WEEK_TIME_NI" Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI">
+            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="FEE_COLLECTION_PARTICULAR">
@@ -6623,7 +6564,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
           <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
           <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
-          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
           <NavigationProperty Name="EMPLOYEE_BANK_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" FromRole="EMPLOYEE" ToRole="EMPLOYEE_BANK_DETAIL" />
           <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" FromRole="EMPLOYEE" ToRole="EMPLOYEE_LEAVE" />
           <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI6" FromRole="EMPLOYEE" ToRole="EMPLOYEES_SUBJECT" />
@@ -6637,6 +6577,9 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
           <NavigationProperty Name="MONTHLY_PAYSLIP" Relationship="SFSAcademyModel.APRV__EMPL_MONT_NI" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
           <NavigationProperty Name="MONTHLY_PAYSLIP1" Relationship="SFSAcademyModel.EMP_I_EMPL_MONT_NI" FromRole="EMPLOYEE" ToRole="MONTHLY_PAYSLIP" />
           <NavigationProperty Name="INDIVIDUAL_PAYSLIP_CATGEORY" Relationship="SFSAcademyModel.EMP_I_EMPL_INDI_NI" FromRole="EMPLOYEE" ToRole="INDIVIDUAL_PAYSLIP_CATGEORY" />
+          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.EMP_I_PERD_ENTR_NI" FromRole="EMPLOYEE" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_EMPL_NI" FromRole="EMPLOYEE" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
         <Association Name="EMP_I_EMPL_APPL_NI">
           <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
@@ -6730,18 +6673,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_I_EMPL_EMPL_NI2">
-          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ATTENDENCES">
               <PropertyRef Name="EMP_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -6976,6 +6907,381 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EMPLOYEE_ATTENDENCES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ATNDENCE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
+          <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="IS_HALF_DAY" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
+        </EntityType>
+        <Association Name="EMP_I_EMPL_EMPL_NI2">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EMPLOYEE_LEAVE_TYPE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="STAT" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="MAX_LEAVE_CNT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CARR_FRWD" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="APPLY_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_APPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="APPLY_LEAVE" />
+          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_LEAVE" />
+        </EntityType>
+        <Association Name="EMP_L_EMPL_APPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.APPLY_LEAVE" Role="APPLY_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="APPLY_LEAVE">
+              <PropertyRef Name="EMP_LEAVE_TYPES_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_L_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_L_EMPL_EMPL_NI2">
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE" Role="EMPLOYEE_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_LEAVE">
+              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SUBJECT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="NO_EXAMS" Type="Boolean" Nullable="false" />
+          <Property Name="MAX_WKILY_CLSES" Type="Int32" />
+          <Property Name="ELECTIVE_GRP_ID" Type="Int32" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="CR_HRS" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PREF_CNSC" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="SUBJECT" ToRole="BATCH" />
+          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" FromRole="SUBJECT" ToRole="EMPLOYEES_SUBJECT" />
+          <NavigationProperty Name="EXAMs" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="SUBJECT" ToRole="EXAM" />
+          <NavigationProperty Name="STUDENT_PREVIOUS_SUBJECT_MARK" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="SUBJECT" ToRole="STUDENT_PREVIOUS_SUBJECT_MARK" />
+          <NavigationProperty Name="STUDENT_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="SUBJECT" ToRole="STUDENT_SUBJECT" />
+          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.SUBJ_PERD_ENTR_NI" FromRole="SUBJECT" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="SUBJECT" ToRole="TIMETABLE_ENTRY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_SUBJ_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_EMPL_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEES_SUBJECT" Role="EMPLOYEES_SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEES_SUBJECT">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_EXAM_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EXAM" Role="EXAM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EXAM">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_STUD_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" Role="STUDENT_PREVIOUS_SUBJECT_MARK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STUDENT_PREVIOUS_SUBJECT_MARK">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_STUD_NI2">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STUDENT_SUBJECT" Role="STUDENT_SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STUDENT_SUBJECT">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_SUBJ_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ELECTIVE_GROUP">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ELECTIVE_GRP_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="ELECTIVE_GRP_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BTCH_ID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PERIOD_ENTRIES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MONTH_DATE" Type="DateTime" Precision="3" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="SUBJ_ID" Type="Int32" />
+          <Property Name="CLASS_TIMING_ID" Type="Int32" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_PERE_NI" FromRole="PERIOD_ENTRIES" ToRole="BATCH" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_PERD_ENTR_NI" FromRole="PERIOD_ENTRIES" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ_PERD_ENTR_NI" FromRole="PERIOD_ENTRIES" ToRole="SUBJECT" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="PERIOD_ENTRIES" ToRole="CLASS_TIMING" />
+        </EntityType>
+        <Association Name="BTCH__BATC_PERE_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_PERD_ENTR_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ_PERD_ENTR_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CLASS_TIMING">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="START_TIME" Type="Time" Precision="7" />
+          <Property Name="END_TIME" Type="Time" Precision="7" />
+          <Property Name="IS_BRK" Type="Boolean" Nullable="false" />
+          <Property Name="IS_DEL" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="CLASS_TIMING" ToRole="BATCH" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="CLASS_TIMING" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="CLASS_TIMING" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="CLASS_TIMING" ToRole="TIMETABLE_ENTRY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_CLAS_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLASS_TIMING">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BTCH_CLASS_TIMG_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="CLASS_TIMING_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CLS_T_CLAS_SUBJ_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="CLS_TMNG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TIMETABLE_ENTRY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="WK_DAY_ID" Type="Int32" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="SUBJ_ID" Type="Int32" />
+          <Property Name="TIMT_ID" Type="Int32" />
+          <Property Name="CLS_TMNG_ID" Type="Int32" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_TIME_NI" FromRole="TIMETABLE_ENTRY" ToRole="BATCH" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="TIMETABLE_ENTRY" ToRole="CLASS_TIMING" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.TIME_T_EMPL_NI" FromRole="TIMETABLE_ENTRY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="TIMETABLE_ENTRY" ToRole="SUBJECT" />
+          <NavigationProperty Name="TIMETABLE" Relationship="SFSAcademyModel.TIME_T_TIME_T_NI" FromRole="TIMETABLE_ENTRY" ToRole="TIMETABLE" />
+          <NavigationProperty Name="WEEKDAY" Relationship="SFSAcademyModel.WK_DA_WEEK_TIME_NI" FromRole="TIMETABLE_ENTRY" ToRole="WEEKDAY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_TIME_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_CLAS_TIMING_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="CLS_TMNG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_SUBJ_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_TIME_T_NI">
+          <End Type="SFSAcademyModel.TIMETABLE" Role="TIMETABLE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIMETABLE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="TIMT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="WK_DA_WEEK_TIME_NI">
+          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WEEKDAY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="WK_DAY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7178,19 +7484,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CLASS_TIMING">
-            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING">
-              <MappingFragment StoreEntitySet="CLASS_TIMING">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
-                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
-                <ScalarProperty Name="IS_BRK" ColumnName="IS_BRK" />
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="CONFIGURATIONs">
             <EntityTypeMapping TypeName="SFSAcademyModel.CONFIGURATION">
               <MappingFragment StoreEntitySet="CONFIGURATION">
@@ -7232,27 +7525,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="DESCR" ColumnName="DESCR" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ELECTIVE_GROUP">
-            <EntityTypeMapping TypeName="SFSAcademyModel.ELECTIVE_GROUP">
-              <MappingFragment StoreEntitySet="ELECTIVE_GROUP">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ELECTIVE_GRP_NAME" ColumnName="ELECTIVE_GRP_NAME" />
-                <ScalarProperty Name="ELECTIVE_GRP_DESCR" ColumnName="ELECTIVE_GRP_DESCR" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_ATTENDENCES">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ATTENDENCES">
-              <MappingFragment StoreEntitySet="EMPLOYEE_ATTENDENCES">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
-                <ScalarProperty Name="RSN" ColumnName="RSN" />
-                <ScalarProperty Name="IS_HALF_DAY" ColumnName="IS_HALF_DAY" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7308,18 +7580,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="RST_DATE" ColumnName="RST_DATE" />
                 <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
                 <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_LEAVE_TYPE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE">
-              <MappingFragment StoreEntitySet="EMPLOYEE_LEAVE_TYPE">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="CODE" ColumnName="CODE" />
-                <ScalarProperty Name="STAT" ColumnName="STAT" />
-                <ScalarProperty Name="MAX_LEAVE_CNT" ColumnName="MAX_LEAVE_CNT" />
-                <ScalarProperty Name="CARR_FRWD" ColumnName="CARR_FRWD" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -7703,25 +7963,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SUBJECTs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT">
-              <MappingFragment StoreEntitySet="SUBJECT">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="CODE" ColumnName="CODE" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="NO_EXAMS" ColumnName="NO_EXAMS" />
-                <ScalarProperty Name="MAX_WKILY_CLSES" ColumnName="MAX_WKILY_CLSES" />
-                <ScalarProperty Name="ELECTIVE_GRP_ID" ColumnName="ELECTIVE_GRP_ID" />
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CR_HRS" ColumnName="CR_HRS" />
-                <ScalarProperty Name="PREF_CNSC" ColumnName="PREF_CNSC" />
-                <ScalarProperty Name="AMT" ColumnName="AMT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="SUBJECT_LEAVE">
             <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT_LEAVE">
               <MappingFragment StoreEntitySet="SUBJECT_LEAVE">
@@ -7747,15 +7988,6 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
                 <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
                 <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TIMETABLE_ENTRY">
-            <EntityTypeMapping TypeName="SFSAcademyModel.TIMETABLE_ENTRY">
-              <MappingFragment StoreEntitySet="TIMETABLE_ENTRY">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="WK_DAY_ID" ColumnName="WK_DAY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8356,6 +8588,97 @@ warning 6002: The table/view 'SFSAcademy.dbo.PHOTO_MASTER' does not have a prima
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="SAL_DATE" ColumnName="SAL_DATE" />
                 <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_ATTENDENCES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ATTENDENCES">
+              <MappingFragment StoreEntitySet="EMPLOYEE_ATTENDENCES">
+                <ScalarProperty Name="IS_HALF_DAY" ColumnName="IS_HALF_DAY" />
+                <ScalarProperty Name="RSN" ColumnName="RSN" />
+                <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_LEAVE_TYPE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE">
+              <MappingFragment StoreEntitySet="EMPLOYEE_LEAVE_TYPE">
+                <ScalarProperty Name="CARR_FRWD" ColumnName="CARR_FRWD" />
+                <ScalarProperty Name="MAX_LEAVE_CNT" ColumnName="MAX_LEAVE_CNT" />
+                <ScalarProperty Name="STAT" ColumnName="STAT" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUBJECTs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT">
+              <MappingFragment StoreEntitySet="SUBJECT">
+                <ScalarProperty Name="AMT" ColumnName="AMT" />
+                <ScalarProperty Name="PREF_CNSC" ColumnName="PREF_CNSC" />
+                <ScalarProperty Name="CR_HRS" ColumnName="CR_HRS" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="ELECTIVE_GRP_ID" ColumnName="ELECTIVE_GRP_ID" />
+                <ScalarProperty Name="MAX_WKILY_CLSES" ColumnName="MAX_WKILY_CLSES" />
+                <ScalarProperty Name="NO_EXAMS" ColumnName="NO_EXAMS" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ELECTIVE_GROUP">
+            <EntityTypeMapping TypeName="SFSAcademyModel.ELECTIVE_GROUP">
+              <MappingFragment StoreEntitySet="ELECTIVE_GROUP">
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="ELECTIVE_GRP_DESCR" ColumnName="ELECTIVE_GRP_DESCR" />
+                <ScalarProperty Name="ELECTIVE_GRP_NAME" ColumnName="ELECTIVE_GRP_NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PERIOD_ENTRIES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PERIOD_ENTRIES">
+              <MappingFragment StoreEntitySet="PERIOD_ENTRIES">
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="CLASS_TIMING_ID" ColumnName="CLASS_TIMING_ID" />
+                <ScalarProperty Name="SUBJ_ID" ColumnName="SUBJ_ID" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="MONTH_DATE" ColumnName="MONTH_DATE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLASS_TIMING">
+            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING">
+              <MappingFragment StoreEntitySet="CLASS_TIMING">
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="IS_BRK" ColumnName="IS_BRK" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TIMETABLE_ENTRY">
+            <EntityTypeMapping TypeName="SFSAcademyModel.TIMETABLE_ENTRY">
+              <MappingFragment StoreEntitySet="TIMETABLE_ENTRY">
+                <ScalarProperty Name="CLS_TMNG_ID" ColumnName="CLS_TMNG_ID" />
+                <ScalarProperty Name="TIMT_ID" ColumnName="TIMT_ID" />
+                <ScalarProperty Name="SUBJ_ID" ColumnName="SUBJ_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="WK_DAY_ID" ColumnName="WK_DAY_ID" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -160,7 +160,7 @@ else
             <div class="prev">
                 @if (prev_student != null && Session["student_serach"] == null)
                 {
-                    <input type="submit" value="◄" id="submit-button2" class="submit_button2" />
+                    <a id="submit-button2">◄</a>
                 }
             </div>
             <div class="month">
@@ -169,7 +169,7 @@ else
             <div class="next">
                 @if (next_student != null && Session["student_serach"] == null)
                 {
-                    <input type="submit" value="►" id="submit-button3" class="submit_button2" />
+                    <a id="submit-button3">►</a>
                 }
             </div>
             <div class="extender"></div>

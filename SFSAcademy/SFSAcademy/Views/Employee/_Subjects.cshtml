@@ -1,0 +1,42 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.BATCH> batch = (IEnumerable<SFSAcademy.BATCH>)ViewData["batch"];
+    IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SubjectDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+            var selectedID = $(this).val();
+            $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Employee/Select_Department?subject_id=' + selectedID, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#department-select').html(data);
+            /* little fade in effect */
+            $('#department-select').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+
+<div class="label-field-pair label">
+    <div class="label-container label">@Html.Label("SUB_ID", "Select A Subject :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+    <div class="text-input-bg">
+        @Html.DropDownList("SUB_ID", null, htmlAttributes: new { @class = "form-control", @id = "SubjectDropDown" })
+        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        @Html.ValidationMessage("SUB_ID", "", new { @class = "text-danger" })
+    </div>
+</div>

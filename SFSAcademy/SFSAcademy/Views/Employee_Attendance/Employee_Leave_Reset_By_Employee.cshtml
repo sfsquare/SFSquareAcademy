@@ -1,0 +1,130 @@
+﻿@model IEnumerable<SFSAcademy.Models.Employee>
+@{
+    ViewBag.Title = "Employee_Leave_Reset_By_Employee";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#StdList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#Search").keyup(function () {
+            var searchText = $("#Search").val().toLowerCase();
+            $(".Search").each(function () {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                    $("#StdList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#StdList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#Search").val() == '') {
+                $("#StdList").hide();
+            }
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="HR Logo">
+    <h1>Reset Employee Leaves</h1>
+    <h3>Reset Employee Leave for each employee</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("View All", "Employee_View_All")</li>
+    </ul>
+</div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+        <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+        <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset Leave</a> &raquo;
+        Individual Reset
+    </div>
+    <p class="flash-msg">*Enter name, number, department, category, position or grade of the Employee to search.</p>
+    <div id="search_box_bg">
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        <div id="search_textbox">
+            <img src="~/Content/images/search_icon.png">
+            <input type="text" id="Search" placeholder="Search" class="form-control" />
+        </div>
+    </div>
+    <br />
+    <div class="students-table" id="StdList">
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1" class="table table-striped">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    Employee Number
+                </th>
+                <th>
+                    Employee Department
+                </th>
+                <th>
+                    Employee Category
+                </th>
+                <th>
+                    Employee Grade
+                </th>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="Search @selectedRow">
+                    <td class="col-1">
+                        @i
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.EmployeeData.FIRST_NAME) @Html.DisplayFor(modelItem => item.EmployeeData.MID_NAME) @Html.DisplayFor(modelItem => item.EmployeeData.LAST_NAME)
+                        @Html.HiddenFor(modelItem => item.EmployeeData.ID)
+                    </td>
+                    <td class="col-2" nowrap>
+                        @Html.ActionLink(item.EmployeeData.EMP_NUM, "Employee_Leave_Details", new { id = item.EmployeeData.ID }, new { style = "text-decoration:underline" })
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.DepartmentData.NAMES)
+                        <label>-</label>
+                        @Html.DisplayFor(modelItem => item.PositionData.POS_NAME)
+                    </td>
+                    <td class="col-2" nowrap>
+                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                    </td>
+                    <td class="col-2" nowrap>
+                        @Html.DisplayFor(modelItem => item.GradeData.GRADE_NAME)
+                    </td>
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+    </div>
+
+</div>
+

@@ -17,19 +17,25 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CLASS_TIMING()
         {
+            this.PERIOD_ENTRIES = new HashSet<PERIOD_ENTRIES>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
+            this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
         }
     
         public int ID { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
         public string NAME { get; set; }
-        public Nullable<System.DateTime> START_TIME { get; set; }
-        public Nullable<System.DateTime> END_TIME { get; set; }
-        public string IS_BRK { get; set; }
+        public Nullable<System.TimeSpan> START_TIME { get; set; }
+        public Nullable<System.TimeSpan> END_TIME { get; set; }
+        public bool IS_BRK { get; set; }
         public string IS_DEL { get; set; }
     
         public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
     }
 }

@@ -1,0 +1,46 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> leave_count = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["leave_count"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> EmployeeLeaveType = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["EmployeeLeaveType"];
+}
+
+@if (ViewBag.Notice != null)
+            {
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
+<table id="listing" width="100%">
+    <tr class="tr-head">
+        <td>Leave Types</td>
+        <td>Available Leave</td>
+        <td>Leave Taken</td>
+        <td>Last Reset Date</td>
+    </tr>
+    @{int i = 1; }
+    @foreach (var item in leave_count)
+            {
+                var leave_type = EmployeeLeaveType.Where(x => x.ID == item.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+        if (leave_type.STAT == "Y")
+        {
+            string selectedRow = "tr-even";
+            if (i % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="col-3">@leave_type.NAME</td>
+                <td class="col-3">@item.LEAVE_CNT</td>
+                <td class="col-3">@item.LEAVE_TAKE</td>
+                @if (item.RST_DATE != null)
+                {
+                    <td class="col-3">@item.RST_DATE.Value.ToShortDateString()</td>
+                }
+                else
+                {
+                    <td class="col-3">-</td>
+                }
+            </tr>
+        }
+
+    }
+</table>
