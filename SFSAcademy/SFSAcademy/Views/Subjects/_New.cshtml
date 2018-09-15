@@ -1,0 +1,77 @@
+﻿@model SFSAcademy.SUBJECT
+@using SFSAcademy.Models
+@{
+    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+    ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+    GRADING_LEVEL greading_level = (GRADING_LEVEL)ViewData["greading_level"];
+}
+
+<div id="grading-levels-form">
+    @if (batch != null)
+    {
+        <h4>@batch.CourseData.CODE - @batch.BatchData.NAME</h4>
+    }
+    @using (Html.BeginForm("Create", "Subjects", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        {
+            var batch_id = batch.BatchData.ID;
+            if (elective_group != null)
+            {
+                var elective_group_id = elective_group.ID;
+            }
+        }
+        @Html.Hidden("BTCH_ID", @batch.BatchData.ID)
+        if (elective_group != null)
+        {
+            @Html.Hidden("ELECTIVE_GRP_ID", @elective_group.ID)
+        }
+
+
+        <div id="form-errors"></div>
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.NAME, "Name")</div>
+            <div class="input-container">
+                @Html.EditorFor(model => model.NAME)
+                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.CODE, "Code")</div>
+            <div class="input-container">
+                @Html.EditorFor(model => model.CODE)
+                @Html.ValidationMessageFor(model => model.CODE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.MAX_WKILY_CLSES, "Max Weekly Class")</div>
+                <div class="input-container">
+                    @Html.EditorFor(model => model.MAX_WKILY_CLSES)
+                    @Html.ValidationMessageFor(model => model.MAX_WKILY_CLSES, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        if (batch != null && greading_level != null)
+        {
+            if (greading_level.NAME == "CWA" || greading_level.NAME == "GPA")
+            {
+                <div class="label-field-pair label">
+                    <div class="label-container label">@Html.LabelFor(model => model.CR_HRS, "Credit Hours")</div>
+                    <div class="input-container">
+                        @Html.EditorFor(model => model.CR_HRS)
+                        @Html.ValidationMessageFor(model => model.CR_HRS, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+        }
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.NO_EXAMS, "No Exam?")</div>
+            <div class="input-container">
+                @Html.CheckBoxFor(model => model.NO_EXAMS)
+            </div>
+        </div>
+
+        <input type="submit" value="► Save" class="submit_button" />
+
+    }
+
+</div>

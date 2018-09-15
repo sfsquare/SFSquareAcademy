@@ -19,7 +19,6 @@ namespace SFSAcademy
         {
             this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
             this.EMPLOYEE_ADDITIONAL_DETAIL = new HashSet<EMPLOYEE_ADDITIONAL_DETAIL>();
-            this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
             this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
             this.EMPLOYEE_LEAVE = new HashSet<EMPLOYEE_LEAVE>();
             this.EMPLOYEES_SUBJECT = new HashSet<EMPLOYEES_SUBJECT>();
@@ -30,6 +29,9 @@ namespace SFSAcademy
             this.MONTHLY_PAYSLIP = new HashSet<MONTHLY_PAYSLIP>();
             this.MONTHLY_PAYSLIP1 = new HashSet<MONTHLY_PAYSLIP>();
             this.INDIVIDUAL_PAYSLIP_CATGEORY = new HashSet<INDIVIDUAL_PAYSLIP_CATGEORY>();
+            this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
+            this.PERIOD_ENTRIES = new HashSet<PERIOD_ENTRIES>();
+            this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
         }
     
         public int ID { get; set; }
@@ -97,8 +99,6 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
@@ -121,5 +121,11 @@ namespace SFSAcademy
         public virtual ICollection<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
     }
 }

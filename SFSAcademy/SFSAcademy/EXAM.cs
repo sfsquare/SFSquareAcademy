@@ -41,9 +41,9 @@ namespace SFSAcademy
         public virtual ICollection<CCE_REPORTS> CCE_REPORTS { get; set; }
         public virtual EVENT EVENT { get; set; }
         public virtual EXAM_GROUP EXAM_GROUP { get; set; }
-        public virtual SUBJECT SUBJECT { get; set; }
         public virtual GRADING_LEVEL GRADING_LEVEL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_SCORE> EXAM_SCORE { get; set; }
+        public virtual SUBJECT SUBJECT { get; set; }
     }
 }

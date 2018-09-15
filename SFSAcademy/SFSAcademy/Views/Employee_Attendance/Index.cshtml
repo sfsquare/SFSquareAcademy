@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ATNDENCE_DATE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RSN)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IS_HALF_DAY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE_LEAVE_TYPE.NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMPLOYEE.EMP_NUM)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ATNDENCE_DATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RSN)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IS_HALF_DAY)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE_LEAVE_TYPE.NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMPLOYEE.EMP_NUM)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

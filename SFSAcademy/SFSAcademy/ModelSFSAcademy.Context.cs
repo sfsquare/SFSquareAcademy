@@ -38,19 +38,15 @@ namespace SFSAcademy
         public virtual DbSet<CCE_REPORTS> CCE_REPORTS { get; set; }
         public virtual DbSet<CCE_WEIGHTAGE> CCE_WEIGHTAGE { get; set; }
         public virtual DbSet<CLASS_DESIGNATION> CLASS_DESIGNATION { get; set; }
-        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
         public virtual DbSet<CONFIGURATION> CONFIGURATIONs { get; set; }
         public virtual DbSet<COUNTRY> COUNTRies { get; set; }
         public virtual DbSet<COURSE> COURSEs { get; set; }
         public virtual DbSet<DESCRIPTIVE_INDICATOR> DESCRIPTIVE_INDICATOR { get; set; }
-        public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
-        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         public virtual DbSet<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_CATEGORY> EMPLOYEE_CATEGORY { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT> EMPLOYEE_DEPARTMENT { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT_EVENT> EMPLOYEE_DEPARTMENT_EVENT { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
-        public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
         public virtual DbSet<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         public virtual DbSet<EVENT> EVENTs { get; set; }
         public virtual DbSet<EXAM> EXAMs { get; set; }
@@ -79,10 +75,8 @@ namespace SFSAcademy
         public virtual DbSet<STUDENT_PREVIOUS_DATA> STUDENT_PREVIOUS_DATA { get; set; }
         public virtual DbSet<STUDENT_PREVIOUS_SUBJECT_MARK> STUDENT_PREVIOUS_SUBJECT_MARK { get; set; }
         public virtual DbSet<STUDENT_SUBJECT> STUDENT_SUBJECT { get; set; }
-        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
         public virtual DbSet<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual DbSet<TIMETABLE> TIMETABLEs { get; set; }
-        public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
         public virtual DbSet<USER> USERS { get; set; }
         public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
         public virtual DbSet<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
@@ -119,5 +113,12 @@ namespace SFSAcademy
         public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
         public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
+        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
+        public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
+        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
+        public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
+        public virtual DbSet<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
+        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
+        public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
     }
 }

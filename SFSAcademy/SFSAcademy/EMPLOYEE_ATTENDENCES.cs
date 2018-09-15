@@ -19,9 +19,9 @@ namespace SFSAcademy
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<int> EMP_LEAVE_TYPE_ID { get; set; }
         public string RSN { get; set; }
-        public string IS_HALF_DAY { get; set; }
+        public bool IS_HALF_DAY { get; set; }
     
-        public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
         public virtual EMPLOYEE EMPLOYEE { get; set; }
+        public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
     }
 }

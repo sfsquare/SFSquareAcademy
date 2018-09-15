@@ -1,0 +1,71 @@
+﻿@model SFSAcademy.ELECTIVE_GROUP
+@using SFSAcademy.Models
+@{
+    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+}
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Elective Group Logo">
+    <h1>Batches</h1>
+    <h3>New Elective</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("New", "New", new { BatchId = batch.BatchData.ID })</li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("ManageCourse", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
+        <a href="@Url.Action("ManageBatches", "BATCH")">Batch @batch.BatchData.NAME</a> &raquo;
+        <a href="@Url.Action("Index", "Elective_Groups",new {BatchId = batch.BatchData.ID})">Electives</a> &raquo;
+        Edit
+    </div>
+
+    <div class="box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ID)
+            @Html.Hidden("BatchId", batch.BatchData.ID)
+            if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.ELECTIVE_GRP_NAME, "Name")</div>
+                <div class="input-container">
+                    @Html.EditorFor(model => model.ELECTIVE_GRP_NAME)
+                    @Html.ValidationMessageFor(model => model.ELECTIVE_GRP_NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.ELECTIVE_GRP_DESCR, "Description")</div>
+                <div class="input-container">
+                    @Html.EditorFor(model => model.ELECTIVE_GRP_DESCR)
+                    @Html.ValidationMessageFor(model => model.ELECTIVE_GRP_DESCR, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <input type="submit" value="► Save" class="submit_button" />
+        }
+
+        <div class="extender"></div>
+    </div>
+</div>
+

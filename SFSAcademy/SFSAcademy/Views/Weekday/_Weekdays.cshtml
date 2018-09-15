@@ -1,0 +1,12 @@
+﻿@model SFSAcademy.Models.Weekdays
+
+@using (Html.BeginForm("Create", "Weekday", FormMethod.Post, new { @encType = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        @Html.EditorFor(m => m.WeekdayIds)
+    </div>
+    <input type="hidden" value="@ViewBag.BTCH_ID" id="batch_id" name="batch_id" />
+    <input type="submit" value="► Save" class="submit_button" />
+}
+

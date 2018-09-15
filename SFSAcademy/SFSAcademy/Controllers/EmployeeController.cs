@@ -3164,6 +3164,119 @@ namespace SFSAcademy.Controllers
         {           
             return View();
         }
+
+        public ActionResult Subject_Assignment(string Notice)
+        {
+            ViewBag.Notice = Notice;
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where cs.IS_DEL == "N"
+                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
+                        .OrderBy(x => x.BatchData.ID).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatch)
+            {
+                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = BatchFullName;
+                result.Value = item.BatchData.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Batch" });
+            ViewBag.BTCH_ID = options;
+            return View();
+        }
+
+        public ActionResult Update_Subjects( int? batch_id)
+        {
+            var batch = db.BATCHes.Where(x=>x.ID == batch_id).Include(x=>x.COURSE);
+            ViewData["batch"] = batch;
+            List<SelectListItem> options = new SelectList(db.SUBJECTs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == "N").OrderBy(c => c.NAME), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Subject" });
+            ViewBag.SUB_ID = options;
+
+            return PartialView("_Subjects");
+        }
+        public ActionResult Select_Department(int? subject_id)
+        {
+            SUBJECT subject = db.SUBJECTs.Find(subject_id);
+            ViewData["subject"] = subject;
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject_id).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").ToList();
+            ViewData["departments"] = departments;
+            var Employee = db.EMPLOYEEs.ToList();
+            ViewData["Employee"] = Employee;
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").OrderBy(c => c.NAMES), "ID", "NAMES").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Department" });
+            ViewBag.DEPT_ID = options;
+
+            return PartialView("_Select_Department");
+        }
+
+        public ActionResult Update_Employees(int? department_id, int? subject_id)
+        {
+            SUBJECT subject = db.SUBJECTs.Find(subject_id);
+            ViewData["subject"] = subject;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == department_id && x.STAT == "Y").ToList();
+            ViewData["employees"] = employees;
+            var EmployeesSubject = db.EMPLOYEES_SUBJECT.ToList();
+            ViewData["EmployeesSubject"] = EmployeesSubject;
+
+            return PartialView("_Employee_List");
+        }
+
+        public ActionResult Assign_Employee(int? id, int? id1)
+        {
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").ToList();
+            ViewData["departments"] = departments;
+            SUBJECT subject = db.SUBJECTs.Find(id1);
+            ViewData["subject"] = subject;
+            var employee_department_id = db.EMPLOYEEs.Find(id).EMP_DEPT_ID;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == employee_department_id && x.STAT == "Y").ToList();
+            ViewData["employees"] = employees;
+            EMPLOYEES_SUBJECT EmployeesSubject = new EMPLOYEES_SUBJECT{ EMP_ID = id, SUBJ_ID = id1};
+            db.EMPLOYEES_SUBJECT.Add(EmployeesSubject);
+            db.SaveChanges();
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+            ViewBag.Notice = "Employee Successfully assigned.";
+            return RedirectToAction("Subject_Assignment", new { Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Remove_Employee(int? id, int? id1)
+        {
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").ToList();
+            ViewData["departments"] = departments;
+            SUBJECT subject = db.SUBJECTs.Find(id1);
+            ViewData["subject"] = subject;
+            var employee_department_id = db.EMPLOYEEs.Find(id).EMP_DEPT_ID;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == employee_department_id && x.STAT == "Y").ToList();
+            ViewData["employees"] = employees;
+            var TimetableEntry = db.TIMETABLE_ENTRY.Where(x => x.SUBJ_ID == subject.ID && x.EMP_ID == id).ToList();
+            if (TimetableEntry == null || TimetableEntry.Count() == 0)
+            {
+                EMPLOYEES_SUBJECT EmployeesSubject = db.EMPLOYEES_SUBJECT.Where(x=>x.EMP_ID == id && x.SUBJ_ID == id1).FirstOrDefault();
+                db.EMPLOYEES_SUBJECT.Remove(EmployeesSubject);
+                db.SaveChanges();
+                ViewBag.Notice = "Employee sucessfully removed.";
+            }
+            else
+            {
+                ViewBag.Notice = "<p>The employee is currently assigned to same subject in timetable</p> <p>Please assign another employee in timetable inorder to remove this association</p>";
+            }
+            
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+
+            return RedirectToAction("Subject_Assignment", new { Notice = ViewBag.Notice});
+        }
+
         /////Document Upload related methods////////////////////////////////////////////////////////////////
 
         [HttpGet]

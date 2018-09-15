@@ -1,0 +1,72 @@
+﻿@model IEnumerable<SFSAcademy.CONFIGURATION>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="HR Logo">
+    <h1>Configuration</h1>
+    <h3>Configuration</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div id="box">
+        @if (Html.Permitted_To("Index", "Courses"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "Courses")">Manage Course/Batch</a></div>
+            <div class="link-descr">Add a new Course or Batch for this academic year.</div>
+        </div>
+        }
+        @if (Html.Permitted_To("Settings", "Configuration"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Categories", "Student")">Manage Student Category</a></div>
+            <div class="link-descr">Add Student Category</div>
+        </div>
+        }
+
+        @if (Html.Permitted_To("Index", "Subjects"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "Subjects")">Manage Subjects</a></div>
+            <div class="link-descr">Manage subjects corresponding to different courses.</div>
+        </div>
+        }
+
+        @if (Html.Permitted_To("Settings", "Configuration"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Settings", "Configuration")">General Settings</a></div>
+            <div class="link-descr">Set some general configurations related to institution,attendance, etc.</div>
+        </div>
+        }
+
+        @if (Html.Permitted_To("Settings", "Configuration"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Add_Additional_Details", "Student")">Add Admission Additional Detail</a></div>
+            <div class="link-descr">Set some additional details for admission.</div>
+        </div>
+        }
+
+        @if (Html.Permitted_To("Index", "SMS"))
+        {
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "SMS")">SMS module</a></div>
+            <div class="link-descr">Enable/Disable SMS settings</div>
+        </div>
+        }
+    </div>
+
+</div>

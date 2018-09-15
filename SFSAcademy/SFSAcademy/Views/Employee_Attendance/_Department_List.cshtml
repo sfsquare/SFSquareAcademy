@@ -1,0 +1,48 @@
+﻿@model IList<SFSAcademy.Models.EmployeeLeaveReset>
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+}
+
+<div class="label-field-pair label"><label> Select a course: </label></div>
+<div id="list_content">
+    <div id="list">
+        <div class="sel-list">
+            Select:@Html.Label("All", new { @onClick = "$$('input.batches_box').each(function (checkbox) { checkbox.checked = true; });" }),
+            @Html.Label("None", new { @onClick = "$$('input.batches_box').each(function (checkbox) { checkbox.checked = false; });" })
+        </div>
+        @using (Html.BeginForm("Update_Department_Leave_Reset", "Employee_Attendance", FormMethod.Post, new { @encType = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            int k = 1;
+            for (var j = 0; j < Model.Count(); j++)
+            {
+                string selectedRow = "name_listeven";
+                if (k % 2 == 0)
+                {
+                    selectedRow = "name_listodd";
+                }
+                <div class="@selectedRow">
+                    <ul>
+                        <li>
+                            <label> @Html.CheckBoxFor(x => x[j].Selected, new { @class = "batches_box" }) <div class="att_list_names">@Model[j].EmployeeData.FIRST_NAME @Model[j].EmployeeData.MID_NAME @Model[j].EmployeeData.LAST_NAME</div></label>
+                            @Html.HiddenFor(x => x[j].EmployeeData.ID)
+                        </li>
+                    </ul>
+                </div>
+                k += 1;
+            }
+            foreach (var item in Model)
+            {
+
+            }
+            <div class="user_submit_button1">
+                <input type="submit" value="► Reset" class="submit_button" />
+            </div>
+        }
+
+    </div>
+</div>
+
+
+

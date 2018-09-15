@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Employee_Leave_Reset_All";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="HR Logo">
+    <h1>Full Leave Reset</h1>
+    <h3>Reset leave count for all</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div id="box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+        <div class="bread_crumb">
+            <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+            <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+            <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset Leave</a> &raquo;
+            Reset All
+        </div>
+        <div id="main-reset-box">
+            <div id="reset-box">
+                <p> This will reset leave count for all employees</p>
+                <div id="skip">
+                    @Html.ActionLink("Reset", "Update_Employee_Leave_Reset_All",null, new { @class = "user_button" })
+                </div>
+                <div>
+                    @Html.ActionLink("Cancel", "Manual_Reset", null, new { @class = "user_button" })
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

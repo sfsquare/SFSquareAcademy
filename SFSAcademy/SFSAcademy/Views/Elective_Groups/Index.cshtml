@@ -1,0 +1,69 @@
+﻿@model IEnumerable<SFSAcademy.ELECTIVE_GROUP>
+@using SFSAcademy.Models
+@{
+    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+    IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Elective Group Logo">
+    <h1>Batches</h1>
+    <h3>New Elective</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("New", "New", new { BatchId = batch.BatchData.ID })</li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div class="box">
+        <div class="bread_crumb">
+            <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+            <a href="@Url.Action("ManageCourse", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
+            <a href="@Url.Action("ManageBatches", "BATCH")">Batch @batch.BatchData.NAME</a> &raquo;
+            Elective Groups
+        </div>
+
+        <ul id="category-list">
+            @{int j = 1; }
+            @foreach (var item in Model)
+            {
+                string code = "listodd";
+                if (j % 2 == 0)
+                {
+                    code = "listeven";
+                }
+                <li class="@code">
+                    <div class="category-name">@Html.ActionLink(item.ELECTIVE_GRP_NAME, "Show", new { id = item.ID, BatchId = batch.BatchData.ID })</div>
+                    <div class="category-edit">
+                        @Html.ActionLink("Edit", "Edit", new { id = item.ID, BatchId = batch.BatchData.ID })
+                    </div>
+                    @{var subjects = Subject.Where(x => x.ELECTIVE_GRP_ID == item.ID && x.IS_DEL == "N").ToList();}
+                    @if (subjects == null || subjects.Count() == 0)
+                    {
+                        <div class="category-delete">
+                            @Html.ActionLink("Delete", "Delete", new { id = item.ID, BatchId = batch.BatchData.ID }, new { @onclick = "return confirm('are you sure?')" })
+                        </div>
+                    }
+                </li>
+                            j += 1;
+                        }
+
+        </ul>
+        <div class="extender"></div>
+    </div>
+</div>

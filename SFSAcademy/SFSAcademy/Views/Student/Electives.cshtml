@@ -1,0 +1,68 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    SUBJECT elective_subject = (SUBJECT)ViewData["elective_subject"];
+    IEnumerable<SFSAcademy.STUDENT> students = (IEnumerable<SFSAcademy.STUDENT>)ViewData["students"];
+    ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+    IEnumerable<SFSAcademy.STUDENT_SUBJECT> stud_assigned = (IEnumerable<SFSAcademy.STUDENT_SUBJECT>)ViewData["stud_assigned"];
+}
+@{
+    ViewBag.Title = "Electives";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Elective Group Logo">
+    <h1>Student</h1>
+    <h3>Elective</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+
+    <div class="name">Batch</div><div class="val themed_text"><span>:</span>@batch.FirstOrDefault().CourseData.CODE- @batch.FirstOrDefault().BatchData.NAME</div>
+    <div class="name">Elective Group</div><div class="val themed_text"><span>:</span>@elective_group.ELECTIVE_GRP_NAME</div>
+    <div class="name">Subject</div><div class="val themed_text"><span>:</span>@elective_subject.NAME</div>
+    <br />
+    <ul id="category-list">
+        <div class="linker">
+            <a href="@Url.Action("Assign_All_Students", "Student",new {id=batch.FirstOrDefault().BatchData.ID, id2= elective_subject.ID})">>Assign All</a>
+            <a href="@Url.Action("Unassign_All_Students", "Student",new {id=batch.FirstOrDefault().BatchData.ID, id2= elective_subject.ID})">>Remove All</a>
+        </div>
+        @{int i = 1; }
+        @foreach (var item in students)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li id="stud_@item.ID" class="@selectedRow">
+                @{var assigned = stud_assigned.Where(x => x.STDNT_ID == item.ID && x.SUBJ_ID == elective_subject.ID).ToList();}
+                <div class="category-name"> @item.FIRST_NAME @item.MID_NAME @item.LAST_NAME</div>
+                @if (assigned != null && assigned.Count() != 0)
+                {
+                    <div class="category-edit">
+                        <a href="@Url.Action("Unassign_Students", "Student",new {id=item.ID, id2= elective_subject.ID})">Remove</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="category-edit">
+                        <a href="@Url.Action("Assign_Students", "Student",new {id=item.ID, id2= elective_subject.ID})">Assign</a>
+                    </div>
+                }
+            </li>
+                    }
+    </ul>
+    <div class="extender"></div>
+</div>
+
