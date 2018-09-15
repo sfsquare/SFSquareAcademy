@@ -25,7 +25,7 @@ namespace SFSAcademy
         public string VW_BY_MGR { get; set; }
         public string MGR_RMRK { get; set; }
     
-        public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
         public virtual EMPLOYEE EMPLOYEE { get; set; }
+        public virtual EMPLOYEE_LEAVE_TYPE EMPLOYEE_LEAVE_TYPE { get; set; }
     }
 }

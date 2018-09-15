@@ -1,0 +1,113 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEE> admin_ids = (IEnumerable<SFSAcademy.EMPLOYEE>)ViewData["admin_ids"];
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batches = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batches"];
+    IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment> employees = (IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment>)ViewData["employees"];
+}
+@{
+    ViewBag.Title = "Work_Allotment";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Work Allotment</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>
+            <a href="@Url.Action("Subject_Assignment", "Employee")">Assign Multiple Teachers</a>
+        </li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        for (int i = 0; i < batches.Count(); i++)
+        {
+            <ul class="category-list">
+                <li class="heading">
+                    @batches.ElementAt(i).CourseData.CODE - @batches.ElementAt(i).BatchData.NAME
+                </li>
+                @{ int i1 = 0;}
+                @for (int j = 0; j < batches.ElementAt(i).BatchData.SUBJECTs.Count(); j++)
+                {
+                    string selectedRow = "listeven"; int FirstRow = 0; string EmployeeList = "";
+                    if (i1 % 2 == 0)
+                    {
+                        selectedRow = "listodd";
+                    }
+                    //var EmployeeSub = EmployeeSubject.Where(x => x.SUBJ_ID == item2.ID).OrderBy(x => x.EMP_ID).ToList();
+                    List<SelectListItem> options = new List<SelectListItem>();
+                    for (int k = 0; k < batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.Count(); k++)
+                    {
+                        var ep = employees.Where(x => x.EmployeeData.ID == batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.ElementAt(k).EMP_ID).FirstOrDefault();
+                        if (ep != null && ep.EmployeeData.ID != 0)
+                        {
+                            ep.Total_Time = ep.Total_Time - batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).MAX_WKILY_CLSES;
+                            batches.ElementAt(i).Total_Time = batches.ElementAt(i).Total_Time - batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).MAX_WKILY_CLSES;
+                        }
+                        string EmployeeFullName = string.Concat(ep.EmployeeData.FIRST_NAME, " ", ep.EmployeeData.MID_NAME, " ", ep.EmployeeData.LAST_NAME);
+                        var result = new SelectListItem();
+                        result.Text = EmployeeFullName;
+                        result.Value = ep.EmployeeData.ID.ToString();
+                        result.Selected = FirstRow == 0 ? true : false;
+                        options.Add(result);
+                        FirstRow += 1;
+                        EmployeeList = string.Concat(EmployeeList, EmployeeFullName, ",");
+                    }
+                    // add the 'ALL' option
+                    options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee" });
+                    ViewBag.EMP_ID = options;
+                    <li class="@selectedRow">
+                        <div class="category-subject-name">
+                            @Html.Label("[" + i + "].BatchData.SUBJECTs."+ "[" + j + "].NAME", batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                        </div>
+                        <div class="category-employee-options">
+                            @Html.DropDownList("EMP_ID", null, htmlAttributes: new { @class = "form-control", @id = "EmployeeDropDown" })
+                        </div>
+                        <div class="category-employee-names">@EmployeeList</div>
+                    </li>
+                    i1 += 1;
+                }
+            </ul>
+                    }
+
+          <input type="submit" value="► Update" class="submit_button" />
+    }
+    <ul id="teacher_status" class="category-list">
+        @foreach (var item in employees)
+        {
+
+            <li class="listodd">
+                @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME
+                <span id="emp_status_@item.EmployeeData.ID">
+                    @if (item.Total_Time < 0)
+                    {
+                        int DeficitTime = 0 - Convert.ToInt32(item.Total_Time);
+                        <span class='deficit'>@DeficitTime deficit</span>
+                    }
+                    else if (item.Total_Time == 0)
+                    {
+                        <span class='ok'>OK</span>
+                    }
+                    else
+                    {
+                        <span class='remaining'>@item.Total_Time remaining</span>
+                    }
+                </span>
+            </li>
+        }
+    </ul>
+</div>
+

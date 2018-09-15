@@ -1,0 +1,152 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.Employee> employees = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["employees"];
+    IEnumerable<EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
+    EMPLOYEE_DEPARTMENT dept = (EMPLOYEE_DEPARTMENT)ViewData["dept"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $('#submit-button2').click(function () {
+            $(".LoaderBox").show();
+            var selectedID = $('#dept_id').val();
+            var SelectedNext = $('#next_Minus').val();
+            /* Request the partial view with .get request. */
+            $.get('/Employee_Attendances/Show?dept_id=' + selectedID + "&next=" + SelectedNext, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#register').html(data);
+                /* little fade in effect */
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+
+        $('#submit-button3').click(function () {
+            $(".LoaderBox").show();
+            var selectedID = $('#dept_id').val();
+            var SelectedNext = $('#next_Plus').val();
+            /* Request the partial view with .get request. */
+            $.get('/Employee_Attendances/Show?dept_id=' + selectedID + "&next=" + SelectedNext, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#register').html(data);
+                /* little fade in effect */
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+    //Very similar function as before (except this time with an argument)
+    function LoadPartialPage(sender) {
+        $(".LoaderBox2").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#modal-box').html(data);
+            /* little fade in effect */
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+        });
+    }
+</script>
+<div class="header">
+    <div class="prev">
+        <a id="submit-button2">◄</a>
+    </div>
+    <div class="month">
+        @ViewBag.today
+    </div>
+    <div class="next">
+        <a id="submit-button3">►</a>
+    </div>
+    <div class="extender"></div>
+</div>
+<div class="box-1">
+    <table class="" id="register-table" align="center" width="100%">
+        <tr class="tr-head">
+            <td class="head-td-name themed_text">Name</td>
+            @{DateTime current_day = System.DateTime.Today; DateTime DateVal = System.DateTime.Today;}
+            @for (DateVal = ViewBag.start_date; DateVal < ViewBag.end_date; DateVal = DateVal.AddDays(1))
+            {
+                if (current_day == DateVal)
+                {
+                    <td class="head-td-date active"><div class="day themed_text">@DateVal.Day</div> <div class="date"> @DateVal.Month</div></td>
+                }
+                else
+                {
+                    <td class="head-td-date"><div class="day themed_text">@DateVal.Day</div> <div class="date"> @DateVal.Month</div></td>
+                }
+            }
+        </tr>
+        @{ int i = 0;}
+        @foreach (var item in employees)
+        {
+            string selectedRow = "tr-even";
+            if (i % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="td-name">
+                    @item.EmployeeData.FIRST_NAME
+                    <div class="date">
+                        <span><div class="themed_text">@item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                    </div>
+                </td>
+                @for (DateVal = ViewBag.start_date; DateVal < ViewBag.end_date; DateVal = DateVal.AddDays(1))
+                {
+                    var absent = EmployeeAttendance.Where(x => x.EMP_ID == item.EmployeeData.ID && x.ATNDENCE_DATE == DateVal).FirstOrDefault();
+                    if (current_day == DateVal)
+                    {
+                        <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark active">
+                            @if (absent != null && absent.ID != 0)
+                            {
+                                <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID })" class="absent themed_text"  onclick='LoadPartialPage(this.href); return false;'>X</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
+                            }
+                            <div class="date">
+                                <span class="themed_text">@DateVal.ToShortDateString() <div> @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark">
+                            @if (absent != null && absent.ID != 0)
+                            {
+                                <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID })" class="absent themed_text" onclick='LoadPartialPage(this.href); return false;'>X</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
+                            }
+                            <div class="date">
+                                <span class="themed_text">@DateVal.ToShortDateString() <div> @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                            </div>
+                        </td>
+                    }
+                    
+                }
+            </tr>
+        }
+    </table>
+</div>
+<div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+<input type="hidden" value="@dept.ID" id="dept_id" name="dept_id" />
+<input type="hidden" value="@ViewBag.today_Plus_1Month" id="next_Plus" name="next_Plus" />
+<input type="hidden" value="@ViewBag.today_Minus_1Month" id="next_Minus" name="next_Minus" />

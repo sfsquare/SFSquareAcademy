@@ -9,7 +9,6 @@
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/style.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/pdf.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "popup.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "_styles/ui.all.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "modalbox.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "calendar.css");
@@ -22,7 +21,7 @@
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/dashboard.css");
 
 }
-else if (LocationHelper.IsCurrentControllerAndAction("USERs", "Login", ViewContext))
+else if (LocationHelper.IsCurrentControllerAndAction("USERs", "Login", ViewContext) || LocationHelper.IsCurrentControllerAndAction("USERs", "Set_New_Password", ViewContext))
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/login.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/forgotpw.css");
@@ -30,6 +29,7 @@ else if (LocationHelper.IsCurrentControllerAndAction("USERs", "Login", ViewConte
 else
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "application.css");
+    DynamicHeader.AddStyleSheet(CSSDirection + "popup.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "redbox.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "error_page.css");
 }

@@ -1,0 +1,280 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.GradingTypesSelect> grading_types = (IEnumerable<SFSAcademy.Models.GradingTypesSelect>)ViewData["grading_types"];
+    IEnumerable<SFSAcademy.CONFIGURATION> config = (IEnumerable<SFSAcademy.CONFIGURATION>)ViewData["config"];
+    CONFIGURATION enabled_grading_types = (CONFIGURATION)ViewData["enabled_grading_types"];
+    IEnumerable<SFSAcademy.COUNTRY> countries = (IEnumerable<SFSAcademy.COUNTRY>)ViewData["countries"];
+}
+@{
+    ViewBag.Title = "Settings";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Setting Logo">
+    <h1>Configuration</h1>
+    <h3>General Settings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+            {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+
+    @using (Html.BeginForm("Settings", "Configuration", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="box">
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "InstitutionName")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "School/College Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "InstitutionAddress")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "School/College Address", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "InstitutionPhoneNo")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "School/College Phone Number", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "StudentAttendanceType")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Student Attendance Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.RadioButton("[" + i + "].CONFIG_VAL", "Daily", config.ElementAt(i).CONFIG_VAL == "Daily" ? true : false)@Html.Label("Daily")
+                            @Html.RadioButton("[" + i + "].CONFIG_VAL", "SubjectWise", config.ElementAt(i).CONFIG_VAL == "SubjectWise" ? true : false)@Html.Label("SubjectWise")
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "FinancialYearStartDate")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Financial year start date", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = config.ElementAt(i).CONFIG_VAL } })
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "FinancialYearEndDate")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Financial year end date", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2", @Value = config.ElementAt(i).CONFIG_VAL } })
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "SchoolLogoId")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Upload Logo (Maximum Size 2 MB)", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            <input id=@string.Concat("[" + i + "].CONFIG_VAL") title="Upload Photo (Maximum Size 2 MB)" type="file" name=@string.Concat("[" + i + "].CONFIG_VAL") />
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "NetworkState")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Network State", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.RadioButton("[" + i + "].CONFIG_VAL", "Online", config.ElementAt(i).CONFIG_VAL == "Online" ? true : false)@Html.Label("Online")
+                            @Html.RadioButton("[" + i + "].CONFIG_VAL", "Offline", config.ElementAt(i).CONFIG_VAL == "Offline" ? true : false)@Html.Label("Offline")
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "AdmissionNumberAutoIncrement")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Student Admission number auto increment value", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "EmployeeNumberAutoIncrement")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Employee number auto increment value", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                            @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                            @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                        </div>
+                    </div>
+                }
+            }
+            @for (int i = 0; i < config.Count(); i++)
+            {
+                if (config.ElementAt(i).CONFIG_KEY == "FirstTimeLoginEnable")
+                {
+                    <div class="label-field-pair label">
+                        @Html.Label("[" + i + "].CONFIG_KEY", "Enable first time login", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @if (config.ElementAt(i).CONFIG_VAL == "1")
+                            {
+                                @Html.CheckBox("[" + i + "].CONFIG_VAL", true, new { @class = "batches_box" })
+                                @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                                @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                            }
+                            else
+                            {
+                                @Html.CheckBox("[" + i + "].CONFIG_VAL", false, new { @class = "batches_box" })
+                                @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                                @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            <div hidden="hidden">
+                @for (int i = 0; i < config.Count(); i++)
+                {
+                    if (!config.ElementAt(i).CONFIG_KEY.Contains("InstitutionName") && !config.ElementAt(i).CONFIG_KEY.Contains("InstitutionAddress") && !config.ElementAt(i).CONFIG_KEY.Contains("InstitutionPhoneNo") && !config.ElementAt(i).CONFIG_KEY.Contains("StudentAttendanceType") && !config.ElementAt(i).CONFIG_KEY.Contains("AdmissionNumberAutoIncrement") && !config.ElementAt(i).CONFIG_KEY.Contains("EmployeeNumberAutoIncrement") && !config.ElementAt(i).CONFIG_KEY.Contains("NetworkState") && !config.ElementAt(i).CONFIG_KEY.Contains("FinancialYearStartDate") && !config.ElementAt(i).CONFIG_KEY.Contains("FinancialYearEndDate") && !config.ElementAt(i).CONFIG_KEY.Contains("FirstTimeLoginEnable") && !config.ElementAt(i).CONFIG_KEY.Contains("SchoolLogoId"))
+                    {
+                        <div class="label-field-pair label">
+                            @Html.Label("[" + i + "].CONFIG_KEY", "Non Selected Values", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="text-input-bg">
+                                @Html.TextBox("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL)
+                                @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
+                                @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="grades">
+                <div class="label-field-pair label">
+                    <label for="configuration_grading_systems">Include grading systems</label>
+                </div>
+                <div class="fee_category_scroll">
+                    <div class="sel-list">
+                        Select: <a href='#' onclick="$$('.batches_box').each(function (checkbox) { checkbox.checked = true; });">All</a> ,
+                        <a href='#' onclick="$$('.batches_box').each(function (checkbox) { checkbox.checked = false; });">None</a>
+                    </div>
+                    @for (int i = 0; i < grading_types.Count(); i++)
+                    {
+                        <div class="each_batch">
+                            @if (enabled_grading_types != null && enabled_grading_types.CONFIG_KEY != "0")
+                            {
+                                if (grading_types.ElementAt(i).GRADING_TYPE == enabled_grading_types.CONFIG_KEY)
+                                {
+                                    @Html.CheckBox("[" + i + "].Select", true, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                                }
+                                else
+                                {
+                                    @Html.CheckBox("[" + i + "].Select", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                                }
+                            }
+                            else
+                            {
+                                @Html.CheckBox("[" + i + "].Select", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                            }
+                            @Html.Hidden("[" + i + "].GRADING_TYPE", grading_types.ElementAt(i).GRADING_TYPE)
+                        </div>
+
+                    }
+                </div>
+            </div>
+
+            <div class="extender"></div>
+            <br />
+            <div id="submit-button">
+                <input type="submit" value="► Update" class="submit_button" />
+            </div>
+        </div>
+    }
+
+</div>

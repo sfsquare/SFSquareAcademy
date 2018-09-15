@@ -1,0 +1,79 @@
+﻿@model SFSAcademy.EMPLOYEE_LEAVE_TYPE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.Models.MonthyPayslip>)ViewData["monthly_payslips"];
+    IEnumerable<EMPLOYEE_LEAVE_TYPE> individual_payslips = (IEnumerable<EMPLOYEE_LEAVE_TYPE>)ViewData["individual_payslips"];
+    IEnumerable<SFSAcademy.Models.Payslip> salary = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["salary"];
+}
+@{
+    ViewBag.Title = "Add_Leave_Types";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="HR Logo">
+    <h1>Leave Types</h1>
+    <h3>Add Leave Type</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        <div id="form-content">
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.NAME, "Leave Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.CODE, "Leave Code", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.CODE, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CODE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.MAX_LEAVE_CNT, "Max Leave", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.MAX_LEAVE_CNT, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MAX_LEAVE_CNT, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="extender"></div>
+            <div class="label-field-pair label">
+                <label for="category_name">Enable Carry Forward</label>
+                <div class="check_box">@Html.CheckBoxFor(model => model.CARR_FRWD)</div>
+            </div>
+            <div class="label-radio-pair label">
+                <label class="status" for="status">Status</label>
+                <div id="radio-buttons">
+                    @Html.RadioButtonFor(model => model.STAT, "Y", true)@Html.Label("Active", new { @class = "label_for_status" })
+                    @Html.RadioButtonFor(model => model.STAT, "N", false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                </div>
+            </div>
+            <div id="submit-button">
+                <input type="submit" value="► Create" class="user_button" />
+            </div>
+        </div>
+    }
+    </div>
+    <div id="leave_type-list">
+        @Html.Partial("~/Views/Employee_Attendance/_Leave_Types.cshtml", Model)
+    </div>
+</div>
+

@@ -14,11 +14,20 @@ namespace SFSAcademy
     
     public partial class TIMETABLE
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public TIMETABLE()
+        {
+            this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
+        }
+    
         public int ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public string IS_ACT { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
     }
 }

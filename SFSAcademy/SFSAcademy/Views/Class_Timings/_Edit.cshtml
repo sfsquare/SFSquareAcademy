@@ -1,0 +1,80 @@
+﻿@model SFSAcademy.CLASS_TIMING
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<script src="~/Content/javascripts/jquery/jquery.timepicker.js"></script>
+<script src="~/Content/javascripts/jquery/jquery.timepicker.min.js"></script>
+
+<link href="~/Content/stylesheets/_styles/jquery.timepicker.css" rel="stylesheet" />
+<link href="~/Content/stylesheets/_styles/jquery.timepicker.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    // initialize input widgets first
+    $('.timepicker').timepicker({
+        'showDuration': true,
+        'timeFormat': 'g:ia',
+        'minTime': '7:00am',
+        'maxTime': '8:00pm',
+        'step': 5,
+        'timeFormat': 'H:i:s'
+    });
+
+    // initialize datepair
+    var basicExampleEl = document.getElementById('timepicker');
+    var basicExampleEl2 = document.getElementById('timepicker2');
+</script>
+
+<label class="head_label">
+    Edit class timing for
+    @if (batch == null || batch.Count() == 0)
+    {
+        <span> Common </span>
+    }
+    else
+    {
+        <span> @batch.FirstOrDefault().CourseData.CODE - @batch.FirstOrDefault().BatchData.NAME </span>
+    }
+
+</label>
+<div id="ajax-edit">
+    @using (Html.BeginForm("Update", "Class_Timings", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        @Html.Hidden("BatchId", batch.FirstOrDefault().BatchData.ID)
+        <div id="form-errors"></div>
+        <div class="label-field-pair label">
+            <label for="name">Name</label>
+            <div class="text-input-bg">@Html.EditorFor(model => model.NAME)</div>
+        </div>
+
+        <div class="label-field-pair label">
+            <label for="name"> Start Time </label>
+            <div class="time-select-field">
+                @Html.EditorFor(model => model.START_TIME, new { htmlAttributes = new { @class = @"timepicker", @id = "timepicker" } })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            <label for="name">End Time</label>
+            <div class="time-select-field">
+                @Html.EditorFor(model => model.END_TIME, new { htmlAttributes = new { @class = @"timepicker", @id = "timepicker2" } })
+            </div>
+        </div>
+        <div class="label-checkbox-pair label">
+            @if (Model.IS_BRK)
+            {
+                <label>@Html.CheckBoxFor(x => x.IS_BRK, new { @checked = true }) Is a break</label>
+            }
+            else
+            {
+                <label>@Html.CheckBoxFor(x => x.IS_BRK, new { @checked = false }) Is a break</label>
+            }
+        </div>
+        <input type="submit" value="► Save" class="user_button" />
+    }
+</div>

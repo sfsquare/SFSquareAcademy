@@ -1,0 +1,66 @@
+﻿@model SFSAcademy.ELECTIVE_GROUP
+@using SFSAcademy.Models
+@{
+    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+}
+@{
+    ViewBag.Title = "New";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Elective Group Logo">
+    <h1>Batches</h1>
+    <h3>New Elective</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("New", "New", new { BatchId = batch.BatchData.ID })</li>
+    </ul>
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("ManageCourse", "Courses")">Manage Course</a> &raquo;
+        <a href="@Url.Action("ManageBatches", "BATCH")">Manage Batch</a> &raquo;
+        <a href="@Url.Action("Index", "Elective_Groups", new { BatchId = batch.BatchData.ID })">Batch Elective Groups</a> &raquo;
+        New
+    </div>
+
+    <div class="box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("BTCH_ID", @batch.BatchData.ID)
+            if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.ELECTIVE_GRP_NAME, "Name")</div>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.ELECTIVE_GRP_NAME)
+                    @Html.ValidationMessageFor(model => model.ELECTIVE_GRP_NAME, "")
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.ELECTIVE_GRP_DESCR, "Description")</div>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.ELECTIVE_GRP_DESCR)
+                    @Html.ValidationMessageFor(model => model.ELECTIVE_GRP_DESCR, "")
+                </div>
+            </div>
+            <input type="submit" value="► Save" class="submit_button" />
+        }
+
+        <div class="extender"></div>
+    </div>
+</div>

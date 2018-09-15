@@ -1,0 +1,38 @@
+﻿@model SFSAcademy.EMPLOYEE_ATTENDENCES
+@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+}
+
+<label class="head_label">Edit attendance for:  <span>@employee.FIRST_NAME</span></label>
+<div id="ajax-edit">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <br />
+        <div class="label-field-pair label">
+            <label for="leave_type">Leave Type:</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("EMP_LEAVE_TYPE_ID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.HiddenFor(model => model.ID)
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            <label for="leave_type">Reason for absence:</label>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.RSN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RSN, "", new { @class = "text-danger" })
+            </div>
+        </div>
+            <div class="label-checkbox-pair label">
+                @Html.CheckBoxFor(model => model.IS_HALF_DAY) <label>Is half day? </label>
+            </div>
+            <div class="extender"></div>
+            <input type="submit" value="Submit" class="submit-button" onclick="return confirm('are you sure?')" />
+            }
+            <div id="delete-button">
+                <a href="@Url.Action("Delete", "Employee_Attendances", new { id = Model.ID })" onclick="return confirm('are you sure?')" class="submit-button">Delete</a>
+            </div>
+            <div id="form-errors"></div>
+        </div>
+

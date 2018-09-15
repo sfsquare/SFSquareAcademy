@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SFSAcademy.SUBJECT>
+
+@{
+    ViewBag.Title = "Index";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#BatchDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+            var selectedID = $(this).val();
+            $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Subjects/Show/' + selectedID, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#subjects').html(data);
+            /* little fade in effect */
+            $('#subjects').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Subject</h1>
+    <h3>Home</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div id="flash-box">
+        @if (ViewBag.Notice != null)
+            {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div class="box">
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.Label("BTCH_ID", "Select A Batch :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="text-input-bg">
+                @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div id="subjects" style="display:none;"></div>
+        <div id="modal-box" style="display:none;"></div>
+        <div class="extender"></div>
+    </div>
+</div>

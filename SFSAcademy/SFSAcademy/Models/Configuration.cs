@@ -16,7 +16,14 @@ namespace SFSAcademy.Models
 
             if (Config_Value != null && Config_Value.Count() != 0)
             {
-                return Config_Value.FirstOrDefault().Val.ToString();
+                if(Config_Value.FirstOrDefault().Val != null)
+                {
+                    return Config_Value.FirstOrDefault().Val.ToString();
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -31,7 +38,14 @@ namespace SFSAcademy.Models
                               select new { Key = Config.CONFIG_KEY }).ToList();
             if(Config_Key != null && Config_Key.Count()!= 0)
             {
-                return Config_Key.FirstOrDefault().Key.ToString();
+                if(Config_Key.FirstOrDefault().Key != null)
+                {
+                    return Config_Key.FirstOrDefault().Key.ToString();
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {
@@ -39,5 +53,11 @@ namespace SFSAcademy.Models
             }
             
         }
+    }
+    public class GradingTypesSelect
+    {
+        public string GRADING_TYPE { get; set; }
+        public bool Select { get; set; }
+
     }
 }

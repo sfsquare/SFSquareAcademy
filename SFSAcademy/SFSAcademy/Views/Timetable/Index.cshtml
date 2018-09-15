@@ -1,0 +1,120 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.CONFIGURATION> config = (IEnumerable<SFSAcademy.CONFIGURATION>)ViewData["config"];
+}
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Home</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div class="box">
+        @if (Html.Permitted_To("New_Timetable", "Timetable"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Index", "Weekday")">Create Weekdays</a></div>
+                <div class="link-descr">Create Weekdays for this academic year.</div>
+            </div>
+        }
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "Class_Timings")">Set Class Timings</a></div>
+            <div class="link-descr">Select a class and edit the timetable for that class.</div>
+        </div>
+
+        @if (Html.Permitted_To("Work_Allotment", "Timetable"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Work_Allotment", "Timetable")">Work Allotment</a></div>
+                <div class="link-descr">Create Weekdays for this academic year.</div>
+            </div>
+        }
+
+        @if (Html.Permitted_To("New_Timetable", "Timetable"))
+        {
+            <div class="link-box">
+                @{int i = 0;}
+                @foreach (var item in config)
+                {
+                    if (item.CONFIG_VAL == "HR")
+                    {
+                        <div class="link-heading"><a href="@Url.Action("New_Timetable", "Timetable")">Create Timetable</a></div>
+                        i += 1;
+                        break;
+                    }
+                }
+                @if (i == 0)
+                {
+                    <div class="link-heading"><a href="@Url.Action("New_Timetable", "Timetable")">Create Timetable</a></div>
+                }
+                <div class="link-descr">Create timetable for all the classes.</div>
+            </div>
+                    }
+
+        @if (Html.Permitted_To("Edit_Master", "Timetable"))
+        {
+            <div class="link-box">
+                @{int i = 0;}
+                @foreach (var item in config)
+                {
+                    if (item.CONFIG_VAL == "HR")
+                    {
+                        <div class="link-heading"><a href="@Url.Action("Edit_Master", "Timetable")">Edit Timetable</a></div>
+                        i += 1;
+                        break;
+                    }
+                }
+                @if (i == 0)
+                {
+                    <div class="link-heading"><a href="@Url.Action("Edit_Master", "Timetable")">Edit Timetable</a></div>
+                }
+                <div class="link-descr">Select a class and edit the timetable for that class.</div>
+            </div>
+                    }
+
+        @if (Html.Permitted_To("View", "Timetable"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("View", "Timetable")">View Timetable</a></div>
+                <div class="link-descr">View the timetable for a class.</div>
+            </div>
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Teachers_Timetable", "Timetable")">Teachers Timetable</a></div>
+                <div class="link-descr">View timetable for teachers.</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Edit", "Timetable"))
+        {
+            if (ViewBag.StudentAttendanceType == "SubjectWise")
+            {
+                <div class="link-box">
+                    <div class="link-heading"><a href="@Url.Action("Extra_Class", "Timetable")">Swap Class</a></div>
+                    <div class="link-descr">Generate period entry for a given time.</div>
+                </div>
+            }
+        }
+
+        @if (Html.Permitted_To("Timetable", "Timetable"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Timetable", "Timetable")">Institutional Timetable</a></div>
+                <div class="link-descr">View the entire timetable for a day.</div>
+            </div>
+        }
+
+        <div class="extender"></div>
+    </div>
+</div>

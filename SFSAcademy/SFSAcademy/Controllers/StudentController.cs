@@ -196,6 +196,7 @@ namespace SFSAcademy.Controllers
                         db.STUDENTs.Add(sTUDENTtOiNS);
                    
                         sTUDENTfROMuPD.IS_ACT = "N";
+                        sTUDENTfROMuPD.IS_DEL = "Y";
                         sTUDENTfROMuPD.UPDATED_AT = System.DateTime.Now;
                         db.Entry(sTUDENTfROMuPD).State = EntityState.Modified;
                         //try { db.SaveChanges(); ViewBag.OldRecordMessage = "Old Recrod Saved."; }
@@ -210,6 +211,7 @@ namespace SFSAcademy.Controllers
 
                     STUDENT sTUDENTfROMuPD = db.STUDENTs.Find(sTUDENTfROM.ID);
                     sTUDENTfROMuPD.IS_ACT = "N";
+                    sTUDENTfROMuPD.IS_DEL = "Y";
                     sTUDENTfROMuPD.UPDATED_AT = System.DateTime.Now;
                     db.Entry(sTUDENTfROMuPD).State = EntityState.Modified;
                     try { db.SaveChanges(); ViewBag.OldRecordMessage = "Old Recrod Saved."; }
@@ -2155,6 +2157,238 @@ namespace SFSAcademy.Controllers
 
             return View(student);
         }
+
+        // GET: Student/Edit/5
+        public ActionResult Electives(int? id, int? id2, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where cs.IS_DEL == "N" && bt.ID == id
+                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
+                         .OrderBy(x => x.BatchData.ID).ToList();
+            ViewData["batch"] = queryCourceBatch;
+            var elective_subject = db.SUBJECTs.Find(id2);
+            ViewData["elective_subject"] = elective_subject;
+            var students = db.STUDENTs.Where(x => x.BTCH_ID == id).ToList();
+            ViewData["students"] = students;
+            var elective_group = db.ELECTIVE_GROUP.Find(elective_subject.ELECTIVE_GRP_ID);
+            ViewData["elective_group"] = elective_group;
+            var stud_assigned = db.STUDENT_SUBJECT.ToList();
+            ViewData["stud_assigned"] = stud_assigned;
+
+            return View();
+        }
+
+        // GET: Student/Edit/5
+        public ActionResult Assign_Students(int? id, int? id2)
+        {
+            STUDENT student = db.STUDENTs.Find(id);
+            SUBJECT elective_subject = db.SUBJECTs.Find(id2);
+            STUDENT_SUBJECT StudentsSubject = new STUDENT_SUBJECT{STDNT_ID=id, SUBJ_ID = id2, BTCH_ID = student.BTCH_ID};
+            db.STUDENT_SUBJECT.Add(StudentsSubject);
+            db.SaveChanges();
+            ViewBag.Notice = "Assign students successfully";
+            return RedirectToAction("Electives",new { id = student.BTCH_ID, id2 = elective_subject.ID, Notice= ViewBag.Notice });
+        }
+
+        // GET: Student/Edit/5
+        public ActionResult Assign_All_Students(int? id, int? id2)
+        {
+            BATCH batch = db.BATCHes.Find(id);
+            var students = db.STUDENTs.Where(x => x.BTCH_ID == id).ToList();
+            foreach(var item in students)
+            {
+                var assigned = db.STUDENT_SUBJECT.Where(x => x.STDNT_ID == item.ID && x.SUBJ_ID == id2).ToList();
+                if(assigned == null || assigned.Count() ==0)
+                {
+                    STUDENT_SUBJECT StudentsSubject = new STUDENT_SUBJECT { STDNT_ID = item.ID, SUBJ_ID = id2, BTCH_ID = batch.ID };
+                    db.STUDENT_SUBJECT.Add(StudentsSubject);
+                    db.SaveChanges();
+                }
+            }
+            SUBJECT elective_subject = db.SUBJECTs.Find(id2);
+            ViewBag.Notice = "Assign all students successfully";
+            return RedirectToAction("Electives", new { id = batch.ID, id2 = elective_subject.ID, Notice = ViewBag.Notice });
+        }
+        // GET: Student/Edit/5
+        public ActionResult Unassign_Students(int? id, int? id2)
+        {
+            STUDENT student = db.STUDENTs.Find(id);
+            SUBJECT elective_subject = db.SUBJECTs.Find(id2);
+            var query = db.STUDENT_SUBJECT.Where(x=>x.STDNT_ID ==id && x.SUBJ_ID == id2).ToList();
+            foreach (var entity in query)
+            {
+                db.STUDENT_SUBJECT.Remove(entity);
+                try { db.SaveChanges(); }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Electives", new { id = student.BTCH_ID, id2 = elective_subject.ID, ErrorMessage = ViewBag.ErrorMessage });
+                }
+
+            }
+            ViewBag.Notice = "Remove students successfully";
+            return RedirectToAction("Electives", new { id = student.BTCH_ID, id2 = elective_subject.ID, Notice = ViewBag.Notice });
+        }
+
+
+        // GET: Student/Edit/5
+        public ActionResult Unassign_All_Students(int? id, int? id2)
+        {
+            BATCH batch = db.BATCHes.Find(id);
+            SUBJECT elective_subject = db.SUBJECTs.Find(id2);
+            var students = db.STUDENTs.Where(x => x.BTCH_ID == id).ToList();
+            foreach (var item in students)
+            {
+                var assigned = db.STUDENT_SUBJECT.Where(x => x.STDNT_ID == item.ID && x.SUBJ_ID == id2).ToList();
+                if (assigned != null && assigned.Count() != 0)
+                {
+                    foreach (var entity in assigned)
+                    {
+                        db.STUDENT_SUBJECT.Remove(entity);
+                        try { db.SaveChanges(); }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            return RedirectToAction("Electives", new { id = batch.ID, id2 = elective_subject.ID, ErrorMessage = ViewBag.ErrorMessage });
+                        }
+
+                    }
+                }
+            }
+            ViewBag.Notice = "Assign all students successfully";
+            return RedirectToAction("Electives", new { id = batch.ID, id2 = elective_subject.ID, Notice = ViewBag.Notice });
+        }
+
+        // GET: Student/Edit/5
+        public ActionResult Add_Additional_Details(string ErrorMessage, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            var additional_details = db.STUDENT_ADDITIONAL_FIELD.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+            ViewData["additional_details"] = additional_details;
+            var inactive_additional_details = db.STUDENT_ADDITIONAL_FIELD.Where(x => x.STAT == "N").OrderBy(x => x.NAME).ToList();
+            ViewData["inactive_additional_details"] = inactive_additional_details;
+
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Add_Additional_Details([Bind(Include = "ID,NAME,STAT")] STUDENT_ADDITIONAL_FIELD aDDITIONALfIELD)
+        {
+            if (ModelState.IsValid)
+            {
+                var additional_details = db.STUDENT_ADDITIONAL_FIELD.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+                ViewData["additional_details"] = additional_details;
+                var inactive_additional_details = db.STUDENT_ADDITIONAL_FIELD.Where(x => x.STAT == "N").OrderBy(x => x.NAME).ToList();
+                ViewData["inactive_additional_details"] = inactive_additional_details;
+
+                db.STUDENT_ADDITIONAL_FIELD.Add(aDDITIONALfIELD);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = "Addional Field added in system successfully!";
+                return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State!";
+            return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Edit_Additional_Details(int? id)
+        {
+            STUDENT_ADDITIONAL_FIELD aDDITIONALfIELD = db.STUDENT_ADDITIONAL_FIELD.Find(id);
+
+            return View(aDDITIONALfIELD);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Additional_Details([Bind(Include = "ID,NAME,STAT")] STUDENT_ADDITIONAL_FIELD aDDITIONALfIELD)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(aDDITIONALfIELD).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = "Additional Field updated in system successfully!";
+                return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State!";
+            return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Delete_Additional_Details(int? id)
+        {
+            STUDENT_ADDITIONAL_FIELD aDDITIONALfIELD = db.STUDENT_ADDITIONAL_FIELD.Find(id);
+            var students = (from std in db.STUDENTs
+                             join ad in db.STUDENT_ADDITIONAL_DETAIL on std.ID equals ad.STDNT_ID
+                             join af in db.STUDENT_ADDITIONAL_FIELD on ad.ADDL_FLD_ID equals af.ID
+                             where af.ID == id && std.STATE == "Y"
+                             select std).Distinct();
+            if (students == null || students.Count() == 0)
+            {
+                db.STUDENT_ADDITIONAL_FIELD.Remove(aDDITIONALfIELD);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = "Additional Field deleted fom system successfully!";
+                return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            else
+            {
+                ViewBag.Notice = "Addional Field cannot be deleted as active students are attached to this Additional Field.";
+                return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+
+        }
+
         /////Document Upload related methods////////////////////////////////////////////////////////////////
 
         [HttpGet]

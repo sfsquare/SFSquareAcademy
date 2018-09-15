@@ -1,0 +1,76 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEE> employees = (IEnumerable<SFSAcademy.EMPLOYEE>)ViewData["employees"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> EmployeeLeave = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["EmployeeLeave"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
+}
+
+<table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+    <tr class="tr-head">
+        <td>
+            Name
+        </td>
+        @foreach (var item in leave_types)
+        {
+            <td>
+                @item.CODE
+            </td>
+        }
+        <td>
+            Total &nbsp;&nbsp;
+        </td>
+        <!-- attendance_tr -->
+    </tr>
+    <tr class="tr-blank"></tr>
+    @{int i = 1;}
+    @foreach (var item in employees)
+    {
+        string code = "tr-even";
+        if (i % 2 == 0)
+        {
+            code = "tr-odd";
+        }
+        <tr class="@code">
+            <td class="col-2">
+                @Html.ActionLink(string.Concat(item.FIRST_NAME, " ", item.MID_NAME, " ", item.LAST_NAME), "Emp_Attendance", new { id = item.ID })
+                @{ decimal total = 0;}
+            </td>
+            @foreach (var item2 in leave_types)
+            {
+                var leave_count = EmployeeLeave.Where(x => x.EMP_LEAVE_TYPE_ID == item2.ID && x.EMP_ID == item.ID).FirstOrDefault();
+
+                var report = EmployeeAttendance.Where(x => x.EMP_ID == item.ID && x.EMP_LEAVE_TYPE_ID == item2.ID);
+                decimal count = 0;
+                if(leave_count!= null)
+                {
+                    if (leave_count.RST_DATE != null)
+                    {
+                        report = report.Where(x => x.ATNDENCE_DATE >= leave_count.RST_DATE);
+                    }
+                }
+
+                if (report != null && report.Count() != 0)
+                {
+                    foreach (var item3 in report)
+                    {
+                        if (item3.IS_HALF_DAY == true)
+                        {
+                            count += 1 / 2;
+                        }
+                        else
+                        {
+                            count += 1;
+                        }
+                    }
+                }
+                <td class="col-5">@count</td>
+                total += count;
+            }
+            <td class="col-5"> @total </td>
+        </tr><!-- attendance_tr -->
+     }
+</table>
+
+
+

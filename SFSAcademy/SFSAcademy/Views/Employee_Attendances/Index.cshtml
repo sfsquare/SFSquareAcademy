@@ -1,0 +1,71 @@
+﻿@model IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>
+
+@{
+    ViewBag.Title = "Index";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#DepDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+        var selectedID = $(this).val();
+        var SelectedNext = null;
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Employee_Attendances/Show?dept_id=' + selectedID+ "&next=" + SelectedNext , function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#register').html(data);
+            /* little fade in effect */
+            $('#register').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/attendence/attendence.png" alt="HR Logo">
+    <h1>Attendance</h1>
+    <h3>Attendance Register</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+        <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+        Attendance Register
+    </div>
+    @if (ViewBag.Notice != null)
+            {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+            {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="label-field-pair label">
+        <div class="label-container label">@Html.Label("EMP_DEPT_ID", "Select The Department :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+        <div class="text-input-bg">
+            @Html.DropDownList("EMP_DEPT_ID", null, htmlAttributes: new { @id = "DepDropDown"})
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            @Html.ValidationMessage("EMP_DEPT_ID", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div id="register" style="display:none;"></div>
+    <div id="modal-box" style="display:none;"></div>
+</div>

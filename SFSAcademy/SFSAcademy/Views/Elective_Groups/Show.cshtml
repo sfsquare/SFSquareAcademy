@@ -1,0 +1,99 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.SUBJECT> electives = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["electives"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+}
+@{
+    ViewBag.Title = "Show";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadOneClickPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#modal-box').html(data);
+            /* little fade in effect */
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Elective Group Logo">
+    <h1>Batches</h1>
+    <h3>Show Elective</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>
+            <a href="@Url.Action("New", "Subjects",new { id = batch.ID , id2 = elective_group.ID})" onclick='LoadOneClickPartialPage(this.href); return false;'>Add</a>
+        </li>
+    </ul>
+</div>
+
+<div id="page-yield">
+    <div id="flash-box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("ManageCourse", "Courses")">Manage Course</a> &raquo;
+        <a href="@Url.Action("ManageBatches", "BATCH")">Manage Batch</a> &raquo;
+        <a href="@Url.Action("Index", "Elective_Groups",new {BatchId = batch.ID})">Electives</a> &raquo;
+        @elective_group.ELECTIVE_GRP_NAME
+    </div>
+
+    <div class="box">
+
+        <div id="subjects">
+            <ul id="category-list">
+                @{int j = 1; }
+                @foreach (var subject in electives)
+                {
+                    string code = "listodd";
+                    if (j % 2 == 0)
+                    {
+                        code = "listeven";
+                    }
+                    <li id="subject-@subject.ID" class="@code">
+                        <div class="category-name">@subject.NAME</div>
+                        <div class="category-code">@subject.CODE</div>
+                        <div class="category-edit">
+                            <a href="@Url.Action("Edit", "Subjects",new {id=subject.ID, id2=elective_group.ID})" onclick='LoadOneClickPartialPage(this.href); return false;'>Edit</a>
+                            <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                        </div>
+                        <div class="category-delete">
+                            <a href="@Url.Action("Delete", "Subjects",new {id = subject.ID})" onclick="return confirm('are you sure?')">Delete</a>
+                        </div>
+                        <div class="category-assign">
+                            <a href="@Url.Action("Electives", "Student",new {id = batch.ID, id2=subject.ID})">Assign Student</a>
+                        </div>
+                    </li>
+                    j += 1;
+                }
+            </ul>
+        </div>
+        <div id="modal-box" style="display:none;"></div>
+
+        <div class="extender"></div>
+    </div>
+</div>
+

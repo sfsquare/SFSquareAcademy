@@ -17,5 +17,6 @@ namespace SFSAcademy
         public int ID { get; set; }
         public string ELECTIVE_GRP_NAME { get; set; }
         public string ELECTIVE_GRP_DESCR { get; set; }
+        public Nullable<int> BTCH_ID { get; set; }
     }
 }
