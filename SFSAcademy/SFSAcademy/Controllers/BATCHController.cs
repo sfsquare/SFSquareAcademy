@@ -57,7 +57,7 @@ namespace SFSAcademy.Controllers
 
             var CourseBatchS = (from cs in db.COURSEs
                                 join bt in db.BATCHes on cs.ID equals bt.CRS_ID 
-                                where cs.IS_DEL.Equals("N") && bt.IS_DEL.Equals("N")
+                                where cs.IS_DEL.Equals(false) && bt.IS_DEL.Equals(false)
                                 orderby cs.CODE
                                 select new Models.CoursesBatch { CourseData = cs, BatchData = bt}).Distinct();
 
@@ -118,7 +118,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                bATCH.IS_DEL = "N";
+                bATCH.IS_DEL = false;
                 bATCH.EMP_ID = Convert.ToInt32(this.Session["UserId"]);
                 db.BATCHes.Add(bATCH);
                 db.SaveChanges();

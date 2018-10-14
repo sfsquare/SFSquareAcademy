@@ -15,7 +15,10 @@ namespace SFSAcademy
     public partial class PRIVILEGES_USERS
     {
         public int ID { get; set; }
-        public Nullable<long> USER_ID { get; set; }
-        public Nullable<long> PRIVILEGE_ID { get; set; }
+        public Nullable<int> PRIVILEGE_ID { get; set; }
+        public Nullable<int> USER_ID { get; set; }
+    
+        public virtual PRIVILEGE PRIVILEGE { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

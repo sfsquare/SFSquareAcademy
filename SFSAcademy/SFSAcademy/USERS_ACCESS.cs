@@ -22,7 +22,7 @@ namespace SFSAcademy
         public string CTL { get; set; }
         public string ACTN { get; set; }
         public int ID { get; set; }
-        public string IS_ACCBLE { get; set; }
+        public bool IS_ACCBLE { get; set; }
     
         public virtual USER USER { get; set; }
     }

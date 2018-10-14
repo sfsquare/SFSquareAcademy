@@ -20,7 +20,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.Notice = Notice;
-            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Department" });
             ViewBag.EMP_DEPT_ID = options;
             return View();
@@ -32,13 +32,13 @@ namespace SFSAcademy.Controllers
             EMPLOYEE_DEPARTMENT dept = db.EMPLOYEE_DEPARTMENT.Find(dept_id);
             ViewData["dept"] = dept;
             var EmployeeDetail = (from emp in db.EMPLOYEEs
-                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y") on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
                                   from subged in ged.DefaultIfEmpty()
-                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == "Y") on emp.EMP_CAT_ID equals ec.ID into gec
+                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true) on emp.EMP_CAT_ID equals ec.ID into gec
                                   from subgec in gec.DefaultIfEmpty()
-                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == "Y") on emp.EMP_POS_ID equals ep.ID into gep
+                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true) on emp.EMP_POS_ID equals ep.ID into gep
                                   from subgep in gep.DefaultIfEmpty()
-                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == "Y") on emp.EMP_GRADE_ID equals eg.ID into geg
+                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.EMP_DEPT_ID == dept_id
                                   select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
@@ -66,7 +66,7 @@ namespace SFSAcademy.Controllers
             ViewData["employee"] = employee;
             DateTime date = Convert.ToDateTime(Sel_date);
             ViewBag.date = date.ToShortDateString();
-            List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME").ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Leave Type" });
             ViewBag.EMP_LEAVE_TYPE_ID = options;
             return PartialView("_New");
@@ -115,7 +115,7 @@ namespace SFSAcademy.Controllers
             ViewData["attendance"] = attendance;
             EMPLOYEE employee = db.EMPLOYEEs.Find(id2);
             ViewData["employee"] = employee;
-            List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME", attendance.EMP_LEAVE_TYPE_ID).ToList();
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME", attendance.EMP_LEAVE_TYPE_ID).ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Leave Type" });
             ViewBag.EMP_LEAVE_TYPE_ID = options;
             return PartialView("_Edit", attendance);

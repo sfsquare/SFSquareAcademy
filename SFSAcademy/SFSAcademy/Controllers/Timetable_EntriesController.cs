@@ -29,7 +29,7 @@ namespace SFSAcademy.Controllers
             ViewData["timetable"] = timetable;
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N"
+                                    where cs.IS_DEL == false
                                     select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 

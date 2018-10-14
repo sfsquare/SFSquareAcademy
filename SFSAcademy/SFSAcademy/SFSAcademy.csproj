@@ -2611,21 +2611,6 @@
     <Compile Include="BATCH.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="CCE_EXAM_CATEGORY.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CCE_GRADE.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CCE_GRADE_SET.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CCE_REPORTS.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CCE_WEIGHTAGE.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
     <Compile Include="CLASS_DESIGNATION.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
@@ -2661,6 +2646,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="DESCRIPTIVE_INDICATOR.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ELECTIVE.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="ELECTIVE_GROUP.cs">
@@ -2720,12 +2708,6 @@
     <Compile Include="EXAM_SCORE.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="FA_CRITERIAS.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="FA_GROUP.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
     <Compile Include="FEE_COLLECTION_DISCOUNT.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
@@ -2765,7 +2747,16 @@
     <Compile Include="FINANCE_TRANSACTION_TRIGGERS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
-    <Compile Include="Gallery_Master.cs">
+    <Compile Include="GALLERY_CATEGORY.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GALLERY_MASTER.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GALLERY_PHOTOS.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GALLERY_TAGS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
@@ -2832,12 +2823,6 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="NEWS_COMMENTS.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="OBSERVATION.cs">
-      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
-    </Compile>
-    <Compile Include="OBSERVATION_GROUP.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="PAYROLL_CATEGORY.cs">

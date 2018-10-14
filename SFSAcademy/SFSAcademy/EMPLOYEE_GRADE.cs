@@ -24,7 +24,7 @@ namespace SFSAcademy
         public string GRADE_CODE { get; set; }
         public string GRADE_NAME { get; set; }
         public string DESCR { get; set; }
-        public string IS_ACT { get; set; }
+        public bool IS_ACT { get; set; }
         public Nullable<int> PRIR { get; set; }
         public Nullable<decimal> MAX_DILY_HRS { get; set; }
         public Nullable<decimal> MAX_WKILY_HRS { get; set; }

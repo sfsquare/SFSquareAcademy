@@ -27,7 +27,7 @@ namespace SFSAcademy.Controllers
         // GET: Courses
         public ActionResult ManageCourse()
         {
-            return View(db.COURSEs.Where(s=> s.IS_DEL == "N").ToList());
+            return View(db.COURSEs.Where(s=> s.IS_DEL == false).ToList());
         }
         // GET: Courses/Details/5
 
@@ -85,7 +85,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                cOURSE.IS_DEL = "N";
+                cOURSE.IS_DEL = false;
                 cOURSE.CREATED_AT = System.DateTime.Now;
                 cOURSE.UPDATED_AT = System.DateTime.Now;
                 db.COURSEs.Add(cOURSE);
@@ -96,7 +96,7 @@ namespace SFSAcademy.Controllers
                 bATCH.START_DATE = ReturnDate;
                 bATCH.END_DATE = ReturnDate2;
                 bATCH.CRS_ID = cOURSE.ID;
-                bATCH.IS_DEL = "N";
+                bATCH.IS_DEL = false;
                 db.BATCHes.Add(bATCH);
                 db.SaveChanges();
                 ViewBag.Message = "Course created successfully!";
@@ -188,7 +188,7 @@ namespace SFSAcademy.Controllers
             if(BatchVal.Count.Equals(0))
             {
                 COURSE cOURSE = db.COURSEs.Find(id);
-                cOURSE.IS_DEL = "Y";
+                cOURSE.IS_DEL = true;
                 cOURSE.UPDATED_AT = System.DateTime.Now;
                 db.Entry(cOURSE).State = EntityState.Modified;
                 db.SaveChanges();

@@ -43,10 +43,10 @@ namespace SFSAcademy.Controllers
                             CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
                             newsTitle = nw.TIL,
                             newsContent = nw.CNTNT,
-                            newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == "Y") ? " - Admin" : ""),
+                            newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == true) ? " - Admin" : ""),
                             newsCreatedDate = nw.CREATED_AT,
                             newsUpdatedDate = nw.UPDATED_AT,
-                            newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == "Y").Distinct().Count(),
+                            newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == true).Distinct().Count(),
                             isUserAdmin = subus.ADMIN_IND,
                             commentList = (from com in db.NEWS_COMMENTS
                                            join us in db.USERS on com.AUTH_ID equals us.ID into gj
@@ -123,10 +123,10 @@ namespace SFSAcademy.Controllers
                                           CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
                                           newsTitle = nw.TIL,
                                           newsContent = nw.CNTNT,
-                                          newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == "Y") ? " - Admin" : ""),
+                                          newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == true) ? " - Admin" : ""),
                                           newsCreatedDate = nw.CREATED_AT,
                                           newsUpdatedDate = nw.UPDATED_AT,
-                                          newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == "Y").Distinct().Count(),
+                                          newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == true).Distinct().Count(),
                                           isUserAdmin = subus.ADMIN_IND,
                                           isModerator = subus.ADMIN_IND,
                                       }).FirstOrDefault();
@@ -163,7 +163,7 @@ namespace SFSAcademy.Controllers
             ViewBag.current_user = UserId;
             newsDetail = GetNewsDetails(id);
             ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-            ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
+            ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
             return View("view", newsDetail);
         }
 
@@ -182,10 +182,10 @@ namespace SFSAcademy.Controllers
                             CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
                             newsTitle = nw.TIL,
                             newsContent = nw.CNTNT,
-                            newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == "Y") ? " - Admin" : ""),
+                            newsCreatedBy = (nw.AUTH_ID == 0) ? "User Deleted" : string.Concat(subus.FIRST_NAME, " ", subus.LAST_NAME, " ", (subus.ADMIN_IND == true) ? " - Admin" : ""),
                             newsCreatedDate = nw.CREATED_AT,
                             newsUpdatedDate = nw.UPDATED_AT,
-                            newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == "Y").Distinct().Count(),
+                            newsCommentCount = db.NEWS_COMMENTS.Where(X => X.NEWS_ID == nw.ID && X.IS_APPR == true).Distinct().Count(),
                             isUserAdmin = subus.ADMIN_IND,
                             commentList = (from com in db.NEWS_COMMENTS
                                            join us in db.USERS on com.AUTH_ID equals us.ID into gj
@@ -258,7 +258,7 @@ namespace SFSAcademy.Controllers
             var newsComment = db.NEWS_COMMENTS.Find(commentId);
             ViewBag.current_user = userId;
             ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-            ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
+            ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
             db.NEWS_COMMENTS.Remove(newsComment);
             db.SaveChanges();
             newsDetail = GetNewsDetails(newsId);
@@ -283,8 +283,8 @@ namespace SFSAcademy.Controllers
                 newsComment.AUTH_ID = Convert.ToInt32(userdetails.Id);
                 newsComment.CREATED_AT = System.DateTime.Now;
                 newsComment.NEWS_ID = newsId;
-                newsComment.IS_APPR = (priv != null) ? "Y" :
-                    (userdetails.ADMIN_IND == "Y") ? "Y" : "N";
+                newsComment.IS_APPR = (priv != null) ? true :
+                    (userdetails.ADMIN_IND == true) ? true : false;
                 //var config = db.CONFIGURATIONs.Find("EnableNewsCommentModeration");
                 //var _config = config.get_config_value("EnableNewsCommentModeration");
                 db.NEWS_COMMENTS.Add(newsComment);
@@ -295,7 +295,7 @@ namespace SFSAcademy.Controllers
                 //ViewBag.isAdminUser = (newsDetail.isUserAdmin == "Y") ? true : false;
 
                 ViewBag.isModerator = (userdetails.privilages.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-                ViewBag.isAdminUser = (userdetails.ADMIN_IND == "Y") ? true : false;
+                ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
             }
             catch (Exception ex)
             {
@@ -379,7 +379,7 @@ namespace SFSAcademy.Controllers
         public ActionResult comment_approved(int commentId, int newsId)
         {
             var newsComment = db.NEWS_COMMENTS.Find(commentId);
-            newsComment.IS_APPR = "Y";
+            newsComment.IS_APPR = true;
             newsComment.UPDATED_AT = System.DateTime.Now;
             db.Entry(newsComment).State = EntityState.Modified;
             db.SaveChanges();

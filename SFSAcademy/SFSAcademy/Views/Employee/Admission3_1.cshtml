@@ -13,7 +13,7 @@
     </div>
 </div>
 <div>
-    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
 
 <div id="page-yield">
@@ -39,7 +39,7 @@
             @{
                 for (int i = 0; i < Model.Count(); i++)
                 {
-                    <div class="label-field-pair">
+                    <div class="label-field-pair label">
                         @Html.LabelFor(X => X.ElementAt(i).AdditionalFieldData.NAME, Model.ElementAt(i).AdditionalFieldData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
                             @Html.TextBox("[" + i + "].ADDITIONAL_DETAIL_VALUE")
@@ -48,7 +48,7 @@
                             @Html.ValidationMessageFor(X => X.ElementAt(i).ADDITIONAL_DETAIL_VALUE, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <hr class="label-underline" />
+                    <hr class="label-underline label" />
                 }
             }
 

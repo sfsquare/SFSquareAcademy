@@ -21,9 +21,9 @@ namespace SFSAcademy.Models
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
         public string EML { get; set; }
-        public string ADMIN_IND { get; set; }
-        public string STDNT_IND { get; set; }
-        public string EMP_IND { get; set; }
+        public bool? ADMIN_IND { get; set; }
+        public bool? STDNT_IND { get; set; }
+        public bool? EMP_IND { get; set; }
         public string HASHED_PSWRD { get; set; }
         public string SALT { get; set; }
 
@@ -31,7 +31,7 @@ namespace SFSAcademy.Models
         public DateTime RST_PSWRD_CODE_UNTL { get; set; }
         public DateTime CREATED_AT { get; set; }
         public DateTime UPDATED_AT { get; set; }
-        public string PARNT_IND { get; set; }
+        public bool? PARNT_IND { get; set; }
 
         public List<PRIVILEGE> privilages { get; set; }
         public List<USERS_ACCESS> useraccess { get; set; }

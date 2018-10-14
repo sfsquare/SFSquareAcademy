@@ -24,7 +24,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
         <li>@Html.ActionLink("Fees", "Fees", new { id = Model.ID })</li>
@@ -53,7 +53,7 @@
     @if (fee_particulars != null)
     {
 
-        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
             <tr class="tr-head">
                 <td>Sl. No.</td>
                 <td>Particulars</td>
@@ -94,8 +94,8 @@
                 </tr>
                 foreach (var item in batch_discounts)
                 {
-                    string discount_text = item.IS_AMT == "Y" ? item.NAME : string.Concat(item.NAME, ": ", item.DISC, "%");
-                    decimal discount = item.IS_AMT == "Y" ? (decimal)item.DISC : ViewBag.total_payable * (decimal)item.DISC / 100;
+                    string discount_text = item.IS_AMT == true ? item.NAME : string.Concat(item.NAME, ": ", item.DISC, "%");
+                    decimal discount = item.IS_AMT == true ? (decimal)item.DISC : ViewBag.total_payable * (decimal)item.DISC / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {
@@ -110,8 +110,8 @@
                 }
                 foreach (var item2 in student_discounts)
                 {
-                    string discount_text2 = item2.IS_AMT == "Y" ? item2.NAME : string.Concat(item2.NAME, ": ", item2.DISC, "%");
-                    decimal discount2 = item2.IS_AMT == "Y" ? (decimal)item2.DISC : ViewBag.total_payable * (decimal)item2.DISC / 100;
+                    string discount_text2 = item2.IS_AMT == true ? item2.NAME : string.Concat(item2.NAME, ": ", item2.DISC, "%");
+                    decimal discount2 = item2.IS_AMT == true ? (decimal)item2.DISC : ViewBag.total_payable * (decimal)item2.DISC / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {
@@ -126,8 +126,8 @@
                 }
                 foreach (var item3 in category_discounts)
                 {
-                    string discount_text3 = item3.IS_AMT == "Y" ? item3.NAME : string.Concat(item3.NAME, ": ", item3.DISC, "%");
-                    decimal discount3 = item3.IS_AMT == "Y" ? (decimal)item3.DISC : ViewBag.total_payable * (decimal)item3.DISC / 100;
+                    string discount_text3 = item3.IS_AMT == true ? item3.NAME : string.Concat(item3.NAME, ": ", item3.DISC, "%");
+                    decimal discount3 = item3.IS_AMT == true ? (decimal)item3.DISC : ViewBag.total_payable * (decimal)item3.DISC / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {
@@ -187,8 +187,8 @@
                 </tr>
                 foreach (var item in batch_fine)
                 {
-                    string fine_text = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                    decimal fine = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                    string fine_text = item.IS_AMT == true ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                    decimal fine = item.IS_AMT == true ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {
@@ -203,8 +203,8 @@
                 }
                 foreach (var item in student_fine)
                 {
-                    string fine_text2 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                    decimal fine2 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                    string fine_text2 = item.IS_AMT == true ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                    decimal fine2 = item.IS_AMT == true ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {
@@ -219,8 +219,8 @@
                 }
                 foreach (var item in category_fine)
                 {
-                    string fine_text3 = item.IS_AMT == "Y" ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
-                    decimal fine3 = item.IS_AMT == "Y" ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
+                    string fine_text3 = item.IS_AMT == true ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
+                    decimal fine3 = item.IS_AMT == true ? (decimal)item.FINE : ViewBag.total_payable * (decimal)item.FINE / 100;
                     string selectedRow = "tr-even";
                     if (i % 2 == 0)
                     {

@@ -26,7 +26,7 @@ namespace SFSAcademy
         public string CRS_NAME { get; set; }
         public string CODE { get; set; }
         public string SECTN_NAME { get; set; }
-        public string IS_DEL { get; set; }
+        public Nullable<bool> IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public string GRADING_TYPE { get; set; }

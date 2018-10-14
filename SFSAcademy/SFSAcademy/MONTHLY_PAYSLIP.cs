@@ -17,14 +17,14 @@ namespace SFSAcademy
         public int ID { get; set; }
         public Nullable<System.DateTime> SAL_DATE { get; set; }
         public Nullable<int> EMP_ID { get; set; }
-        public Nullable<int> PYRL_CAT_ID { get; set; }
         public Nullable<decimal> AMT { get; set; }
-        public string IS_APPR { get; set; }
+        public bool IS_APPR { get; set; }
         public Nullable<int> APRV_ID { get; set; }
-        public string IS_RJCT { get; set; }
+        public bool IS_RJCT { get; set; }
         public Nullable<int> RJCT_ID { get; set; }
         public string RSN { get; set; }
         public string RMRK { get; set; }
+        public Nullable<int> PYRL_CAT_ID { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }
         public virtual EMPLOYEE EMPLOYEE1 { get; set; }

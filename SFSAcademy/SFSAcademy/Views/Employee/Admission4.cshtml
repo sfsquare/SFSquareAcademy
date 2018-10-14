@@ -17,7 +17,7 @@
     </div>
 </div>
 <div>
-    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
 <div id="page-yield">
     <div id="form-content">
@@ -29,7 +29,7 @@
                 @{
                     for (int i = 0; i < Reporting_Manager.Count(); i++)
                     {
-                        <div class="label-field-pair">                           
+                        <div class="label-field-pair label">                           
                             <div id="changed-manager-outer">
                                 @if (Reporting_Manager.FirstOrDefault().LAST_NAME != null)
                                 {

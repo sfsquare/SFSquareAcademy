@@ -18,8 +18,8 @@ namespace SFSAcademy
         public string TIL { get; set; }
         public string DESCR { get; set; }
         public Nullable<decimal> AMT { get; set; }
-        public string IS_INACT { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_INACT { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     }

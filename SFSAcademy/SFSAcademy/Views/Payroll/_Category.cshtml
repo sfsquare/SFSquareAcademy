@@ -21,7 +21,7 @@
                 <div class="category-name">@item.PayrollCatData.NAME </div>
                 <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.PayrollCatData.ID })</div>
                 <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
-                @if (item.PayrollCatData.STAT == "Y")
+                @if (item.PayrollCatData.STAT == true)
                 {
                     <div class="category-edit">
                         @Html.ActionLink("Inactivate", "Inactivate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })
@@ -58,7 +58,7 @@
                 <div class="category-name">@item.PayrollCatData.NAME </div>
                 <div class="category-edit">@Html.ActionLink("Edit", "Edit_Category", new { id = item.PayrollCatData.ID })</div>
                 <div class="category-edit">@Html.ActionLink("Delete", "Delete_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
-                @if (item.PayrollCatData.STAT == "Y")
+                @if (item.PayrollCatData.STAT == true)
                 {
                     <div class="category-edit">
                         @Html.ActionLink("Inactivate", "Inactivate_Category", new { id = item.PayrollCatData.ID }, new { @onclick = "return confirm('are you sure?')" })

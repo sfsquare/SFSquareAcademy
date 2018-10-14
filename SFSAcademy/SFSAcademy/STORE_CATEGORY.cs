@@ -23,8 +23,8 @@ namespace SFSAcademy
     
         public int ID { get; set; }
         public string NAME { get; set; }
-        public string IS_ACT { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_ACT { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     

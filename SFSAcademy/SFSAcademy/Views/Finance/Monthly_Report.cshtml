@@ -32,7 +32,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="page-yield">
     <div class="bread_crumb">
         @Html.ActionLink("Finance", "Index") &raquo;
@@ -43,13 +43,13 @@
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 <label>Select Start Date:</label>
                 <div class="text-field-bg">
                     @Html.Editor("START_TRAN_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker" } })
                 </div>
             </div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 <label>Select End Date:</label>
                 <div class="text-field-bg">
                     @Html.Editor("END_TRAN_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker2" } })

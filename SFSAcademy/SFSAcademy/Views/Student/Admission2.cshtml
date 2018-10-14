@@ -47,7 +47,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="page-yield">
     <div id="parents">
@@ -88,7 +88,7 @@
         @Html.AntiForgeryToken()
         <div class="Admission1_form">
             <div id="admission1_form_vertical_block_left">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.WARD_ID, "Student ID", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.WARD_ID, new { htmlAttributes = new { @class = "form-control", @Value = ViewBag.StudentId, @readonly = "readonly" } })
@@ -98,7 +98,7 @@
                 <br />
                 <span class="span-sub-heading">Parent - Personal Details</span>
                 <hr class="sub-heading">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" }) 
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
@@ -106,8 +106,8 @@
                         @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
-                <div class="label-field-pair">
+                <hr class="label-underline label">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.LAST_NAME, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
@@ -115,9 +115,9 @@
                         @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.REL, "Relationship", htmlAttributes: new { @class = "control-label col-md-2" }) 
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
@@ -125,29 +125,29 @@
                         @Html.ValidationMessageFor(model => model.REL, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.ED, "Education", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ED, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ED, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.OCCP, "Occupation", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.OCCP, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OCCP, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.INCM, "Income", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.INCM, new { htmlAttributes = new { @class = "form-control" } })
@@ -158,17 +158,17 @@
                 <span class="span-sub-heading">Parent - Contact Details</span>
                 <hr class="sub-heading">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.EML, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.EML, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.EML, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline" />
+                <hr class="label-underline label" />
             </div>
             <div id="admission1_form_vertical_block_right">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.OFF_ADDR_LINE1, "Address Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                     @if (ViewBag.AddressLine1 != " ")
                     {
@@ -185,9 +185,9 @@
                         </div>
                     }
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.OFF_ADDR_LINE2, "Address Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
                     @if (ViewBag.AddressLine2 != " ")
                     {
@@ -204,9 +204,9 @@
                         </div>
                     }
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
                     @if (ViewBag.StudentCity != " ")
                     {
@@ -223,9 +223,9 @@
                         </div>
                     }
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
                     @if (ViewBag.StudentState != " ")
                     {
@@ -242,9 +242,9 @@
                         </div>
                     }
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
                     @if (ViewBag.StudentState != " ")
                     {
@@ -261,27 +261,27 @@
                         </div>
                     }
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.OFF_PH1, "Phone 1", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.OFF_PH1, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OFF_PH1, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.OFF_PH2, "Phone 2", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.OFF_PH2, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OFF_PH2, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.MOBL_PH, "Mobile", htmlAttributes: new { @class = "control-label col-md-2" })
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
@@ -289,7 +289,7 @@
                         @Html.ValidationMessageFor(model => model.MOBL_PH, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
             </div>
             <div class="extender">

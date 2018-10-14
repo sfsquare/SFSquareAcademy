@@ -117,7 +117,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                tIMETABLE.IS_ACT = "Y";
+                tIMETABLE.IS_ACT = true;
                 tIMETABLE.CREATED_AT = System.DateTime.Now;
                 tIMETABLE.UPDATED_AT = System.DateTime.Now;
                 db.TIMETABLEs.Add(tIMETABLE);

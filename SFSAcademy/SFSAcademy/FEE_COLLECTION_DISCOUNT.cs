@@ -20,7 +20,7 @@ namespace SFSAcademy
         public Nullable<int> RCVR_ID { get; set; }
         public Nullable<int> FIN_FEE_CLCT_ID { get; set; }
         public Nullable<decimal> DISC { get; set; }
-        public string IS_AMT { get; set; }
+        public bool IS_AMT { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     

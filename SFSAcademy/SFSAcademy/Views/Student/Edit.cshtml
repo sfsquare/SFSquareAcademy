@@ -41,7 +41,7 @@
     </div>
 </div>
 <div>
-    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
 <div class="bread_crumb">
     @Html.ActionLink("Student Details", "Index") &raquo;
@@ -66,14 +66,14 @@
             <div id="autofill-area">
                 @Html.HiddenFor(model => model.ID)
                 @Html.HiddenFor(model => model.PHTO_DATA)
-                <div class="label-field-pair-edit">
+                <div class="label-field-pair-edit label">
                     @Html.LabelFor(model => model.ADMSN_NO, "Admission Number", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADMSN_NO, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.ADMSN_NO, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair-edit">
+                <div class="label-field-pair-edit label">
                     @Html.LabelFor(model => model.ADMSN_DATE, "Admission Date", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADMSN_DATE, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
@@ -85,7 +85,7 @@
             <span class="span-sub-heading">Personal Details</span>
             <hr class="sub-heading">
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -93,18 +93,18 @@
                     @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <hr class="label-underline">
+            <hr class="label-underline label">
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.MID_NAME, "Middle Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.MID_NAME, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.MID_NAME, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <hr class="label-underline">
+            <hr class="label-underline label">
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.LAST_NAME, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -112,10 +112,10 @@
                     @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <hr class="label-underline">
+            <hr class="label-underline label">
 
             <div id="admission1_form_vertical_block_left">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.BTCH_ID, "Course And Batch", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("BTCH_ID_VAL", null, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
@@ -123,9 +123,9 @@
                         @Html.Hidden("BTCH_ID")
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.DOB, "Date Of Birth", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", required = "required" } })
@@ -134,19 +134,19 @@
 
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair-gender">
-                    <label class="label-gender-edit" for="student_gender">Gender</label>
+                <div class="label-field-pair-gender label">
+                    <label class="label-gender-edit label" for="student_gender">Gender</label>
                     <div class="edit_student_gender">
                         @Html.RadioButtonFor(model => model.GNDR, "M", false)@Html.Label("Male", new { htmlAttributes = new { @class = "label_for_gender" } })
                         @Html.RadioButtonFor(model => model.GNDR, "F", false)@Html.Label("Female", new { htmlAttributes = new { @class = "label_for_gender" } })
                     </div>
                     <div class="extender"></div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.BLOOD_GRP, "Blood Group", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownListFor(model => model.BLOOD_GRP, new List<SelectListItem>
@@ -161,45 +161,45 @@
                         @Html.ValidationMessageFor(model => model.BLOOD_GRP, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.BIRTH_PLACE, "Birth Place", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.BIRTH_PLACE, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.BIRTH_PLACE, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.NTLTY_ID, "Nationality", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("NTLTY_ID", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.NTLTY_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.LANG, "Mother Tongue", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.LANG, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.LANG, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.STDNT_CAT_ID, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("STDNT_CAT_ID", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.STDNT_CAT_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.RLGN, "Religion", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.RLGN, new { htmlAttributes = new { @class = "form-control" } })
@@ -210,93 +210,93 @@
             <div id="admission1_form_vertical_block_right">
                 <span class="span-sub-heading">Contact Details</span>
                 <hr class="sub-heading">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.ADDR_LINE1, "Address Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ADDR_LINE1, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.ADDR_LINE2, "Address Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ADDR_LINE2, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.CITY, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.CITY, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.STATE, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.STATE, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PIN_CODE, "Zip", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.PIN_CODE, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.CTRY_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PH1, "Phone", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PH1, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.PH1, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PH2, "Mobile", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PH2, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.PH2, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.EML, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.EML, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.EML, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CLS_ROLL_NO, "Roll Number", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.CLS_ROLL_NO, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.CLS_ROLL_NO, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.USRID, "USRID", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("USRID", null, htmlAttributes: new { @class = "form-control" })
@@ -305,8 +305,8 @@
                 </div>
                 @if (Html.Configuration_Value("ApplicationSmsEnabled").Equals("True"))
                 {
-                    <hr class="label-underline">
-                    <div class="label-field-pair">
+                    <hr class="label-underline label">
+                    <div class="label-field-pair label">
                         @Html.LabelFor(model => model.IS_SMS_ENABL, "Enable SMS Feature", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
                             @Html.EditorFor(model => model.IS_SMS_ENABL, new { htmlAttributes = new { @class = "form-control" } })
@@ -318,7 +318,7 @@
 
                 <span class="span-sub-heading">Upload Photo</span>
                 <hr class="sub-heading">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PHTO_FILENAME, "Upload Photo (Maximum Size 2 MB)", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         <input id="PHTO_FILENAME" title="Upload Photo (Maximum Size 2 MB)" type="file" name="PHTO_FILENAME" />

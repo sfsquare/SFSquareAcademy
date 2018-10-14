@@ -20,7 +20,7 @@ namespace SFSAcademy
         public Nullable<int> RCVR_ID { get; set; }
         public Nullable<int> FIN_FEE_CAT_ID { get; set; }
         public Nullable<decimal> FINE { get; set; }
-        public string IS_AMT { get; set; }
+        public bool IS_AMT { get; set; }
         public Nullable<System.DateTime> FINE_DATE { get; set; }
     
         public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }

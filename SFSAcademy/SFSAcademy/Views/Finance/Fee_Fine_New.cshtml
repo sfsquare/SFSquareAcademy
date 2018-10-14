@@ -49,7 +49,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
         <li>@Html.ActionLink("View Fine", "Fee_Fine") </li>
@@ -90,9 +90,9 @@
         </script>
 
         <div class="Admission1_form">
-            <hr class="label-underline">
+            <hr class="label-underline label">
             <span class="span-sub-heading">Enter Details of Selected Fine Type</span>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.NAME, "Fine Name :", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -101,7 +101,7 @@
                 </div>
             </div>
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.Label("FIN_FEE_CAT_ID", "Select Fee Category :", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("FIN_FEE_CAT_ID", null, htmlAttributes: new { @class = "_select_change" })
@@ -109,14 +109,14 @@
                 </div>
             </div>
             <div id="batchs"></div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.FINE, "Fine :", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.FINE, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.FINE, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 <label>Mode :</label>
                 <div class="button-box">
                     @Html.RadioButton("radioName2", "Amount", true, new { id = "id1" }) Amount <br />
@@ -128,7 +128,7 @@
 
         <div class="Admission2_form">
             <div id="batchs"></div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.Label("STUDENT_CATGEORY_ID", "Select Student Category :", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("STUDENT_CATGEORY_ID", null, htmlAttributes: new { @class = "_select_change" })
@@ -138,7 +138,7 @@
 
         <div class="Admission3_form">
             <div id="fee-category-box"></div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.Label("ADMSN_NO", "Admission Number", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.Editor("ADMSN_NO", new { htmlAttributes = new { @class = "form-control" } })

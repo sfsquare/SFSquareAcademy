@@ -16,8 +16,8 @@ namespace SFSAcademy
     {
         public int ID { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
-        public Nullable<int> SUBJ_ID { get; set; }
         public string MK { get; set; }
+        public Nullable<int> SUBJECT_ID { get; set; }
     
         public virtual STUDENT STUDENT { get; set; }
         public virtual SUBJECT SUBJECT { get; set; }

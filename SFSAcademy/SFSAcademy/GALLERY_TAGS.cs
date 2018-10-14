@@ -12,17 +12,15 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class FA_CRITERIAS
+    public partial class GALLERY_TAGS
     {
         public int ID { get; set; }
-        public string FA_NAME { get; set; }
-        public string DESCR { get; set; }
-        public Nullable<int> FA_GRP_ID { get; set; }
+        public Nullable<int> MEM_ID { get; set; }
+        public string MEM_TYPE { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public Nullable<int> SRT_ORD { get; set; }
-        public string IS_DEL { get; set; }
+        public Nullable<int> GAL_PHTO_ID { get; set; }
     
-        public virtual FA_GROUP FA_GROUP { get; set; }
+        public virtual GALLERY_PHOTOS GALLERY_PHOTOS { get; set; }
     }
 }

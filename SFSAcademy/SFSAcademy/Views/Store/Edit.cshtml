@@ -29,7 +29,7 @@
     </div>
 </div>
 <div>
-    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
 <div id="flash_box">
     @if (ViewBag.StoreEditMessage != null)
@@ -59,7 +59,7 @@
                 @Html.HiddenFor(model => model.PRODUCT_ID)
                 @Html.HiddenFor(model => model.CREATED_AT)
             </div>
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.NAME, "Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -68,7 +68,7 @@
                 </div>
             </div>
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.CATEGORY_ID, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -77,7 +77,7 @@
                 </div>
             </div>
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.SUB_CATEGORY_ID, "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.BRAND, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.BRAND, new { htmlAttributes = new { @class = "form-control" } })
@@ -96,28 +96,28 @@
 
             <div id="admission1_form_vertical_block_left">
                 
-                <hr class="label-underline">
+                <hr class="label-underline label">
 
             </div>
 
             <div id="admission1_form_vertical_block_right">
                 <span class="span-sub-heading">Product Purchase and Payment Details</span>
                 <hr class="sub-heading">
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.TOTAL_UNIT, "Units Purchased", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.TOTAL_UNIT, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                         @Html.ValidationMessageFor(model => model.TOTAL_UNIT, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.COST_PER_UNIT, "Cost Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.COST_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.COST_PER_UNIT, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.TOTAL_COST, "Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.TOTAL_COST, new { htmlAttributes = new { @class = "form-control" } })
@@ -125,7 +125,7 @@
                     </div>
                 </div>
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.SELL_PRICE_PER_UNIT, "Selling Price Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.SELL_PRICE_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
@@ -133,14 +133,14 @@
                     </div>
                 </div>
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PURCHASED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PURCHASED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.PURCHASED_ON, @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.PURCHASED_ON, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PURCHASED_THROUGH, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownListFor(model => model.PURCHASED_THROUGH, new List<SelectListItem>
@@ -154,7 +154,7 @@
                     </div>
                 </div>
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PAID_BY, "Mode of Payment", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownListFor(model => model.PAID_BY, new List<SelectListItem>
@@ -168,7 +168,7 @@
                     </div>
                 </div>
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.UNIT_LEFT, "Number of Units Left", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.UNIT_LEFT, new { htmlAttributes = new { @class = "form-control" } })
@@ -176,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="label-field-pair">
+                <div class="label-field-pair label">
                     @Html.LabelFor(model => model.IS_ACT, "Currently Being Sold", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownListFor(model => model.IS_ACT, new List<SelectListItem>
@@ -185,7 +185,7 @@
                         @Html.ValidationMessageFor(model => model.IS_ACT, "", new { @class = "text-danger" })
                     </div>
                 </div>
-                <hr class="label-underline">
+                <hr class="label-underline label">
                 <br />
 
             </div>

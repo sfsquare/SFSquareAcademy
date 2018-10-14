@@ -69,8 +69,8 @@
                     index += 1;
                     selectedRow = "even";
                     decimal income = 0; decimal expense = 0;
-                    if (item.TransactionCategoryData.IS_INCM == "Y") { income = (decimal)item.TRANS_AMNT; }
-                    if (item.TransactionCategoryData.IS_INCM == "N") { expense = (decimal)item.TRANS_AMNT; }
+                    if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+                    if (item.TransactionCategoryData.IS_INCM == true) { expense = (decimal)item.TRANS_AMNT; }
                     if (i == 19)
                     {
                         i = 0;

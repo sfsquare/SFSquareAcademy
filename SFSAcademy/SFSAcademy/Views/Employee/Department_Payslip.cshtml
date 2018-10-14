@@ -10,7 +10,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="page-yield">
     <div class="bread_crumb">
@@ -47,7 +47,7 @@
             IEnumerable<SFSAcademy.Models.Payslip> payslips = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["payslips"];
             if (payslips != null && payslips.Count() != 0)
             {
-                <table id="listing" width="100%">
+                <table id="listing" style="width:100%">
                     <tr class="tr-head">
                         <td>Sl No</td>
                         <td>Employee</td>
