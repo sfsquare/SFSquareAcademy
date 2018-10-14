@@ -23,7 +23,7 @@ namespace SFSAcademy
         public int ID { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public string IS_ACT { get; set; }
+        public bool IS_ACT { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     

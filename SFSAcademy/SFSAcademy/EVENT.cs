@@ -26,12 +26,12 @@ namespace SFSAcademy
         public string DESCR { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public string IS_COMN { get; set; }
-        public string IS_HOL { get; set; }
-        public string IS_EXAM { get; set; }
+        public bool IS_COMN { get; set; }
+        public bool IS_HOL { get; set; }
+        public bool IS_EXAM { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string IS_DUE { get; set; }
+        public bool IS_DUE { get; set; }
         public Nullable<int> ORIGIN_ID { get; set; }
         public string ORIGIN_TYPE { get; set; }
     

@@ -14,12 +14,12 @@ namespace SFSAcademy
     
     public partial class PHOTO_MASTER
     {
-        public long PhotoId { get; set; }
-        public long GalleryId { get; set; }
-        public string Decription { get; set; }
-        public string ThumbPath { get; set; }
-        public string ImagePath { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
-        public string PhotoName { get; set; }
+        public long PHOTOID { get; set; }
+        public long GALLERYID { get; set; }
+        public string DECRIPTION { get; set; }
+        public string THUMBPATH { get; set; }
+        public string IMAGEPATH { get; set; }
+        public Nullable<System.DateTime> CREATEDON { get; set; }
+        public string PHOTONAME { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace SFSAcademy.Controllers
                          where bt.ID == BatchId
                          select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
-            var Subject = db.SUBJECTs.Where(x=>x.IS_DEL == "N").ToList();
+            var Subject = db.SUBJECTs.Where(x=>x.IS_DEL == false).ToList();
             ViewData["Subject"] = Subject;
 
             return View(elective_groups);
@@ -63,7 +63,7 @@ namespace SFSAcademy.Controllers
         // GET: Elective_Groups/Edit/5
         public ActionResult Show(int? id, int? BatchId)
         {
-            var electives = db.SUBJECTs.Where(x => x.BTCH_ID == BatchId && x.ELECTIVE_GRP_ID == id && x.IS_DEL == "N").ToList();
+            var electives = db.SUBJECTs.Where(x => x.BTCH_ID == BatchId && x.ELECTIVE_GRP_ID == id && x.IS_DEL == false).ToList();
             ViewData["electives"] = electives;
             BATCH batch = db.BATCHes.Find(BatchId);
             ViewData["batch"] = batch;

@@ -42,7 +42,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME").ToList();
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Parent Category" });
             ViewBag.PYRL_CAT_ID = options;
             var categories = (from prc in db.PAYROLL_CATEGORY
@@ -69,7 +69,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME", pAYROLL_CATEGORY.PYRL_CAT_ID).ToList();
+                List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME", pAYROLL_CATEGORY.PYRL_CAT_ID).ToList();
                 options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Parent Category" });
                 ViewBag.PYRL_CAT_ID = options;
                 var categories = (from prc in db.PAYROLL_CATEGORY
@@ -121,7 +121,7 @@ namespace SFSAcademy.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             PAYROLL_CATEGORY pAYROLL_CATEGORY = db.PAYROLL_CATEGORY.Find(id);
-            List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME", pAYROLL_CATEGORY.PYRL_CAT_ID).ToList();
+            List<SelectListItem> options = new SelectList(db.PAYROLL_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME", pAYROLL_CATEGORY.PYRL_CAT_ID).ToList();
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Parent Category" });
             ViewBag.PYRL_CAT_ID = options;
             if (pAYROLL_CATEGORY == null)
@@ -215,7 +215,7 @@ namespace SFSAcademy.Controllers
             {
                 return HttpNotFound();
             }
-            pAYROLL_CATEGORY.STAT = "N";
+            pAYROLL_CATEGORY.STAT = false;
             db.Entry(pAYROLL_CATEGORY).State = EntityState.Modified;
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e)
@@ -250,7 +250,7 @@ namespace SFSAcademy.Controllers
             {
                 return HttpNotFound();
             }
-            pAYROLL_CATEGORY.STAT = "Y";
+            pAYROLL_CATEGORY.STAT = true;
             db.Entry(pAYROLL_CATEGORY).State = EntityState.Modified;
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e)
@@ -283,12 +283,12 @@ namespace SFSAcademy.Controllers
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
             ViewData["Employee"] = Employee;
             var independent_categories = (from pc in db.PAYROLL_CATEGORY
-                                          where pc.PYRL_CAT_ID == null && pc.STAT == "Y"
+                                          where pc.PYRL_CAT_ID == null && pc.STAT == true
                                           select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID}).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
-                                        where dpc.PYRL_CAT_ID != null && pc.STAT == "Y"
+                                        where dpc.PYRL_CAT_ID != null && pc.STAT == true
                                         select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc,DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
 
@@ -307,12 +307,12 @@ namespace SFSAcademy.Controllers
             EMPLOYEE Employee = db.EMPLOYEEs.Find(EmpId);
             ViewData["Employee"] = Employee;
             var independent_categories_inner = (from pc in db.PAYROLL_CATEGORY
-                                          where pc.PYRL_CAT_ID == null && pc.STAT == "Y"
+                                          where pc.PYRL_CAT_ID == null && pc.STAT == true
                                           select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories_inner;
             var dependent_categories_ineer = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
-                                        where dpc.PYRL_CAT_ID != null && pc.STAT == "Y"
+                                        where dpc.PYRL_CAT_ID != null && pc.STAT == true
                                         select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories_ineer;
 

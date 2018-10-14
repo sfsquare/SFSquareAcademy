@@ -17,7 +17,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="inner-tab-menu">
     <ul>
@@ -52,7 +52,7 @@
                     <div class="category-edit">
                         @Html.ActionLink("Edit", "Edit", new { id = item.ID, BatchId = batch.BatchData.ID })
                     </div>
-                    @{var subjects = Subject.Where(x => x.ELECTIVE_GRP_ID == item.ID && x.IS_DEL == "N").ToList();}
+                    @{var subjects = Subject.Where(x => x.ELECTIVE_GRP_ID == item.ID && x.IS_DEL == false).ToList();}
                     @if (subjects == null || subjects.Count() == 0)
                     {
                         <div class="category-delete">

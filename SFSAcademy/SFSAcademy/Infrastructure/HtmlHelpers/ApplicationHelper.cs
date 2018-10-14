@@ -61,7 +61,7 @@ namespace SFSAcademy.HtmlHelpers
             
             foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(UserId)).ToList())
             {
-                if (entity.ACTN.ToString().Equals(_Action) && entity.CTL.ToString().Equals(_Controller) && entity.IS_ACCBLE.ToString().Equals("Y"))
+                if (entity.ACTN.ToString().Equals(_Action) && entity.CTL.ToString().Equals(_Controller) && entity.IS_ACCBLE.Equals(true))
                 {
                     result = true;
                     break;
@@ -78,19 +78,19 @@ namespace SFSAcademy.HtmlHelpers
             int UserId = Convert.ToInt32(context.Session["UserId"]);
 
             var V = db.USERS.Select(s => new { s.ID, s.ADMIN_IND, s.EMP_IND, s.STDNT_IND, s.PARNT_IND }).Distinct().Where(a => a.ID.Equals(UserId)).FirstOrDefault();
-            if (V.ADMIN_IND.ToString().Equals("Y"))
+            if (V.ADMIN_IND.Equals(true))
             {
                 return "Admin";
             }
-            else if (V.EMP_IND.ToString().Equals("Y"))
+            else if (V.EMP_IND.Equals(true))
             {
                 return "Empoyee";
             }
-            else if (V.STDNT_IND.ToString().Equals("Y"))
+            else if (V.STDNT_IND.Equals(true))
             {
                 return "Student";
             }
-            else if (V.PARNT_IND.ToString().Equals("Y"))
+            else if (V.PARNT_IND.Equals(true))
             {
                 return "Parent";
             }
@@ -153,7 +153,7 @@ namespace SFSAcademy.HtmlHelpers
                                 join EDE in db.EMPLOYEE_DEPARTMENT_EVENT on EV.ID equals EDE.EV_ID
                                 join ED in db.EMPLOYEE_DEPARTMENT on EDE.EMP_DEPT_ID equals ED.ID
                                 join EP in db.EMPLOYEEs on ED.ID equals EP.EMP_DEPT_ID
-                                where EP.USRID == UserId && EV.IS_DUE =="Y"
+                                where EP.USRID == UserId && EV.IS_DUE ==true
                                 select new { EVENT_ID = EV.ID }).ToList();
 
             foreach (var entity in EventReminder.ToList())
@@ -175,7 +175,7 @@ namespace SFSAcademy.HtmlHelpers
                             join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == "N" && pd.IS_ACT == "Y" && pd.UNIT_LEFT <= 2
+                            where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
                             select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             foreach (var entity in ProductS.ToList())

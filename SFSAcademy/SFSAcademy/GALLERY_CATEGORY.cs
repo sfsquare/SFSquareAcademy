@@ -12,27 +12,22 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class FA_GROUP
+    public partial class GALLERY_CATEGORY
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public FA_GROUP()
+        public GALLERY_CATEGORY()
         {
-            this.FA_CRITERIAS = new HashSet<FA_CRITERIAS>();
+            this.GALLERY_PHOTOS = new HashSet<GALLERY_PHOTOS>();
         }
     
         public int ID { get; set; }
         public string NAME { get; set; }
         public string DESCR { get; set; }
-        public Nullable<int> CCE_EXAM_CAT_ID { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public Nullable<int> CCE_GRADE_SET_ID { get; set; }
-        public Nullable<double> MAX_MKS { get; set; }
-        public string IS_DEL { get; set; }
     
-        public virtual CCE_EXAM_CATEGORY CCE_EXAM_CATEGORY { get; set; }
-        public virtual CCE_GRADE_SET CCE_GRADE_SET { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FA_CRITERIAS> FA_CRITERIAS { get; set; }
+        public virtual ICollection<GALLERY_PHOTOS> GALLERY_PHOTOS { get; set; }
     }
 }

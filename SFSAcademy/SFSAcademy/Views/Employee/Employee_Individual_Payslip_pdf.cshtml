@@ -130,7 +130,7 @@
                     <tr class="odd "><td class="col-pdf"><b>Deductions</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Deductionable_Amount</b></td></tr>
                     <tr class="table-header"><td colspan="2" class="col-pdf">Total</td></tr>
                     <tr class="even"><td class="col-pdf"><b>Net Salary</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Amount</b></td></tr>
-                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == "Y" || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == "Y")
+                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true)
                     {
                         <tr class="odd "><td class="col-pdf"><b>Remark</b></td><td class="col-pdf"><b>@monthly_payslips.FirstOrDefault().MonthlyPayslipData.RMRK</b></td></tr>
                     }
@@ -140,7 +140,7 @@
                     <tr class="even"><td class="col-pdf"><b>Deductions</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Deductionable_Amount</b></td></tr>
                     <tr class="table-header"><td colspan="2" class="col-pdf">Total</td></tr>
                     <tr class="odd "><td class="col-pdf"><b>Net Salary</b></td><td class="col-pdf"><b>@ViewBag.currency_type @salary.FirstOrDefault().Net_Amount</b></td></tr>
-                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == "Y" || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == "Y")
+                    if (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true || monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true)
                     {
                         <tr class="even"><td class="col-pdf"><b>Remark</b></td><td class="col-pdf"><b>@monthly_payslips.FirstOrDefault().MonthlyPayslipData.RMRK</b></td></tr>
                     }

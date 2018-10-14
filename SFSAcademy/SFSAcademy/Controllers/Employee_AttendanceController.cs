@@ -40,9 +40,9 @@ namespace SFSAcademy.Controllers
         // GET: Employee_Attendance/Create
         public ActionResult Add_Leave_Types(string ErrorMessage, string Notice)
         {
-            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
             ViewData["leave_types"] = leave_types;
-            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "N").OrderBy(x => x.NAME).ToList();
+            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == false).OrderBy(x => x.NAME).ToList();
             ViewData["inactive_leave_types"] = inactive_leave_types;
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.Notice = Notice;
@@ -56,9 +56,9 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Add_Leave_Types([Bind(Include = "ID,NAME,CODE,STAT,MAX_LEAVE_CNT,CARR_FRWD")] EMPLOYEE_LEAVE_TYPE eMPLOYEE_lEAVE_tYPE)
         {
-            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
             ViewData["leave_types"] = leave_types;
-            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "N").OrderBy(x => x.NAME).ToList();
+            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == false).OrderBy(x => x.NAME).ToList();
             ViewData["inactive_leave_types"] = inactive_leave_types;
             if (ModelState.IsValid)
             {
@@ -108,9 +108,9 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit_Leave_Types([Bind(Include = "ID,NAME,CODE,STAT,MAX_LEAVE_CNT,CARR_FRWD")] EMPLOYEE_LEAVE_TYPE eMPLOYEE_lEAVE_tYPE)
         {
-            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
             ViewData["leave_types"] = leave_types;
-            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "N").OrderBy(x => x.NAME).ToList();
+            var inactive_leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == false).OrderBy(x => x.NAME).ToList();
             ViewData["inactive_leave_types"] = inactive_leave_types;
             if (ModelState.IsValid)
             {
@@ -186,7 +186,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.Notice = Notice;
-            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Department" });
             ViewBag.EMP_DEPT_ID = options;
             return View();
@@ -194,7 +194,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Update_Attendance_Report(int? department_id)
         {
-            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").ToList();
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
             ViewData["leave_types"] = leave_types;
             var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == department_id).ToList();
             ViewData["employees"] = employees;
@@ -263,7 +263,7 @@ namespace SFSAcademy.Controllers
             foreach (var item in leave_count)
             {
                 EMPLOYEE_LEAVE_TYPE leave_type = db.EMPLOYEE_LEAVE_TYPE.Find(item.EMP_LEAVE_TYPE_ID);
-                if(leave_type.STAT=="Y")
+                if(leave_type.STAT==true)
                 {
                     default_leave_count = (decimal)leave_type.MAX_LEAVE_CNT;
                     if(leave_type.CARR_FRWD)
@@ -313,7 +313,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.Notice = Notice;
-            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y").OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x => x.NAMES), "ID", "NAMES").ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Department" });
             ViewBag.EMP_DEPT_ID = options;
             return View();
@@ -321,11 +321,11 @@ namespace SFSAcademy.Controllers
 
         public ActionResult List_Department_Leave_Reset(int? department_id)
         {
-            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == "Y").OrderBy(x => x.NAME).ToList();
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
             ViewData["leave_types"] = leave_types;
             //var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == department_id).ToList();
             var employees = (from emp in db.EMPLOYEEs
-                               where emp.STAT == "Y"
+                               where emp.STAT == true
                                select new SFSAcademy.Models.EmployeeLeaveReset { EmployeeData = emp, Selected = true }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
             ViewData["employees"] = employees;
 
@@ -349,7 +349,7 @@ namespace SFSAcademy.Controllers
                     foreach (var item2 in leave_count)
                     {
                         EMPLOYEE_LEAVE_TYPE leave_type = db.EMPLOYEE_LEAVE_TYPE.Find(item2.EMP_LEAVE_TYPE_ID);
-                        if (leave_type.STAT == "Y")
+                        if (leave_type.STAT == true)
                         {
                             default_leave_count = (decimal)leave_type.MAX_LEAVE_CNT;
                             if (leave_type.CARR_FRWD)
@@ -402,15 +402,15 @@ namespace SFSAcademy.Controllers
         public ActionResult Employee_Leave_Reset_By_Employee(string ErrorMessage, string Notice)
         {
             var EmployeeDetail = (from emp in db.EMPLOYEEs
-                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == "Y") on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
                                   from subged in ged.DefaultIfEmpty()
-                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == "Y") on emp.EMP_CAT_ID equals ec.ID into gec
+                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true) on emp.EMP_CAT_ID equals ec.ID into gec
                                   from subgec in gec.DefaultIfEmpty()
-                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == "Y") on emp.EMP_POS_ID equals ep.ID into gep
+                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true) on emp.EMP_POS_ID equals ep.ID into gep
                                   from subgep in gep.DefaultIfEmpty()
-                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == "Y") on emp.EMP_GRADE_ID equals eg.ID into geg
+                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
-                                  where emp.STAT == "Y"
+                                  where emp.STAT == true
                                   select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             return View(EmployeeDetail);
@@ -442,7 +442,7 @@ namespace SFSAcademy.Controllers
             foreach (var item in leave_count)
             {
                 EMPLOYEE_LEAVE_TYPE leave_type = db.EMPLOYEE_LEAVE_TYPE.Find(item.EMP_LEAVE_TYPE_ID);
-                if(leave_type.STAT == "Y")
+                if(leave_type.STAT == true)
                 {
                     default_leave_count = (decimal)leave_type.MAX_LEAVE_CNT;
                     if (leave_type.CARR_FRWD)

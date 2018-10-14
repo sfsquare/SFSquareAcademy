@@ -14,13 +14,13 @@ namespace SFSAcademy
     
     public partial class IMAGE_DOCUMENTS
     {
-        public int DocumentId { get; set; }
-        public string Name { get; set; }
-        public long Size { get; set; }
-        public string Type { get; set; }
-        public byte[] FileContent { get; set; }
-        public bool IsDeleted { get; set; }
-        public System.DateTime CreatedOn { get; set; }
-        public Nullable<System.DateTime> ModifiedOn { get; set; }
+        public int DOCUMENTID { get; set; }
+        public string NAME { get; set; }
+        public long SIZE { get; set; }
+        public string TYPE { get; set; }
+        public byte[] FILECONTENT { get; set; }
+        public bool ISDELETED { get; set; }
+        public System.DateTime CREATEDON { get; set; }
+        public Nullable<System.DateTime> MODIFIEDON { get; set; }
     }
 }

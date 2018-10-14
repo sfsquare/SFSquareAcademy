@@ -25,7 +25,7 @@ namespace SFSAcademy
         public string TIL { get; set; }
         public string DESCR { get; set; }
         public Nullable<decimal> AMT { get; set; }
-        public string FINE_INCLD { get; set; }
+        public bool FINE_INCLD { get; set; }
         public Nullable<int> CAT_ID { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
         public Nullable<int> FIN_FE_ID { get; set; }

@@ -18,9 +18,9 @@ namespace SFSAcademy
         public COUNTRY()
         {
             this.ARCHIVED_STUDENT = new HashSet<ARCHIVED_STUDENT>();
-            this.STUDENTs = new HashSet<STUDENT>();
             this.EMPLOYEEs = new HashSet<EMPLOYEE>();
             this.EMPLOYEEs1 = new HashSet<EMPLOYEE>();
+            this.STUDENTs = new HashSet<STUDENT>();
             this.EMPLOYEEs2 = new HashSet<EMPLOYEE>();
         }
     
@@ -28,17 +28,17 @@ namespace SFSAcademy
         public string CTRY_NAME { get; set; }
         public string NTLTY { get; set; }
         public string DESCR { get; set; }
-        public string IS_ACT { get; set; }
+        public bool IS_ACT { get; set; }
         public string CTRY_CODE { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STUDENT> STUDENTs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STUDENT> STUDENTs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs2 { get; set; }
     }

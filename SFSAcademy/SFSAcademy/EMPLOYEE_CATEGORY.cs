@@ -17,18 +17,18 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EMPLOYEE_CATEGORY()
         {
-            this.EMPLOYEE_POSITION = new HashSet<EMPLOYEE_POSITION>();
             this.EMPLOYEEs = new HashSet<EMPLOYEE>();
+            this.EMPLOYEE_POSITION = new HashSet<EMPLOYEE_POSITION>();
         }
     
         public int ID { get; set; }
         public string NAME { get; set; }
         public string PRFX { get; set; }
-        public string STAT { get; set; }
+        public Nullable<bool> STAT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
     }
 }

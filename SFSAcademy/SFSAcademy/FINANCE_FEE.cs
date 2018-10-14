@@ -24,7 +24,7 @@ namespace SFSAcademy
         public Nullable<int> FEE_CLCT_ID { get; set; }
         public string TRAN_ID { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
-        public string IS_PD { get; set; }
+        public bool IS_PD { get; set; }
     
         public virtual FINANCE_FEE_COLLECTION FINANCE_FEE_COLLECTION { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

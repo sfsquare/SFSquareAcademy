@@ -53,7 +53,7 @@ namespace SFSAcademy.Controllers
             ViewData["config"] = config;
             //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
             var grading_types = (from cs in db.COURSEs
-                                 where cs.IS_DEL == "N"
+                                 where cs.IS_DEL == false
                                  select new SFSAcademy.Models.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
             ViewData["grading_types"] = grading_types;
             var search2 = new string[] { "GPA", "CWA","CCE" };
@@ -117,7 +117,7 @@ namespace SFSAcademy.Controllers
             ViewData["config"] = config_Inner;
             //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
             var grading_types_Inner = (from cs in db.COURSEs
-                                 where cs.IS_DEL == "N"
+                                 where cs.IS_DEL == false
                                  select new SFSAcademy.Models.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
             ViewData["grading_types"] = grading_types_Inner;
             var search2 = new string[] { "GPA", "CWA", "CCE" };
@@ -172,26 +172,26 @@ namespace SFSAcademy.Controllers
                 {
                     IMAGE_DOCUMENTS databaseDocument = new IMAGE_DOCUMENTS
                     {
-                        CreatedOn = DateTime.Now,
-                        FileContent = documentBytes,
-                        IsDeleted = false,
-                        Name = name,
-                        Size = size,
-                        Type = type
+                        CREATEDON = DateTime.Now,
+                        FILECONTENT = documentBytes,
+                        ISDELETED = false,
+                        NAME = name,
+                        SIZE = size,
+                        TYPE = type
                     };
 
                     db.IMAGE_DOCUMENTS.Add(databaseDocument);
                     handled = (db.SaveChanges() > 0);
-                    PhotoId = databaseDocument.DocumentId;
+                    PhotoId = databaseDocument.DOCUMENTID;
                 }
                 else
                 {
                     IMAGE_DOCUMENTS ImagetoUpdate = db.IMAGE_DOCUMENTS.Find(PhotoId);
-                    ImagetoUpdate.CreatedOn = DateTime.Now;
-                    ImagetoUpdate.FileContent = documentBytes;
-                    ImagetoUpdate.Name = name;
-                    ImagetoUpdate.Size = size;
-                    ImagetoUpdate.Type = type;
+                    ImagetoUpdate.CREATEDON = DateTime.Now;
+                    ImagetoUpdate.FILECONTENT = documentBytes;
+                    ImagetoUpdate.NAME = name;
+                    ImagetoUpdate.SIZE = size;
+                    ImagetoUpdate.TYPE = type;
 
                     db.Entry(ImagetoUpdate).State = EntityState.Modified;
                     handled = (db.SaveChanges() > 0);
@@ -210,11 +210,11 @@ namespace SFSAcademy.Controllers
         {
             byte[] fileBytes = null;
             string fileType = null;
-            var databaseDocument = db.IMAGE_DOCUMENTS.FirstOrDefault(doc => doc.DocumentId == id);
+            var databaseDocument = db.IMAGE_DOCUMENTS.FirstOrDefault(doc => doc.DOCUMENTID == id);
             if (databaseDocument != null)
             {
-                fileBytes = databaseDocument.FileContent;
-                fileType = databaseDocument.Type;
+                fileBytes = databaseDocument.FILECONTENT;
+                fileType = databaseDocument.TYPE;
             }
             type = fileType;
             return fileBytes;

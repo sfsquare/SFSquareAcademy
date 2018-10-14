@@ -21,7 +21,7 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N"
+                                    where cs.IS_DEL == false
                                     select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -38,7 +38,7 @@ namespace SFSAcademy.Controllers
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select a Batch" });
             ViewBag.BTCH_ID = options;
-            var wEEKDAYs = db.WEEKDAYs.Where(x=>x.IS_DEL=="N").Include(w => w.BATCH);
+            var wEEKDAYs = db.WEEKDAYs.Where(x=>x.IS_DEL==false).Include(w => w.BATCH);
             var day = new string[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
             ViewData["day"] = day;
             var days = new string[] { "0", "1", "2", "3", "4", "5", "6" };
@@ -50,7 +50,7 @@ namespace SFSAcademy.Controllers
         // GET: Weekday/Create
         public ActionResult Week(int? id)
         {
-            var weekdays = db.WEEKDAYs.Where(x => x.BTCH_ID == id && x.IS_DEL == "N").ToList();
+            var weekdays = db.WEEKDAYs.Where(x => x.BTCH_ID == id && x.IS_DEL == false).ToList();
             ViewData["weekdays"] = weekdays;
             var wd = new SFSAcademy.Models.Weekdays();
             int match = 0;
@@ -142,8 +142,8 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                var old = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == "N").ToList();
-                var old_Inactive = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == "Y").ToList();
+                var old = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false).ToList();
+                var old_Inactive = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == true).ToList();
                 foreach (var item in model.WeekdayIds.Where(x=>x.Select == true))
                 {
                     int match = 0;
@@ -153,7 +153,7 @@ namespace SFSAcademy.Controllers
                         {
                             match = 1;
                             WEEKDAY WkToUpdate = db.WEEKDAYs.Find(item21.ID);
-                            WkToUpdate.IS_DEL = "N";
+                            WkToUpdate.IS_DEL = false;
                             db.Entry(WkToUpdate).State = EntityState.Modified;
                             break;
                         }
@@ -168,7 +168,7 @@ namespace SFSAcademy.Controllers
                     }
                     if (match == 0)
                     {
-                        WEEKDAY WkDay = new WEEKDAY() { NAME = item.Day, WKDAY = item.Day, BTCH_ID = batch_id, DAY_OF_WK = item.Id, SRT_ORD = item.Id, IS_DEL = "N" };
+                        WEEKDAY WkDay = new WEEKDAY() { NAME = item.Day, WKDAY = item.Day, BTCH_ID = batch_id, DAY_OF_WK = item.Id, SRT_ORD = item.Id, IS_DEL = false };
                         db.WEEKDAYs.Add(WkDay);
                     }
                 }
@@ -186,7 +186,7 @@ namespace SFSAcademy.Controllers
                     if(match2 == 0)
                     {
                         WEEKDAY WkToUpdate = db.WEEKDAYs.Find(item3.ID);
-                        WkToUpdate.IS_DEL = "Y";
+                        WkToUpdate.IS_DEL = true;
                         db.Entry(WkToUpdate).State = EntityState.Modified;
                     }
                 }

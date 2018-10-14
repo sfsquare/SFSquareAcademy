@@ -8,6 +8,7 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+
 <script>
     $(function () {
         $("#datepicker").datepicker({
@@ -33,7 +34,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="page-yield">
     <div class="bread_crumb">
@@ -57,23 +58,23 @@
         {
             @Html.AntiForgeryToken()
 
-            <div class="label-field-pair">
-                <div class="label-container">@Html.LabelFor(model => model.CRS_NAME, "Course Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>               
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.CRS_NAME, "Course Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>               
                 <div class="input-container">
                     @Html.EditorFor(model => model.CRS_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     @Html.ValidationMessageFor(model => model.CRS_NAME, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="label-field-pair">
-                <div class="label-container">@Html.LabelFor(model => model.SECTN_NAME, "Section Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.SECTN_NAME, "Section Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
                     @Html.EditorFor(model => model.SECTN_NAME, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.SECTN_NAME, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="label-field-pair">
-                <div class="label-container">@Html.LabelFor(model => model.CODE, "Course Code", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.LabelFor(model => model.CODE, "Course Code", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
                     @Html.EditorFor(model => model.CODE, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
@@ -81,8 +82,8 @@
                 </div>
             </div>
             <div id="grading">
-                <div class="label-field-pair">
-                    <div class="label-container">@Html.LabelFor(model => model.GRADING_TYPE, "Grading system type", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="label-field-pair label">
+                    <div class="label-container label">@Html.LabelFor(model => model.GRADING_TYPE, "Grading system type", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                     <div class="text-input-bg">
                         @Html.DropDownList("GRADING_TYPE", ViewData["GRADING_TYPE"] as SelectList, htmlAttributes: new { @class = "GRADING_TYPE", @onChange = "SelectAddType(this.value)", id = "GRADING_TYPE" })
                         @Html.ValidationMessageFor(model => model.GRADING_TYPE, "", new { @class = "text-danger" })
@@ -91,21 +92,21 @@
                 </div>
             </div>
             <h4>Initial Batch Details</h4>
-            <div class="label-field-pair">
-                <div class="label-container">@Html.Label("BATCH_NAME", "Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("BATCH_NAME", "Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
                     @Html.Editor("BATCH_NAME", new { htmlAttributes = new { @class = "form-control" } })
                 </div>
             </div>
 
-            <div class="label-field-pair">
-                <div class="label-container">@Html.Label("ReturnDate", "Start Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("ReturnDate", "Start Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
                     @Html.Editor("ReturnDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.ReturnDate, @readonly = "readonly" } })
                 </div>
             </div>
-            <div class="label-field-pair">
-                <div class="label-container">@Html.Label("ReturnDate2", "End Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("ReturnDate2", "End Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
                     @Html.Editor("ReturnDate2", new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @Value = ViewBag.ReturnDate2, @readonly = "readonly" } })
                 </div>
@@ -118,6 +119,9 @@
 
     </div>
 </div>
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/dropzone.js"></script>
+
 <script type="text/javascript">
   function toggle_grading(){
     if($('course_cce_enabled').checked){
@@ -128,25 +132,16 @@
       $("grading").show();
     }
     return true;
-  }
-@section scripts{
+  };
 
-    @Scripts.Render("~/bundles/jqueryval")
-
-    <script src="~/Scripts/dropzone.js"></script>
-
-<script type="text/javascript">
-
-$(document).ready(function () {
-    $("#preview").fadeOut(15);
-    $("#refreshButton").click(function () {
-        var imageToLoad = $("#imageId").val();
-        if (imageToLoad.length > 0) {
-            $("#preview").attr("src", "/Document/Show/" + imageToLoad);
-            $("#preview").fadeIn();
-        }
-    });
-});
-
+  $(document).ready(function () {
+      $("#preview").fadeOut(15);
+      $("#refreshButton").click(function () {
+          var imageToLoad = $("#imageId").val();
+          if (imageToLoad.length > 0) {
+              $("#preview").attr("src", "/Document/Show/" + imageToLoad);
+              $("#preview").fadeIn();
+          }
+      });
+  });
 </script>
-}

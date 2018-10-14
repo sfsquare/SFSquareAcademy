@@ -15,9 +15,9 @@ namespace SFSAcademy
     public partial class STUDENT_SUBJECT
     {
         public int ID { get; set; }
-        public Nullable<int> SUBJ_ID { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
+        public Nullable<int> SUBJ_ID { get; set; }
     
         public virtual BATCH BATCH { get; set; }
         public virtual STUDENT STUDENT { get; set; }

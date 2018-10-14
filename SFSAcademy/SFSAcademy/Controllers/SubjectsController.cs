@@ -21,7 +21,7 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL== "N"
+                                    where cs.IS_DEL== false
                                     select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -46,16 +46,16 @@ namespace SFSAcademy.Controllers
             //var batch = db.BATCHes.Find(id);
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    join sub in db.SUBJECTs.Where(x=>x.ELECTIVE_GRP_ID != null && x.IS_DEL == "N") on bt.ID equals sub.BTCH_ID into gsub
+                                    join sub in db.SUBJECTs.Where(x=>x.ELECTIVE_GRP_ID != null && x.IS_DEL == false) on bt.ID equals sub.BTCH_ID into gsub
                                     from subgsub in gsub.DefaultIfEmpty()
-                                    where cs.IS_DEL == "N" && bt.ID == id
+                                    where cs.IS_DEL == false && bt.ID == id
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt, Elective_Batch_Subject = (subgsub == null ? null : subgsub) })
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
-            var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == id && x.ELECTIVE_GRP_ID == null && x.IS_DEL =="N").ToList();
+            var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == id && x.ELECTIVE_GRP_ID == null && x.IS_DEL ==false).ToList();
             ViewData["subjects"] = subjects;
             var elective_groups = (from eg in db.ELECTIVE_GROUP
-                                   join sub in db.SUBJECTs.Where(x=>x.IS_DEL == "N") on eg.ID equals sub.ELECTIVE_GRP_ID
+                                   join sub in db.SUBJECTs.Where(x=>x.IS_DEL == false) on eg.ID equals sub.ELECTIVE_GRP_ID
                                    where sub.BTCH_ID == id
                                    select new SFSAcademy.Models.ElectiveGroups { ElectiveGroupData = eg}).Distinct().OrderBy(x => x.ElectiveGroupData.ELECTIVE_GRP_NAME).ToList();
             ViewData["elective_groups"] = elective_groups;
@@ -65,7 +65,7 @@ namespace SFSAcademy.Controllers
             ViewData["Exam"] = Exam;
             var TimetableEntry = (from tte in db.TIMETABLE_ENTRY
                                   join ssub in db.STUDENT_SUBJECT on tte.BTCH_ID equals ssub.BTCH_ID
-                                  join sub in db.SUBJECTs.Where(x => x.IS_DEL == "N") on ssub.SUBJ_ID equals sub.ID
+                                  join sub in db.SUBJECTs.Where(x => x.IS_DEL == false) on ssub.SUBJ_ID equals sub.ID
                                   select new SFSAcademy.Models.TimetableEntry { TimeTableEntryData = tte, StudentSubjectData = ssub, SubjectData = sub }).ToList();
             ViewData["TimetableEntry"] = TimetableEntry;
             return PartialView("_Subjects");
@@ -107,7 +107,7 @@ namespace SFSAcademy.Controllers
             {
                 sUBJECT.CREATED_AT = System.DateTime.Now;
                 sUBJECT.UPDATED_AT = System.DateTime.Now;
-                sUBJECT.IS_DEL = "N";
+                sUBJECT.IS_DEL = false;
                 db.SUBJECTs.Add(sUBJECT);
                 db.SaveChanges();
                 ViewBag.Notice = "New subject added sucessfully!";
@@ -133,7 +133,7 @@ namespace SFSAcademy.Controllers
             }
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N" && bt.ID == subject.BTCH_ID
+                                    where cs.IS_DEL == false && bt.ID == subject.BTCH_ID
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
@@ -186,7 +186,7 @@ namespace SFSAcademy.Controllers
             if(subject_exams == null || subject_exams.Count() == 0)
             {
                 sUBJECT.UPDATED_AT = System.DateTime.Now;
-                sUBJECT.IS_DEL = "Y";
+                sUBJECT.IS_DEL = true;
                 db.Entry(sUBJECT).State = EntityState.Modified;
                 db.SaveChanges();
                 ViewBag.Notice = "Subject Deleted successfully!";

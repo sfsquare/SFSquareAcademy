@@ -14,9 +14,22 @@ namespace SFSAcademy
     
     public partial class ELECTIVE_GROUP
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ELECTIVE_GROUP()
+        {
+            this.ELECTIVES = new HashSet<ELECTIVE>();
+        }
+    
         public int ID { get; set; }
         public string ELECTIVE_GRP_NAME { get; set; }
         public string ELECTIVE_GRP_DESCR { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
+        public Nullable<System.DateTime> CREATED_AT { get; set; }
+        public Nullable<System.DateTime> UPDATED_AT { get; set; }
+    
+        public virtual BATCH BATCH { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ELECTIVE> ELECTIVES { get; set; }
     }
 }

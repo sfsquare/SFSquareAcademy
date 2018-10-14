@@ -9,7 +9,7 @@
             {
     <p class="flash-msg"> @ViewBag.Notice </p>
 }
-<table id="listing" width="100%">
+<table id="listing" style="width:100%">
     <tr class="tr-head">
         <td>Leave Types</td>
         <td>Available Leave</td>
@@ -20,7 +20,7 @@
     @foreach (var item in leave_count)
             {
                 var leave_type = EmployeeLeaveType.Where(x => x.ID == item.EMP_LEAVE_TYPE_ID).FirstOrDefault();
-        if (leave_type.STAT == "Y")
+        if (leave_type.STAT == true)
         {
             string selectedRow = "tr-even";
             if (i % 2 == 0)

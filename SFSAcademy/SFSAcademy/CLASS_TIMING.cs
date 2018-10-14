@@ -28,7 +28,7 @@ namespace SFSAcademy
         public Nullable<System.TimeSpan> START_TIME { get; set; }
         public Nullable<System.TimeSpan> END_TIME { get; set; }
         public bool IS_BRK { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_DEL { get; set; }
     
         public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -14,11 +14,20 @@ namespace SFSAcademy
     
     public partial class PRIVILEGE
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PRIVILEGE()
+        {
+            this.PRIVILEGES_USERS = new HashSet<PRIVILEGES_USERS>();
+        }
+    
         public int ID { get; set; }
         public string NAME { get; set; }
         public string DESCRIPTION { get; set; }
         public string PRIVILEGE_TAG { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
     }
 }

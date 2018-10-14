@@ -25,7 +25,7 @@ namespace SFSAcademy
         public string DESCRIPTION { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_DEL { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }

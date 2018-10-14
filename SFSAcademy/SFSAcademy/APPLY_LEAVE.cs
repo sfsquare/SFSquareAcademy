@@ -21,8 +21,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public string RSN { get; set; }
-        public string APPR { get; set; }
-        public string VW_BY_MGR { get; set; }
+        public bool APPR { get; set; }
+        public bool VW_BY_MGR { get; set; }
         public string MGR_RMRK { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }

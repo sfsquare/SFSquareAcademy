@@ -18,8 +18,8 @@ namespace SFSAcademy
         public FINANCE_FEE_COLLECTION()
         {
             this.FEE_COLLECTION_PARTICULAR = new HashSet<FEE_COLLECTION_PARTICULAR>();
-            this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.FINANCE_FEE = new HashSet<FINANCE_FEE>();
+            this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
         }
     
         public int ID { get; set; }
@@ -28,16 +28,16 @@ namespace SFSAcademy
         public Nullable<System.DateTime> END_DATE { get; set; }
         public Nullable<int> FEE_CAT_ID { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> DUE_DATE { get; set; }
     
         public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
+        public virtual ICollection<FINANCE_FEE> FINANCE_FEE { get; set; }
         public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<FINANCE_FEE> FINANCE_FEE { get; set; }
+        public virtual ICollection<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
     }
 }

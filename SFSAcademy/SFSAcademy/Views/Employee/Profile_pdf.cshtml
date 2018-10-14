@@ -22,7 +22,7 @@
         <h4>Employee Profile (General)</h4>
     </div>
     <div id="general_info">
-        <table id="pdf-table" width="100%" cellspacing="0">
+        <table id="pdf-table" style="width:100%" cellspacing="0">
             <tr class="odd"><td class="col-pdf">Employee Number</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.EMP_NUM</td></tr>
             <tr class="even"><td class="col-pdf">Joining Date</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.JOINING_DATE.Value.ToShortDateString()</td></tr>
             <tr class="odd"><td class="col-pdf">Department</td><td class="col-pdf">@Employee.FirstOrDefault().DepartmentData.NAMES</td></tr>
@@ -50,7 +50,7 @@
         <h4> Employee Profile (Personal)</h4>
     </div>
     <div id="personal_info">
-        <table id="pdf-table" width="100%" cellspacing="0">
+        <table id="pdf-table" style="width:100%" cellspacing="0">
             <tr class="odd"><td class="col-pdf">Date of Birth</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.DOB.Value.ToShortDateString()</td></tr>
             <tr class="even"><td class="col-pdf">Marital Status</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.MARITAL_STAT</td></tr>
             <tr class="odd"><td class="col-pdf">No. of Children</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.CHLD_CNT</td></tr>
@@ -67,7 +67,7 @@
         <h4> Employee Profile (Address Details)</h4>
     </div>
     <div id="personal_info">
-        <table id="pdf-table" width="100%" cellspacing="0">
+        <table id="pdf-table" style="width:100%" cellspacing="0">
             <tr class="odd"><td class="col-pdf">Home Address</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE1<br />@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE2</td></tr>
             <tr class="even"><td class="col-pdf">City</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_CITY</td></tr>
             <tr class="odd"><td class="col-pdf">State</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.HOME_STATE</td></tr>
@@ -87,7 +87,7 @@
         <h4> Employee Profile (Contact Details)</h4>
     </div>
     <div id="personal_info">
-        <table id="pdf-table" width="100%" cellspacing="0">
+        <table id="pdf-table" style="width:100%" cellspacing="0">
             <tr class="odd"><td class="col-pdf">Office Phone1</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_PH1</td></tr>
             <tr class="even"><td class="col-pdf">Office Phone2</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.OFF_PH2</td></tr>
             <tr class="odd"><td class="col-pdf">Mobile</td><td class="col-pdf">@Employee.FirstOrDefault().EmployeeData.MOBL_PH</td></tr>
@@ -107,7 +107,7 @@
             <h4> Employee Profile (Bank Account Details)</h4>
         </div>
         <div id="personal_info">
-            <table id="pdf-table" width="100%" cellspacing="0">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
                 @foreach (var item in bank_details)
                 {
                     cycle = "even";
@@ -130,7 +130,7 @@
             <h4> Employee Profile (Additional Details)</h4>
         </div>
         <div id="personal_info">
-            <table id="pdf-table" width="100%" cellspacing="0">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
                 @foreach (var item in additional_details)
                 {
                     cycle = "even";

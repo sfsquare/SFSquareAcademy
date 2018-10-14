@@ -59,7 +59,7 @@
     <div class="extender"> </div>
     @if (paid_fees != null && paid_fees.Count() != 0)
     {
-        <div class="label-field-pair">
+        <div class="label-field-pair label">
             @Html.Label("remove_descr", "Following fees are pending to be paid by stundent:", htmlAttributes: new { @class = "control-label col-md-2", @style ="width:100%;" })
         </div>
         <table id="listing" align="center" style="width:100%;" cellpadding="1" cellspacing="1">
@@ -99,8 +99,8 @@
                         @using (Html.BeginForm())
                         {
                             @Html.AntiForgeryToken()
-                            <div class="label-field-pair">
-                                <div class="label-container">@Html.Label("Status_Descrition", "Reason for leaving:", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                            <div class="label-field-pair label">
+                                <div class="label-container label">@Html.Label("Status_Descrition", "Reason for leaving:", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                                 <div class="text-input-bg">
                                     @Html.DropDownList("Status_Descrition", new List<SelectListItem>
                         { new SelectListItem{Text="Not happy with studies", Value="1"},

@@ -14,7 +14,7 @@
         {
             isAuthor = true;
         }
-        if (isAuthor || ViewBag.isModerator || Model.isApproved == "Y")
+        if (isAuthor || ViewBag.isModerator || Model.isApproved == true)
         {
             <li id="comment-item- @Model.commentId">
                 <div class="comment-details">
@@ -40,14 +40,14 @@
                     <div class="approve">
                         @{
 
-                            if (!ViewBag.isModerator && Model.isApproved != "Y" && isAuthor)
+                            if (!ViewBag.isModerator && Model.isApproved != true && isAuthor)
                             {
                                 @*@Html.DisplayFor(modelItem => "waiting_to_approve")*@
                                 @*@Html.Label("lblwaiting", "waiting_to_approve")*@
                                 @Html.Display("waiting_to_approve", "Waiting for approve  ")
                             }
 
-                            if (ViewBag.isModerator && Model.isApproved != "Y")
+                            if (ViewBag.isModerator && Model.isApproved != true)
                             {
                                 @*@Html.DisplayFor(modelItem => "waiting_to_approve")*@
                                 @Html.Label("lblwaiting", "Waiting for approve  ")

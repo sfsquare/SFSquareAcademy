@@ -79,7 +79,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                sTORE_PRODUCTS.IS_DEL = "N";
+                sTORE_PRODUCTS.IS_DEL = false;
                 sTORE_PRODUCTS.CREATED_AT = DateTime.Now;
                 sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
                 db.STORE_PRODUCTS.Add(sTORE_PRODUCTS);
@@ -186,7 +186,7 @@ namespace SFSAcademy.Controllers
                 catch (Exception e) { Console.WriteLine(e); ViewBag.StoreEditMessage = e.InnerException.InnerException.Message; }
 
                 STORE_PRODUCTS sTORE_PRODUCTS_ORG = db.STORE_PRODUCTS.Find(sTORE_PRODUCTS.PRODUCT_ID);
-                sTORE_PRODUCTS_ORG.IS_ACT = "N";
+                sTORE_PRODUCTS_ORG.IS_ACT = false;
                 sTORE_PRODUCTS_ORG.UPDATED_AT = DateTime.Now;
                 db.Entry(sTORE_PRODUCTS_ORG).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.StoreEditMessage = string.Concat(ViewBag.StoreEditMessage,"Privious information saved."); }
@@ -279,8 +279,8 @@ namespace SFSAcademy.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
-            sTORE_PRODUCTS.IS_DEL = "Y";
-            sTORE_PRODUCTS.IS_ACT = "N";
+            sTORE_PRODUCTS.IS_DEL = true;
+            sTORE_PRODUCTS.IS_ACT = false;
             sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
             db.Entry(sTORE_PRODUCTS).State = EntityState.Modified;
             try { db.SaveChanges(); ViewBag.StoreDeleteMessage = "Product Deleted Successfully."; }
@@ -330,12 +330,12 @@ namespace SFSAcademy.Controllers
                 //searchString = db.STORE_CATEGORY.Find(searchStringId).NAME.ToString();
             }
 
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y").OrderBy(x => x.ID), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.searchString = options;
 
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y" && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", searchString2).ToList();
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", searchString2).ToList();
             // add the 'ALL' option
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.searchString2 = options2;
@@ -379,7 +379,7 @@ namespace SFSAcademy.Controllers
                             join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == "N" && pd.IS_ACT == "Y"
+                            where pd.IS_DEL == false && pd.IS_ACT == true
                             select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -406,12 +406,12 @@ namespace SFSAcademy.Controllers
                     break;
             }
 
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y").OrderBy(x => x.ID), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.searchString = options;
 
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y" && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", searchString2).ToList();
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", searchString2).ToList();
             // add the 'ALL' option
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.searchString2 = options2;
@@ -432,7 +432,7 @@ namespace SFSAcademy.Controllers
         [ChildActionOnly]
         public ActionResult _CategoriesList()
         {
-            var sTOREcATEGORY = db.STORE_CATEGORY.Where(x=>x.IS_ACT=="Y" && x.IS_DEL=="N").ToList();
+            var sTOREcATEGORY = db.STORE_CATEGORY.Where(x=>x.IS_ACT==true && x.IS_DEL==false).ToList();
             return View(sTOREcATEGORY);
         }
 
@@ -507,7 +507,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                sTOREcATEGORY.IS_DEL = "N";
+                sTOREcATEGORY.IS_DEL =false;
                 sTOREcATEGORY.CREATED_AT = System.DateTime.Now;
                 sTOREcATEGORY.UPDATED_AT = System.DateTime.Now;
                 db.STORE_CATEGORY.Add(sTOREcATEGORY);
@@ -612,7 +612,7 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 sTOREsUBcATEGORY.STORE_CATEGORY_ID = Convert.ToInt32(CATEGORY_ID);
-                sTOREsUBcATEGORY.IS_DEL = "N";
+                sTOREsUBcATEGORY.IS_DEL = false;
                 sTOREsUBcATEGORY.CREATED_AT = System.DateTime.Now;
                 sTOREsUBcATEGORY.UPDATED_AT = System.DateTime.Now;
                 db.STORE_SUB_CATEGORY.Add(sTOREsUBcATEGORY);
@@ -632,7 +632,7 @@ namespace SFSAcademy.Controllers
             //                    select t).Count();
 
             STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(id);
-            var sTORE_PURCHAGE_cART = new STORE_PURCHAGE_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD=1, SOLD_PRICE= sTOREpRODUCT.SELL_PRICE_PER_UNIT, SOLD_BY= this.Session["UserId"].ToString(), SOLD_ON= DateTime.Now, STUDENT_NAME=null, STUDENT_CONTACT_NO=null, MONEY_RECEIVED_BY=null, IS_DEPOSITED=null, IS_ACT=null, IS_DEL=null, CREATED_AT= DateTime.Now, UPDATED_AT= DateTime.Now };
+            var sTORE_PURCHAGE_cART = new STORE_PURCHAGE_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD=1, SOLD_PRICE= sTOREpRODUCT.SELL_PRICE_PER_UNIT, SOLD_BY= this.Session["UserId"].ToString(), SOLD_ON= DateTime.Now, STUDENT_NAME=null, STUDENT_CONTACT_NO=null, MONEY_RECEIVED_BY=null, IS_DEPOSITED=false, IS_ACT=true, IS_DEL=false, CREATED_AT= DateTime.Now, UPDATED_AT= DateTime.Now };
             db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
             db.SaveChanges();
 
@@ -655,7 +655,7 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                sTORE_PURCHAGE_cART.IS_DEL = "N";
+                sTORE_PURCHAGE_cART.IS_DEL = false;
                 sTORE_PURCHAGE_cART.CREATED_AT = DateTime.Now;
                 sTORE_PURCHAGE_cART.UPDATED_AT = DateTime.Now;
                 db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
@@ -726,7 +726,7 @@ namespace SFSAcademy.Controllers
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                              join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
-                             where pur.IS_DEL == "N"
+                             where pur.IS_DEL == false
                              select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -747,7 +747,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Contains(MoneyDeposited));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -826,7 +826,7 @@ namespace SFSAcademy.Controllers
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                              join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
-                             where pur.IS_DEL == "N"
+                             where pur.IS_DEL == false
                              select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -847,7 +847,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Contains(MoneyDeposited));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -1083,9 +1083,9 @@ namespace SFSAcademy.Controllers
                STUDENT_NAME = STUDENT_NAME,
                STUDENT_CONTACT_NO = PHONE_NUMBER,
                MONEY_RECEIVED_BY = PAYMENT_MODE,
-               IS_DEPOSITED = "N",
-               IS_ACT = "Y",
-               IS_DEL = "N",
+               IS_DEPOSITED = false,
+               IS_ACT = true,
+               IS_DEL = false,
                CREATED_AT = PurCarList.CREATED_AT,
                UPDATED_AT = PurCarList.UPDATED_AT,
                 };
@@ -1208,7 +1208,7 @@ namespace SFSAcademy.Controllers
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                              join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
-                             where pur.IS_DEL == "N"
+                             where pur.IS_DEL == false
                              select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -1229,7 +1229,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Contains(MoneyDeposited));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -1308,7 +1308,7 @@ namespace SFSAcademy.Controllers
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                              join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
-                             where pur.IS_DEL == "N"
+                             where pur.IS_DEL == false
                              select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -1329,7 +1329,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Contains(MoneyDeposited));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -1379,22 +1379,22 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.ORDER_QUANTITY = ORDER_QUANTITY;
 
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y").OrderBy(x => x.ID), "ID", "NAME", CATEGORY_ID).ToList();
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", CATEGORY_ID).ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
             ViewBag.CATEGORY_ID = options;
 
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y" && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", SUBCATEGORY_ID).ToList();
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true && x.STORE_CATEGORY_ID == searchStringId).OrderBy(x => x.ID), "ID", "NAME", SUBCATEGORY_ID).ToList();
             // add the 'ALL' option
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Sub Category" });
             ViewBag.SUBCATEGORY_ID = options2;
 
-            List<SelectListItem> options3 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == "N" && x.IS_ACT == "Y" && x.CATEGORY_ID == searchStringId && x.SUB_CATEGORY_ID == searchStringId2).OrderBy(x => x.PRODUCT_ID), "PRODUCT_ID", "NAME", PRODUCT_ID).ToList();
+            List<SelectListItem> options3 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false && x.IS_ACT == true && x.CATEGORY_ID == searchStringId && x.SUB_CATEGORY_ID == searchStringId2).OrderBy(x => x.PRODUCT_ID), "PRODUCT_ID", "NAME", PRODUCT_ID).ToList();
             // add the 'ALL' option
             options3.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product" });
             ViewBag.PRODUCT_ID = options3;
 
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == "N").OrderBy(x => x.ID), "ID", "NAME", VENDOR_ID).ToList();
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.ID), "ID", "NAME", VENDOR_ID).ToList();
             // add the 'ALL' option
             options4.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Vendor" });
             ViewBag.VENDOR_ID = options4;
@@ -1480,12 +1480,12 @@ namespace SFSAcademy.Controllers
             STORE_PRODUCTS prod = db.STORE_PRODUCTS.Find(sTOREpURCHAGEoRDER.PRODUCT_ID);
             ViewBag.PRODUCT_ID = prod.NAME;
 
-            List<SelectListItem> options2 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == "N").OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER.VENDOR_ID).ToList();
+            List<SelectListItem> options2 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER.VENDOR_ID).ToList();
             // add the 'ALL' option
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Vendor" });
             ViewBag.VENDOR_ID = options2;
 
-            List<SelectListItem> options3 = new SelectList(db.STORE_PURCHAGE_STATUS.Where(x => x.IS_DEL == "N").OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER.STATUS_ID).ToList();
+            List<SelectListItem> options3 = new SelectList(db.STORE_PURCHAGE_STATUS.Where(x => x.IS_DEL == false).OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER.STATUS_ID).ToList();
             // add the 'ALL' option
             options3.Insert(0, new SelectListItem() { Value = "-1", Text = "Select PO Status" });
             ViewBag.STATUS_ID = options3;
@@ -1551,8 +1551,8 @@ namespace SFSAcademy.Controllers
                         PURCHASED_THROUGH = null,
                         PAID_BY = "School",
                         UNIT_LEFT = NewProd.TOTAL_UNIT + sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY,
-                        IS_ACT = "Y",
-                        IS_DEL = "N",
+                        IS_ACT = true,
+                        IS_DEL = false,
                         CREATED_AT = DateTime.Now,
                         UPDATED_AT = DateTime.Now
                         };
@@ -1561,7 +1561,7 @@ namespace SFSAcademy.Controllers
                         catch (Exception e) { Console.WriteLine(e); ViewBag.POEditMessage = e.InnerException.InnerException.Message; }
 
                         STORE_PRODUCTS sTORE_PRODUCTS_ORG = db.STORE_PRODUCTS.Find(sTOREpURCHAGEoRDER_UPD.PRODUCT_ID);
-                        sTORE_PRODUCTS_ORG.IS_ACT = "N";
+                        sTORE_PRODUCTS_ORG.IS_ACT = false;
                         sTORE_PRODUCTS_ORG.UPDATED_AT = DateTime.Now;
                         db.Entry(sTORE_PRODUCTS_ORG).State = EntityState.Modified;
                         try { db.SaveChanges(); ViewBag.POEditMessage = string.Concat(ViewBag.POEditMessage, "Purchaged Product is added in Product List. Please update further details."); }
@@ -1586,12 +1586,12 @@ namespace SFSAcademy.Controllers
                 STORE_PRODUCTS prod = db.STORE_PRODUCTS.Find(sTOREpURCHAGEoRDER_UPD.PRODUCT_ID);
                 ViewBag.PRODUCT_ID = prod.NAME;
 
-                List<SelectListItem> options2 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == "N").OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER_UPD.VENDOR_ID).ToList();
+                List<SelectListItem> options2 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER_UPD.VENDOR_ID).ToList();
                 // add the 'ALL' option
                 options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Vendor" });
                 ViewBag.VENDOR_ID = options2;
 
-                List<SelectListItem> options3 = new SelectList(db.STORE_PURCHAGE_STATUS.Where(x => x.IS_DEL == "N").OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER_UPD.STATUS_ID).ToList();
+                List<SelectListItem> options3 = new SelectList(db.STORE_PURCHAGE_STATUS.Where(x => x.IS_DEL == false).OrderBy(x => x.ID), "ID", "NAME", sTOREpURCHAGEoRDER_UPD.STATUS_ID).ToList();
                 // add the 'ALL' option
                 options3.Insert(0, new SelectListItem() { Value = "-1", Text = "Select PO Status" });
                 ViewBag.STATUS_ID = options3;
@@ -1654,7 +1654,7 @@ namespace SFSAcademy.Controllers
                             join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == "N" && pd.IS_ACT == "Y" && pd.UNIT_LEFT <= 2
+                            where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
                             select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             return View(ProductS.ToList());
