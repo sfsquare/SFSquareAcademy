@@ -17,8 +17,8 @@ namespace SFSAcademy
         public int ID { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
         public Nullable<int> PER_TABLE_ENT_ID { get; set; }
-        public string FORENOON { get; set; }
-        public string PM { get; set; }
+        public bool FORENOON { get; set; }
+        public bool PM { get; set; }
         public string RSN { get; set; }
         public Nullable<System.DateTime> MONTH_DATE { get; set; }
         public Nullable<int> BTCH_ID { get; set; }

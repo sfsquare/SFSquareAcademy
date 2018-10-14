@@ -20,7 +20,7 @@ namespace SFSAcademy
         public string NAME { get; set; }
         public Nullable<decimal> AMT { get; set; }
         public bool IS_DED { get; set; }
-        public string INCL_EVRY_MONTH { get; set; }
+        public Nullable<bool> INCL_EVRY_MONTH { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }
     }

@@ -296,7 +296,7 @@ namespace SFSAcademy.Controllers
             }
             var uSERaACCESS = (from C in db.USERS_ACCESS
                                where C.USRS_ID == id
-                               select new Models.SelectUserAccess { AccessList = C, Selected= (C.IS_ACCBLE == "Y" ? true : false) }).OrderBy(g => g.AccessList.ID).ToList();
+                               select new Models.SelectUserAccess { AccessList = C, Selected= (C.IS_ACCBLE == true ? true : false) }).OrderBy(g => g.AccessList.ID).ToList();
 
 
             var uSERaCCESfINAL = (from u in uSERaACCESS
@@ -330,7 +330,7 @@ namespace SFSAcademy.Controllers
                                            where (C.LVL_1_MENU.Equals(item.AccessList.LVL_1_MENU)  && C.USRS_ID == item.AccessList.USRS_ID)
                                           select new { id = C.ID, usr_id = C.USRS_ID, usr_role = C.USR_ROLE, l_item=C.LIST_ITEM, l_1_menu=C.LVL_1_MENU, l_2_menu=C.LVL_2_MENU, ctl= C.CTL, act=C.ACTN, is_accble=C.IS_ACCBLE }).FirstOrDefault();
                         USERS_ACCESS uSERaCCCESS = db.USERS_ACCESS.Find(uACCESSVal.id);
-                        uSERaCCCESS.IS_ACCBLE = "Y";
+                        uSERaCCCESS.IS_ACCBLE = true;
                         db.SaveChanges();
                     }
                     else
@@ -339,7 +339,7 @@ namespace SFSAcademy.Controllers
                                           where (C.LVL_1_MENU.Equals(item.AccessList.LVL_1_MENU) && C.USRS_ID == item.AccessList.USRS_ID)
                                           select new { id = C.ID, usr_id = C.USRS_ID, usr_role = C.USR_ROLE, l_item = C.LIST_ITEM, l_1_menu = C.LVL_1_MENU, l_2_menu = C.LVL_2_MENU, ctl = C.CTL, act = C.ACTN, is_accble = C.IS_ACCBLE }).FirstOrDefault();
                         USERS_ACCESS uSERaCCCESS = db.USERS_ACCESS.Find(uACCESSVal.id);
-                        uSERaCCCESS.IS_ACCBLE = "N";
+                        uSERaCCCESS.IS_ACCBLE = false;
                         db.SaveChanges();
                     }
                 }

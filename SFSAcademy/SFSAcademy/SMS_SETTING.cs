@@ -16,6 +16,6 @@ namespace SFSAcademy
     {
         public int ID { get; set; }
         public string SETS_KEY { get; set; }
-        public string IS_ENABL { get; set; }
+        public bool IS_ENABL { get; set; }
     }
 }

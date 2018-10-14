@@ -20,7 +20,7 @@ namespace SFSAcademy
         public Nullable<int> AUTH_ID { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string IS_APPR { get; set; }
+        public bool IS_APPR { get; set; }
     
         public virtual NEWS NEWS { get; set; }
     }

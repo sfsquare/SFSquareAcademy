@@ -38,8 +38,8 @@
 </script>
 @using (Html.BeginForm())
 {
-    <div class="label-field-pair">
-        <div class="label-container">@Html.Label("SALARY_DATE", "Salary Date :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+    <div class="label-field-pair label">
+        <div class="label-container label">@Html.Label("SALARY_DATE", "Salary Date :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
         <div class="text-input-bg">
             @Html.Editor("SALARY_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker" } })
             <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>

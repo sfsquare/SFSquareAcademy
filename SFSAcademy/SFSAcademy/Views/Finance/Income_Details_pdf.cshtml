@@ -16,13 +16,13 @@
             <h4> From @FromDate.ToShortDateString() to @ToDate.ToShortDateString()</h4>
         </div>
         <div id="pdf-info">
-            <table id="pdf-table" width="100%" cellspacing="0">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
                 <tr class="table-header"><td class="col-pdf">Sl. no.</td><td class="col-pdf"> Name </td><td class="col-pdf"> Description </td><td class="col-pdf"> Receipt No </td><td class="col-pdf">Amount</td><td class="col-pdf"> Transaction Date</td></tr>
                 @{ int index = 1; decimal total = 0;  decimal income_total = 0; decimal expense_total = 0;}
                 @foreach (var item in Model)
                 {
-                    decimal tran_amount = item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == "Y" ? (decimal)item.FinanceTransactionData.AMT : -1 * (decimal)item.FinanceTransactionData.AMT;
-                    if (item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == "Y")
+                    decimal tran_amount = item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == true ? (decimal)item.FinanceTransactionData.AMT : -1 * (decimal)item.FinanceTransactionData.AMT;
+                    if (item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == true)
                     {
                         income_total += (decimal)item.FinanceTransactionData.AMT;
                     }

@@ -16,7 +16,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 @if (ViewBag.ErrorMessage != null)
             {
     <p class="flash-msg"> @ViewBag.ErrorMessage </p>
@@ -32,7 +32,7 @@
 <br />
 @{ DateTime FromDate = @Convert.ToDateTime(ViewBag.START_TRAN_DATE); DateTime ToDate = @Convert.ToDateTime(ViewBag.END_TRAN_DATE);}
 <h4>Report for the period from @FromDate.ToShortDateString() to @ToDate.ToShortDateString()</h4>
-<table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+<table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
     <tr class="tr-head">
         <td>Sl. No.</td>
         <td>Particulars</td>
@@ -93,8 +93,8 @@
         index += 1;
         selectedRow = "tr-even";
         decimal income = 0; decimal expense = 0;
-        if (item.TransactionCategoryData.IS_INCM == "Y") { income = (decimal)item.TRANS_AMNT; }
-        if (item.TransactionCategoryData.IS_INCM == "N") { expense = (decimal)item.TRANS_AMNT; }
+        if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+        if (item.TransactionCategoryData.IS_INCM == true) { expense = (decimal)item.TRANS_AMNT; }
         if (index % 2 == 0)
         {
             selectedRow = "tr-odd";
@@ -153,7 +153,7 @@
 <br />
 @{ DateTime FromDate2 = @Convert.ToDateTime(ViewBag.START_TRAN_DATE2); DateTime ToDate2 = @Convert.ToDateTime(ViewBag.END_TRAN_DATE2);}
 <h4>Report for the period from @FromDate2.ToShortDateString() to @ToDate2.ToShortDateString()</h4>
-<table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+<table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
     <tr class="tr-head">
         <td>Sl. No.</td>
         <td>Particulars</td>
@@ -214,8 +214,8 @@
         index2 += 1;
         selectedRow2 = "tr-even";
         decimal income = 0; decimal expense = 0;
-        if (item2.TransactionCategoryData.IS_INCM == "Y") { income = (decimal)item2.TRANS_AMNT; }
-        if (item2.TransactionCategoryData.IS_INCM == "N") { expense = (decimal)item2.TRANS_AMNT; }
+        if (item2.TransactionCategoryData.IS_INCM == true) { income = (decimal)item2.TRANS_AMNT; }
+        if (item2.TransactionCategoryData.IS_INCM == true) { expense = (decimal)item2.TRANS_AMNT; }
         if (index2 % 2 == 0)
         {
             selectedRow2 = "tr-odd";

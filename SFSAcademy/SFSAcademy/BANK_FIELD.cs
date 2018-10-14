@@ -14,8 +14,17 @@ namespace SFSAcademy
     
     public partial class BANK_FIELD
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public BANK_FIELD()
+        {
+            this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
+        }
+    
         public int ID { get; set; }
         public string NAME { get; set; }
-        public string STAT { get; set; }
+        public Nullable<bool> STAT { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
     }
 }

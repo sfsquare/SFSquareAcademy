@@ -21,7 +21,7 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N"
+                                    where cs.IS_DEL == false
                                     select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -39,7 +39,7 @@ namespace SFSAcademy.Controllers
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select a Batch" });
             ViewBag.BTCH_ID = options;
 
-            var cLASS_TIMING = db.CLASS_TIMING.Where(x=>x.BTCH_ID== null && x.IS_DEL =="N").OrderBy(x=>x.START_TIME).Include(c => c.BATCH);
+            var cLASS_TIMING = db.CLASS_TIMING.Where(x=>x.BTCH_ID== null && x.IS_DEL ==false).OrderBy(x=>x.START_TIME).Include(c => c.BATCH);
             return View(cLASS_TIMING.ToList());
         }
 
@@ -59,7 +59,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N" && bt.ID == id
+                                    where cs.IS_DEL == false && bt.ID == id
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
             .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
@@ -81,7 +81,7 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 cLASS_TIMING.BTCH_ID = BatchId;
-                cLASS_TIMING.IS_DEL = "N";
+                cLASS_TIMING.IS_DEL = false;
                 db.CLASS_TIMING.Add(cLASS_TIMING);
                 db.SaveChanges();
                 ViewBag.Notice = "Class timing was successfully created.";
@@ -107,7 +107,7 @@ namespace SFSAcademy.Controllers
             }
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N" && bt.ID == BatchId
+                                    where cs.IS_DEL == false && bt.ID == BatchId
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
@@ -129,7 +129,7 @@ namespace SFSAcademy.Controllers
                 cLASS_TIMING_Update.START_TIME = cLASS_TIMING.START_TIME;
                 cLASS_TIMING_Update.END_TIME = cLASS_TIMING.END_TIME;
                 cLASS_TIMING_Update.IS_BRK = cLASS_TIMING.IS_BRK;
-                cLASS_TIMING_Update.IS_DEL = "N";
+                cLASS_TIMING_Update.IS_DEL = false;
                 db.Entry(cLASS_TIMING_Update).State = EntityState.Modified;
                 db.SaveChanges();
                 ViewBag.Notice = "Class timing updated successfully.";

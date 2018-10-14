@@ -13,7 +13,7 @@
     </div>
 </div>
 <div>
-    <img src="~/Content/images/_global/header_underline_.jpg" width="100%">
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
 
 <div id="page-yield">
@@ -36,7 +36,7 @@
             <span class="span-sub-heading">Home Address</span>
             <hr class="sub-heading" />
             @Html.HiddenFor(model => model.ID)
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_ADDR_LINE1, "Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
@@ -45,8 +45,8 @@
                 <div class="extender"></div>
             </div>
 
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_ADDR_LINE2, "Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
@@ -54,8 +54,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_CITY, new { htmlAttributes = new { @class = "form-control" } })
@@ -63,8 +63,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_STATE, new { htmlAttributes = new { @class = "form-control" } })
@@ -72,8 +72,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("HOME_CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
@@ -81,8 +81,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_PIN_CODE, "PIN Code", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
@@ -94,7 +94,7 @@
             <span class="span-sub-heading">Office Address</span>
             <hr class="sub-heading" />
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_ADDR_LINE1, "Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
@@ -102,8 +102,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_ADDR_LINE2, "Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
@@ -111,8 +111,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_CITY, new { htmlAttributes = new { @class = "form-control" } })
@@ -120,8 +120,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_STATE, new { htmlAttributes = new { @class = "form-control" } })
@@ -129,8 +129,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("OFF_CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
@@ -138,8 +138,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_PIN_CODE, "PIN Code", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
@@ -151,7 +151,7 @@
             <span class="span-sub-heading">Contact Details</span>
             <hr class="sub-heading" />
 
-            <div class="label-field-pair">
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_PH1, "Office Phone1", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_PH1, new { htmlAttributes = new { @class = "form-control" } })
@@ -159,8 +159,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.OFF_PH2, "Office Phone2", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.OFF_PH2, new { htmlAttributes = new { @class = "form-control" } })
@@ -168,8 +168,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.MOBL_PH, "Mobile", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.MOBL_PH, new { htmlAttributes = new { @class = "form-control" } })
@@ -177,8 +177,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_PH, "Home Phone", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.HOME_PH, new { htmlAttributes = new { @class = "form-control" } })
@@ -186,8 +186,8 @@
                 </div>
                 <div class="extender"></div>
             </div>
-            <hr class="label-underline" />
-            <div class="label-field-pair">
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
                 @Html.LabelFor(model => model.FAX, "Fax", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.FAX, new { htmlAttributes = new { @class = "form-control" } })

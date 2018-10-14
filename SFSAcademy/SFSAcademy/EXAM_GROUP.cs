@@ -24,14 +24,12 @@ namespace SFSAcademy
         public string NAME { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
         public string EXAM_TYPE { get; set; }
-        public string IS_PUB { get; set; }
-        public string RSULT_PUB { get; set; }
+        public bool IS_PUB { get; set; }
+        public bool RSULT_PUB { get; set; }
         public Nullable<System.DateTime> EXAM_DATE { get; set; }
-        public string IS_FINAL_EXAM { get; set; }
-        public Nullable<int> CCE_EXAM_CAT_ID { get; set; }
+        public bool IS_FINAL_EXAM { get; set; }
     
         public virtual BATCH BATCH { get; set; }
-        public virtual CCE_EXAM_CATEGORY CCE_EXAM_CATEGORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM> EXAMs { get; set; }
     }

@@ -10,7 +10,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
         <li>@Html.ActionLink("pdf Report", "Income_Details_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE,id = Model.FirstOrDefault().TransactionCategoryData.ID }, new { @target = "_blank" })</li>
@@ -26,7 +26,7 @@
             @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
             @Model.FirstOrDefault().TransactionCategoryData.NAME
         </div>
-        <table id="listing" align="center" width="100%">
+        <table id="listing" align="center" style="width:100%">
             <tr class="tr-head">
                 <td class="name">Name</td>
                 <td class="description">Description</td>
@@ -39,7 +39,7 @@
             @{ int index = 0; }
             @foreach (var item in Model)
             {
-                decimal tran_amount = item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == "Y" ? (decimal)item.FinanceTransactionData.AMT : -1 * (decimal)item.FinanceTransactionData.AMT;
+                decimal tran_amount = item.FinanceTransactionData.MSTRTRAN_ID == null && item.TransactionCategoryData.IS_INCM == true ? (decimal)item.FinanceTransactionData.AMT : -1 * (decimal)item.FinanceTransactionData.AMT;
                 string selectedRow = "tr-even";
                 if (index % 2 == 0)
                 {
@@ -51,7 +51,7 @@
                     <td class="amount">@tran_amount</td>
                     <td class="transaction_date">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
                     <td class="receipt_no">@item.FinanceTransactionData.RCPT_NO</td>
-                    @if (item.TransactionCategoryData.IS_INCM == "Y")
+                    @if (item.TransactionCategoryData.IS_INCM == true)
                     {
                         <td><small>@Html.ActionLink("Edit", "Income_Edit", new { id = item.FinanceTransactionData.ID }) | @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID })</small></td>
                     }

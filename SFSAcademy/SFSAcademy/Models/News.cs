@@ -25,7 +25,7 @@ namespace SFSAcademy.Models
         public int? AddedByUserId { get; set; }
         public DateTime? commentAddedDate { get; set; }
         public DateTime? commentUpdatedDate { get; set; }
-        public string isApproved { get; set; }
+        public bool? isApproved { get; set; }
         public string EnableNewsCommentModeration { get; set; }
         public User Author { get; set; }
 
@@ -58,8 +58,8 @@ namespace SFSAcademy.Models
         public string newsCreatedBy { get; set; }
         public int newsCommentCount { get; set; }
         public List<NewsComments> commentList { get; set; }
-        public string isUserAdmin { get; set; }
-        public string isModerator { get; set; }
+        public bool? isUserAdmin { get; set; }
+        public bool? isModerator { get; set; }
         public int? CreatedByUserId { get; set; }
         public double days { get; set; }
         public string newsComment { get; set; }

@@ -12,11 +12,11 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class Gallery_Master
+    public partial class GALLERY_MASTER
     {
-        public long Id { get; set; }
-        public string Gallery_Name { get; set; }
-        public string Gallery_Description { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public long ID { get; set; }
+        public string GALLERY_NAME { get; set; }
+        public string GALLERY_DESCRIPTION { get; set; }
+        public Nullable<System.DateTime> CREATEDDATE { get; set; }
     }
 }

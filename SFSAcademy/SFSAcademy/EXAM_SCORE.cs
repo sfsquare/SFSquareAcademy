@@ -20,7 +20,7 @@ namespace SFSAcademy
         public Nullable<int> MKS { get; set; }
         public Nullable<int> GRADING_LVL_ID { get; set; }
         public string RMK { get; set; }
-        public string IS_FAIL { get; set; }
+        public Nullable<bool> IS_FAIL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     

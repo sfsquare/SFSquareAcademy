@@ -24,8 +24,8 @@ namespace SFSAcademy
         public int ID { get; set; }
         public string NAME { get; set; }
         public string DESCR { get; set; }
-        public string IS_INCM { get; set; }
-        public string DEL { get; set; }
+        public Nullable<bool> IS_INCM { get; set; }
+        public bool DEL { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }

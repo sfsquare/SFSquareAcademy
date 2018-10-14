@@ -32,93 +32,88 @@ namespace SFSAcademy
         public virtual DbSet<ATTENDENCE> ATTENDENCEs { get; set; }
         public virtual DbSet<BANK_FIELD> BANK_FIELD { get; set; }
         public virtual DbSet<BATCH> BATCHes { get; set; }
-        public virtual DbSet<CCE_EXAM_CATEGORY> CCE_EXAM_CATEGORY { get; set; }
-        public virtual DbSet<CCE_GRADE> CCE_GRADE { get; set; }
-        public virtual DbSet<CCE_GRADE_SET> CCE_GRADE_SET { get; set; }
-        public virtual DbSet<CCE_REPORTS> CCE_REPORTS { get; set; }
-        public virtual DbSet<CCE_WEIGHTAGE> CCE_WEIGHTAGE { get; set; }
         public virtual DbSet<CLASS_DESIGNATION> CLASS_DESIGNATION { get; set; }
+        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
         public virtual DbSet<CONFIGURATION> CONFIGURATIONs { get; set; }
         public virtual DbSet<COUNTRY> COUNTRies { get; set; }
         public virtual DbSet<COURSE> COURSEs { get; set; }
         public virtual DbSet<DESCRIPTIVE_INDICATOR> DESCRIPTIVE_INDICATOR { get; set; }
+        public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
+        public virtual DbSet<ELECTIVE> ELECTIVES { get; set; }
+        public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
+        public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
+        public virtual DbSet<EMPLOYEE_ADDITIONAL_FIELD> EMPLOYEE_ADDITIONAL_FIELD { get; set; }
+        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         public virtual DbSet<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_CATEGORY> EMPLOYEE_CATEGORY { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT> EMPLOYEE_DEPARTMENT { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT_EVENT> EMPLOYEE_DEPARTMENT_EVENT { get; set; }
+        public virtual DbSet<EMPLOYEE_GRADE> EMPLOYEE_GRADE { get; set; }
         public virtual DbSet<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
+        public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
+        public virtual DbSet<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
+        public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         public virtual DbSet<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         public virtual DbSet<EVENT> EVENTs { get; set; }
         public virtual DbSet<EXAM> EXAMs { get; set; }
         public virtual DbSet<EXAM_GROUP> EXAM_GROUP { get; set; }
         public virtual DbSet<EXAM_SCORE> EXAM_SCORE { get; set; }
-        public virtual DbSet<FA_CRITERIAS> FA_CRITERIAS { get; set; }
-        public virtual DbSet<FA_GROUP> FA_GROUP { get; set; }
         public virtual DbSet<FEE_COLLECTION_DISCOUNT> FEE_COLLECTION_DISCOUNT { get; set; }
+        public virtual DbSet<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
+        public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
+        public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<FINANCE_DONATION> FINANCE_DONATION { get; set; }
+        public virtual DbSet<FINANCE_FEE> FINANCE_FEE { get; set; }
+        public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
+        public virtual DbSet<FINANCE_FEE_COLLECTION> FINANCE_FEE_COLLECTION { get; set; }
         public virtual DbSet<FINANCE_FEE_PARTICULAR> FINANCE_FEE_PARTICULAR { get; set; }
         public virtual DbSet<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
+        public virtual DbSet<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
         public virtual DbSet<FINANCE_TRANSACTION_CATEGORY> FINANCE_TRANSACTION_CATEGORY { get; set; }
+        public virtual DbSet<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
+        public virtual DbSet<GALLERY_CATEGORY> GALLERY_CATEGORY { get; set; }
+        public virtual DbSet<GALLERY_MASTER> GALLERY_MASTER { get; set; }
+        public virtual DbSet<GALLERY_PHOTOS> GALLERY_PHOTOS { get; set; }
+        public virtual DbSet<GALLERY_TAGS> GALLERY_TAGS { get; set; }
         public virtual DbSet<GRADING_LEVEL> GRADING_LEVEL { get; set; }
         public virtual DbSet<GUARDIAN> GUARDIANs { get; set; }
+        public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
+        public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
         public virtual DbSet<LIABILITY> LIABILITies { get; set; }
+        public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
         public virtual DbSet<NEWS> NEWS { get; set; }
         public virtual DbSet<NEWS_COMMENTS> NEWS_COMMENTS { get; set; }
-        public virtual DbSet<OBSERVATION> OBSERVATIONs { get; set; }
-        public virtual DbSet<OBSERVATION_GROUP> OBSERVATION_GROUP { get; set; }
+        public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
+        public virtual DbSet<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
+        public virtual DbSet<PHOTO_MASTER> PHOTO_MASTER { get; set; }
+        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
+        public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
+        public virtual DbSet<RANKING_LEVEL> RANKING_LEVEL { get; set; }
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
         public virtual DbSet<SMS_MESSAGE> SMS_MESSAGE { get; set; }
         public virtual DbSet<SMS_SETTING> SMS_SETTING { get; set; }
+        public virtual DbSet<STORE_CATEGORY> STORE_CATEGORY { get; set; }
+        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
+        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
+        public virtual DbSet<STORE_SUB_CATEGORY> STORE_SUB_CATEGORY { get; set; }
+        public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<STUDENT_ADDITIONAL_DETAIL> STUDENT_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<STUDENT_ADDITIONAL_FIELD> STUDENT_ADDITIONAL_FIELD { get; set; }
         public virtual DbSet<STUDENT_CATGEORY> STUDENT_CATGEORY { get; set; }
         public virtual DbSet<STUDENT_PREVIOUS_DATA> STUDENT_PREVIOUS_DATA { get; set; }
         public virtual DbSet<STUDENT_PREVIOUS_SUBJECT_MARK> STUDENT_PREVIOUS_SUBJECT_MARK { get; set; }
         public virtual DbSet<STUDENT_SUBJECT> STUDENT_SUBJECT { get; set; }
+        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
         public virtual DbSet<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual DbSet<TIMETABLE> TIMETABLEs { get; set; }
-        public virtual DbSet<USER> USERS { get; set; }
-        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
-        public virtual DbSet<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
-        public virtual DbSet<RANKING_LEVEL> RANKING_LEVEL { get; set; }
-        public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
-        public virtual DbSet<FINANCE_FEE_COLLECTION> FINANCE_FEE_COLLECTION { get; set; }
-        public virtual DbSet<STORE_CATEGORY> STORE_CATEGORY { get; set; }
-        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
-        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
-        public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
-        public virtual DbSet<FINANCE_FEE> FINANCE_FEE { get; set; }
-        public virtual DbSet<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
-        public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
-        public virtual DbSet<Gallery_Master> Gallery_Master { get; set; }
-        public virtual DbSet<PHOTO_MASTER> PHOTO_MASTER { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
-        public virtual DbSet<STORE_SUB_CATEGORY> STORE_SUB_CATEGORY { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
-        public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
-        public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
-        public virtual DbSet<STUDENT> STUDENTs { get; set; }
-        public virtual DbSet<FINANCE_TRANSACTION_TRIGGERS> FINANCE_TRANSACTION_TRIGGERS { get; set; }
-        public virtual DbSet<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
-        public virtual DbSet<EMPLOYEE_GRADE> EMPLOYEE_GRADE { get; set; }
-        public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
-        public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
-        public virtual DbSet<EMPLOYEE_ADDITIONAL_FIELD> EMPLOYEE_ADDITIONAL_FIELD { get; set; }
-        public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
-        public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
-        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
-        public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
-        public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
-        public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
-        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
-        public virtual DbSet<EMPLOYEE_LEAVE_TYPE> EMPLOYEE_LEAVE_TYPE { get; set; }
-        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
-        public virtual DbSet<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
-        public virtual DbSet<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
-        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
         public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
+        public virtual DbSet<USER> USERS { get; set; }
+        public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
+        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
     }
 }

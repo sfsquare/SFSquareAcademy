@@ -20,7 +20,6 @@ namespace SFSAcademy
             this.ARCHIVED_STUDENT = new HashSet<ARCHIVED_STUDENT>();
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.ATTENDENCEs = new HashSet<ATTENDENCE>();
-            this.CCE_REPORTS = new HashSet<CCE_REPORTS>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
             this.FEE_COLLECTION_DISCOUNT = new HashSet<FEE_COLLECTION_DISCOUNT>();
             this.FEE_COLLECTION_PARTICULAR = new HashSet<FEE_COLLECTION_PARTICULAR>();
@@ -60,13 +59,13 @@ namespace SFSAcademy
         public Nullable<long> PH2 { get; set; }
         public string EML { get; set; }
         public Nullable<int> IMMDT_CNTCT_ID { get; set; }
-        public string IS_SMS_ENABL { get; set; }
+        public bool IS_SMS_ENABL { get; set; }
         public string PHTO_FILENAME { get; set; }
         public string PHTO_CNTNT_TYPE { get; set; }
         public Nullable<int> PHTO_DATA { get; set; }
         public string STAT_DESCR { get; set; }
-        public string IS_ACT { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_ACT { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public bool HAS_PD_FE { get; set; }
@@ -75,6 +74,7 @@ namespace SFSAcademy
         public Nullable<int> STDNT_CAT_ID { get; set; }
         public Nullable<int> NTLTY_ID { get; set; }
         public Nullable<int> IMAGE_DOCUMENTS_ID { get; set; }
+        public string LIBRARY_CARD { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
@@ -82,8 +82,6 @@ namespace SFSAcademy
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATTENDENCE> ATTENDENCEs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CCE_REPORTS> CCE_REPORTS { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_SCORE> EXAM_SCORE { get; set; }

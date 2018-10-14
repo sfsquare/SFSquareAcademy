@@ -16,9 +16,10 @@ namespace SFSAcademy
     {
         public int ID { get; set; }
         public Nullable<int> EMP_ID { get; set; }
-        public Nullable<int> BANK_FLD_ID { get; set; }
         public string BANK_INFO { get; set; }
+        public Nullable<int> BANK_FLD_ID { get; set; }
     
+        public virtual BANK_FIELD BANK_FIELD { get; set; }
         public virtual EMPLOYEE EMPLOYEE { get; set; }
     }
 }

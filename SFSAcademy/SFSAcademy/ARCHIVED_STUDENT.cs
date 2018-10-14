@@ -42,18 +42,19 @@ namespace SFSAcademy
         public string PHTO_CNTNT_TYPE { get; set; }
         public string PHTO_DATA { get; set; }
         public string STAT_DESCR { get; set; }
-        public string IS_ACT { get; set; }
-        public string IS_DEL { get; set; }
+        public Nullable<bool> IS_ACT { get; set; }
+        public Nullable<bool> IS_DEL { get; set; }
         public Nullable<int> IMMDT_CNTCT_ID { get; set; }
-        public string IS_SMS_ENABL { get; set; }
+        public Nullable<bool> IS_SMS_ENABL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> PHTO_FILE_SIZE { get; set; }
         public Nullable<int> FRM_ID { get; set; }
         public Nullable<int> STDNT_CAT_ID { get; set; }
+        public string LIBRARY_CARD { get; set; }
     
+        public virtual STUDENT STUDENT { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
-        public virtual STUDENT STUDENT { get; set; }
     }
 }

@@ -22,12 +22,12 @@ namespace SFSAcademy
         public Nullable<int> STDNT_CAT_ID { get; set; }
         public string ADMSN_NO { get; set; }
         public Nullable<int> STDNT_ID { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
-        public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
         public virtual FINANCE_FEE_COLLECTION FINANCE_FEE_COLLECTION { get; set; }
+        public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
         public virtual STUDENT STUDENT { get; set; }
     }
 }

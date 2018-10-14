@@ -14,7 +14,7 @@
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
-<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
         <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE }, new { @target = "_blank" })</li>
@@ -27,7 +27,7 @@
         @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
         Finance Transactions View
     </div>
-    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+    <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
         <tr class="tr-head">
             <td>Sl. No.</td>
             <td>Particulars</td>
@@ -89,8 +89,8 @@
             index += 1;
             selectedRow = "tr-even";
             decimal income = 0; decimal expense = 0;
-            if (item.TransactionCategoryData.IS_INCM == "Y") { income = (decimal)item.TRANS_AMNT; }
-            if (item.TransactionCategoryData.IS_INCM == "N") { expense = (decimal)item.TRANS_AMNT; }
+            if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+            if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
             if (index % 2 == 0)
             {
                 selectedRow = "tr-odd";

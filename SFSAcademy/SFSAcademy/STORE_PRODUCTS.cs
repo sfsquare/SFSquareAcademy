@@ -18,8 +18,8 @@ namespace SFSAcademy
         public STORE_PRODUCTS()
         {
             this.STORE_PURCHAGE = new HashSet<STORE_PURCHAGE>();
-            this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
             this.STORE_PURCHAGE_BACKUP = new HashSet<STORE_PURCHAGE_BACKUP>();
+            this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
         }
     
@@ -36,8 +36,8 @@ namespace SFSAcademy
         public string BAR_CODE { get; set; }
         public string PAID_BY { get; set; }
         public Nullable<int> UNIT_LEFT { get; set; }
-        public string IS_ACT { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_ACT { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> SUB_CATEGORY_ID { get; set; }
@@ -46,11 +46,11 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
-        public virtual STORE_SUB_CATEGORY STORE_SUB_CATEGORY { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
+        public virtual STORE_SUB_CATEGORY STORE_SUB_CATEGORY { get; set; }
     }
 }

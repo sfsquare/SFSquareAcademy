@@ -25,7 +25,7 @@ namespace SFSAcademy
         public int ID { get; set; }
         public string NAME { get; set; }
         public string CODE { get; set; }
-        public string STAT { get; set; }
+        public Nullable<bool> STAT { get; set; }
         public Nullable<decimal> MAX_LEAVE_CNT { get; set; }
         public bool CARR_FRWD { get; set; }
     

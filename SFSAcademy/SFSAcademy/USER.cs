@@ -17,11 +17,12 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public USER()
         {
+            this.EMPLOYEEs = new HashSet<EMPLOYEE>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
-            this.USERS_ACCESS = new HashSet<USERS_ACCESS>();
+            this.PRIVILEGES_USERS = new HashSet<PRIVILEGES_USERS>();
             this.STUDENTs = new HashSet<STUDENT>();
-            this.EMPLOYEEs = new HashSet<EMPLOYEE>();
+            this.USERS_ACCESS = new HashSet<USERS_ACCESS>();
         }
     
         public int ID { get; set; }
@@ -29,26 +30,28 @@ namespace SFSAcademy
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
         public string EML { get; set; }
-        public string ADMIN_IND { get; set; }
-        public string STDNT_IND { get; set; }
-        public string EMP_IND { get; set; }
+        public Nullable<bool> ADMIN_IND { get; set; }
+        public Nullable<bool> STDNT_IND { get; set; }
+        public Nullable<bool> EMP_IND { get; set; }
         public string HASHED_PSWRD { get; set; }
         public string SALT { get; set; }
         public string RST_PSWRD_CODE { get; set; }
         public Nullable<System.DateTime> RST_PSWRD_CODE_UNTL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string PARNT_IND { get; set; }
+        public Nullable<bool> PARNT_IND { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GUARDIAN> GUARDIANs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USERS_ACCESS> USERS_ACCESS { get; set; }
+        public virtual ICollection<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STUDENT> STUDENTs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
+        public virtual ICollection<USERS_ACCESS> USERS_ACCESS { get; set; }
     }
 }

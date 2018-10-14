@@ -23,9 +23,9 @@ namespace SFSAcademy
         public string STUDENT_NAME { get; set; }
         public Nullable<long> STUDENT_CONTACT_NO { get; set; }
         public string MONEY_RECEIVED_BY { get; set; }
-        public string IS_DEPOSITED { get; set; }
-        public string IS_ACT { get; set; }
-        public string IS_DEL { get; set; }
+        public bool IS_DEPOSITED { get; set; }
+        public bool IS_ACT { get; set; }
+        public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
