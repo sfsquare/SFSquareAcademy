@@ -24,12 +24,14 @@
     <div class="hor_line"></div>
     @if (financefee.FirstOrDefault().IS_PD == true)
     {
-        <h2>S. F. Square Academy - Fee Reciept</h2>
+        <h2>S. F. Square Academy</h2>
+        <h2>Fee Reciept for @date.NAME</h2>
 
     }
     else
     {
-        <h2>S. F. Square Academy - Partial Payment Receipt</h2>
+        <h2>S. F. Square Academy</h2>
+        <h2>Partial Payment Receipt for @date.NAME</h2>
     }
     <div class="hor_line"></div>
 
@@ -45,7 +47,8 @@
                 <tr class="table-header">
                     <td class="col-pdf1">SL No.</td>
                     <td class="col-pdf2">Particulars</td>
-                    <td class="col-pdf3">Receipt No</td>
+                    <td class="col-pdf3">Fees No.</td>
+                    <td class="col-pdf3">Receipt No.</td>
                     <td class="col-pdf4"> Amount</td>
                 </tr>
                 @{int i = 1; string selectedRow = "even";}
@@ -60,10 +63,11 @@
                         <td class="col-pdf1">@i</td>
                         <td class="col-pdf2">@item.NAME</td>
                         <td class="col-pdf3"></td>
+                        <td class="col-pdf3"></td>
                         <td class="col-pdf4">@item.AMT</td>
                     </tr>
                     total_fees += (decimal)item.AMT;
-                    i = i + 1;
+                    i += 1;
                 }
                 @if (@ViewBag.total_discount != 0)
                 {
@@ -74,10 +78,10 @@
                     }
                     <tr class="tr-blank"></tr>
                     <tr class="tr-blank"></tr>
-                        <tr class="@selectedRow" cellpadding="1" cellspacing="1">
-                            <td class="col-1"></td>
-                            <td class="col-1" colspan="4"><span class="themed_text">Discounts</span></td>
-                        </tr>
+                    <tr class="@selectedRow" cellpadding="1" cellspacing="1">
+                        <td class="col-1" colspan="5"><span class="themed_text">Discounts</span></td>
+                    </tr>
+                    i += 1;
                     foreach (var item in batch_discounts)
                     {
                         string discount_text = item.IS_AMT == true ? item.NAME : string.Concat(item.NAME, ": ", item.DISC, "%");
@@ -90,10 +94,11 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text</td>
-                            <td class="col-2"></td>
+                            <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@discount</td>
                         </tr>
-                        i = i + 1;
+                        i += 1;
                     }
                     foreach (var item2 in student_discounts)
                     {
@@ -107,10 +112,11 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text2</td>
-                            <td class="col-2"></td>
+                            <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@discount2</td>
                         </tr>
-                        i = i + 1;
+                        i += 1; ;
                     }
                     foreach (var item3 in category_discounts)
                     {
@@ -124,11 +130,12 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text3</td>
-                            <td class="col-2"></td>
+                            <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@discount3</td>
                             `
                         </tr>
-                        i = i + 1;
+                        i += 1;
                     }
                     selectedRow = "even";
                     if (i % 2 == 0)
@@ -138,9 +145,10 @@
                     <tr class="tr-blank"></tr>
                     <tr class="tr-blank"></tr>
                     <tr class="@selectedRow">
-                        <td class="col-8" colspan="3">Total Discount</td>
+                        <td class="col-8" colspan="4">Total Discount</td>
                         <td class="col-6">@ViewBag.total_discount</td>
                     </tr>
+                    i += 1;
                     selectedRow = "even";
                     if (i % 2 == 0)
                     {
@@ -150,9 +158,10 @@
                     <tr class="tr-blank"></tr>
                     { total_fees -= total_fees * @ViewBag.total_discount_percentage / 100; }
                     <tr class="@selectedRow">
-                        <td class="col-8" colspan="3">Total Fees</td>
+                        <td class="col-8" colspan="4">Total Fees</td>
                         <td class="col-6">@total_fees.ToString("0.00")</td>
                     </tr>
+                    i += 1;
                 }
                 @if (@ViewBag.total_fine != 0)
                 {
@@ -164,8 +173,9 @@
                     <tr class="tr-blank"></tr>
                     <tr class="tr-blank"></tr>
                     <tr class="@selectedRow">
-                        <td class="col-1" colspan="4"><span class="themed_text">Fine:</span></td>
+                        <td class="col-1" colspan="5"><span class="themed_text">Fine:</span></td>
                     </tr>
+                    i += 1;
                     foreach (var item in batch_fine)
                     {
                         string fine_text = item.IS_AMT == true ? string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString()) : string.Concat(item.NAME, " On ", item.FINE_DATE.Value.ToShortDateString(), " : ", item.FINE, "%");
@@ -179,9 +189,10 @@
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text</td>
                             <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@fine</td>
                         </tr>
-                        i = i + 1;
+                        i += 1;
                     }
                     foreach (var item in student_fine)
                     {
@@ -196,9 +207,10 @@
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text2</td>
                             <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@fine2</td>
                         </tr>
-                        i = i + 1;
+                        i += 1;
                     }
                     foreach (var item in category_fine)
                     {
@@ -213,10 +225,11 @@
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text3</td>
                             <td class="col-3"></td>
+                            <td class="col-3"></td>
                             <td class="col-6">@fine3</td>
                             `
                         </tr>
-                        i = i + 1;
+                        i += 1;
                     }
                     selectedRow = "even";
                     if (i % 2 == 0)
@@ -226,12 +239,12 @@
                     <tr class="tr-blank"></tr>
                     <tr class="tr-blank"></tr>
                         <tr class="@selectedRow" cellpadding="1" cellspacing="1">
-                            <td class="col-8" colspan="3">Total Fine</td>
+                            <td class="col-8" colspan="4">Total Fine</td>
                             <td class="col-6">@ViewBag.total_fine</td>
                         </tr>
                         <tr class="tr-blank"></tr>
                         <tr class="tr-blank"></tr>
-                    { total_fees += @ViewBag.total_fine; }
+                    { total_fees += @ViewBag.total_fine; i += 1; }
 
                 }
                 <tr class="tr-blank"></tr>
@@ -244,9 +257,10 @@
                         selectedRow = "odd";
                     }
                     decimal paid = 0;
-                    <tr class="@selectedRow">
-                        <td class="col-1" colspan="4"><span class="themed_text">Payment Done: </span></td>
+                    <tr class="@selectedRow" cellpadding="1" cellspacing="1">
+                        <td class="col-1" colspan="5"><span class="themed_text">Payment Done: </span></td>
                     </tr>
+                    i += 1;
                     foreach (var item13 in paid_fees)
                     {
                         selectedRow = "even";
@@ -258,7 +272,8 @@
                         <tr class="@selectedRow">
                             <td class="col-pdf1">@i</td>
                             <td class="col-pdf2">Partial Payment On : @item13.FinanceTransactionData.TRAN_DATE</td>
-                            <td class="col-pdf3"> @item13.FinanceTransactionData.RCPT_NO</td>
+                            <td class="col-pdf3">@item13.FinanceTransactionData.RCPT_NO</td>
+                            <td class="col-pdf3"> @item13.FinanceTransactionData.ID</td>
                             <td class="col-pdf4">@item13.FinanceTransactionData.AMT</td>
                         </tr>
                         i += 1;
@@ -273,8 +288,8 @@
                     selectedRow = "odd";
                 }
                 <tr class="@selectedRow" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="3">Amount To Pay :</td>
-                    <td class="col-pdf">@total_fees.ToString("0.00")</td>
+                    <td class="col-8" colspan="4">Amount To Pay :</td>
+                    <td class="col-3">@total_fees.ToString("0.00")</td>
                 </tr>
                 @{selectedRow = "even"; }
                 @if (i % 2 == 0)
@@ -282,8 +297,8 @@
                     selectedRow = "odd";
                 }
                 <tr class="@selectedRow" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="3"></td>
-                    <td class="col-pdf"><input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" /></td>
+                    <td class="col-8" colspan="4"></td>
+                    <td class="col-3"><input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" /></td>
                 </tr>
             </table>
         </div>

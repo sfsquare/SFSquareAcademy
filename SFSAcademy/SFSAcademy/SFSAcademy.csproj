@@ -802,6 +802,9 @@
     <Content Include="Content\stylesheets\store\new.css" />
     <Content Include="Content\stylesheets\store\purchase.css" />
     <Content Include="Content\stylesheets\store\show.css" />
+    <Content Include="Content\stylesheets\student\BatchTransfer_Index.css" />
+    <Content Include="Content\stylesheets\student\BatchTransfer.css" />
+    <Content Include="Content\stylesheets\student\BatchTransfer_Student_Search.css" />
     <Content Include="Content\stylesheets\_styles\jquery.timepicker.css" />
     <Content Include="Content\stylesheets\_styles\jquery.timepicker.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -2579,6 +2582,8 @@
     <Content Include="Views\Timetable_Entries\Edit.cshtml" />
     <Content Include="Views\Timetable_Entries\Index.cshtml" />
     <Content Include="Views\Timetable_Entries\New.cshtml" />
+    <Content Include="Views\Student\BatchTransfer_Index.cshtml" />
+    <Content Include="Views\Student\BatchTransfer_Student_Search.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
