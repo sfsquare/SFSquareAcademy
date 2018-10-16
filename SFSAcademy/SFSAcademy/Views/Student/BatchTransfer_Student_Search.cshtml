@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<SFSAcademy.Models.RadioCourseBatch>
-
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "BatchTransfer_Student_Search";
 }
 
 <div id="content-header">
@@ -15,9 +14,8 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div class="bread_crumb">
     @Html.ActionLink("Student Details", "Index") &raquo;
-    @Html.ActionLink("View All Stundets", "ViewAll") &raquo;
     @Html.ActionLink("Batch Transfer", "BatchTransfer_Index") &raquo;
-    Batch Transfer for Course
+    Batch Transfer for a Student
 </div>
 <div id="flash_box">
     @if (ViewBag.BatchTransferMessage != null)
@@ -25,6 +23,7 @@
         <p class="flash-msg"> @ViewBag.BatchTransferMessage </p>
     }
 </div>
+
 <div id="page-yield">
     <div id="search_box_bg">
         <div id="searchbox">
@@ -33,9 +32,9 @@
                 {
                     <p>
                         <div class="label-field-pair label">
-                            <label for="FIRST_NAME">Batch:</label>
+                            <label for="ADMSN_NO">Admission Number:</label>
                             <div class="text-input-bg">
-                                @Html.DropDownList("searchString", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.TextBox("AdmissionNumber", ViewBag.CurrentFilter2 as string)
                             </div>
                         </div>
                         @if (ViewBag.IsPostBack == 1)
@@ -49,7 +48,7 @@
                                     }
                                 </div>
                             </div>
-                            <br/>
+                            <br />
                             <input type="submit" value="Search / Tranfer Batch" class="submit-button" />
                         }
                         else
@@ -71,11 +70,9 @@
 
             </div>
         </div>
-    }
+                    }
 
     <div id="students"></div>
 </div>
-
-
 
 

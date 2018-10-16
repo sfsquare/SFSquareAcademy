@@ -1960,7 +1960,7 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_category"] = fee_category;
 
                 var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                            select ff).ToList();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -2152,7 +2152,7 @@ namespace SFSAcademy.Controllers
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
                 ViewData["fee_category"] = fee_category;
                 var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                            select ff).ToList();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -2357,7 +2357,7 @@ namespace SFSAcademy.Controllers
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
                 ViewData["fee_category"] = fee_category;
                 var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                            select ff).ToList();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -2680,7 +2680,7 @@ namespace SFSAcademy.Controllers
             ViewData["fee_category"] = fee_category;
 
             var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                        select ff).ToList();
             ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -3291,20 +3291,30 @@ namespace SFSAcademy.Controllers
                 ViewData["student"] = StudentVal;
 
                 var StudentValDefaulters = (from ff in db.FINANCE_FEE
-                                     join st in db.STUDENTs on ff.STDNT_ID equals st.ID
-                                     join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
-                                     where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && ff.IS_PD == false && fc.ID == date.ID && fc.BTCH_ID == date.BTCH_ID
-                                     select new Models.StundentFee { StudentData = st, FeeCollectionData = fc}).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                            join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                            join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                            where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && ff.IS_PD == false && fc.ID == date.ID && fc.BTCH_ID == date.BTCH_ID
+                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 if (student != null)
                 {
                     StudentValDefaulters = StudentValDefaulters.Where(x => x.StudentData.ID == student.ID);
                 }
                 ViewData["defaulters"] = StudentValDefaulters;
 
+                var StudentGuardians = (from st in db.STUDENTs
+                                            join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
+                                            where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false
+                                            select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                if (student != null)
+                {
+                    StudentGuardians = StudentGuardians.Where(x => x.StudentData.ID == student.ID);
+                }
+                ViewData["guardians"] = StudentGuardians;
+
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
-                                           where fcol.ID == id && (fc.IS_DEL == false)
+                                           where fcol.ID == id && fc.IS_DEL == false && ff.IS_DEL == "N"
                                            select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -3378,7 +3388,7 @@ namespace SFSAcademy.Controllers
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
-                                           where fcol.ID == date && (fc.IS_DEL == false)
+                                           where fcol.ID == date && fc.IS_DEL == false && ff.IS_DEL == "N"
                                            select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -3479,7 +3489,7 @@ namespace SFSAcademy.Controllers
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
-                                           where fcol.BTCH_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (fc.IS_DEL == false)
+                                           where fcol.BTCH_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && fc.IS_DEL == false && ff.IS_DEL == "N"
                                            select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -3674,7 +3684,7 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_category"] = fee_category;
 
                 var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                            select ff).ToList();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
@@ -3802,7 +3812,7 @@ namespace SFSAcademy.Controllers
             ViewData["fee_category"] = fee_category;
 
             var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
-                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && (ff.STDNT_ID == StudentVal.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                        select ff).ToList();
             ViewData["fee_particulars"] = fee_particulars_val;
 

@@ -34,7 +34,7 @@
         }
         @if (Html.Permitted_To("BatchTransfer", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
         {
-            <li class="a"><a href="@Url.Action("BatchTransfer", "Student")">Batch Transfer</a></li>
+            <li class="a"><a href="@Url.Action("BatchTransfer_Index", "Student")">Batch Transfer</a></li>
         }
     </ul>
 </div>
