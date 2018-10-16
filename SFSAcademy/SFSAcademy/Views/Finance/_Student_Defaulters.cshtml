@@ -13,6 +13,7 @@
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
+    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
 }
 
 @if (defaulters != null && defaulters.Count() != 0)
@@ -22,6 +23,8 @@
             <td>Sl. No.</td>
             <td>Stundent Name</td>
             <td>Ad. No.</td>
+            <td>Parent</td>
+            <td>Phone</td>
             <td>Amount</td>
             <td></td>
         </tr>
@@ -117,12 +120,30 @@
             {
                 selectedRow = "tr-odd";
             }
+            var SelGuardian = guardians.Where(x => x.StudentData.ID == item.StudentData.ID);
+            string Phone_Number = "";
+            string GuardianName = "";
             <tr class="@selectedRow">
                 <td class="col-1">@i</td>
-                <td class="col-2">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
+                <td class="col-3">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
                 <td class="col-3">@item.StudentData.ADMSN_NO</td>
+                @foreach (var item2 in SelGuardian)
+                {
+                    Phone_Number = item2.GuardianData.MOBL_PH != null ?string.Concat(Phone_Number, item2.GuardianData.MOBL_PH.ToString(), ","): Phone_Number;
+                    GuardianName = string.Concat(GuardianName, item2.GuardianData.FIRST_NAME, " ", item2.GuardianData.LAST_NAME, ",");
+                }
+                @if (SelGuardian != null)
+                {
+                    <td class="col-3">@GuardianName</td>
+                    <td class="col-3"> @Phone_Number </td>
+                }
+                else
+                {
+                    <td class="col-3"></td>
+                    <td class="col-3"></td>
+                }
                 <td class="col-3">@total_fees</td>
-                <td class="col-1">@Html.ActionLink("► Pay Fees", "Fees_Student_Search")</td>
+                <td class="col-3">@Html.ActionLink("► Pay Fees", "Fees_Student_Search")</td>
             </tr>
             i = i + 1;
         }
