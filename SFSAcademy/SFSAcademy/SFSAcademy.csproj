@@ -805,6 +805,17 @@
     <Content Include="Content\stylesheets\student\BatchTransfer_Index.css" />
     <Content Include="Content\stylesheets\student\BatchTransfer.css" />
     <Content Include="Content\stylesheets\student\BatchTransfer_Student_Search.css" />
+    <Content Include="Content\stylesheets\User\all.css" />
+    <Content Include="Content\stylesheets\User\change_password.css" />
+    <Content Include="Content\stylesheets\User\Create.css" />
+    <Content Include="Content\stylesheets\User\Dashboard.css" />
+    <Content Include="Content\stylesheets\User\Edit.css" />
+    <Content Include="Content\stylesheets\User\Edit_Privilege.css" />
+    <Content Include="Content\stylesheets\User\first_login_change_password.css" />
+    <Content Include="Content\stylesheets\User\Index.css" />
+    <Content Include="Content\stylesheets\User\Login.css" />
+    <Content Include="Content\stylesheets\User\profile.css" />
+    <Content Include="Content\stylesheets\User\user_change_password.css" />
     <Content Include="Content\stylesheets\_styles\jquery.timepicker.css" />
     <Content Include="Content\stylesheets\_styles\jquery.timepicker.min.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -2100,17 +2111,6 @@
     <Content Include="Content\stylesheets\timetable\view.css" />
     <Content Include="Content\stylesheets\timetable\work_allotment.css" />
     <Content Include="Content\stylesheets\timetable_entries\new.css" />
-    <Content Include="Content\stylesheets\USERs\all.css" />
-    <Content Include="Content\stylesheets\USERs\change_password.css" />
-    <Content Include="Content\stylesheets\USERs\Create.css" />
-    <Content Include="Content\stylesheets\USERs\Dashboard.css" />
-    <Content Include="Content\stylesheets\USERs\Edit.css" />
-    <Content Include="Content\stylesheets\USERs\edit_privilege.css" />
-    <Content Include="Content\stylesheets\USERs\first_login_change_password.css" />
-    <Content Include="Content\stylesheets\USERs\Index.css" />
-    <Content Include="Content\stylesheets\USERs\Login.css" />
-    <Content Include="Content\stylesheets\USERs\profile.css" />
-    <Content Include="Content\stylesheets\USERs\user_change_password.css" />
     <Content Include="Content\stylesheets\weekday\index.css" />
     <Content Include="Content\stylesheets\_layouts\dashboard.css" />
     <Content Include="Content\stylesheets\_layouts\forgotpw.css" />
@@ -2253,22 +2253,14 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_Partial\Main_Menu.cshtml" />
     <Content Include="Views\Shared\_Layout\FrontPage.cshtml" />
-    <Content Include="Views\USERs\Create.cshtml" />
-    <Content Include="Views\USERs\Delete.cshtml" />
-    <Content Include="Views\USERs\Details.cshtml" />
-    <Content Include="Views\USERs\Edit.cshtml" />
-    <Content Include="Views\USERs\Index.cshtml" />
     <Content Include="Views\Shared\_Layout\Login.cshtml" />
     <Content Include="Views\Shared\_Partial\Get_Stylesheets.cshtml" />
     <Content Include="Views\Shared\_Partial\Get_Forgotpw_Stylesheets.cshtml" />
     <Content Include="Views\Shared\_Partial\Get_Pdf_Stylesheets.cshtml" />
     <Content Include="Views\Shared\_Partial\Get_Javascript.cshtml" />
-    <Content Include="Views\USERs\Login.cshtml" />
-    <Content Include="Views\USERs\Dashboard.cshtml" />
     <Content Include="Views\Shared\_Layout\Dashboard.cshtml" />
     <Content Include="Views\Shared\_Partial\Autosuggest_Menu.cshtml" />
     <Content Include="Views\Shared\_Partial\News_Bar.cshtml" />
-    <Content Include="Views\USERs\Edit_Privilege.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\Student\Create.cshtml" />
@@ -2383,7 +2375,6 @@
     <Content Include="Views\Student\Add_Guardian.cshtml" />
     <Content Include="Views\Student\admission3_1.cshtml" />
     <Content Include="Views\Student\Add_Existing_Guardian.cshtml" />
-    <Content Include="Views\USERs\Forgot_Password.cshtml" />
     <Content Include="Views\Finance\_Select_Batch_Collection.cshtml" />
     <Content Include="Views\Finance\_Master_Category_List.cshtml" />
     <Content Include="Views\Finance\_Fees_Structure.cshtml" />
@@ -2584,6 +2575,22 @@
     <Content Include="Views\Timetable_Entries\New.cshtml" />
     <Content Include="Views\Student\BatchTransfer_Index.cshtml" />
     <Content Include="Views\Student\BatchTransfer_Student_Search.cshtml" />
+    <Content Include="Views\User\Create.cshtml" />
+    <Content Include="Views\User\Dashboard.cshtml" />
+    <Content Include="Views\User\Delete.cshtml" />
+    <Content Include="Views\User\Details.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\User\Edit_Privilege.cshtml" />
+    <Content Include="Views\User\Forgot_Password.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\Login.cshtml" />
+    <Content Include="Views\Store\_product_sub_category_create_form.cshtml" />
+    <Content Include="Views\Store\_SubCategoriesDelete.cshtml" />
+    <Content Include="Views\Store\_SubCategoriesEdit.cshtml" />
+    <Content Include="Views\Store\_SubCategoriesList.cshtml" />
+    <Content Include="Views\Store\BackupTransaction.cshtml" />
+    <Content Include="Views\Store\ListPurchagedProducts.cshtml" />
+    <Content Include="Views\Store\SubCategories.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2642,7 +2649,7 @@
     <Compile Include="Controllers\SubjectsController.cs" />
     <Compile Include="Controllers\TimetableController.cs" />
     <Compile Include="Controllers\Timetable_EntriesController.cs" />
-    <Compile Include="Controllers\USERsController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WeekdayController.cs" />
     <Compile Include="COUNTRY.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
@@ -2836,6 +2843,7 @@
     <Compile Include="PERIOD_ENTRIES.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
+    <Compile Include="Photo.cs" />
     <Compile Include="PHOTO_MASTER.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
@@ -2843,6 +2851,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="PRIVILEGES_USERS.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PRIVILEGE_ACCESS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,7 +17,7 @@ namespace SFSAcademy
         public int ID { get; set; }
         public int PRODUCT_ID { get; set; }
         public Nullable<int> UNIT_SOLD { get; set; }
-        public Nullable<int> SOLD_PRICE { get; set; }
+        public Nullable<decimal> SOLD_PRICE { get; set; }
         public string SOLD_BY { get; set; }
         public Nullable<System.DateTime> SOLD_ON { get; set; }
         public string STUDENT_NAME { get; set; }

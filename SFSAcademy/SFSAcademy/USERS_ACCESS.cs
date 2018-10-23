@@ -14,16 +14,21 @@ namespace SFSAcademy
     
     public partial class USERS_ACCESS
     {
-        public string USR_ROLE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public USERS_ACCESS()
+        {
+            this.PRIVILEGE_ACCESS = new HashSet<PRIVILEGE_ACCESS>();
+        }
+    
+        public string USR_RIGHTS { get; set; }
         public int USRS_ID { get; set; }
-        public string LIST_ITEM { get; set; }
-        public string LVL_1_MENU { get; set; }
-        public string LVL_2_MENU { get; set; }
         public string CTL { get; set; }
         public string ACTN { get; set; }
         public int ID { get; set; }
         public bool IS_ACCBLE { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
         public virtual USER USER { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PRIVILEGE()
         {
+            this.PRIVILEGE_ACCESS = new HashSet<PRIVILEGE_ACCESS>();
             this.PRIVILEGES_USERS = new HashSet<PRIVILEGES_USERS>();
         }
     
@@ -26,7 +27,10 @@ namespace SFSAcademy
         public string PRIVILEGE_TAG { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
+        public bool IS_ACT { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
     }

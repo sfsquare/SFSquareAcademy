@@ -13,13 +13,15 @@ using System.Data.Entity.Validation;
 
 namespace SFSAcademy.Controllers
 {
-    public class USERsController : Controller
+    public class UserController : Controller
     {
         private SFSAcademyEntities db = new SFSAcademyEntities();
 
         // GET: USERs
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -98,45 +100,45 @@ namespace SFSAcademy.Controllers
                 db.SaveChanges();
                 if (uSER.ADMIN_IND.Equals("Y"))
                 {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(1)).ToList())
+                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(1)).ToList())
                     {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                         db.USERS_ACCESS.Add(UserAccess);
                         db.SaveChanges();
                     }
                 }
                 else if(uSER.EMP_IND.Equals("Y"))
                 {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
+                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
                     {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                         db.USERS_ACCESS.Add(UserAccess);
                         db.SaveChanges();
                     }
                 }
                 else if (uSER.STDNT_IND.Equals("Y"))
                 {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
+                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
                     {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                         db.USERS_ACCESS.Add(UserAccess);
                         db.SaveChanges();
                     }
                 }
                 else if (uSER.PARNT_IND.Equals("Y"))
                 {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
+                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
                     {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                         db.USERS_ACCESS.Add(UserAccess);
                         db.SaveChanges();
                     }
                 }
                 else
                 {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
+                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
                     {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                         db.USERS_ACCESS.Add(UserAccess);
                         db.SaveChanges();
                     }
@@ -173,8 +175,24 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(uSER).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try { db.SaveChanges(); ViewBag.Notice = "User details updated in system successfully."; }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return View(uSER);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(uSER);
+                }
+                return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }
             return View(uSER);
         }
@@ -199,18 +217,35 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.ID }).Distinct().Where(a => a.USRS_ID.Equals(id)).ToList())
+            var entity = db.PRIVILEGES_USERS.Where(a => a.USER_ID == id).ToList();
+            if(entity != null && entity.Count() != 0)
             {
-                USERS_ACCESS uSERaCCCESS = db.USERS_ACCESS.Find(entity.ID);
-                db.USERS_ACCESS.Remove(uSERaCCCESS);
-                db.SaveChanges();
-            }
+                foreach (var item in entity)
+                {
+                    PRIVILEGES_USERS pRIVILEGEaCCCESS = db.PRIVILEGES_USERS.Find(item.ID);
+                    db.PRIVILEGES_USERS.Remove(pRIVILEGEaCCCESS);
+                }
+            }            
             USER uSER = db.USERS.Find(id);
             db.USERS.Remove(uSER);
-            db.SaveChanges();
-
-
-            return RedirectToAction("Index");
+            try { db.SaveChanges(); ViewBag.Notice = "User Deleted from system."; }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                return View(uSER);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat("There is an Employee or Student or Parent in the system using this User ID. Please delete the base information first.", "\n", e.InnerException.InnerException.Message);
+                return View(uSER);
+            }
+            return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
         }
 
         protected override void Dispose(bool disposing)
@@ -254,7 +289,7 @@ namespace SFSAcademy.Controllers
                 {
                     FormsAuthentication.SetAuthCookie(user.UserName, user.RememberMe);
                     int UserId = Convert.ToInt32(this.Session["UserId"]);
-                    return RedirectToAction("Dashboard", "USERs", new { id = UserId });
+                    return RedirectToAction("Dashboard", "User", new { id = UserId });
                 }
                 else
                 {
@@ -288,7 +323,7 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Edit_Privilege(int? id, string Calling_Method)
+  /*      public ActionResult Edit_Privilege(int? id, string Calling_Method)
         {
             if (id == null)
             {
@@ -309,6 +344,32 @@ namespace SFSAcademy.Controllers
             ViewBag.Calling_Method = Calling_Method;
             return View(uSERaCCESfINAL);
 
+        }*/
+
+        public ActionResult Edit_Privilege(int? id, string Calling_Method)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var uSERpRIVILEGE = (from pr in db.PRIVILEGES
+                                 join prusr in db.PRIVILEGES_USERS.Where(x=>x.USER_ID == id) on pr.ID equals prusr.PRIVILEGE_ID into gi
+                                 from subgi in gi.DefaultIfEmpty()
+                               select new Models.SelectUserPrivilage { PrivilageList = pr,USRS_ID = id, Selected = (subgi == null ? false : true), IsActive = (pr.IS_ACT == true ? true : false) }).OrderBy(g => g.PrivilageList.ID).ToList();
+
+
+            var uSERpRIVILEGEfINAL = (from u in uSERpRIVILEGE
+                                          //where conditions or joins with other tables to be included here
+                                      group u by new { u.PrivilageList.PRIVILEGE_TAG, u.PrivilageList.NAME } into grp
+                                  let MaxPrIDPerPerson = grp.Max(g => g.PrivilageList.ID)
+                                  from p in grp
+                                  where p.PrivilageList.ID == MaxPrIDPerPerson
+                                      select p).ToList();
+            ViewBag.Calling_Method = Calling_Method;
+            USER User = db.USERS.Find(id);
+            ViewData["User"] = User;
+            return View(uSERpRIVILEGEfINAL);
+
         }
 
 
@@ -317,33 +378,41 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Privilege(IList<SelectUserAccess> model, string Calling_Method)
+        public ActionResult Edit_Privilege(IList<SelectUserPrivilage> model, string Calling_Method)
         {
             if (ModelState.IsValid)
             {
-                int UserId = model.FirstOrDefault().AccessList.USRS_ID;
-                foreach (SelectUserAccess item in model)
+                int? UserId = model.FirstOrDefault().USRS_ID;
+                foreach (SelectUserPrivilage item in model)
                 {
-                    if (item.Selected)
+                    if (item.Selected && item.IsActive)
                     {
-                        var uACCESSVal = (from C in db.USERS_ACCESS
-                                           where (C.LVL_1_MENU.Equals(item.AccessList.LVL_1_MENU)  && C.USRS_ID == item.AccessList.USRS_ID)
-                                          select new { id = C.ID, usr_id = C.USRS_ID, usr_role = C.USR_ROLE, l_item=C.LIST_ITEM, l_1_menu=C.LVL_1_MENU, l_2_menu=C.LVL_2_MENU, ctl= C.CTL, act=C.ACTN, is_accble=C.IS_ACCBLE }).FirstOrDefault();
-                        USERS_ACCESS uSERaCCCESS = db.USERS_ACCESS.Find(uACCESSVal.id);
-                        uSERaCCCESS.IS_ACCBLE = true;
-                        db.SaveChanges();
+                        var uPRIVILEGEVal = db.PRIVILEGES_USERS.Where(x => x.PRIVILEGE_ID == item.PrivilageList.ID && x.USER_ID == item.USRS_ID).ToList();
+                        if(uPRIVILEGEVal == null || uPRIVILEGEVal.Count() == 0)
+                        {
+                            var NewPrivilege = new PRIVILEGES_USERS()
+                            {
+                                PRIVILEGE_ID = item.PrivilageList.ID,
+                                USER_ID = item.USRS_ID
+                            };
+                            db.PRIVILEGES_USERS.Add(NewPrivilege);
+                        }
                     }
                     else
                     {
-                        var uACCESSVal = (from C in db.USERS_ACCESS
-                                          where (C.LVL_1_MENU.Equals(item.AccessList.LVL_1_MENU) && C.USRS_ID == item.AccessList.USRS_ID)
-                                          select new { id = C.ID, usr_id = C.USRS_ID, usr_role = C.USR_ROLE, l_item = C.LIST_ITEM, l_1_menu = C.LVL_1_MENU, l_2_menu = C.LVL_2_MENU, ctl = C.CTL, act = C.ACTN, is_accble = C.IS_ACCBLE }).FirstOrDefault();
-                        USERS_ACCESS uSERaCCCESS = db.USERS_ACCESS.Find(uACCESSVal.id);
-                        uSERaCCCESS.IS_ACCBLE = false;
-                        db.SaveChanges();
+                        var uPRIVILEGEVal = db.PRIVILEGES_USERS.Where(x => x.PRIVILEGE_ID == item.PrivilageList.ID && x.USER_ID == item.USRS_ID).ToList();
+                        if (uPRIVILEGEVal != null && uPRIVILEGEVal.Count() != 0)
+                        {
+                            foreach(var item2 in uPRIVILEGEVal)
+                            {
+                                PRIVILEGES_USERS PrUserToRemove = db.PRIVILEGES_USERS.Find(item2.ID);
+                                db.PRIVILEGES_USERS.Remove(PrUserToRemove);
+                            }
+                        }
                     }
                 }
-                if(Calling_Method == "Employee")
+                db.SaveChanges();
+                if (Calling_Method == "Employee")
                 {
                     int Employee_ID = db.EMPLOYEEs.Where(x => x.USRID == UserId).SingleOrDefault().ID;
                     return RedirectToAction("Admission4", "Employee", new { Emp_id = Employee_ID });

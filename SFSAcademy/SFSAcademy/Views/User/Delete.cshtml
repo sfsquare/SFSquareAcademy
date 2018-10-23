@@ -13,10 +13,17 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
-
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div id="page-yield">
    
     <div id="edit_user_form">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
         <div id="necessary-field-notification">Legend <span class="necessary-field">*</span> Indicate that respective field was mandatory.</div>
 
         <div class="label-field-pair">

@@ -1548,7 +1548,7 @@ namespace SFSAcademy.Controllers
                         }
                         if (!FeeCatId.Equals(SelectFeeCatId))
                         {
-                            var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = 1, ORIGIN_TYPE = "Fee Collection" };
+                            var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = 1, ORIGIN_TYPE = "Fee Collection",CREATED_AT= System.DateTime.Now, UPDATED_AT =System.DateTime.Now };
                             db.EVENTs.Add(FF_eVENT);
                             db.SaveChanges();
                             FeeCatId = SelectFeeCatId;
@@ -1865,7 +1865,7 @@ namespace SFSAcademy.Controllers
             var fee_collection = (from st in db.STUDENTs
                                   join fc in db.FINANCE_FEE_COLLECTION on st.BTCH_ID equals fc.BTCH_ID
                                   join ffp in db.FINANCE_FEE_PARTICULAR on fc.FEE_CAT_ID equals ffp.FIN_FEE_CAT_ID
-                                  where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
+                                  where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && st.IS_ACT == true && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
                                   select new { Fee_Collectoin_data = fc }).OrderBy(x => x.Fee_Collectoin_data.ID).Distinct();
 
             STUDENT student = db.STUDENTs.Find(student_id == null ? -1 : student_id);
@@ -1882,7 +1882,15 @@ namespace SFSAcademy.Controllers
                        select new { Finance_Fee_Data = ff, Student_data = st }).OrderBy(x => x.Student_data.ID).Distinct();
             if (student != null)
             {
-                fee = fee.Where(x => x.Student_data.ID == student.ID);
+                if(student.IS_ACT == false)
+                {
+                    ViewBag.ErrorMessage = "This Admission Number does not exit, Or Student has left school. Please contact Admin Office.";
+                    return PartialView("_Student_Fees_Submission");
+                }
+                else
+                {
+                    fee = fee.Where(x => x.Student_data.ID == student.ID);
+                }
             }
 
             if (fee_collection != null && fee_collection.Count() !=0)
@@ -1890,7 +1898,7 @@ namespace SFSAcademy.Controllers
                 var StudentVal = (from st in db.STUDENTs
                                   join fc in db.FINANCE_FEE_COLLECTION on st.BTCH_ID equals fc.BTCH_ID
                                   join ffp in db.FINANCE_FEE_PARTICULAR on fc.FEE_CAT_ID equals ffp.FIN_FEE_CAT_ID
-                                  where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
+                                  where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && st.IS_ACT == true && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
                                   select new { Student_data = st }).OrderBy(x => x.Student_data.ID).Distinct();
                 int StudentValId = StudentVal.FirstOrDefault().Student_data.ID;
                 
@@ -1909,7 +1917,7 @@ namespace SFSAcademy.Controllers
                 var prev_student_val = (from st in db.STUDENTs
                                         join fc in db.FINANCE_FEE_COLLECTION on st.BTCH_ID equals fc.BTCH_ID
                                         join ffp in db.FINANCE_FEE_PARTICULAR on fc.FEE_CAT_ID equals ffp.FIN_FEE_CAT_ID
-                                        where st.BTCH_ID == date.BTCH_ID && st.IS_DEL ==false && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
+                                        where st.BTCH_ID == date.BTCH_ID && st.IS_DEL ==false && st.IS_ACT == true && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
                                         select new { Student_data = st }).OrderBy(x => x.Student_data.ID).Distinct();
                 int prev_student_id = -1;
                 if (StudentVal != null)
@@ -1927,7 +1935,7 @@ namespace SFSAcademy.Controllers
                 var next_student_val = (from st in db.STUDENTs
                                         join fc in db.FINANCE_FEE_COLLECTION on st.BTCH_ID equals fc.BTCH_ID
                                         join ffp in db.FINANCE_FEE_PARTICULAR on fc.FEE_CAT_ID equals ffp.FIN_FEE_CAT_ID
-                                        where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
+                                        where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && st.IS_ACT == true && fc.ID == id && (ffp.STDNT_ID == st.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == st.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
                                         select new { Student_data = st }).OrderBy(x => x.Student_data.ID).Distinct();
                 int next_student_id = -1;
                 if (StudentVal != null)
@@ -2457,6 +2465,10 @@ namespace SFSAcademy.Controllers
                 {
                     total_fees += (decimal)item.AMT;
                 }
+                if(total_discount_val != 0)
+                {
+                    total_fees -= total_discount_val;
+                }
                 if (total_fine_val != 0)
                 {
                     if (financefeeVal != null && financefeeVal.Count() != 0)
@@ -2539,23 +2551,6 @@ namespace SFSAcademy.Controllers
                                 transaction.MSTRTRAN_ID = transaction.ID;
                             }
                             db.Entry(transaction).State = EntityState.Modified;
-                            try { db.SaveChanges(); }
-                            catch (DbEntityValidationException e)
-                            {
-                                foreach (var eve in e.EntityValidationErrors)
-                                {
-                                    foreach (var ve in eve.ValidationErrors)
-                                    {
-                                        ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", ve.ErrorMessage);
-                                    }
-                                }
-                                return PartialView("_Student_Fees_Submission");
-                            }
-                            catch (Exception e)
-                            {
-                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
-                                return PartialView("_Student_Fees_Submission");
-                            }
 
                             string tid = null;
                             if (financefeeVal.FirstOrDefault().TRAN_ID != null)
@@ -2570,6 +2565,20 @@ namespace SFSAcademy.Controllers
                             ffUpdate.TRAN_ID = tid;
                             ffUpdate.IS_PD = fees_paid == total_fees- paid_before ? true : false;
                             db.Entry(ffUpdate).State = EntityState.Modified;
+                            if (fine > 0)
+                            {
+                                var FineRecord = new FEE_FINE()
+                                {
+                                    TYPE = "Student",
+                                    NAME = "Ad-hoc fine",
+                                    RCVR_ID = PayeeId,
+                                    FIN_FEE_CAT_ID = fee_category.ID,
+                                    FINE = (decimal)fine,
+                                    IS_AMT = true,
+                                    FINE_DATE = System.DateTime.Now
+                                };
+                                db.FEE_FINE.Add(FineRecord);
+                            }
                             try { db.SaveChanges(); }
                             catch (DbEntityValidationException e)
                             {
@@ -2587,38 +2596,6 @@ namespace SFSAcademy.Controllers
                                 ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
                                 return PartialView("_Student_Fees_Submission");
                             }
-                            if (fine > 0)
-                            {
-                                var FineRecord = new FEE_FINE()
-                                {
-                                    TYPE = "Student",
-                                    NAME = "Ad-hoc fine",
-                                    RCVR_ID = PayeeId,
-                                    FIN_FEE_CAT_ID = fee_category.ID,
-                                    FINE = (decimal)fine,
-                                    IS_AMT = true,
-                                    FINE_DATE = System.DateTime.Now
-                                };
-                                db.FEE_FINE.Add(FineRecord);
-                                try { db.SaveChanges(); }
-                                catch (DbEntityValidationException e)
-                                {
-                                    foreach (var eve in e.EntityValidationErrors)
-                                    {
-                                        foreach (var ve in eve.ValidationErrors)
-                                        {
-                                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", ve.ErrorMessage);
-                                        }
-                                    }
-                                    return PartialView("_Student_Fees_Submission");
-                                }
-                                catch (Exception e)
-                                {
-                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
-                                    return PartialView("_Student_Fees_Submission");
-                                }
-                            }
-
                             var paid_fees_val2 = (from ff in db.FINANCE_FEE
                                                   join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                                   join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
@@ -2878,7 +2855,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                ViewBag.FeeCollectionMessage = "No Stundet found with this Admission Number.";
+                ViewBag.FeeCollectionMessage = "This Admission Number does not exit, Or Student has left school. Please contact Admin Office.";
             }
 
             return PartialView("_fees_student_dates");

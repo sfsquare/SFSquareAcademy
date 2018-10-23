@@ -959,9 +959,9 @@ namespace SFSAcademy.Controllers
                 var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = sTUDENT.FIRST_NAME, LAST_NAME = sTUDENT.LAST_NAME, EML = sTUDENT.EML, ADMIN_IND = false, STDNT_IND = true, EMP_IND = false, HASHED_PSWRD = string.Concat(sTUDENT.ADMSN_NO, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, PARNT_IND = false };
                 db.USERS.Add(StdUser);
                 db.SaveChanges();
-                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
+                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
                 {
-                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                     db.USERS_ACCESS.Add(UserAccess);
                     db.SaveChanges();
                 }
@@ -1773,7 +1773,11 @@ namespace SFSAcademy.Controllers
             
             ViewBag.ReturnDate = System.DateTime.Now;
             STUDENT sTUDENT = db.STUDENTs.Find(std_id);
-            ViewBag.StudentFullName = String.Format("{0} {1}", sTUDENT.FIRST_NAME.ToString(), sTUDENT.LAST_NAME.ToString());
+            ViewBag.StudentFullName = sTUDENT.FIRST_NAME.ToString();
+            if (sTUDENT.LAST_NAME != null)
+            {
+                ViewBag.StudentFullName = String.Format("{0} {1}", sTUDENT.FIRST_NAME.ToString(), sTUDENT.LAST_NAME.ToString());
+            }
             ViewBag.NewAdmissionNumber = sTUDENT.ADMSN_NO.ToString();
             if (!String.IsNullOrEmpty(sTUDENT.ADDR_LINE1))
             {
