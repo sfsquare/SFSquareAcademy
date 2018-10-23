@@ -280,7 +280,7 @@ namespace SFSAcademy.Controllers
                 NEWS_COMMENTS newsComment = new NEWS_COMMENTS();
                 //newsComment.CNTNT = comments.commentContent;
                 newsComment.CNTNT = news_Comment;
-                newsComment.AUTH_ID = Convert.ToInt32(userdetails.Id);
+                newsComment.AUTH_ID = Convert.ToInt32(userdetails.ID);
                 newsComment.CREATED_AT = System.DateTime.Now;
                 newsComment.NEWS_ID = newsId;
                 newsComment.IS_APPR = (priv != null) ? true :

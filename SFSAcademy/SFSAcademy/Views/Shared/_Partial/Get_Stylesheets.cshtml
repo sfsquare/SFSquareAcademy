@@ -16,12 +16,12 @@
 }
 
 
-@if (LocationHelper.IsCurrentControllerAndAction("USERs", "Dashboard", ViewContext))
+@if (LocationHelper.IsCurrentControllerAndAction("User", "Dashboard", ViewContext))
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/dashboard.css");
 
 }
-else if (LocationHelper.IsCurrentControllerAndAction("USERs", "Login", ViewContext) || LocationHelper.IsCurrentControllerAndAction("USERs", "Set_New_Password", ViewContext))
+else if (LocationHelper.IsCurrentControllerAndAction("User", "Login", ViewContext) || LocationHelper.IsCurrentControllerAndAction("User", "Set_New_Password", ViewContext))
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/login.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/forgotpw.css");

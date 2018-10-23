@@ -23,7 +23,7 @@
             <a href="@Url.Action("Index", "Student")" class="option_buttons" id="student_details_button" title="StudentDetails"></a><div class='button-label'><p>Student Details</p></div>
         </div>
         <div class="button-box">
-            <a href="@Url.Action("Index", "USERs")" class="option_buttons" id="manage_users_button" title="ManageUsers"></a><div class='button-label'><p>Manage Users</p></div>
+            <a href="@Url.Action("Index", "User")" class="option_buttons" id="manage_users_button" title="ManageUsers"></a><div class='button-label'><p>Manage Users</p></div>
         </div>
         <div class="button-box">
             <a href="@Url.Action("Index", "News")" class="option_buttons" id="manage_news_button" title="ManageNews"></a><div class='button-label'><p>Manage News</p></div>
@@ -40,13 +40,13 @@
         <div class="button-box">
             <a href="@Url.Action("Index", "Configuration")" class="option_buttons" id="settings_button" title="Settings"></a><div class='button-label'><p>Settings</p></div>
         </div>
-        if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("HR"))
+        if (!Html.Configuration_Key("HR").Equals(null))
         {
             <div class="button-box">
                 <a href="@Url.Action("HR", "Employee")" class="option_buttons" id="hr_button" title="HumanResources"></a><div class='button-label'><p>Human Resources</p></div>
             </div>
         }
-        if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("Finance"))
+        if (!Html.Configuration_Key("Finance").Equals(null))
         {
             <div class="button-box">
                 <a href="@Url.Action("Index", "Finance")" class="option_buttons" id="finance_button" title="Finance"></a><div class='button-label'><p>Finance</p></div>
@@ -122,7 +122,7 @@
     }
     else
     {
-        if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("HR"))
+        if (!Html.Configuration_Key("HR").Equals(null))
         {
             <div class="button-box">
                 <a href="@Url.Action("Profile", "Employee", new { id = this.Session["UserId"] })" class="option_buttons" id="my_profile_button" title="MyProfile"></a><div class='button-label'><p>My_Profile</p></div>
@@ -143,7 +143,7 @@
         if (Html.Permitted_To("Index", "User"))
         {
             <div class="button-box">
-                <a href="@Url.Action("Index", "USERs")" class="option_buttons" id="manage_users_button" title="ManageUsers"></a><div class='button-label'><p>Manage Users</p></div>
+                <a href="@Url.Action("Index", "User")" class="option_buttons" id="manage_users_button" title="ManageUsers"></a><div class='button-label'><p>Manage Users</p></div>
             </div>
         }
         if (Html.Permitted_To("Index", "News"))
@@ -165,7 +165,7 @@
                 <a href="@Url.Action("Leave_Management", "Employee")" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>
             </div>
         }
-        else if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("HR"))
+        else if (!Html.Configuration_Key("HR").Equals(null))
         {
             <div class="button-box">
                 <a href="@Url.Action("Leaves", "Employee_Attendance", new { id = this.Session["UserId"] })" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>

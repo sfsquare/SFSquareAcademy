@@ -21,15 +21,19 @@
         <li>@Html.ActionLink("Add New", "Create")</li>
     </ul>
 </div>
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div id="page-yield">
     <div id="search-area">
-        @if (Html.ValidationSummary() != null)
+        @if (ViewBag.Notice != null)
         {
-            <p class="flash-msg"> @Html.ValidationSummary() </p>
+            <p class="flash-msg"> @ViewBag.Notice </p>
         }
         <div id="searchbox">
             <form name="search-form" id="search-form">
-                @using (Html.BeginForm("Index", "USERs", FormMethod.Get))
+                @using (Html.BeginForm("Index", "User", FormMethod.Get))
                 {
                     <p>
                         @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)

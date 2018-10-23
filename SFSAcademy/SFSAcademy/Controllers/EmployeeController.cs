@@ -1223,9 +1223,9 @@ namespace SFSAcademy.Controllers
                 var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = eMPLOYEE.FIRST_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, EML = eMPLOYEE.EML, ADMIN_IND = false, STDNT_IND = false, EMP_IND = true, PARNT_IND = false, HASHED_PSWRD = string.Concat(eMPLOYEE.EMP_NUM, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
                 db.USERS.Add(StdUser);
                 db.SaveChanges();
-                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.LIST_ITEM, s.LVL_1_MENU, s.LVL_2_MENU, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
+                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
                 {
-                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, LIST_ITEM = entity.LIST_ITEM, LVL_1_MENU = entity.LVL_1_MENU, LVL_2_MENU = entity.LVL_2_MENU, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
+                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
                     db.USERS_ACCESS.Add(UserAccess);
                     db.SaveChanges();
                 }
@@ -1372,7 +1372,7 @@ namespace SFSAcademy.Controllers
 
             if (employee_additional_details == null)
             {
-                return RedirectToAction("Edit_Privilege", "USERs", new { id = NewEmp.USRID, Calling_Method = "Employee" });
+                return RedirectToAction("Edit_Privilege", "User", new { id = NewEmp.USRID, Calling_Method = "Employee" });
             }
             ViewBag.edit_request = edit_request;
             return View(employee_additional_details);
@@ -1410,7 +1410,7 @@ namespace SFSAcademy.Controllers
                 }
                 if (edit_request == null)
                 {
-                    return RedirectToAction("Edit_Privilege", "USERs", new { id = NewEmp.USRID, Calling_Method = "Employee" });
+                    return RedirectToAction("Edit_Privilege", "User", new { id = NewEmp.USRID, Calling_Method = "Employee" });
                 }
                 else
                 {

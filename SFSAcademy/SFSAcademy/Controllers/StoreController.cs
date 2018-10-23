@@ -799,29 +799,23 @@ namespace SFSAcademy.Controllers
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            if (!String.IsNullOrEmpty(searchString)) { page = 1; }
+            else { searchString = currentFilter; }
 
             ViewBag.CurrentFilter = searchString;
-            if (StudentName != null) { page = 1; }
+            if (!String.IsNullOrEmpty(StudentName)) { page = 1; }
             else { StudentName = currentFilter2; }
             ViewBag.CurrentFilter2 = StudentName;
-            if (ContactNumber != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ContactNumber)) { page = 1; }
             else { ContactNumber = currentFilter3; }
             ViewBag.CurrentFilter3 = ContactNumber;
-            if (ReceivedBy != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ReceivedBy)) { page = 1; }
             else { ReceivedBy = currentFilter4; }
             ViewBag.CurrentFilter4 = ReceivedBy;
-            if (MoneyDeposited != null) { page = 1; }
+            if (!String.IsNullOrEmpty(MoneyDeposited)) { page = 1; }
             else { MoneyDeposited = currentFilter5; }
             ViewBag.CurrentFilter5 = MoneyDeposited;
-            if (SoldFromDate != null)
+            if (!String.IsNullOrEmpty(SoldFromDate))
             {
                 page = 1;
             }
@@ -829,7 +823,7 @@ namespace SFSAcademy.Controllers
             DateTime? dFrom; DateTime dtFrom;
             dFrom = DateTime.TryParse(SoldFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             ViewBag.CurrentFilter9 = SoldFromDate;
-            if (SoldToDate != null)
+            if (!String.IsNullOrEmpty(SoldToDate))
             {
                 page = 1;
             }
@@ -847,7 +841,8 @@ namespace SFSAcademy.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.NAME.Contains(searchString));
+                int ProdID = Convert.ToInt32(searchString);
+                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == ProdID);
             }
             if (!String.IsNullOrEmpty(StudentName))
             {
@@ -863,7 +858,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == "Y" ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -1177,33 +1172,49 @@ namespace SFSAcademy.Controllers
 
         public ActionResult BackupTransaction(string sortOrder, string currentFilter, string searchString, int? page, string currentFilter2, string StudentName, string currentFilter3, string ContactNumber, string currentFilter4, string ReceivedBy, string currentFilter5, string MoneyDeposited, string currentFilter9, string SoldFromDate, string currentFilter10, string SoldToDate)
         {
+            var queryProduct = (from prd in db.STORE_PRODUCTS
+                                join cat in db.STORE_CATEGORY on prd.CATEGORY_ID equals cat.ID
+                                join subcat in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals subcat.ID
+                                where prd.IS_ACT == true && prd.IS_DEL == false && cat.IS_DEL == false && cat.IS_ACT == true && subcat.IS_ACT == true && subcat.IS_DEL == false
+                                select new Models.Products { ProductData = prd, CategoryData = cat, SubCategoryData = subcat })
+                                    .OrderBy(x => x.CategoryData.NAME).OrderBy(x => x.SubCategoryData.NAME).OrderBy(x => x.ProductData.NAME).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryProduct)
+            {
+                string ProdFullName = string.Concat(item.CategoryData.NAME, "-", item.SubCategoryData.NAME, "-", item.ProductData.NAME);
+                var result = new SelectListItem();
+                result.Text = ProdFullName;
+                result.Value = item.ProductData.PRODUCT_ID.ToString();
+                result.Selected = searchString != null && searchString == item.ProductData.PRODUCT_ID.ToString() ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            ViewBag.searchString = options;
+
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            if (!String.IsNullOrEmpty(searchString)) { page = 1; }
+            else { searchString = currentFilter; }
 
             ViewBag.CurrentFilter = searchString;
-            if (StudentName != null) { page = 1; }
+            if (!String.IsNullOrEmpty(StudentName)) { page = 1; }
             else { StudentName = currentFilter2; }
             ViewBag.CurrentFilter2 = StudentName;
-            if (ContactNumber != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ContactNumber)) { page = 1; }
             else { ContactNumber = currentFilter3; }
             ViewBag.CurrentFilter3 = ContactNumber;
-            if (ReceivedBy != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ReceivedBy)) { page = 1; }
             else { ReceivedBy = currentFilter4; }
             ViewBag.CurrentFilter4 = ReceivedBy;
-            if (MoneyDeposited != null) { page = 1; }
+            if (!String.IsNullOrEmpty(MoneyDeposited)) { page = 1; }
             else { MoneyDeposited = currentFilter5; }
             ViewBag.CurrentFilter5 = MoneyDeposited;
-            if (SoldFromDate != null)
+            if (!String.IsNullOrEmpty(SoldFromDate))
             {
                 page = 1;
             }
@@ -1211,7 +1222,7 @@ namespace SFSAcademy.Controllers
             DateTime? dFrom; DateTime dtFrom;
             dFrom = DateTime.TryParse(SoldFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             ViewBag.CurrentFilter9 = SoldFromDate;
-            if (SoldToDate != null)
+            if (!String.IsNullOrEmpty(SoldToDate))
             {
                 page = 1;
             }
@@ -1229,7 +1240,8 @@ namespace SFSAcademy.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.NAME.Contains(searchString));
+                int ProdID = Convert.ToInt32(searchString);
+                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == ProdID);
             }
             if (!String.IsNullOrEmpty(StudentName))
             {
@@ -1245,7 +1257,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == "Y" ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
@@ -1277,33 +1289,49 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult BackupSelectedTransactions(string sortOrder, string currentFilter, string searchString, int? page, string currentFilter2, string StudentName, string currentFilter3, string ContactNumber, string currentFilter4, string ReceivedBy, string currentFilter5, string MoneyDeposited, string currentFilter9, string SoldFromDate, string currentFilter10, string SoldToDate)
         {
+            var queryProduct = (from prd in db.STORE_PRODUCTS
+                                join cat in db.STORE_CATEGORY on prd.CATEGORY_ID equals cat.ID
+                                join subcat in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals subcat.ID
+                                where prd.IS_ACT == true && prd.IS_DEL == false && cat.IS_DEL == false && cat.IS_ACT == true && subcat.IS_ACT == true && subcat.IS_DEL == false
+                                select new Models.Products { ProductData = prd, CategoryData = cat, SubCategoryData = subcat })
+                                    .OrderBy(x => x.CategoryData.NAME).OrderBy(x => x.SubCategoryData.NAME).OrderBy(x => x.ProductData.NAME).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryProduct)
+            {
+                string ProdFullName = string.Concat(item.CategoryData.NAME, "-", item.SubCategoryData.NAME, "-", item.ProductData.NAME);
+                var result = new SelectListItem();
+                result.Text = ProdFullName;
+                result.Value = item.ProductData.PRODUCT_ID.ToString();
+                result.Selected = searchString != null && searchString == item.ProductData.PRODUCT_ID.ToString() ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            ViewBag.searchString = options;
+
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
+            if (!String.IsNullOrEmpty(searchString)) { page = 1; }
+            else { searchString = currentFilter; }
 
             ViewBag.CurrentFilter = searchString;
-            if (StudentName != null) { page = 1; }
+            if (!String.IsNullOrEmpty(StudentName)) { page = 1; }
             else { StudentName = currentFilter2; }
             ViewBag.CurrentFilter2 = StudentName;
-            if (ContactNumber != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ContactNumber)) { page = 1; }
             else { ContactNumber = currentFilter3; }
             ViewBag.CurrentFilter3 = ContactNumber;
-            if (ReceivedBy != null) { page = 1; }
+            if (!String.IsNullOrEmpty(ReceivedBy)) { page = 1; }
             else { ReceivedBy = currentFilter4; }
             ViewBag.CurrentFilter4 = ReceivedBy;
-            if (MoneyDeposited != null) { page = 1; }
+            if (!String.IsNullOrEmpty(MoneyDeposited)) { page = 1; }
             else { MoneyDeposited = currentFilter5; }
             ViewBag.CurrentFilter5 = MoneyDeposited;
-            if (SoldFromDate != null)
+            if (!String.IsNullOrEmpty(SoldFromDate))
             {
                 page = 1;
             }
@@ -1311,7 +1339,7 @@ namespace SFSAcademy.Controllers
             DateTime? dFrom; DateTime dtFrom;
             dFrom = DateTime.TryParse(SoldFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             ViewBag.CurrentFilter9 = SoldFromDate;
-            if (SoldToDate != null)
+            if (!String.IsNullOrEmpty(SoldToDate))
             {
                 page = 1;
             }
@@ -1329,7 +1357,8 @@ namespace SFSAcademy.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.NAME.Contains(searchString));
+                int ProdID = Convert.ToInt32(searchString);
+                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == ProdID);
             }
             if (!String.IsNullOrEmpty(StudentName))
             {
@@ -1345,7 +1374,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == "Y" ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {

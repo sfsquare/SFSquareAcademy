@@ -58,16 +58,25 @@ namespace SFSAcademy.HtmlHelpers
             HttpContext context = HttpContext.Current;
             int UserId = Convert.ToInt32(context.Session["UserId"]);
             SFSAcademyEntities db = new SFSAcademyEntities();
-            
-            foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(UserId)).ToList())
+            //var entity = db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(UserId)).ToList();
+            var entity = (from prusr in db.PRIVILEGES_USERS
+                          join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
+                          join pracces in db.PRIVILEGE_ACCESS on pr.ID equals pracces.PRIVILEGE_ID
+                          join usraccess in db.USERS_ACCESS on pracces.USERS_ACCESS_ID equals usraccess.ID
+                          where prusr.USER_ID == UserId
+                          select new { usraccess.CTL, usraccess.ACTN, usraccess.IS_ACCBLE }).ToList();
+
+            if(entity != null && entity.Count()!= 0)
             {
-                if (entity.ACTN.ToString().Equals(_Action) && entity.CTL.ToString().Equals(_Controller) && entity.IS_ACCBLE.Equals(true))
+                foreach (var item in entity)
                 {
-                    result = true;
-                    break;
+                    if (item.ACTN.ToString().Equals(_Action) && item.CTL.ToString().Equals(_Controller) && item.IS_ACCBLE.Equals(true))
+                    {
+                        result = true;
+                        break;
+                    }
                 }
             }
-
             return result;
         }
 
@@ -76,21 +85,41 @@ namespace SFSAcademy.HtmlHelpers
             SFSAcademyEntities db = new SFSAcademyEntities();
             HttpContext context = HttpContext.Current;
             int UserId = Convert.ToInt32(context.Session["UserId"]);
+            //var CurrentUser = context.Session["CurrentUser"];
 
-            var V = db.USERS.Select(s => new { s.ID, s.ADMIN_IND, s.EMP_IND, s.STDNT_IND, s.PARNT_IND }).Distinct().Where(a => a.ID.Equals(UserId)).FirstOrDefault();
-            if (V.ADMIN_IND.Equals(true))
+            var CurrentUser = db.USERS.Select(s => new { s.ID, s.ADMIN_IND, s.EMP_IND, s.STDNT_IND, s.PARNT_IND }).Distinct().Where(a => a.ID.Equals(UserId)).FirstOrDefault();
+            if (CurrentUser.ADMIN_IND.Equals(true))
             {
                 return "Admin";
             }
-            else if (V.EMP_IND.Equals(true))
+            else if (CurrentUser.EMP_IND.Equals(true))
             {
+                var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
+                                        join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
+                                        where prusr.USER_ID == UserId
+                                        select pr).ToList();
+                foreach(var item in CurrentPrivilege)
+                {
+                    if(item.NAME.Contains("HR"))
+                    {
+                        return "HR";
+                    }
+                    else if(item.PRIVILEGE_TAG.Contains("Finance"))
+                    {
+                        return "Finance";
+                    }
+                    else if (item.NAME.Contains("Inventory"))
+                    {
+                        return "Inventory";
+                    }
+                }
                 return "Empoyee";
             }
-            else if (V.STDNT_IND.Equals(true))
+            else if (CurrentUser.STDNT_IND.Equals(true))
             {
                 return "Student";
             }
-            else if (V.PARNT_IND.Equals(true))
+            else if (CurrentUser.PARNT_IND.Equals(true))
             {
                 return "Parent";
             }
@@ -135,11 +164,23 @@ namespace SFSAcademy.HtmlHelpers
         {
             SFSAcademyEntities db = new SFSAcademyEntities();
 
-            var SubjectBatch = (from C in db.CONFIGURATIONs
+            var Config = (from C in db.CONFIGURATIONs
                                 where C.CONFIG_KEY == Config_Key
                                 select new { CONFIG_VALUE = C.CONFIG_VAL }).FirstOrDefault();
 
-            return SubjectBatch.CONFIG_VALUE.ToString();
+            return Config.CONFIG_VALUE.ToString();
+        }
+
+
+        public static string Configuration_Key(this HtmlHelper HtmlHelper, string Config_Value)
+        {
+            SFSAcademyEntities db = new SFSAcademyEntities();
+
+            var Config = (from C in db.CONFIGURATIONs
+                                where C.CONFIG_VAL == Config_Value
+                                select new { CONFIG_KEY = C.CONFIG_KEY }).FirstOrDefault();
+
+            return Config.CONFIG_KEY.ToString();
         }
 
         public static int Check_Reminders(this HtmlHelper HtmlHelper)
