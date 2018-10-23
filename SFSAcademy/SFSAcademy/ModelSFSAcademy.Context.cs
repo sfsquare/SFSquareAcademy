@@ -86,17 +86,11 @@ namespace SFSAcademy
         public virtual DbSet<PAYROLL_CATEGORY> PAYROLL_CATEGORY { get; set; }
         public virtual DbSet<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
         public virtual DbSet<PHOTO_MASTER> PHOTO_MASTER { get; set; }
-        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
-        public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<RANKING_LEVEL> RANKING_LEVEL { get; set; }
         public virtual DbSet<SMS_LOG> SMS_LOG { get; set; }
         public virtual DbSet<SMS_MESSAGE> SMS_MESSAGE { get; set; }
         public virtual DbSet<SMS_SETTING> SMS_SETTING { get; set; }
         public virtual DbSet<STORE_CATEGORY> STORE_CATEGORY { get; set; }
-        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
-        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
         public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
         public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
@@ -112,8 +106,15 @@ namespace SFSAcademy
         public virtual DbSet<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual DbSet<TIMETABLE> TIMETABLEs { get; set; }
         public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
+        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
+        public virtual DbSet<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
+        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
+        public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<USER> USERS { get; set; }
         public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
-        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
+        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
+        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
     }
 }

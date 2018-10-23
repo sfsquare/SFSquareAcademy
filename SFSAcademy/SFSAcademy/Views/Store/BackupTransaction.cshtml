@@ -7,7 +7,27 @@
     ViewBag.Title = "ViewAllSelling";
 }
 
-
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
 <div id="content-header">
     <img src="~/Content/images/show_store.png" alt="Show Store Logo">
     <h1>Store</h1>
@@ -47,7 +67,7 @@
                                     <div class="label-field-pair">
                                         <label for="FIRST_NAME">Product Name:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                                            @Html.DropDownList("SearchString", null, htmlAttributes: new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </td>
@@ -90,18 +110,18 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="label-field-pair">
+                                    <div class="label-field-pair label">
                                         <label for="DOB">Sold From Date:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("SoldFromDate", ViewBag.CurrentFilter9 as string)
+                                            @Html.Editor("SoldFromDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.CurrentFilter9 } })
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="label-field-pair">
+                                    <div class="label-field-pair label">
                                         <label for="DOB">Sold To Date:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("SoldToDate", ViewBag.CurrentFilter10 as string)
+                                            @Html.Editor("SoldToDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @Value = ViewBag.CurrentFilter10 } })
                                         </div>
                                     </div>
                                 </td>

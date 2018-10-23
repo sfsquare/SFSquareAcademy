@@ -28,10 +28,10 @@
                         <a href="@Url.Action("Index", "Reminder")">Messages</a>@Html.Check_Reminders()
                     </div>
                     <div id="profile-link">
-                        <a href="@Url.Action("Details", "USERs", new { id = this.Session["UserId"] })" ; class="profile-link">Profile</a>
+                        <a href="@Url.Action("Details", "User", new { id = this.Session["UserId"] })" ; class="profile-link">Profile</a>
                     </div>
                     <div id="logout-link">
-                        <a href="@Url.Action("Logout", "USERs")">Log Out</a>
+                        <a href="@Url.Action("Logout", "User")">Log Out</a>
                     </div>
                 </div>
             </div>

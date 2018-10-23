@@ -28,9 +28,9 @@ namespace SFSAcademy
         public Nullable<int> CATEGORY_ID { get; set; }
         public string BRAND { get; set; }
         public Nullable<int> TOTAL_UNIT { get; set; }
-        public Nullable<int> TOTAL_COST { get; set; }
-        public Nullable<int> COST_PER_UNIT { get; set; }
-        public Nullable<int> SELL_PRICE_PER_UNIT { get; set; }
+        public Nullable<decimal> TOTAL_COST { get; set; }
+        public Nullable<decimal> COST_PER_UNIT { get; set; }
+        public Nullable<decimal> SELL_PRICE_PER_UNIT { get; set; }
         public Nullable<System.DateTime> PURCHASED_ON { get; set; }
         public string PURCHASED_THROUGH { get; set; }
         public string BAR_CODE { get; set; }

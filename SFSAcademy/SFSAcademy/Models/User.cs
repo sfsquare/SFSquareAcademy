@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Data.Entity.Validation;
 using System.Linq;
-using System.Web.Mvc;
 
 namespace SFSAcademy.Models
 {
@@ -16,7 +15,7 @@ namespace SFSAcademy.Models
     }
     public class UserDetails
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         public string USRNAME { get; set; }
         public string FIRST_NAME { get; set; }
         public string LAST_NAME { get; set; }
@@ -84,7 +83,7 @@ namespace SFSAcademy.Models
                 //    userrights.Add(new USERS_ACCESS)
                 //}
                 UserDetails user = new UserDetails();
-                user.Id = v.ID;
+                user.ID = v.ID;
                 user.USRNAME = v.USRNAME;
                 user.FIRST_NAME = v.FIRST_NAME;
                 user.LAST_NAME = v.LAST_NAME;
@@ -133,6 +132,8 @@ namespace SFSAcademy.Models
     public class SelectUserPrivilage
     {
         public PRIVILEGE PrivilageList { get; set; }
+        public int? USRS_ID { get; set; }
+        public bool IsActive { get; set; }
         public bool Selected { get; set; }
     }
 
