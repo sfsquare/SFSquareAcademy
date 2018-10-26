@@ -17,6 +17,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public USER()
         {
+            this.ARCHIVED_EMPLOYEE = new HashSet<ARCHIVED_EMPLOYEE>();
+            this.ARCHIVED_GUARDIAN = new HashSet<ARCHIVED_GUARDIAN>();
             this.EMPLOYEEs = new HashSet<EMPLOYEE>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
@@ -40,7 +42,12 @@ namespace SFSAcademy
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<bool> PARNT_IND { get; set; }
+        public bool IS_DEL { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

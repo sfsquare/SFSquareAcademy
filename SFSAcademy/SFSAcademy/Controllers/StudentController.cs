@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Data.Entity.Validation;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -955,22 +956,33 @@ namespace SFSAcademy.Controllers
                     db.SaveChanges();
                 }
 
-                string FullName = string.Concat(sTUDENT.FIRST_NAME, sTUDENT.LAST_NAME);
-                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = sTUDENT.FIRST_NAME, LAST_NAME = sTUDENT.LAST_NAME, EML = sTUDENT.EML, ADMIN_IND = false, STDNT_IND = true, EMP_IND = false, HASHED_PSWRD = string.Concat(sTUDENT.ADMSN_NO, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, PARNT_IND = false };
+                string FullName = Regex.Replace(string.Concat(sTUDENT.FIRST_NAME, sTUDENT.LAST_NAME), @"\s", "");
+                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = sTUDENT.FIRST_NAME, LAST_NAME = sTUDENT.LAST_NAME, EML = sTUDENT.EML, ADMIN_IND = false, STDNT_IND = true, EMP_IND = false, HASHED_PSWRD = string.Concat(FullName, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, PARNT_IND = false };
                 db.USERS.Add(StdUser);
-                db.SaveChanges();
-                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
                 {
-                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                    db.USERS_ACCESS.Add(UserAccess);
-                    db.SaveChanges();
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(sTUDENT);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(sTUDENT);
                 }
 
-                var StdResult = from u in db.STUDENTs where (u.ADMSN_NO == sTUDENT.ADMSN_NO) select u;
-                if (StdResult.Count() != 0)
+                STUDENT StdResult = db.STUDENTs.Find(sTUDENT.ID);
+                StdResult.USRID = StdUser.ID;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
                 {
-                    StdResult.First().USRID = StdUser.ID;
-                    db.SaveChanges();
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(sTUDENT);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(sTUDENT);
                 }
                 // some code 
                 TempData["alertMessage"] = string.Concat("Student Admission Done. Website User ID :", FullName, "     Password :", string.Concat(sTUDENT.ADMSN_NO, 123));
@@ -1119,13 +1131,13 @@ namespace SFSAcademy.Controllers
                     STUDENT sTUDENT = db.STUDENTs.Find(item.GuardianList.WARD_ID);
                     sTUDENT.IMMDT_CNTCT_ID = item.GuardianList.ID;
                     //db.SaveChanges();
-                    try { db.SaveChanges(); ViewBag.ErrorMessage = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID, ". Please click on link above to go to Stundet Details Page."); }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                    try { db.SaveChanges(); ViewBag.ErrorMessage = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID); }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return View(model); }
                     break;
                 }
             }
-            //return RedirectToAction("Index", "Student");
-            return View(model);
+            return RedirectToAction("Profiles", "Student", new { id = model.FirstOrDefault().GuardianList.WARD_ID });
+            //return View(model);
 
         }
 
@@ -1857,14 +1869,13 @@ namespace SFSAcademy.Controllers
                     STUDENT sTUDENT = db.STUDENTs.Find(item.GuardianList.WARD_ID);
                     sTUDENT.IMMDT_CNTCT_ID = item.GuardianList.ID;
                     //db.SaveChanges();
-                    try { db.SaveChanges(); ViewBag.ErrorMessage = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID,". Please click on link above to go to Stundet Details Page."); }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                    try { db.SaveChanges(); ViewBag.Notice = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID); }
+                    catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return View(model); }
                     break;
                 }
             }
-            //return RedirectToAction("Index", "Student");
-            return View(model);
-
+            return RedirectToAction("Profiles", "Student", new { id = model.FirstOrDefault().GuardianList.WARD_ID});
+            //return View(model);
         }
 
         // GET: Student/Guardian Details

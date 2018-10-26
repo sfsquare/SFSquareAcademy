@@ -2591,6 +2591,10 @@
     <Content Include="Views\Store\BackupTransaction.cshtml" />
     <Content Include="Views\Store\ListPurchagedProducts.cshtml" />
     <Content Include="Views\Store\SubCategories.cshtml" />
+    <Content Include="Views\Employee\Remove.cshtml" />
+    <Content Include="Views\Employee\Remove_Subordinate_Employee.cshtml" />
+    <Content Include="Views\Employee\_Remove_Reporting_Manager.cshtml" />
+    <Content Include="Views\Employee\Change_To_Former.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2605,6 +2609,24 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="ARCHIVED_EMPLOYEE.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ARCHIVED_EMPLOYEE_BANK_DETAIL.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ARCHIVED_EXAM_SCORE.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ARCHIVED_GUARDIAN.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
     <Compile Include="ARCHIVED_STUDENT.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
