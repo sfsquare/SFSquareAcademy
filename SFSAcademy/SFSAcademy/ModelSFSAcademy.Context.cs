@@ -110,11 +110,17 @@ namespace SFSAcademy
         public virtual DbSet<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
         public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
         public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
-        public virtual DbSet<USER> USERS { get; set; }
         public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
         public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
         public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
         public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
+        public virtual DbSet<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
+        public virtual DbSet<ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL> ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
+        public virtual DbSet<ARCHIVED_EMPLOYEE_BANK_DETAIL> ARCHIVED_EMPLOYEE_BANK_DETAIL { get; set; }
+        public virtual DbSet<ARCHIVED_EMPLOYEE_SALARY_STRUCTURE> ARCHIVED_EMPLOYEE_SALARY_STRUCTURE { get; set; }
+        public virtual DbSet<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
+        public virtual DbSet<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
+        public virtual DbSet<USER> USERS { get; set; }
     }
 }

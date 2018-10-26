@@ -74,6 +74,22 @@ namespace SFSAcademy.Models
             {
                 int value = Convert.ToInt32(v.ID);
                 System.Web.HttpContext.Current.Session["UserId"] = value;
+                if(v.STDNT_IND == true)
+                {
+                    STUDENT std = db.STUDENTs.Where(x => x.USRID == v.ID).FirstOrDefault();
+                    System.Web.HttpContext.Current.Session["StudentId"] = std.ID;
+                }
+                if (v.PARNT_IND == true)
+                {
+                    GUARDIAN grd = db.GUARDIANs.Where(x => x.USRID == v.ID).FirstOrDefault();
+                    STUDENT std = db.STUDENTs.Find(grd.WARD_ID);
+                    System.Web.HttpContext.Current.Session["StudentId"] = std.ID;
+                }
+                if (v.EMP_IND == true)
+                {
+                    EMPLOYEE emp = db.EMPLOYEEs.Where(x => x.USRID == v.ID).FirstOrDefault();
+                    System.Web.HttpContext.Current.Session["EmployeeId"] = emp.ID;
+                }
 
                 //To Do... Needs tovalidate the user access rights
                 //var useraccess = db.USERS_ACCESS.Where(a => a.USRS_ID == v.ID).ToList();

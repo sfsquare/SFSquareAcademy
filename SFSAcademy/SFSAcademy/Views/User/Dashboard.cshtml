@@ -67,9 +67,6 @@
                 </div>
             }
         </div>
-        <div class="button-box">
-            <a href="@Url.Action("Reports", "Student", new { id = this.Session["UserId"] })" class="option_buttons" id="academic_button" title="Academics"></a><div class='button-label'><p>Academics</p></div>
-        </div>
         if (Html.Permitted_To("Leave_Management", "Employee"))
         {
             <div class="button-box">
@@ -79,7 +76,7 @@
         else if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("HR"))
         {
             <div class="button-box">
-                <a href="@Url.Action("Leaves", "Employee_Attendance", new { id = this.Session["UserId"] })" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>
+                <a href="@Url.Action("Leaves", "Employee_Attendance", new { id = this.Session["EmployeeId"] })" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>
             </div>
         }
         if (Html.CurrentUser_UserType().Equals("Admin") || Html.CurrentUser_UserType().Equals("Finance"))
@@ -93,13 +90,13 @@
     else if (Html.CurrentUser_UserType().Equals("Student") || Html.CurrentUser_UserType().Equals("Parent"))
     {
         <div class="button-box">
-            <a href="@Url.Action("Profile", "Student", new { id = this.Session["UserId"] })" class="option_buttons" id="student_details_button" title="StudentDetails"></a><div class='button-label'><p>Student Details</p></div>
+            <a href="@Url.Action("Profiles", "Student", new { id = this.Session["StudentId"] })" class="option_buttons" id="student_details_button" title="View your profile"></a><div class='button-label'><p>My Profile</p></div>
         </div>
         <div class="button-box">
             <a href="@Url.Action("Index", "News")" class="option_buttons" id="campus_news_button" title="CampusNews"></a><div class='button-label'><p>Campus News</p></div>
         </div>
         <div class="button-box">
-            <a href="@Url.Action("Student_View", "Timetable", new { id = this.Session["UserId"] })" class="option_buttons" id="timetable_button" title="Timetable"></a><div class='button-label'><p>Timetable</p></div>
+            <a href="@Url.Action("Student_View", "Timetable", new { id = this.Session["StudentId"] })" class="option_buttons" id="timetable_button" title="Timetable"></a><div class='button-label'><p>Timetable</p></div>
         </div>
         <div class="button-box">
             @if (Html.Check_Reminders() != 0)
@@ -117,7 +114,7 @@
             }
         </div>
         <div class="button-box">
-            <a href="@Url.Action("Reports", "Student", new { id = this.Session["UserId"] })" class="option_buttons" id="academic_button" title="Academics"></a><div class='button-label'><p>Academics</p></div>
+            <a href="@Url.Action("Reports", "Student", new { id = this.Session["StudentId"] })" class="option_buttons" id="academic_button" title="Academics"></a><div class='button-label'><p>Academics</p></div>
         </div>
     }
     else
@@ -125,13 +122,13 @@
         if (!Html.Configuration_Key("HR").Equals(null))
         {
             <div class="button-box">
-                <a href="@Url.Action("Profile", "Employee", new { id = this.Session["UserId"] })" class="option_buttons" id="my_profile_button" title="MyProfile"></a><div class='button-label'><p>My_Profile</p></div>
+                <a href="@Url.Action("Profiles", "Employee", new { id = this.Session["EmployeeId"] })" class="option_buttons" id="my_profile_button" title="Employee profile details."></a><div class='button-label'><p>My Profile</p></div>
             </div>
         }
         if (Html.Permitted_To("Admission1", "Student"))
         {
             <div class="button-box">
-                <a href="@Url.Action("Admission1", "Student", new { id = this.Session["UserId"] })" class="option_buttons" id="admission_button" title="Admission"></a><div class='button-label'><p>Admission</p></div>
+                <a href="@Url.Action("Admission1", "Student")" class="option_buttons" id="admission_button" title="Admission"></a><div class='button-label'><p>Admission</p></div>
             </div>
         }
         if (Html.Permitted_To("Index", "Student"))
@@ -168,7 +165,7 @@
         else if (!Html.Configuration_Key("HR").Equals(null))
         {
             <div class="button-box">
-                <a href="@Url.Action("Leaves", "Employee_Attendance", new { id = this.Session["UserId"] })" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>
+                <a href="@Url.Action("Leaves", "Employee_Attendance", new { id = this.Session["EmployeeId"] })" class="option_buttons" id="leaves_button" title="Leaves"></a><div class='button-label'><p>Leaves</p></div>
             </div>
         }
 
@@ -263,9 +260,9 @@
 </div>
 <div id="option_description"> </div>
 <script type="text/javascript">
-  $$('#user_options .button-box').each(function(ele, index){
-    if(index%5 == 0){
-      ele.addClassName("left-button");
-    }
-  });
+    $$('#user_options .button-box').each(function (ele, index) {
+        if (index % 5 == 0) {
+            ele.addClassName("left-button");
+        }
+    });
 </script>

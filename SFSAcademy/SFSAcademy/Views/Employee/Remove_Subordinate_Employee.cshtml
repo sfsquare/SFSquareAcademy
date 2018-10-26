@@ -1,0 +1,84 @@
+﻿@model IEnumerable<SFSAcademy.Models.Employee>
+@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+    EMPLOYEE current_manager = (EMPLOYEE)ViewData["current_manager"];
+    IEnumerable<EMPLOYEE> associate_employee = (IEnumerable<EMPLOYEE>)ViewData["associate_employee"];
+}
+@{
+    ViewBag.Title = "Remove_Subordinate_Employee";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Employee</h1>
+    <h3>Change Reporting Manager</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
+<script> function update_reporting_manager(id) { $('employee_reporting_manager_id').value = id; } </script>
+<div id="page-yield">
+    <p class="flash-msg">Below listed Employees are under this Manager. Please select an alternative manager. </p>
+    <div id="list_content">
+        <div id="list">
+            @{ int i = 0;}
+            @foreach (var item in associate_employee)
+            {
+                string selectedRow = "name_listeven";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "name_listodd";
+                }
+                <div class=@selectedRow>
+                    <li>
+                        <div class="att_list_name"> @item.FIRST_NAME @item.MID_NAME @item.LAST_NAME</div> <div class="att_list_number">@item.EMP_NUM</div>
+                    </li>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div id="form-content">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="current-changed-manager">
+                <div id="changed-manager-outer">
+                    <div id="changed-manager">Selected new manager &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</div>
+                    @if (current_manager.LAST_NAME != null)
+                    {
+                        <div id="changed-manager-name"> Name: @current_manager.FIRST_NAME @current_manager.LAST_NAME | Employee Numer: @current_manager.EMP_NUM</div>
+                    }
+                    else
+                    {
+                        <div id="changed-manager-name">Name: @current_manager.FIRST_NAME | Employee Numer: @current_manager.EMP_NUM</div>
+                    }
+                    <div class="extender"></div>
+                    <br />
+                </div>
+                <div class="text-input-bg">
+                    @Html.Hidden("employee_id", Employee.ID)
+                    @Html.Hidden("current_manager_id", current_manager.ID)
+
+                </div>
+                <div id="update-button"><input type="submit" value="► Save And Proceed" class="submit_button" /></div>
+            </div>
+        }
+
+        <div class="extender"></div>
+        <br />
+        <div id="search-options">
+            @Html.Partial("~/Views/Employee/_Remove_Reporting_Manager.cshtml")
+        </div>
+    </div>
+
+    <div id="information"></div>
+</div>
+

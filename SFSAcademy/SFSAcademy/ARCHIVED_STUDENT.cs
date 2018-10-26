@@ -14,6 +14,13 @@ namespace SFSAcademy
     
     public partial class ARCHIVED_STUDENT
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ARCHIVED_STUDENT()
+        {
+            this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
+            this.ARCHIVED_GUARDIAN = new HashSet<ARCHIVED_GUARDIAN>();
+        }
+    
         public int ID { get; set; }
         public string ADMSN_NO { get; set; }
         public string CLS_ROLL_NO { get; set; }
@@ -56,5 +63,9 @@ namespace SFSAcademy
         public virtual STUDENT STUDENT { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
     }
 }

@@ -41,11 +41,11 @@
                 </div>
             </div>
 
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.IS_INCM, "Is Income Category ?", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.DropDownList("IS_INCM", new SelectList(Enum.GetValues(typeof(FinCategoryIncomeTypes))), "Select Type", new { @class = "form-control", @id = "MissingDetl" })
-                    @Html.ValidationMessageFor(model => model.IS_INCM, "", new { @class = "text-danger" })
+            <div class="label-checkbox-pair label">
+                @Html.LabelFor(model => model.IS_INCM, "Is This Under Income ?", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div id="radio-buttons">
+                    @Html.RadioButtonFor(model => model.IS_INCM, true, true)@Html.Label("Yes", new { @class = "label_for_status" })
+                    @Html.RadioButtonFor(model => model.IS_INCM, false, false)@Html.Label("No", new { @class = "label_for_status" })
                 </div>
             </div>
 

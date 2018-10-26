@@ -32,6 +32,7 @@ namespace SFSAcademy
             this.EMPLOYEE1 = new HashSet<EMPLOYEE>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
+            this.ARCHIVED_EMPLOYEE = new HashSet<ARCHIVED_EMPLOYEE>();
         }
     
         public int ID { get; set; }
@@ -127,6 +128,8 @@ namespace SFSAcademy
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
         public virtual USER USER { get; set; }
     }
 }

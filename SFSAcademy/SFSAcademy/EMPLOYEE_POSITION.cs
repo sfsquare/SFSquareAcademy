@@ -18,6 +18,7 @@ namespace SFSAcademy
         public EMPLOYEE_POSITION()
         {
             this.EMPLOYEEs = new HashSet<EMPLOYEE>();
+            this.ARCHIVED_EMPLOYEE = new HashSet<ARCHIVED_EMPLOYEE>();
         }
     
         public int ID { get; set; }
@@ -29,5 +30,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE> EMPLOYEEs { get; set; }
         public virtual EMPLOYEE_CATEGORY EMPLOYEE_CATEGORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
     }
 }

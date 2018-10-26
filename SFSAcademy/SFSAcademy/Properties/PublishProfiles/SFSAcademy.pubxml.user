@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\sudhi\Documents\Visual Studio 2015\Projects\SFSAcademy Artifects\Published\24-10-2018</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\sudhi\Documents\Visual Studio 2015\Projects\SFSAcademy Artifects\Published\26-10-2018</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
@@ -148,7 +148,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>10/24/2018 00:49:47</publishTime>
+      <publishTime>10/26/2018 14:42:20</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -6274,7 +6274,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/23/2018 18:20:41</publishTime>
     </File>
     <File Include="ModelSFSAcademy.edmx.diagram">
-      <publishTime>10/23/2018 23:32:39</publishTime>
+      <publishTime>10/25/2018 15:55:14</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>10/23/2018 14:35:13</publishTime>
@@ -6436,13 +6436,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/11/2018 18:15:53</publishTime>
     </File>
     <File Include="Views/Employee/Add_Position.cshtml">
-      <publishTime>10/11/2018 18:16:36</publishTime>
+      <publishTime>10/26/2018 11:52:57</publishTime>
     </File>
     <File Include="Views/Employee/Admission1.cshtml">
       <publishTime>10/11/2018 18:20:26</publishTime>
     </File>
     <File Include="Views/Employee/Admission2.cshtml">
-      <publishTime>10/11/2018 18:22:52</publishTime>
+      <publishTime>10/25/2018 17:33:29</publishTime>
     </File>
     <File Include="Views/Employee/Admission3.cshtml">
       <publishTime>10/11/2018 18:23:24</publishTime>
@@ -6454,7 +6454,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/11/2018 18:24:22</publishTime>
     </File>
     <File Include="Views/Employee/Advanced_Search.cshtml">
-      <publishTime>10/11/2018 18:25:27</publishTime>
+      <publishTime>10/26/2018 12:20:02</publishTime>
+    </File>
+    <File Include="Views/Employee/Change_To_Former.cshtml">
+      <publishTime>10/25/2018 14:35:57</publishTime>
     </File>
     <File Include="Views/Employee/Create.cshtml">
       <publishTime>09/23/2018 18:20:41</publishTime>
@@ -6490,7 +6493,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/11/2018 18:31:49</publishTime>
     </File>
     <File Include="Views/Employee/Edit_Position.cshtml">
-      <publishTime>10/11/2018 18:32:38</publishTime>
+      <publishTime>10/26/2018 11:55:01</publishTime>
     </File>
     <File Include="Views/Employee/Edit_Rejected_Payslip.cshtml">
       <publishTime>10/11/2018 18:32:55</publishTime>
@@ -6524,6 +6527,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Employee/Rejected_Payslip.cshtml">
       <publishTime>10/11/2018 18:37:00</publishTime>
+    </File>
+    <File Include="Views/Employee/Remove.cshtml">
+      <publishTime>10/25/2018 12:01:49</publishTime>
+    </File>
+    <File Include="Views/Employee/Remove_Subordinate_Employee.cshtml">
+      <publishTime>10/25/2018 12:01:49</publishTime>
     </File>
     <File Include="Views/Employee/Search.cshtml">
       <publishTime>10/11/2018 18:37:16</publishTime>
@@ -6623,6 +6632,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Employee/_Rejected_Payslip.cshtml">
       <publishTime>09/23/2018 18:20:41</publishTime>
+    </File>
+    <File Include="Views/Employee/_Remove_Reporting_Manager.cshtml">
+      <publishTime>10/25/2018 11:37:52</publishTime>
     </File>
     <File Include="Views/Employee/_Select_Dates.cshtml">
       <publishTime>10/11/2018 17:47:34</publishTime>
@@ -7339,19 +7351,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/12/2018 18:55:36</publishTime>
     </File>
     <File Include="Views/User/Create.cshtml">
-      <publishTime>10/12/2018 18:56:44</publishTime>
+      <publishTime>10/25/2018 17:07:49</publishTime>
     </File>
     <File Include="Views/User/Dashboard.cshtml">
-      <publishTime>10/24/2018 00:15:54</publishTime>
+      <publishTime>10/25/2018 19:07:50</publishTime>
     </File>
     <File Include="Views/User/Delete.cshtml">
-      <publishTime>10/23/2018 21:32:02</publishTime>
+      <publishTime>10/25/2018 17:15:39</publishTime>
     </File>
     <File Include="Views/User/Details.cshtml">
       <publishTime>09/23/2018 18:20:41</publishTime>
     </File>
     <File Include="Views/User/Edit.cshtml">
-      <publishTime>10/23/2018 16:35:34</publishTime>
+      <publishTime>10/25/2018 17:50:37</publishTime>
     </File>
     <File Include="Views/User/Edit_Privilege.cshtml">
       <publishTime>10/23/2018 21:05:49</publishTime>
@@ -7411,7 +7423,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/23/2018 18:20:41</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>10/24/2018 00:49:51</publishTime>
+      <publishTime>10/26/2018 14:42:56</publishTime>
     </File>
   </ItemGroup>
 </Project>

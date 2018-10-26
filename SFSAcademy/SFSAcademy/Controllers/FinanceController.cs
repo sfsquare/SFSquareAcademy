@@ -435,8 +435,11 @@ namespace SFSAcademy.Controllers
                 }
                 else
                 {
-                    fINANCE_FEE_CATEGORY.UPDATED_AT = System.DateTime.Now;
-                    db.Entry(fINANCE_FEE_CATEGORY).State = EntityState.Modified;
+                    fINANCE_FEE_CATEGORY_UPD.UPDATED_AT = System.DateTime.Now;
+                    fINANCE_FEE_CATEGORY_UPD.NAME = fINANCE_FEE_CATEGORY.NAME;
+                    fINANCE_FEE_CATEGORY_UPD.DESCR = fINANCE_FEE_CATEGORY.DESCR;
+                    fINANCE_FEE_CATEGORY_UPD.BTCH_ID = fINANCE_FEE_CATEGORY.BTCH_ID;
+                    db.Entry(fINANCE_FEE_CATEGORY_UPD).State = EntityState.Modified;
                     db.SaveChanges();
                 }
                 ViewBag.ErrorMessage = string.Concat("Master Category Updated Successfully");

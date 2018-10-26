@@ -1,0 +1,97 @@
+﻿@model IEnumerable<SFSAcademy.Models.Employee>
+@using SFSAcademy.Models
+@{
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+    EMPLOYEE current_manager = (EMPLOYEE)ViewData["current_manager"];
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#StdList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#Search").keyup(function () {
+            var searchText = $("#Search").val().toLowerCase();
+            $(".Search").each(function () {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                    $("#StdList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#StdList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#Search").val() == '') {
+                $("#StdList").hide();
+            }
+        });
+    });
+
+</script>
+
+<p class="flash-msg">*Enter First Name, Middle Name, Last Name, Employee Number or Department of Employee to search.</p>
+<div class="container">
+    <div class="form-group">
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        <div class="input-group">
+            <img src="~/Content/images/search_icon.png">
+            <input type="text" id="Search" placeholder="Search" class="form-control" />
+        </div>
+    </div>
+    <br />
+    <div class="students-table" id="StdList">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Employee Name
+                </th>
+                <th>
+                    Employee Number
+                </th>
+                <th>
+                    Employee Department
+                </th>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="Search @selectedRow">
+                    <td class="col-1">
+                        @i
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.EmployeeData.FIRST_NAME) @Html.DisplayFor(modelItem => item.EmployeeData.MID_NAME) @Html.DisplayFor(modelItem => item.EmployeeData.LAST_NAME)
+                    </td>
+                    <td class="col-2" nowrap>
+                        @Html.ActionLink(item.EmployeeData.EMP_NUM, "Remove_Subordinate_Employee", new { id = Employee.ID, New_Mgr_Id = item.EmployeeData.ID }, new { style = "text-decoration:underline" })
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.DepartmentData.NAMES)
+                        <label>-</label>
+                        @Html.DisplayFor(modelItem => item.PositionData.POS_NAME)
+                    </td>
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+    </div>
+</div>
+

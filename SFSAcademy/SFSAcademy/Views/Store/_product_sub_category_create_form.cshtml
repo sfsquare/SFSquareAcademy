@@ -15,7 +15,7 @@
                 @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="label-field-pair">
+        <div class="label-field-pair label">
             @Html.LabelFor(model => model.STORE_CATEGORY_ID, "Store Category:", htmlAttributes: new { @class = "control-label col-md-2" })
             <span class="necessary-field" style="font-size:small">* Required Field</span>
             <div class="text-input-bg">
@@ -25,18 +25,16 @@
             </div>
         </div>
 
-        <div class="label-field-pair">
-            @Html.LabelFor(model => model.IS_ACT, "Is this Active ?", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="text-input-bg">
-               @Html.DropDownListFor(model => model.IS_ACT, new List<SelectListItem>
-                        { new SelectListItem{Text="Yes", Value="Y"},
-                          new SelectListItem{Text="No", Value="N"}}, "Select If Active")
-                @Html.ValidationMessageFor(model => model.IS_ACT, "", new { @class = "text-danger" })
+        <div class="label_field_pair label">
+            <label class="label_for_student_gender" for="student_gender">Is this Active ?</label>
+            <div class="student_gender_value">
+                @Html.RadioButtonFor(model => model.IS_ACT, true, true)@Html.Label("Yes")
+                @Html.RadioButtonFor(model => model.IS_ACT, false, false)@Html.Label("No")
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="► Save" class="submit_button" />
+                <input type="submit" value="► Save" class="user_button" />
             </div>
         </div>
     </div>
