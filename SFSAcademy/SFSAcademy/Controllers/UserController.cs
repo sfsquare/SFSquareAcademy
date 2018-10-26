@@ -10,6 +10,7 @@ using PagedList;
 using SFSAcademy.Models;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -37,7 +38,7 @@ namespace SFSAcademy.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var User = from s in db.USERS
+            var User = from s in db.USERS.Where(x=>x.IS_DEL ==false)
                            select s;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -96,54 +97,14 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
+                uSER.CREATED_AT = System.DateTime.Now;
+                uSER.UPDATED_AT = System.DateTime.Now;
+                string FullName = Regex.Replace(string.Concat(uSER.FIRST_NAME, uSER.LAST_NAME), @"\s", "");
+                uSER.USRNAME = FullName;
+                uSER.HASHED_PSWRD = string.Concat(uSER.FIRST_NAME, uSER.LAST_NAME, "123");
                 db.USERS.Add(uSER);
                 db.SaveChanges();
-                if (uSER.ADMIN_IND.Equals("Y"))
-                {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(1)).ToList())
-                    {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                        db.USERS_ACCESS.Add(UserAccess);
-                        db.SaveChanges();
-                    }
-                }
-                else if(uSER.EMP_IND.Equals("Y"))
-                {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
-                    {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                        db.USERS_ACCESS.Add(UserAccess);
-                        db.SaveChanges();
-                    }
-                }
-                else if (uSER.STDNT_IND.Equals("Y"))
-                {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(4)).ToList())
-                    {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                        db.USERS_ACCESS.Add(UserAccess);
-                        db.SaveChanges();
-                    }
-                }
-                else if (uSER.PARNT_IND.Equals("Y"))
-                {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
-                    {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                        db.USERS_ACCESS.Add(UserAccess);
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(3)).ToList())
-                    {
-                        var UserAccess = new USERS_ACCESS() { USRS_ID = uSER.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                        db.USERS_ACCESS.Add(UserAccess);
-                        db.SaveChanges();
-                    }
-                }
-                return RedirectToAction("Edit_Privilege", "USERs", new { id = uSER.ID });
+                return RedirectToAction("Edit_Privilege", "User", new { id = uSER.ID });
 
             }
 
@@ -174,7 +135,20 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(uSER).State = EntityState.Modified;
+                var user_to_update = db.USERS.Find(uSER.ID);
+                user_to_update.FIRST_NAME = uSER.FIRST_NAME;
+                user_to_update.LAST_NAME = uSER.LAST_NAME;
+                user_to_update.EML = uSER.EML;
+                user_to_update.ADMIN_IND = uSER.ADMIN_IND;
+                user_to_update.STDNT_IND = uSER.STDNT_IND;
+                user_to_update.EMP_IND = uSER.EMP_IND;
+                user_to_update.HASHED_PSWRD = uSER.HASHED_PSWRD;
+                user_to_update.SALT = uSER.SALT;
+                user_to_update.RST_PSWRD_CODE = uSER.RST_PSWRD_CODE;
+                user_to_update.RST_PSWRD_CODE_UNTL = uSER.RST_PSWRD_CODE_UNTL;
+                user_to_update.PARNT_IND = uSER.PARNT_IND;
+                user_to_update.UPDATED_AT = System.DateTime.Now;
+                db.Entry(user_to_update).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "User details updated in system successfully."; }
                 catch (DbEntityValidationException e)
                 {
@@ -323,28 +297,6 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-  /*      public ActionResult Edit_Privilege(int? id, string Calling_Method)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var uSERaACCESS = (from C in db.USERS_ACCESS
-                               where C.USRS_ID == id
-                               select new Models.SelectUserAccess { AccessList = C, Selected= (C.IS_ACCBLE == true ? true : false) }).OrderBy(g => g.AccessList.ID).ToList();
-
-
-            var uSERaCCESfINAL = (from u in uSERaACCESS
-                                      //where conditions or joins with other tables to be included here
-                                  group u by new { u.AccessList.LIST_ITEM, u.AccessList.LVL_1_MENU } into grp
-                                  let MaxOrderDatePerPerson = grp.Max(g => g.AccessList.ID)
-                                  from p in grp
-                                  where p.AccessList.ID == MaxOrderDatePerPerson
-                                  select p).ToList();
-            ViewBag.Calling_Method = Calling_Method;
-            return View(uSERaCCESfINAL);
-
-        }*/
 
         public ActionResult Edit_Privilege(int? id, string Calling_Method)
         {

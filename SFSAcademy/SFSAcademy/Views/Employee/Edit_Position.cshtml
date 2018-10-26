@@ -58,8 +58,8 @@
                 <div class="label-checkbox-pair label">
                     <label class="status" for="status">Status:</label>
                     <div id="radio-buttons">
-                        @Html.RadioButton("IS_ACT", "Y", Model.IS_ACT == true ? true : false)@Html.Label("Active", new { @class = "label_for_status" })
-                        @Html.RadioButton("IS_ACT", "N", Model.IS_ACT == false ? true : false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                        @Html.RadioButton("IS_ACT", true, Model.IS_ACT == true ? true : false)@Html.Label("Active", new { @class = "label_for_status" })
+                        @Html.RadioButton("IS_ACT", false, Model.IS_ACT == false ? true : false)@Html.Label("Inactive", new { @class = "label_for_status" })
                     </div>
                 </div>
                 <div id="submit-button">

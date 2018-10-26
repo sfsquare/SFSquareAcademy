@@ -203,17 +203,10 @@
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE_ACCESS" Width="1.5" PointX="5.25" PointY="60.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE" Width="1.5" PointX="0.75" PointY="50.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGES_USERS" Width="1.5" PointX="3" PointY="60.125" />
-        <EntityTypeShape EntityType="SFSAcademyModel.USER" Width="1.5" PointX="0.75" PointY="66.625" />
         <EntityTypeShape EntityType="SFSAcademyModel.USERS_ACCESS" Width="1.5" PointX="3" PointY="69.625" />
-        <AssociationConnector Association="SFSAcademyModel.USRID_USER_EMPL_NI" />
-        <AssociationConnector Association="SFSAcademyModel.PARNT_USER_FINA_NI" />
-        <AssociationConnector Association="SFSAcademyModel.USRID_USER_GUAR_NI" />
         <AssociationConnector Association="SFSAcademyModel.PRI_AC_PRI_USER_NI" />
         <AssociationConnector Association="SFSAcademyModel.USER_AC_PRI_USER_NI" />
         <AssociationConnector Association="SFSAcademyModel.PRI_PRI_USER_NI" />
-        <AssociationConnector Association="SFSAcademyModel.USER_PRI_USER_NI" />
-        <AssociationConnector Association="SFSAcademyModel.USRID_USER_STUD_NI" />
-        <AssociationConnector Association="SFSAcademyModel.USRS__USER_USER_ID" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE" Width="1.5" PointX="14.25" PointY="99.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Width="1.5" PointX="14.25" PointY="109.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE_CART" Width="1.5" PointX="14.25" PointY="104.5" />
@@ -224,6 +217,39 @@
         <AssociationConnector Association="SFSAcademyModel.STPROD_STPURCART_ASSE_NI" />
         <AssociationConnector Association="SFSAcademyModel.STPURPO_PRD_ASSE_NI" />
         <AssociationConnector Association="SFSAcademyModel.STSUBCAT_STPROD_ASSE_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE" Width="1.5" PointX="20.25" PointY="57.5" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Width="1.5" PointX="22.5" PointY="57.875" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_BANK_DETAIL" Width="1.5" PointX="25.5" PointY="58.875" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Width="1.5" PointX="22.5" PointY="61.25" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_EXAM_SCORE" Width="1.5" PointX="20.25" PointY="84.375" />
+        <EntityTypeShape EntityType="SFSAcademyModel.ARCHIVED_GUARDIAN" Width="1.5" PointX="22.5" PointY="71.75" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_C_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_D_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_G_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_P_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.RPTG_EMPL_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.ADDL_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_ARCH_BANK_FLD_NI3" />
+        <AssociationConnector Association="SFSAcademyModel.PYRL_ARCH_PAYR_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EXAM_ARCH_EXAM_EXAM_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.GRADI_ARCH_GRAD_EXAM_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.STDNT_ARCH_STUD_EXAM_NI" />
+        <AssociationConnector Association="SFSAcademyModel.WARD_STUD_ARCH_GUAR_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.USER" Width="1.5" PointX="0.75" PointY="66.25" />
+        <AssociationConnector Association="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USRID_USER_ARCH_GUAR_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USRID_USER_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.PARNT_USER_FINA_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USRID_USER_GUAR_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USER_PRI_USER_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USRID_USER_STUD_NI" />
+        <AssociationConnector Association="SFSAcademyModel.USRS__USER_USER_ID" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

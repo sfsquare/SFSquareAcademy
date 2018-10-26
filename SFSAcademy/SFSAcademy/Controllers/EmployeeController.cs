@@ -14,6 +14,7 @@ using System.IO;
 using SFSAcademy.HtmlHelpers;
 using PagedList;
 using System.Data.Entity.Core.Objects;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -133,40 +134,6 @@ namespace SFSAcademy.Controllers
             return View(eMPLOYEE);
         }
 
-        // GET: Employee/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
-            if (eMPLOYEE == null)
-            {
-                return HttpNotFound();
-            }
-            return View(eMPLOYEE);
-        }
-
-        // POST: Employee/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
-            db.EMPLOYEEs.Remove(eMPLOYEE);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
 
         public ActionResult HR(string Notice)
         {
@@ -1192,16 +1159,23 @@ namespace SFSAcademy.Controllers
                 eMPLOYEE.UPDATED_AT = System.DateTime.Now;
                 eMPLOYEE.EMP_NUM = string.Concat("E", eMPLOYEE.EMP_NUM);
                 db.EMPLOYEEs.Add(eMPLOYEE);
+
+                var result = from u in db.CONFIGURATIONs where (u.CONFIG_KEY == "EmployeeNumberAutoIncrement") select u;
+                if (result.Count() != 0)
+                {
+                    var dbConfig = result.First();
+
+                    dbConfig.CONFIG_VAL = Emp_Num_Int.ToString();
+                }
+
+                //string FullName = string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.LAST_NAME);
+                string FullName = Regex.Replace(string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.LAST_NAME), @"\s", "");
+                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = eMPLOYEE.FIRST_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, EML = eMPLOYEE.EML, ADMIN_IND = false, STDNT_IND = false, EMP_IND = true, PARNT_IND = false, HASHED_PSWRD = string.Concat(FullName, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
+                db.USERS.Add(StdUser);
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
                 {
-                    foreach (var eve in e.EntityValidationErrors)
-                    {
-                        foreach (var ve in eve.ValidationErrors)
-                        {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
-                        }
-                    }
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
                     return View(eMPLOYEE);
                 }
                 catch (Exception e)
@@ -1210,34 +1184,22 @@ namespace SFSAcademy.Controllers
                     return View(eMPLOYEE);
                 }
 
-                var result = from u in db.CONFIGURATIONs where (u.CONFIG_KEY == "EmployeeNumberAutoIncrement") select u;
-                if (result.Count() != 0)
-                {
-                    var dbConfig = result.First();
+                EMPLOYEE EmpResult =  db.EMPLOYEEs.Find(eMPLOYEE.ID) ;
+                EmpResult.USRID = StdUser.ID;
 
-                    dbConfig.CONFIG_VAL = Emp_Num_Int.ToString();
-                    db.SaveChanges();
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(eMPLOYEE);
                 }
-
-                string FullName = string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.MID_NAME, eMPLOYEE.LAST_NAME);
-                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = eMPLOYEE.FIRST_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, EML = eMPLOYEE.EML, ADMIN_IND = false, STDNT_IND = false, EMP_IND = true, PARNT_IND = false, HASHED_PSWRD = string.Concat(eMPLOYEE.EMP_NUM, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
-                db.USERS.Add(StdUser);
-                db.SaveChanges();
-                foreach (var entity in db.USERS_ACCESS.Select(s => new { s.USRS_ID, s.CTL, s.ACTN, s.IS_ACCBLE }).Distinct().Where(a => a.USRS_ID.Equals(2)).ToList())
+                catch (Exception e)
                 {
-                    var UserAccess = new USERS_ACCESS() { USRS_ID = StdUser.ID, CTL = entity.CTL, ACTN = entity.ACTN, IS_ACCBLE = entity.IS_ACCBLE };
-                    db.USERS_ACCESS.Add(UserAccess);
-                    db.SaveChanges();
-                }
-
-                var EmpResult = from u in db.EMPLOYEEs where (u.EMP_NUM == eMPLOYEE.EMP_NUM) select u;
-                if (EmpResult.Count() != 0)
-                {
-                    EmpResult.First().USRID = StdUser.ID;
-                    db.SaveChanges();
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(eMPLOYEE);
                 }
                 // some code 
-                TempData["alertMessage"] = string.Concat("Employee Admission Done. Website User ID :", FullName, "     Password :", string.Concat(eMPLOYEE.EMP_NUM, 123), ". Please change passord after login.");
+                TempData["alertMessage"] = string.Concat("Employee Admission Done. Website User ID :", FullName, "     Password :", string.Concat(FullName, 123), ". Please change passord after login.");
                 return RedirectToAction("Admission2", "Employee", new { Emp_id = eMPLOYEE.ID });
             }
             return View(eMPLOYEE);
@@ -2013,7 +1975,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(Status) && !Status.Contains("All"))
             {
-                EmployeeDetail = EmployeeDetail.Where(s => s.EmployeeData.STAT.Equals(Status));
+                EmployeeDetail = EmployeeDetail.Where(s => s.EmployeeData.STAT == (Status == "Y" ? true : false));
             }
             if (!String.IsNullOrEmpty(EmployeeJoinFromDate) && !String.IsNullOrEmpty(EmployeeJoinToDate))
             {
@@ -3277,6 +3239,223 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Subject_Assignment", new { Notice = ViewBag.Notice});
         }
 
+        public ActionResult Remove(int? id, string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            EMPLOYEE employee = db.EMPLOYEEs.Include(x=>x.EMPLOYEE_DEPARTMENT).Where(x=>x.ID == id).FirstOrDefault();
+            ViewData["employee"] = employee;
+            var associate_employee = db.EMPLOYEEs.Where(x => x.RPTG_MGR_ID == id).ToList();
+            if(associate_employee != null && associate_employee.Count() != 0)
+            {
+                ViewBag.Notice = "Cant be deleted. This employee is a reporting manager.";
+                return RedirectToAction("Remove_Subordinate_Employee", new { id = employee.ID, Notice = ViewBag.Notice });
+            }
+            return View(employee);
+        }
+
+        public ActionResult Remove_Subordinate_Employee(int id, int? New_Mgr_Id, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            EMPLOYEE current_manager = db.EMPLOYEEs.Find(id);
+            ViewData["Employee"] = current_manager;
+            ViewData["current_manager"] = current_manager;
+
+            var All_Employee = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true) on emp.EMP_CAT_ID equals ec.ID into gec
+                                  from subgec in gec.DefaultIfEmpty()
+                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true) on emp.EMP_POS_ID equals ep.ID into gep
+                                  from subgep in gep.DefaultIfEmpty()
+                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
+                                  from subgeg in geg.DefaultIfEmpty()
+                                  where emp.STAT == true 
+                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+
+            if (New_Mgr_Id != null)
+            {
+                var New_Manager = db.EMPLOYEEs.Find(New_Mgr_Id);
+                ViewData["current_manager"] = New_Manager;
+            }
+            var associate_employee = db.EMPLOYEEs.Where(x => x.RPTG_MGR_ID == id).ToList();
+            ViewData["associate_employee"] = associate_employee;
+
+            return View(All_Employee);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Remove_Subordinate_Employee(int? employee_id, int? current_manager_id)
+        {
+            var associate_employee = db.EMPLOYEEs.Where(x => x.RPTG_MGR_ID == employee_id).ToList();
+            if (associate_employee != null && associate_employee.Count() != 0)
+            {
+                foreach(var item in associate_employee)
+                {
+                    EMPLOYEE Emp_To_Udate = db.EMPLOYEEs.Find(item.ID);
+                    Emp_To_Udate.RPTG_MGR_ID = current_manager_id;
+                    db.Entry(Emp_To_Udate).State = EntityState.Modified;
+                }
+                try { db.SaveChanges(); ViewBag.Notice = "Reporting manager details updated for selected employees."; }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Remove", new { id = employee_id, ErrorMessage = ViewBag.ErrorMessage});
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Remove", new { id = employee_id, ErrorMessage = ViewBag.ErrorMessage});
+                }
+            }
+            return RedirectToAction("Remove", new { id = employee_id, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Change_To_Former(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE Emp = db.EMPLOYEEs.Include(x=>x.EMPLOYEE_DEPARTMENT).Where(x=>x.ID == id).FirstOrDefault();
+            //var dependency = null //This part has to be beuild when dependencies in Employee is defined in system.
+            return View(Emp);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Change_To_Former([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE oReMPLOYEE)
+        {
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Include(x => x.EMPLOYEE_DEPARTMENT).Where(x => x.ID == oReMPLOYEE.ID).FirstOrDefault();
+            ViewBag.Notice = string.Concat("All records have been deleted for employee with employee no. ", eMPLOYEE.EMP_NUM);
+            var Emp_Subject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == oReMPLOYEE.ID);
+            foreach(var item in Emp_Subject)
+            {
+                db.EMPLOYEES_SUBJECT.Remove(item);
+            }
+            var aRCHIVEDsTD = new ARCHIVED_EMPLOYEE() { RPTG_MGR_ID = eMPLOYEE.RPTG_MGR_ID, EMP_CAT_ID = eMPLOYEE.EMP_CAT_ID, EMP_NUM = eMPLOYEE.EMP_NUM, JOINING_DATE = eMPLOYEE.JOINING_DATE, FIRST_NAME = eMPLOYEE.FIRST_NAME, MID_NAME = eMPLOYEE.MID_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, GNDR = eMPLOYEE.GNDR, JOB_TIL= eMPLOYEE.JOB_TIL, EMP_POS_ID = eMPLOYEE.EMP_POS_ID, EMP_DEPT_ID= eMPLOYEE.EMP_DEPT_ID, EMP_GRADE_ID = eMPLOYEE.EMP_GRADE_ID, QUAL = eMPLOYEE.QUAL, EXPNC_DETL = eMPLOYEE.EXPNC_DETL, EXPNC_YEAR = eMPLOYEE.EXPNC_YEAR, EXPNC_MONTH = eMPLOYEE.EXPNC_MONTH, STAT = eMPLOYEE.STAT, STAT_DESCR = oReMPLOYEE.STAT_DESCR, DOB = eMPLOYEE.DOB, MARITAL_STAT = eMPLOYEE.MARITAL_STAT, CHLD_CNT = eMPLOYEE.CHLD_CNT, FTHR_NAME = eMPLOYEE.FTHR_NAME, MTHR_NAME= eMPLOYEE.MTHR_NAME, HUSBND_NAME = eMPLOYEE.HUSBND_NAME, BLOOD_GRP = eMPLOYEE.BLOOD_GRP, NTLTY_ID = eMPLOYEE.NTLTY_ID, HOME_ADDR_LINE1 = eMPLOYEE.HOME_ADDR_LINE1, HOME_ADDR_LINE2 = eMPLOYEE.HOME_ADDR_LINE2, HOME_CITY = eMPLOYEE.HOME_CITY, HOME_STATE = eMPLOYEE.HOME_STATE, HOME_CTRY_ID= eMPLOYEE.HOME_CTRY_ID, HOME_PIN_CODE= eMPLOYEE.HOME_PIN_CODE, OFF_ADDR_LINE1= eMPLOYEE.OFF_ADDR_LINE1, OFF_ADDR_LINE2= eMPLOYEE.OFF_ADDR_LINE2, OFF_CITY= eMPLOYEE.OFF_CITY, OFF_STATE= eMPLOYEE.OFF_STATE, OFF_CTRY_ID= eMPLOYEE.OFF_CTRY_ID, OFF_PIN_CODE= eMPLOYEE.OFF_PIN_CODE, OFF_PH1= eMPLOYEE.OFF_PH1, OFF_PH2= eMPLOYEE.OFF_PH2, MOBL_PH= eMPLOYEE.MOBL_PH, HOME_PH= eMPLOYEE.HOME_PH, EML= eMPLOYEE.EML, FAX= eMPLOYEE.FAX, CREATED_AT=System.DateTime.Now, UPDATED_AT=System.DateTime.Now, USRID= eMPLOYEE.USRID, IMAGE_DOCUMENTS_ID= eMPLOYEE.IMAGE_DOCUMENTS_ID, LIBRARY_CARD= eMPLOYEE.LIBRARY_CARD, FRMR_ID = eMPLOYEE.ID.ToString() };
+            db.ARCHIVED_EMPLOYEE.Add(aRCHIVEDsTD);
+            try{ db.SaveChanges();}
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return View(eMPLOYEE);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View(eMPLOYEE);
+            }
+
+            var employee_salary_structures = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_bank_details = db.EMPLOYEE_BANK_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_additional_details = db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            foreach (var item in employee_salary_structures)
+            {
+                var aRCHIVEDsSalStr = new ARCHIVED_EMPLOYEE_SALARY_STRUCTURE() { AMT = item.AMT, EMP_ID = aRCHIVEDsTD.ID, PYRL_CAT_ID = item.PYRL_CAT_ID };
+                db.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE.Add(aRCHIVEDsSalStr);
+            }
+            foreach (var item in employee_bank_details)
+            {
+                var aRCHIVEDsBankDetl = new ARCHIVED_EMPLOYEE_BANK_DETAIL() { BANK_INFO = item.BANK_INFO, EMP_ID = aRCHIVEDsTD.ID, BANK_FLD_ID = item.BANK_FLD_ID };
+                db.ARCHIVED_EMPLOYEE_BANK_DETAIL.Add(aRCHIVEDsBankDetl);
+            }
+            foreach (var item in employee_additional_details)
+            {
+                var aRCHIVEDsEmpAdDetl = new ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL() { ADDL_FLD_ID = item.ADDL_FLD_ID, EMP_ID = aRCHIVEDsTD.ID, ADDL_INFO = item.ADDL_INFO };
+                db.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL.Add(aRCHIVEDsEmpAdDetl);
+            }
+            if (eMPLOYEE.USRID != null )
+            {
+                USER user = db.USERS.Find(eMPLOYEE.USRID);
+                user.IS_DEL = true;
+                db.Entry(user).State = EntityState.Modified;
+            }
+            var employee_leave = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            foreach(var item in employee_leave)
+            {
+                db.EMPLOYEE_LEAVE.Remove(item);
+            }
+            db.EMPLOYEEs.Remove(eMPLOYEE);
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return View(eMPLOYEE);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View(eMPLOYEE);
+            }
+
+            return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+        }
+        
+        // GET: Employee/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            var Emp_Subject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == id);
+            foreach (var item in Emp_Subject)
+            {
+                db.EMPLOYEES_SUBJECT.Remove(item);
+            }
+            var employee_salary_structures = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_bank_details = db.EMPLOYEE_BANK_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_additional_details = db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            foreach (var item in employee_salary_structures)
+            {
+                db.EMPLOYEE_SALARY_STRUCTURE.Remove(item);
+            }
+            foreach (var item in employee_bank_details)
+            {
+                db.EMPLOYEE_BANK_DETAIL.Remove(item);
+            }
+            foreach (var item in employee_additional_details)
+            {
+                db.EMPLOYEE_ADDITIONAL_DETAIL.Remove(item);
+            }
+            if (eMPLOYEE.USRID != null)
+            {
+                USER user = db.USERS.Find(eMPLOYEE.USRID);
+                var Privilege = db.PRIVILEGES_USERS.Where(x => x.USER_ID == user.ID);
+                foreach (var item in Privilege)
+                {
+                    db.PRIVILEGES_USERS.Remove(item);
+                }
+                db.USERS.Remove(user);
+            }
+            db.EMPLOYEEs.Remove(eMPLOYEE);
+            try { db.SaveChanges(); ViewBag.Notice = "Employee deleted successfully."; }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return RedirectToAction("Remove", new { id= eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return RedirectToAction("Remove", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+        }
+
         /////Document Upload related methods////////////////////////////////////////////////////////////////
 
         [HttpGet]
@@ -3368,5 +3547,15 @@ namespace SFSAcademy.Controllers
         }
 
         /////End of Document Upload related methods////////////////////////////////////////////////////////////////
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
