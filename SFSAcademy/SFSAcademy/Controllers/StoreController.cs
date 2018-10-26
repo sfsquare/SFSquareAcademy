@@ -744,7 +744,7 @@ namespace SFSAcademy.Controllers
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
                              select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
-            if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchString) && searchString != "-1")
             {
                 int ProdID = Convert.ToInt32(searchString);
                 PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == ProdID);
@@ -763,7 +763,7 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MoneyDeposited))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited=="Y"?true:false));
+                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == "Y" ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {

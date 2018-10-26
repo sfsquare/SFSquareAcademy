@@ -62,8 +62,8 @@
             <div class="label-radio-pair label">
                 <label class="status" for="status">Status</label>
                 <div id="radio-buttons">
-                    @Html.RadioButtonFor(model => model.STAT, "Y", true)@Html.Label("Active", new { @class = "label_for_status" })
-                    @Html.RadioButtonFor(model => model.STAT, "N", false)@Html.Label("Inactive", new { @class = "label_for_status" })
+                    @Html.RadioButtonFor(model => model.STAT, true, true)@Html.Label("Active", new { @class = "label_for_status" })
+                    @Html.RadioButtonFor(model => model.STAT, false, false)@Html.Label("Inactive", new { @class = "label_for_status" })
                 </div>
             </div>
             <div id="submit-button">
