@@ -176,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="label_field_pair">
+                <div class="label_field_pair label">
                     <label class="label_for_student_gender" for="student_gender">Currently Being Sold</label>
                     <div class="student_gender_value">
                         @Html.RadioButtonFor(model => model.IS_ACT, true, false)@Html.Label("Yes")
@@ -187,18 +187,12 @@
                 <br />
 
             </div>
-            <div class="extender">
-            </div>
-        </div>
-
-        <div class="buttons">
-            <input type="submit" value="► Save " class="submit_button" />
-            @Html.ActionLink("Back to List", "ViewAll")
+            <div class="extender"></div>
+            <input type="submit" value="► Save " class="user_button" />
         </div>
 
     }
 </div>
-
 
 @section scripts{
 
