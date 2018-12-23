@@ -10,7 +10,7 @@ namespace SFSAcademy.Models
     public class UserPreviligeDetails
     {
         public UserDetails user { get; set; }
-        public List<PRIVILEGE> privilages { get; set; }
+        public List<PRIVILEGE> privilage_list { get; set; }
         public List<USERS_ACCESS> useraccess { get; set; }
     }
     public class UserDetails
@@ -32,7 +32,7 @@ namespace SFSAcademy.Models
         public DateTime UPDATED_AT { get; set; }
         public bool? PARNT_IND { get; set; }
 
-        public List<PRIVILEGE> privilages { get; set; }
+        public List<PRIVILEGE> privilage_list { get; set; }
         public List<USERS_ACCESS> useraccess { get; set; }
     }
     public class User
@@ -115,7 +115,7 @@ namespace SFSAcademy.Models
                 user.UPDATED_AT = Convert.ToDateTime(v.UPDATED_AT);
                 user.PARNT_IND = v.PARNT_IND;
 
-                user.privilages = GetUserPrivilage(Convert.ToInt32(v.ID));
+                user.privilage_list = GetUserPrivilage(Convert.ToInt32(v.ID));
                 //user.privilage = GetUserPrivilage(Convert.ToInt32(v.ID));
                 System.Web.HttpContext.Current.Session["CurrentUser"] = user;
                 //userrights.user = v;
@@ -148,6 +148,14 @@ namespace SFSAcademy.Models
     public class SelectUserPrivilage
     {
         public PRIVILEGE PrivilageList { get; set; }
+        public int? USRS_ID { get; set; }
+        public bool IsActive { get; set; }
+        public bool Selected { get; set; }
+    }
+
+    public class Privilege_Tags
+    {
+        public string PRIVILEGE_TAG { get; set; }
         public int? USRS_ID { get; set; }
         public bool IsActive { get; set; }
         public bool Selected { get; set; }

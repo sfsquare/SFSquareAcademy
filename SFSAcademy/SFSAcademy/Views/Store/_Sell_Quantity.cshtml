@@ -1,0 +1,51 @@
+﻿@using SFSAcademy.Models
+@{
+    STUDENT student = (STUDENT)ViewData["student"];
+    FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
+    IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(function () {
+            $.noConflict(true);
+            $("#result").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                buttons: {
+                    Cancel: function () {
+                        $("#result").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+    });
+
+    $("#btnCreate").click(function () {
+        $('#result').dialog('open');
+    });
+</script>
+
+<button id="btnCreate" class="button-label">Sell</button>
+<div id="result" style="display:none" class="form" title="Quantity Sold">
+    <table>
+        <tr>
+            <th>Discount Amount</th>
+            <td><input type="text" id="QUANTY" style="width:200px" />
+        </tr>
+        @Html.Hidden("QUANTY")
+    </table>
+    @Html.ActionLink("Sell ", "Purchase", new { id = ViewData["id"] }, new { style = "text-decoration:underline" })
+</div>
+        

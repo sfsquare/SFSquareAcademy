@@ -60,8 +60,6 @@ namespace SFSAcademy
         public virtual DbSet<EXAM_SCORE> EXAM_SCORE { get; set; }
         public virtual DbSet<FEE_COLLECTION_DISCOUNT> FEE_COLLECTION_DISCOUNT { get; set; }
         public virtual DbSet<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
-        public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
-        public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<FINANCE_DONATION> FINANCE_DONATION { get; set; }
         public virtual DbSet<FINANCE_FEE> FINANCE_FEE { get; set; }
         public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
@@ -108,7 +106,6 @@ namespace SFSAcademy
         public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
         public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
         public virtual DbSet<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
-        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
         public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
         public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
@@ -122,5 +119,8 @@ namespace SFSAcademy
         public virtual DbSet<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
         public virtual DbSet<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
         public virtual DbSet<USER> USERS { get; set; }
+        public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
+        public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
+        public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
     }
 }

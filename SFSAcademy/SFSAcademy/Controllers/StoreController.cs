@@ -12,6 +12,7 @@ using SFSAcademy.Models;
 using SFSAcademy.HtmlHelpers;
 using System.IO;
 using iTextSharp.text;
+using System.Data.Entity.Validation;
 
 namespace SFSAcademy.Controllers
 {
@@ -318,8 +319,9 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Student
-        public ActionResult ViewAll(string searchString, string searchString2)
+        public ActionResult ViewAll(string searchString, string searchString2, string ErrorMessage)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
                                  select t).Count();
             int? searchStringId = null;
@@ -625,25 +627,37 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Purchase/Create
-        public ActionResult Purchase(int? id)
+        public ActionResult Purchase(int? QUANTY, int? PRODUCT_ID)
         {
             //ViewBag.PRODUCT_ID = new SelectList(db.STORE_PRODUCTS.Where(o => o.PRODUCT_ID == id).ToList(), "PRODUCT_ID", "NAME");
             //ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
             //                    select t).Count();
+            if (QUANTY >= 1)
+            {
+                STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(PRODUCT_ID);
+                var sTORE_PURCHAGE_cART = new STORE_PURCHAGE_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD = QUANTY, SOLD_PRICE = sTOREpRODUCT.SELL_PRICE_PER_UNIT * QUANTY, SOLD_BY = this.Session["UserId"].ToString(), SOLD_ON = DateTime.Now, STUDENT_NAME = null, STUDENT_CONTACT_NO = null, MONEY_RECEIVED_BY = null, IS_DEPOSITED = false, IS_ACT = true, IS_DEL = false, CREATED_AT = DateTime.Now, UPDATED_AT = DateTime.Now };
+                db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
 
-            STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(id);
-            var sTORE_PURCHAGE_cART = new STORE_PURCHAGE_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD=1, SOLD_PRICE= sTOREpRODUCT.SELL_PRICE_PER_UNIT, SOLD_BY= this.Session["UserId"].ToString(), SOLD_ON= DateTime.Now, STUDENT_NAME=null, STUDENT_CONTACT_NO=null, MONEY_RECEIVED_BY=null, IS_DEPOSITED=false, IS_ACT=true, IS_DEL=false, CREATED_AT= DateTime.Now, UPDATED_AT= DateTime.Now };
-            db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
-            db.SaveChanges();
-
-            sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-            sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT - 1;
-            db.Entry(sTOREpRODUCT).State = EntityState.Modified;
-            db.SaveChanges();
-
+                sTOREpRODUCT.UPDATED_AT = DateTime.Now;
+                sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT - QUANTY;
+                db.Entry(sTOREpRODUCT).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){ foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
+                    return View();
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View();
+                }
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Quantity Entered is not appropriate.";
+            }
             ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
                                  select t).Count();
-            return RedirectToAction("ViewAll");
+            return RedirectToAction("ViewAll",new { ErrorMessage = ViewBag.ErrorMessage });
         }
 
         // POST: Purchase/Create
@@ -1016,7 +1030,7 @@ namespace SFSAcademy.Controllers
                            select new
                            {
                                ProductNo = g.Key,
-                               UNIT_SOLD = g.Count(),
+                               UNIT_SOLD = g.Sum(x => x.UNIT_SOLD),
                                AMNT = g.Sum(x => x.SOLD_PRICE),
                                PUR_DATE = DateTime.Now
                            };

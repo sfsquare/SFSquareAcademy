@@ -28,6 +28,12 @@
     </ul>
 </div>
 <div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div id="flash_box">
     @if (ViewBag.CartItems != null && ViewBag.CartItems != 0)
             {
         <p class="flash-msg"> Number of Items in the Cart = @ViewBag.CartItems </p>

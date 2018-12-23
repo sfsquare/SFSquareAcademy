@@ -21,6 +21,9 @@ namespace SFSAcademy
         public Nullable<int> FIN_FEE_CAT_ID { get; set; }
         public Nullable<decimal> DISC { get; set; }
         public bool IS_AMT { get; set; }
+        public Nullable<int> FEE_CLCT_ID { get; set; }
+        public string DESCR { get; set; }
+        public Nullable<System.DateTime> DISC_DATE { get; set; }
     
         public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }
     }

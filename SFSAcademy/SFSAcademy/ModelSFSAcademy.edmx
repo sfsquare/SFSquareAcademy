@@ -627,6 +627,9 @@
           <Property Name="FIN_FEE_CAT_ID" Type="int" />
           <Property Name="DISC" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IS_AMT" Type="bit" Nullable="false" />
+          <Property Name="FEE_CLCT_ID" Type="int" />
+          <Property Name="DESCR" Type="varchar" MaxLength="50" />
+          <Property Name="DISC_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="FEE_FINE">
           <Key>
@@ -640,6 +643,8 @@
           <Property Name="FINE" Type="decimal" Precision="10" Scale="2" />
           <Property Name="IS_AMT" Type="bit" Nullable="false" />
           <Property Name="FINE_DATE" Type="datetime" />
+          <Property Name="FEE_CLCT_ID" Type="int" />
+          <Property Name="DESCR" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="FINANCE_DONATION">
           <Key>
@@ -3890,8 +3895,6 @@
           <EntitySet Name="EXAM_SCORE" EntityType="SFSAcademyModel.EXAM_SCORE" />
           <EntitySet Name="FEE_COLLECTION_DISCOUNT" EntityType="SFSAcademyModel.FEE_COLLECTION_DISCOUNT" />
           <EntitySet Name="FEE_COLLECTION_PARTICULAR" EntityType="SFSAcademyModel.FEE_COLLECTION_PARTICULAR" />
-          <EntitySet Name="FEE_DISCOUNT" EntityType="SFSAcademyModel.FEE_DISCOUNT" />
-          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
           <EntitySet Name="FINANCE_DONATION" EntityType="SFSAcademyModel.FINANCE_DONATION" />
           <EntitySet Name="FINANCE_FEE" EntityType="SFSAcademyModel.FINANCE_FEE" />
           <EntitySet Name="FINANCE_FEE_CATGEORY" EntityType="SFSAcademyModel.FINANCE_FEE_CATGEORY" />
@@ -4233,14 +4236,6 @@
             <End Role="STUDENT" EntitySet="STUDENTs" />
             <End Role="FEE_COLLECTION_PARTICULAR" EntitySet="FEE_COLLECTION_PARTICULAR" />
           </AssociationSet>
-          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
-          </AssociationSet>
-          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
-            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
-            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
-          </AssociationSet>
           <AssociationSet Name="TRAN__FINA_FINA_NI" Association="SFSAcademyModel.TRAN__FINA_FINA_NI">
             <End Role="FINANCE_TRANSACTION" EntitySet="FINANCE_TRANSACTION" />
             <End Role="FINANCE_DONATION" EntitySet="FINANCE_DONATION" />
@@ -4390,20 +4385,11 @@
             <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           <EntitySet Name="PRIVILEGE_ACCESS" EntityType="SFSAcademyModel.PRIVILEGE_ACCESS" />
-          <EntitySet Name="PRIVILEGES" EntityType="SFSAcademyModel.PRIVILEGE" />
           <EntitySet Name="PRIVILEGES_USERS" EntityType="SFSAcademyModel.PRIVILEGES_USERS" />
           <EntitySet Name="USERS_ACCESS" EntityType="SFSAcademyModel.USERS_ACCESS" />
-          <AssociationSet Name="PRI_AC_PRI_USER_NI" Association="SFSAcademyModel.PRI_AC_PRI_USER_NI">
-            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
-            <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
-          </AssociationSet>
           <AssociationSet Name="USER_AC_PRI_USER_NI" Association="SFSAcademyModel.USER_AC_PRI_USER_NI">
             <End Role="USERS_ACCESS" EntitySet="USERS_ACCESS" />
             <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
-          </AssociationSet>
-          <AssociationSet Name="PRI_PRI_USER_NI" Association="SFSAcademyModel.PRI_PRI_USER_NI">
-            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
-            <End Role="PRIVILEGES_USERS" EntitySet="PRIVILEGES_USERS" />
           </AssociationSet>
           <EntitySet Name="STORE_PURCHAGE" EntityType="SFSAcademyModel.STORE_PURCHAGE" />
           <EntitySet Name="STORE_PURCHAGE_BACKUP" EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" />
@@ -4543,6 +4529,25 @@
           <AssociationSet Name="USRS__USER_USER_ID" Association="SFSAcademyModel.USRS__USER_USER_ID">
             <End Role="USER" EntitySet="USERS" />
             <End Role="USERS_ACCESS" EntitySet="USERS_ACCESS" />
+          </AssociationSet>
+          <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
+          <AssociationSet Name="FEE_F_FINA_FEE_NI3" Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_FINE" EntitySet="FEE_FINE" />
+          </AssociationSet>
+          <EntitySet Name="FEE_DISCOUNT" EntityType="SFSAcademyModel.FEE_DISCOUNT" />
+          <AssociationSet Name="FIN_F_FINA_FEE__NI3" Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3">
+            <End Role="FINANCE_FEE_CATGEORY" EntitySet="FINANCE_FEE_CATGEORY" />
+            <End Role="FEE_DISCOUNT" EntitySet="FEE_DISCOUNT" />
+          </AssociationSet>
+          <EntitySet Name="PRIVILEGES" EntityType="SFSAcademyModel.PRIVILEGE" />
+          <AssociationSet Name="PRI_AC_PRI_USER_NI" Association="SFSAcademyModel.PRI_AC_PRI_USER_NI">
+            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
+            <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
+          </AssociationSet>
+          <AssociationSet Name="PRI_PRI_USER_NI" Association="SFSAcademyModel.PRI_PRI_USER_NI">
+            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
+            <End Role="PRIVILEGES_USERS" EntitySet="PRIVILEGES_USERS" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="APPLY_LEAVE">
@@ -5154,33 +5159,6 @@
           <NavigationProperty Name="STUDENT_CATGEORY" Relationship="SFSAcademyModel.STDNT_STUD_FEE__NI" FromRole="FEE_COLLECTION_PARTICULAR" ToRole="STUDENT_CATGEORY" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_FEE__NI2" FromRole="FEE_COLLECTION_PARTICULAR" ToRole="STUDENT" />
         </EntityType>
-        <EntityType Name="FEE_DISCOUNT">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
-        </EntityType>
-        <EntityType Name="FEE_FINE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RCVR_ID" Type="Int32" />
-          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
-          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="IS_AMT" Type="Boolean" Nullable="false" />
-          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
-        </EntityType>
         <EntityType Name="FINANCE_DONATION">
           <Key>
             <PropertyRef Name="ID" />
@@ -5223,10 +5201,10 @@
           <Property Name="MSTR_CATGRY_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="BATCH" />
           <NavigationProperty Name="FEE_COLLECTION_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_COLLECTION_DISCOUNT" />
-          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
-          <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_FINE" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.FEE_C_FINA_FINA_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_COLLECTION" />
           <NavigationProperty Name="FINANCE_FEE_PARTICULAR" Relationship="SFSAcademyModel.FIN_F_FINA_FINA_NI" FromRole="FINANCE_FEE_CATGEORY" ToRole="FINANCE_FEE_PARTICULAR" />
+          <NavigationProperty Name="FEE_FINE" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_FINE" />
+          <NavigationProperty Name="FEE_DISCOUNT" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FINANCE_FEE_CATGEORY" ToRole="FEE_DISCOUNT" />
         </EntityType>
         <EntityType Name="FINANCE_FEE_COLLECTION">
           <Key>
@@ -6792,30 +6770,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FIN_F_FINA_FEE__NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_DISCOUNT">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FEE_F_FINA_FEE_NI3">
-          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FINANCE_FEE_CATGEORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="FEE_FINE">
-              <PropertyRef Name="FIN_FEE_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="TRAN__FINA_FINA_NI">
           <End Type="SFSAcademyModel.FINANCE_TRANSACTION" Role="FINANCE_TRANSACTION" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.FINANCE_DONATION" Role="FINANCE_DONATION" Multiplicity="*" />
@@ -7267,22 +7221,8 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PRIVILEGE_ID" Type="Int32" />
           <Property Name="USERS_ACCESS_ID" Type="Int32" />
-          <NavigationProperty Name="PRIVILEGE" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE_ACCESS" ToRole="PRIVILEGE" />
           <NavigationProperty Name="USERS_ACCESS" Relationship="SFSAcademyModel.USER_AC_PRI_USER_NI" FromRole="PRIVILEGE_ACCESS" ToRole="USERS_ACCESS" />
-        </EntityType>
-        <EntityType Name="PRIVILEGE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
-          <Property Name="PRIVILEGE_TAG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACT" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="PRIVILEGE_ACCESS" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGE_ACCESS" />
-          <NavigationProperty Name="PRIVILEGES_USERS" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGES_USERS" />
+          <NavigationProperty Name="PRIVILEGE" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE_ACCESS" ToRole="PRIVILEGE" />
         </EntityType>
         <EntityType Name="PRIVILEGES_USERS">
           <Key>
@@ -7291,8 +7231,8 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PRIVILEGE_ID" Type="Int32" />
           <Property Name="USER_ID" Type="Int32" />
-          <NavigationProperty Name="PRIVILEGE" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGES_USERS" ToRole="PRIVILEGE" />
           <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USER_PRI_USER_NI" FromRole="PRIVILEGES_USERS" ToRole="USER" />
+          <NavigationProperty Name="PRIVILEGE" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGES_USERS" ToRole="PRIVILEGE" />
         </EntityType>
         <EntityType Name="USERS_ACCESS">
           <Key>
@@ -7307,18 +7247,6 @@
           <NavigationProperty Name="PRIVILEGE_ACCESS" Relationship="SFSAcademyModel.USER_AC_PRI_USER_NI" FromRole="USERS_ACCESS" ToRole="PRIVILEGE_ACCESS" />
           <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRS__USER_USER_ID" FromRole="USERS_ACCESS" ToRole="USER" />
         </EntityType>
-        <Association Name="PRI_AC_PRI_USER_NI">
-          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PRIVILEGE_ACCESS" Role="PRIVILEGE_ACCESS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PRIVILEGE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PRIVILEGE_ACCESS">
-              <PropertyRef Name="PRIVILEGE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="USER_AC_PRI_USER_NI">
           <End Type="SFSAcademyModel.USERS_ACCESS" Role="USERS_ACCESS" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.PRIVILEGE_ACCESS" Role="PRIVILEGE_ACCESS" Multiplicity="*" />
@@ -7328,18 +7256,6 @@
             </Principal>
             <Dependent Role="PRIVILEGE_ACCESS">
               <PropertyRef Name="USERS_ACCESS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="PRI_PRI_USER_NI">
-          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PRIVILEGES_USERS" Role="PRIVILEGES_USERS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PRIVILEGE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PRIVILEGES_USERS">
-              <PropertyRef Name="PRIVILEGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -7995,6 +7911,100 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="FEE_FINE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="FINE" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="Boolean" Nullable="false" />
+          <Property Name="FINE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="FEE_CLCT_ID" Type="Int32" />
+          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FEE_F_FINA_FEE_NI3" FromRole="FEE_FINE" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FEE_F_FINA_FEE_NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_FINE" Role="FEE_FINE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_FINE">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FEE_DISCOUNT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RCVR_ID" Type="Int32" />
+          <Property Name="FIN_FEE_CAT_ID" Type="Int32" />
+          <Property Name="DISC" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="IS_AMT" Type="Boolean" Nullable="false" />
+          <Property Name="FEE_CLCT_ID" Type="Int32" />
+          <Property Name="DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DISC_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
+        </EntityType>
+        <Association Name="FIN_F_FINA_FEE__NI3">
+          <End Type="SFSAcademyModel.FINANCE_FEE_CATGEORY" Role="FINANCE_FEE_CATGEORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.FEE_DISCOUNT" Role="FEE_DISCOUNT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FINANCE_FEE_CATGEORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="FEE_DISCOUNT">
+              <PropertyRef Name="FIN_FEE_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="PRIVILEGE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="PRIVILEGE_TAG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACT" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="PRIVILEGE_ACCESS" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGE_ACCESS" />
+          <NavigationProperty Name="PRIVILEGES_USERS" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGES_USERS" />
+        </EntityType>
+        <Association Name="PRI_AC_PRI_USER_NI">
+          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PRIVILEGE_ACCESS" Role="PRIVILEGE_ACCESS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGE_ACCESS">
+              <PropertyRef Name="PRIVILEGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRI_PRI_USER_NI">
+          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PRIVILEGES_USERS" Role="PRIVILEGES_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGES_USERS">
+              <PropertyRef Name="PRIVILEGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8516,33 +8526,6 @@
                 <ScalarProperty Name="AMT" ColumnName="AMT" />
                 <ScalarProperty Name="DESCR" ColumnName="DESCR" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FEE_DISCOUNT">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
-              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
-                <ScalarProperty Name="DISC" ColumnName="DISC" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FEE_FINE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
-              <MappingFragment StoreEntitySet="FEE_FINE">
-                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
-                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
-                <ScalarProperty Name="FINE" ColumnName="FINE" />
-                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
-                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -9203,19 +9186,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PRIVILEGES">
-            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE">
-              <MappingFragment StoreEntitySet="PRIVILEGES">
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="PRIVILEGE_TAG" ColumnName="PRIVILEGE_TAG" />
-                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PRIVILEGES_USERS">
             <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGES_USERS">
               <MappingFragment StoreEntitySet="PRIVILEGES_USERS">
@@ -9472,6 +9442,51 @@
                 <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
                 <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
                 <ScalarProperty Name="USRNAME" ColumnName="USRNAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_FINE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_FINE">
+              <MappingFragment StoreEntitySet="FEE_FINE">
+                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
+                <ScalarProperty Name="FEE_CLCT_ID" ColumnName="FEE_CLCT_ID" />
+                <ScalarProperty Name="FINE_DATE" ColumnName="FINE_DATE" />
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="FINE" ColumnName="FINE" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_DISCOUNT">
+            <EntityTypeMapping TypeName="SFSAcademyModel.FEE_DISCOUNT">
+              <MappingFragment StoreEntitySet="FEE_DISCOUNT">
+                <ScalarProperty Name="DISC_DATE" ColumnName="DISC_DATE" />
+                <ScalarProperty Name="DESCR" ColumnName="DESCR" />
+                <ScalarProperty Name="FEE_CLCT_ID" ColumnName="FEE_CLCT_ID" />
+                <ScalarProperty Name="IS_AMT" ColumnName="IS_AMT" />
+                <ScalarProperty Name="DISC" ColumnName="DISC" />
+                <ScalarProperty Name="FIN_FEE_CAT_ID" ColumnName="FIN_FEE_CAT_ID" />
+                <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRIVILEGES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE">
+              <MappingFragment StoreEntitySet="PRIVILEGES">
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PRIVILEGE_TAG" ColumnName="PRIVILEGE_TAG" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
