@@ -722,16 +722,29 @@ namespace SFSAcademy.Controllers
                 var result = new SelectListItem();
                 result.Text = BatchFullName;
                 result.Value = item.BatchData.ID.ToString();
+                result.Selected = item.BatchData.ID.ToString() == BTCH_ID ? true : false;
                 options.Add(result);
             }
-
-            //List<SelectListItem> options = new SelectList(db.BATCHes.OrderBy(x => x.ID).Distinct(), "NAME", "NAME", BTCH_ID).ToList();
-            // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.BTCH_ID = options;
 
-            List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", FINANCE_FEE_CATGEORY_ID).ToList();
-            // add the 'ALL' option
+            var queryFeeCategoryBatch = (from fc in db.FINANCE_FEE_CATGEORY
+                                         join bt in db.BATCHes.Include(x => x.COURSE) on fc.BTCH_ID equals bt.ID
+                                         where fc.IS_DEL == false && bt.IS_DEL == false && fc.IS_MSTR == false
+                                         select new { FeeCategoryData = fc, BatchData = bt })
+                                    .OrderBy(x => x.FeeCategoryData.NAME).ToList();
+
+
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in queryFeeCategoryBatch)
+            {
+                string FeeCategoryFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.BatchData.COURSE.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = FeeCategoryFullName;
+                result.Value = item.FeeCategoryData.ID.ToString();
+                result.Selected = item.FeeCategoryData.ID.ToString() == FINANCE_FEE_CATGEORY_ID ? true : false;
+                options2.Add(result);
+            }
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
 
@@ -739,33 +752,42 @@ namespace SFSAcademy.Controllers
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (BTCH_ID != null)
+            int BatchIdVal = 0;
+            if (BTCH_ID != null && !BTCH_ID.Equals("-1"))
             {
-                if (BTCH_ID != "-1")
-                {
-                    page = 1;
-                }
-                else { BTCH_ID = currentFilter; }
+                page = 1;
             }
-            else { BTCH_ID = currentFilter; }
+            else
+            {
+                BTCH_ID = currentFilter;
+            }
+            if (!string.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
+            {
+                BatchIdVal = Convert.ToInt32(BTCH_ID);
+            }
             ViewBag.CurrentFilter = BTCH_ID;
 
-            if (FINANCE_FEE_CATGEORY_ID != null)
+            int FeeCategoryVal = 0;
+            if (FINANCE_FEE_CATGEORY_ID != null && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
             {
-                if (FINANCE_FEE_CATGEORY_ID != "-1")
-                {
-                    page = 1;
-                }
-                else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
-
+                page = 1;
             }
-            else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
+            else
+            {
+                FINANCE_FEE_CATGEORY_ID = currentFilter2;
+            }
+            if (!string.IsNullOrEmpty(FINANCE_FEE_CATGEORY_ID) && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
+            {
+                FeeCategoryVal = Convert.ToInt32(FINANCE_FEE_CATGEORY_ID);
+            }
             ViewBag.CurrentFilter2 = FINANCE_FEE_CATGEORY_ID;
 
             var Fee_discountSData = (from fd in db.FEE_DISCOUNT
                                      join ffc in db.FINANCE_FEE_CATGEORY on fd.FIN_FEE_CAT_ID equals ffc.ID
                                      join bt in db.BATCHes on ffc.BTCH_ID equals bt.ID
                                      join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                     join ffcol in db.FINANCE_FEE_COLLECTION on fd.FEE_CLCT_ID equals ffcol.ID into gffcol
+                                     from subgffcol in gffcol.DefaultIfEmpty()
                                      join fds in (from crt in db.FEE_DISCOUNT where crt.TYPE == "Student" select crt) on fd.ID equals fds.ID into gms
                                      from subgms in gms.DefaultIfEmpty()
                                      join std in db.STUDENTs on subgms.RCVR_ID equals std.ID into gm  
@@ -775,16 +797,17 @@ namespace SFSAcademy.Controllers
                                      join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl 
                                      from subcat in gl.DefaultIfEmpty()
                                      orderby fd.NAME
-                                     select new Models.FeeDiscount { FeeDiscountData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat) }).Distinct();
+                                     select new Models.FeeDiscount { FeeDiscountData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgffcol == null ? null : subgffcol) }).Distinct();
 
-            if (BTCH_ID != null && !BTCH_ID.Equals("-1"))
+            if (!String.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
             {
-                Fee_discountSData = Fee_discountSData.Where(s => s.BatchData.NAME.Contains(BTCH_ID));
+                Fee_discountSData = Fee_discountSData.Where(s => s.BatchData.ID.Equals(BatchIdVal));
             }
-            if (FINANCE_FEE_CATGEORY_ID != null && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
+            if (!String.IsNullOrEmpty(FINANCE_FEE_CATGEORY_ID) && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
             {
-                Fee_discountSData = Fee_discountSData.Where(s => s.FinanceFeeCategoryData.NAME.Contains(FINANCE_FEE_CATGEORY_ID));
+                Fee_discountSData = Fee_discountSData.Where(s => s.FinanceFeeCategoryData.ID.Equals(FeeCategoryVal));
             }
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -895,6 +918,8 @@ namespace SFSAcademy.Controllers
                     fEEdISCOUNT.TYPE = radioName;
                     fEEdISCOUNT.RCVR_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.BTCH_ID;
                     fEEdISCOUNT.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
+                    fEEdISCOUNT.DISC_DATE = System.DateTime.Now;
+                    fEEdISCOUNT.DESCR = "Common Batch Discount";
                     if (radioName2.Equals("Amount"))
                     {
                         fEEdISCOUNT.IS_AMT = true;
@@ -928,6 +953,8 @@ namespace SFSAcademy.Controllers
                     fEEdISCOUNT.RCVR_ID = STUDENT_CATGEORY_ID;
                     fEEdISCOUNT.TYPE = radioName;
                     fEEdISCOUNT.FIN_FEE_CAT_ID = FIN_FEE_CAT_ID;
+                    fEEdISCOUNT.DISC_DATE = System.DateTime.Now;
+                    fEEdISCOUNT.DESCR = "Common Student Category Discount";
                     if (radioName2.Equals("Amount"))
                     {
                         fEEdISCOUNT.IS_AMT = true;
@@ -974,6 +1001,8 @@ namespace SFSAcademy.Controllers
 
                                 fEEdISCOUNT.TYPE = radioName;
                                 fEEdISCOUNT.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
+                                fEEdISCOUNT.DISC_DATE = System.DateTime.Now;
+                                fEEdISCOUNT.DESCR = "Special Student Discount";
                                 if (radioName2.Equals("Amount"))
                                 {
                                     fEEdISCOUNT.IS_AMT = true;
@@ -1052,6 +1081,8 @@ namespace SFSAcademy.Controllers
                 fEE_DISCOUNT_UPD.NAME = fEE_DISCOUNT.NAME;
                 fEE_DISCOUNT_UPD.DISC = fEE_DISCOUNT.DISC;
                 fEE_DISCOUNT_UPD.IS_AMT = fEE_DISCOUNT.IS_AMT;
+                fEE_DISCOUNT_UPD.DISC_DATE = fEE_DISCOUNT.DISC_DATE;
+                fEE_DISCOUNT_UPD.DESCR = fEE_DISCOUNT.DESCR;
                 db.Entry(fEE_DISCOUNT_UPD).State = EntityState.Modified;
                 db.SaveChanges();
             }
@@ -1107,65 +1138,99 @@ namespace SFSAcademy.Controllers
                 var result = new SelectListItem();
                 result.Text = BatchFullName;
                 result.Value = item.BatchData.ID.ToString();
+                result.Selected = item.BatchData.ID.ToString() == BTCH_ID ? true : false;
                 options.Add(result);
             }
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.BTCH_ID = options;
 
-            List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", FINANCE_FEE_CATGEORY_ID).ToList();
+            var queryFeeCategoryBatch = (from fc in db.FINANCE_FEE_CATGEORY
+                                    join bt in db.BATCHes.Include(x=>x.COURSE) on fc.BTCH_ID equals bt.ID
+                                    where fc.IS_DEL == false && bt.IS_DEL == false &&  fc.IS_MSTR == false
+                                    select new { FeeCategoryData = fc, BatchData = bt })
+                                    .OrderBy(x => x.FeeCategoryData.NAME).ToList();
+
+
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in queryFeeCategoryBatch)
+            {
+                string FeeCategoryFullName = string.Concat(item.FeeCategoryData.NAME, "-", item.BatchData.COURSE.CODE, "-",item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = FeeCategoryFullName;
+                result.Value = item.FeeCategoryData.ID.ToString();
+                result.Selected = item.FeeCategoryData.ID.ToString() == FINANCE_FEE_CATGEORY_ID ? true : false;
+                options2.Add(result);
+            }
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
+
+
+            //List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", FINANCE_FEE_CATGEORY_ID).ToList();
+            //options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            //ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
 
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-
-            if (BTCH_ID != null)
+            int BatchIdVal = 0;
+            if (BTCH_ID != null && !BTCH_ID.Equals("-1"))
             {
-                if (BTCH_ID != "-1")
-                {
-                    page = 1;
-                }
-                else { BTCH_ID = currentFilter; }
+                page = 1;
             }
-            else { BTCH_ID = currentFilter; }
+            else
+            {
+                BTCH_ID = currentFilter;
+            }
+            if (!string.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
+            {
+                BatchIdVal = Convert.ToInt32(BTCH_ID);
+            }
             ViewBag.CurrentFilter = BTCH_ID;
 
-            if (FINANCE_FEE_CATGEORY_ID != null)
+            int FeeCategoryVal = 0;
+            if (FINANCE_FEE_CATGEORY_ID != null && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
             {
-                if (FINANCE_FEE_CATGEORY_ID != "-1")
-                {
-                    page = 1;
-                }
-                else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
-
+                page = 1;
             }
-            else { FINANCE_FEE_CATGEORY_ID = currentFilter2; }
+            else
+            {
+                FINANCE_FEE_CATGEORY_ID = currentFilter2;
+            }
+            if (!string.IsNullOrEmpty(FINANCE_FEE_CATGEORY_ID) && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
+            {
+                FeeCategoryVal = Convert.ToInt32(FINANCE_FEE_CATGEORY_ID);
+            }
             ViewBag.CurrentFilter2 = FINANCE_FEE_CATGEORY_ID;
+
 
             var Fee_fineSData = (from fd in db.FEE_FINE
                                      join ffc in db.FINANCE_FEE_CATGEORY on fd.FIN_FEE_CAT_ID equals ffc.ID
                                      join bt in db.BATCHes on ffc.BTCH_ID equals bt.ID
                                      join cs in db.COURSEs on bt.CRS_ID equals cs.ID
-                                     join fds in (from crt in db.FEE_DISCOUNT where crt.TYPE == "Student" select crt) on fd.ID equals fds.ID into gms
+                                     join fcol in db.FINANCE_FEE_COLLECTION on fd.FEE_CLCT_ID equals fcol.ID into gfcol
+                                     from subgfcol in gfcol.DefaultIfEmpty()
+                                     join fds in (from crt in db.FEE_FINE where crt.TYPE == "Student" select crt) on fd.ID equals fds.ID into gms
                                      from subgms in gms.DefaultIfEmpty()
                                      join std in db.STUDENTs on subgms.RCVR_ID equals std.ID into gm
                                      from substd in gm.DefaultIfEmpty()
-                                     join fdsc in (from crtc in db.FEE_DISCOUNT where crtc.TYPE == "Student Category" select crtc) on fd.ID equals fdsc.ID into gmsc
+                                     join fdsc in (from crtc in db.FEE_FINE where crtc.TYPE == "Student Category" select crtc) on fd.ID equals fdsc.ID into gmsc
                                      from subgmsc in gmsc.DefaultIfEmpty()
                                      join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl
                                      from subcat in gl.DefaultIfEmpty()
                                      orderby fd.NAME
-                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat) }).Distinct();
+                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgfcol == null ? null : subgfcol) }).Distinct();
 
-            if (BTCH_ID != null && !BTCH_ID.Equals("-1"))
+
+            if (!String.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
             {
-                Fee_fineSData = Fee_fineSData.Where(s => s.BatchData.NAME.Contains(BTCH_ID));
+                Fee_fineSData = Fee_fineSData.Where(s => s.BatchData.ID.Equals(BatchIdVal));
             }
-            if (FINANCE_FEE_CATGEORY_ID != null && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
+
+            if (!String.IsNullOrEmpty(FINANCE_FEE_CATGEORY_ID) && !FINANCE_FEE_CATGEORY_ID.Equals("-1"))
             {
-                Fee_fineSData = Fee_fineSData.Where(s => s.FinanceFeeCategoryData.NAME.Contains(FINANCE_FEE_CATGEORY_ID));
+                Fee_fineSData = Fee_fineSData.Where(s => s.FinanceFeeCategoryData.ID.Equals(FeeCategoryVal));
             }
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -1192,11 +1257,10 @@ namespace SFSAcademy.Controllers
         // GET: Finance/Create
         public ActionResult Fee_Fine_New()
         {
-
             var queryCourceBatchFee = (from cs in db.COURSEs
                                        join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                        join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                       where cs.IS_DEL == false && bt.IS_DEL == true && fcc.IS_DEL == true
+                                       where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false
                                        select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
                                     .OrderBy(x => x.FeeCategoryData.ID).ToList();
 
@@ -1224,7 +1288,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Fee_Fine_New([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEEfINE, int? STUDENT_CATGEORY_ID, int? FIN_FEE_CAT_ID, string ADMSN_NO, string radioName, string radioName2)
+        public ActionResult Fee_Fine_New([Bind(Include = "ID,TYPE,NAME,DESCR,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEEfINE, int? STUDENT_CATGEORY_ID, int? FIN_FEE_CAT_ID, string ADMSN_NO, string radioName, string radioName2)
         {
             if (ModelState.IsValid)
             {
@@ -1266,6 +1330,7 @@ namespace SFSAcademy.Controllers
                     fEEfINE.RCVR_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.BTCH_ID;
                     fEEfINE.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
                     fEEfINE.FINE_DATE = System.DateTime.Now;
+                    fEEfINE.DESCR = "Common Batch Fine";
                     if (radioName2.Equals("Amount"))
                     {
                         fEEfINE.IS_AMT = true;
@@ -1300,6 +1365,7 @@ namespace SFSAcademy.Controllers
                     fEEfINE.TYPE = radioName;
                     fEEfINE.FIN_FEE_CAT_ID = FIN_FEE_CAT_ID;
                     fEEfINE.FINE_DATE = System.DateTime.Now;
+                    fEEfINE.DESCR = "Common Stundet Category Fine";
                     if (radioName2.Equals("Amount"))
                     {
                         fEEfINE.IS_AMT = true;
@@ -1347,6 +1413,7 @@ namespace SFSAcademy.Controllers
                                 fEEfINE.TYPE = radioName;
                                 fEEfINE.FIN_FEE_CAT_ID = fEEcATEGORYaACCESS.FirstOrDefault().FinanceFeeCategoryData.ID;
                                 fEEfINE.FINE_DATE = System.DateTime.Now;
+                                fEEfINE.DESCR = "Specific Student Fine";
                                 if (radioName2.Equals("Amount"))
                                 {
                                     fEEfINE.IS_AMT = true;
@@ -1416,20 +1483,22 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Fee_Fine([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEE_FINE)
+        public ActionResult Edit_Fee_Fine([Bind(Include = "ID,TYPE,NAME,DESCR,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEE_FINE)
         {
             if (ModelState.IsValid)
             {
                 FEE_FINE fEE_FINE_UPD = db.FEE_FINE.Find(fEE_FINE.ID);
                 fEE_FINE_UPD.TYPE = fEE_FINE.TYPE;
                 fEE_FINE_UPD.NAME = fEE_FINE.NAME;
+                fEE_FINE_UPD.DESCR = fEE_FINE.DESCR;
                 fEE_FINE_UPD.FINE = fEE_FINE.FINE;
                 fEE_FINE_UPD.IS_AMT = fEE_FINE.IS_AMT;
-                fEE_FINE_UPD.FINE_DATE = System.DateTime.Now;
+                fEE_FINE_UPD.FINE_DATE = fEE_FINE.FINE_DATE;
+                fEE_FINE_UPD.DESCR = fEE_FINE.DESCR;
                 db.Entry(fEE_FINE_UPD).State = EntityState.Modified;
                 db.SaveChanges();
             }
-            ViewBag.ErrorMessage = string.Concat("Fee Discount Edited Successfully");
+            ViewBag.ErrorMessage = string.Concat("Fee Fine Edited Successfully");
             ViewBag.RCVR_ID = new SelectList(db.STUDENTs, "ID", "ADMSN_NO", fEE_FINE.RCVR_ID);
             ViewBag.FIN_FEE_CAT_ID = new SelectList(db.FINANCE_FEE_CATGEORY, "ID", "NAME", fEE_FINE.FIN_FEE_CAT_ID);
             return View(fEE_FINE);
@@ -1860,6 +1929,7 @@ namespace SFSAcademy.Controllers
         // GET: Fee Index
         public ActionResult _Student_Fees_Submission(int? id, int? batch_id, int? student_id)
         {
+            ModelState.Clear();
             DateTime PDate = Convert.ToDateTime(System.DateTime.Now);
             ViewBag.ReturnDate = PDate.ToShortDateString();
             FINANCE_FEE_COLLECTION date = db.FINANCE_FEE_COLLECTION.Find(id);
@@ -1976,15 +2046,15 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                            select ff);
                 ViewData["batch_discounts"] = batch_discounts_val;
                 var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                             where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                             where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                              select ff);
                 ViewData["student_discounts"] = student_discounts_val;
                 var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                              where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                              where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                               select ff);
                 ViewData["category_discounts"] = category_discounts_val;
 
@@ -2025,16 +2095,16 @@ namespace SFSAcademy.Controllers
                 ViewBag.total_discount_percentage = total_discount_percentage_val;
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                      where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                        where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
 
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                         where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
                 decimal total_fine_val = 0;
@@ -2072,10 +2142,9 @@ namespace SFSAcademy.Controllers
         }
 
 
-
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        public ActionResult Update_Fine_Ajax(int? student, int? batch_id, int? date, int? fee)
+        public ActionResult Update_Fine_Ajax(int? student, int? batch_id, int? date, int? fee, string fee_desc)
         {
             if (ModelState.IsValid)
             {
@@ -2168,15 +2237,15 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                            select ff);
                 ViewData["batch_discounts"] = batch_discounts_val;
                 var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                             where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student
+                                             where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                              select ff);
                 ViewData["student_discounts"] = student_discounts_val;
                 var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                              where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                              where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                               select ff);
                 ViewData["category_discounts"] = category_discounts_val;
                 decimal total_discount_val = 0;
@@ -2224,11 +2293,13 @@ namespace SFSAcademy.Controllers
                         RCVR_ID = StudentVal.FirstOrDefault().Student_data.ID,
                         FIN_FEE_CAT_ID = date_val.FEE_CAT_ID,
                         FINE = fee,
+                        DESCR = fee_desc,
+                        FEE_CLCT_ID = date_val.ID,
                         IS_AMT = true,
                         FINE_DATE = System.DateTime.Now
                     };
                     db.FEE_FINE.Add(FeeFine);
-                    try { db.SaveChanges(); ViewBag.FeeCollectionMessage = string.Concat("Fee Collection Edited Successfully"); }
+                    try { db.SaveChanges(); ViewBag.FeeCollectionMessage = string.Concat("Fee Fine added in Collection Successfully"); }
                     catch (Exception e) { ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Fine"); Console.WriteLine(e); }
                 }
                 else
@@ -2237,15 +2308,15 @@ namespace SFSAcademy.Controllers
                 }
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                      where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student
+                                        where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
                 decimal total_fine_val = 0;
@@ -2278,9 +2349,218 @@ namespace SFSAcademy.Controllers
             return PartialView("_Student_Fees_Submission");
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult Update_Discount_Ajax(int? student, int? batch_id, int? date, int? discount, string discount_desc)
+        {
+            if (ModelState.IsValid)
+            {
+                DateTime PDate = Convert.ToDateTime(System.DateTime.Now);
+                ViewBag.ReturnDate = PDate.ToShortDateString();
+                var batch_val = (from cs in db.COURSEs
+                                 join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                 where bt.ID == batch_id
+                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                .OrderBy(x => x.BatchData.ID).ToList();
+                ViewData["batch"] = batch_val;
+                FINANCE_FEE_COLLECTION date_val = db.FINANCE_FEE_COLLECTION.Find(date);
+                ViewData["date"] = date_val;
+                FINANCE_FEE_COLLECTION fee_collection = db.FINANCE_FEE_COLLECTION.Find(date);
+
+                var feeVal = (from ff in db.FINANCE_FEE
+                              join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                              where ff.FEE_CLCT_ID == fee_collection.ID
+                              select new Models.StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
+
+                if (student != null)
+                {
+                    feeVal = feeVal.Where(x => x.StudentData.ID == student);
+                }
+                var StudentVal = (from st in db.STUDENTs
+                                  select new { Student_data = st }).OrderBy(x => x.Student_data.ID).Distinct();
+                if (student != null)
+                {
+                    StudentVal = StudentVal.Where(x => x.Student_data.ID == student);
+                    ViewData["student"] = db.STUDENTs.Find(student);
+                }
+                else
+                {
+                    StudentVal = StudentVal.Where(x => x.Student_data.ID == feeVal.FirstOrDefault().StudentData.ID);
+                    ViewData["student"] = db.STUDENTs.Where(x => x.ID == feeVal.FirstOrDefault().StudentData.ID).FirstOrDefault();
+                }
+                STUDENT_CATGEORY StudentCategoryVal = db.STUDENT_CATGEORY.Find(StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID);
+                ViewBag.StudentCategory = StudentCategoryVal.NAME;
+                var prev_student_val = (from ff in db.FINANCE_FEE
+                                        join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                        where ff.FEE_CLCT_ID == fee_collection.ID
+                                        select st).OrderBy(x => x.ID).Distinct();
+                int prev_student_id = -1;
+                if (student != null)
+                {
+                    prev_student_val = prev_student_val.Where(x => x.ID < student);
+                    if (prev_student_val != null && prev_student_val.Count() != 0)
+                    {
+                        prev_student_id = prev_student_val.Max(x => x.ID);
+                    }
+                }
+                STUDENT prev_student = db.STUDENTs.Find(prev_student_id);
+                ViewData["prev_student"] = prev_student;
+                ViewBag.prev_student_id = prev_student_id;
+
+                var next_student_val = (from ff in db.FINANCE_FEE
+                                        join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                        where ff.FEE_CLCT_ID == fee_collection.ID
+                                        select st).OrderBy(x => x.ID).Distinct();
+                int next_student_id = -1;
+                if (student != null)
+                {
+                    next_student_val = next_student_val.Where(x => x.ID > student);
+                    if (next_student_val != null && next_student_val.Count() != 0)
+                    {
+                        next_student_id = next_student_val.Min(x => x.ID);
+                    }
+                }
+                STUDENT next_student = db.STUDENTs.Find(next_student_id);
+                ViewData["next_student"] = next_student;
+                ViewBag.next_student_id = next_student_id;
+
+                var financefeeVal = (from ff in db.FINANCE_FEE
+                                     where ff.FEE_CLCT_ID == fee_collection.ID && ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                     select ff).ToList();
+                ViewData["financefee"] = financefeeVal;
+                ViewBag.due_date = fee_collection.DUE_DATE;
+                var paid_fees_val = (from ff in db.FINANCE_FEE
+                                     join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                     join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
+                                     where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == student
+                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                ViewData["paid_fees"] = paid_fees_val;
+
+                FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
+                ViewData["fee_category"] = fee_category;
+                var fee_particulars_val = (from ff in db.FINANCE_FEE_PARTICULAR
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.IS_DEL == "N" && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
+                                           select ff).ToList();
+                ViewData["fee_particulars"] = fee_particulars_val;
+
+                ViewBag.discount = discount;
+                if (discount > 0)
+                {
+                    var FeeDiscount = new FEE_DISCOUNT()
+                    {
+                        TYPE = "Student",
+                        NAME = "Ad-hoc Discount",
+                        RCVR_ID = StudentVal.FirstOrDefault().Student_data.ID,
+                        FIN_FEE_CAT_ID = date_val.FEE_CAT_ID,
+                        DISC = discount,
+                        DESCR = discount_desc,
+                        FEE_CLCT_ID = date_val.ID,
+                        IS_AMT = true,
+                        DISC_DATE = System.DateTime.Now
+                    };
+                    db.FEE_DISCOUNT.Add(FeeDiscount);
+                    try { db.SaveChanges(); ViewBag.FeeCollectionMessage = string.Concat("Fee Discount Added in Collection Successfully"); }
+                    catch (Exception e) { ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Discount"); Console.WriteLine(e); }
+                }
+                else
+                {
+                    ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Discount");
+                }
+
+                var batch_discounts_val = (from ff in db.FEE_DISCOUNT
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
+                                           select ff);
+                ViewData["batch_discounts"] = batch_discounts_val;
+                var student_discounts_val = (from ff in db.FEE_DISCOUNT
+                                             where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
+                                             select ff);
+                ViewData["student_discounts"] = student_discounts_val;
+                var category_discounts_val = (from ff in db.FEE_DISCOUNT
+                                              where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
+                                              select ff);
+                ViewData["category_discounts"] = category_discounts_val;
+                decimal total_discount_val = 0;
+                decimal total_payable = 0;
+                foreach (var item in fee_particulars_val)
+                {
+                    total_payable = total_payable + (decimal)item.AMT;
+                }
+                ViewBag.total_payable = total_payable;
+                
+                if (batch_discounts_val != null && batch_discounts_val.Count() != 0)
+                {
+                    foreach (var item in batch_discounts_val)
+                    {
+                        total_discount_val += item.IS_AMT == true ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                    }
+                }
+                if (student_discounts_val != null && student_discounts_val.Count() != 0)
+                {
+                    foreach (var item in student_discounts_val)
+                    {
+                        total_discount_val += item.IS_AMT == true ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                    }
+                }
+                if (category_discounts_val != null && category_discounts_val.Count() != 0)
+                {
+                    foreach (var item in category_discounts_val)
+                    {
+                        total_discount_val += item.IS_AMT == true ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
+                    }
+                }
+                if (total_discount_val > total_payable && total_payable >= 0)
+                {
+                    total_discount_val = total_payable;
+                }
+                ViewBag.total_discount = total_discount_val;
+                decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
+                ViewBag.total_discount_percentage = total_discount_percentage_val;
+
+                var batch_fine_val = (from ff in db.FEE_FINE
+                                      where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
+                                      select ff);
+                ViewData["batch_fine"] = batch_fine_val;
+                var student_fine_val = (from ff in db.FEE_FINE
+                                        where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
+                                        select ff);
+                ViewData["student_fine"] = student_fine_val;
+                var category_fine_val = (from ff in db.FEE_FINE
+                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
+                                         select ff);
+                ViewData["category_fine"] = category_fine_val;
+                decimal total_fine_val = 0;
+                if (batch_fine_val != null && batch_fine_val.Count() != 0)
+                {
+                    foreach (var item in batch_fine_val)
+                    {
+                        total_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                    }
+                }
+                if (student_fine_val != null && student_fine_val.Count() != 0)
+                {
+                    foreach (var item in student_fine_val)
+                    {
+                        total_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                    }
+                }
+                if (category_fine_val != null && category_fine_val.Count() != 0)
+                {
+                    foreach (var item in category_fine_val)
+                    {
+                        total_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                    }
+                }
 
 
-        public ActionResult update_ajax(int? student, int? batch_id, int? date, int? fine, String PAYMENT_MODE, String PAYMENT_NOTE, decimal? PAYMENT_AMOUNT, String PAYMENT_DATE)
+                ViewBag.total_fine = total_fine_val;
+            }
+
+            return PartialView("_Student_Fees_Submission");
+        }
+
+
+
+        public ActionResult update_ajax(int? student, int? batch_id, int? date, String PAYMENT_MODE, String PAYMENT_NOTE, decimal? PAYMENT_AMOUNT, String PAYMENT_DATE)
         {
             if (ModelState.IsValid)
             {
@@ -2373,15 +2653,15 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                           where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                            select ff);
                 ViewData["batch_discounts"] = batch_discounts_val;
                 var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                             where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student
+                                             where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                              select ff);
                 ViewData["student_discounts"] = student_discounts_val;
                 var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                              where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                              where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                               select ff);
                 ViewData["category_discounts"] = category_discounts_val;
                 decimal total_discount_val = 0;
@@ -2421,15 +2701,15 @@ namespace SFSAcademy.Controllers
                 ViewBag.total_discount_percentage = total_discount_percentage_val;
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                      where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student
+                                        where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == student && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
                 decimal total_fine_val = 0;
@@ -2454,13 +2734,6 @@ namespace SFSAcademy.Controllers
                         total_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
                     }
                 }
-                if (fine >= 0)
-                {
-                    total_fine_val += (decimal)fine;
-                }
-                else
-                { ViewBag.FeeCollectionMessage = string.Concat("Please select valid fine value"); }
-                ViewBag.fine = 0;
                 ViewBag.total_fine = total_fine_val;
 
                 decimal total_fees = 0;
@@ -2472,6 +2745,7 @@ namespace SFSAcademy.Controllers
                 {
                     total_fees -= total_discount_val;
                 }
+                /*
                 if (total_fine_val != 0)
                 {
                     if (financefeeVal != null && financefeeVal.Count() != 0)
@@ -2488,6 +2762,11 @@ namespace SFSAcademy.Controllers
                     }
                     else { total_fees += total_fine_val; }
 
+                }
+                */
+                if (total_fine_val != 0)
+                {
+                    total_fees += total_fine_val;
                 }
                 decimal paid_before = 0;
                 foreach (var item13 in paid_fees_val)
@@ -2510,9 +2789,9 @@ namespace SFSAcademy.Controllers
 
                             var transaction = new FINANCE_TRANSACTION()
                             {
-                                TIL = total_fees > fees_paid ? string.Concat("RN.Partial:", ReceiptNo) : string.Concat("RN:", ReceiptNo),
+                                TIL = fees_paid < total_fees - paid_before ? string.Concat("RN.Partial: ", ReceiptNo) : string.Concat("RN: ", ReceiptNo),
                                 CAT_ID = TranCatId,
-                                DESCR = total_fees > fees_paid ? string.Concat("Part Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, ":", ReceiptNo) : string.Concat("Full Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, ":", ReceiptNo),
+                                DESCR = fees_paid < total_fees - paid_before ? string.Concat("Part Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, " : ", ReceiptNo) : string.Concat("Full Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, " : ", ReceiptNo),
                                 PAYEE_ID = PayeeId,
                                 PAYEE_TYPE = "Student",
                                 AMT = (decimal)fees_paid,
@@ -2568,20 +2847,6 @@ namespace SFSAcademy.Controllers
                             ffUpdate.TRAN_ID = tid;
                             ffUpdate.IS_PD = fees_paid == total_fees- paid_before ? true : false;
                             db.Entry(ffUpdate).State = EntityState.Modified;
-                            if (fine > 0)
-                            {
-                                var FineRecord = new FEE_FINE()
-                                {
-                                    TYPE = "Student",
-                                    NAME = "Ad-hoc fine",
-                                    RCVR_ID = PayeeId,
-                                    FIN_FEE_CAT_ID = fee_category.ID,
-                                    FINE = (decimal)fine,
-                                    IS_AMT = true,
-                                    FINE_DATE = System.DateTime.Now
-                                };
-                                db.FEE_FINE.Add(FineRecord);
-                            }
                             try { db.SaveChanges(); }
                             catch (DbEntityValidationException e)
                             {
@@ -2606,7 +2871,7 @@ namespace SFSAcademy.Controllers
                                                   select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                             ViewData["paid_fees"] = paid_fees_val2;
                             var student_fine_val2 = (from ff in db.FEE_FINE
-                                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                                      select ff);
                             ViewData["student_fine"] = student_fine_val2;
 
@@ -2665,15 +2930,15 @@ namespace SFSAcademy.Controllers
             ViewData["fee_particulars"] = fee_particulars_val;
 
             var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID
+                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                        select ff);
             ViewData["batch_discounts"] = batch_discounts_val;
             var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID
+                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                          select ff);
             ViewData["student_discounts"] = student_discounts_val;
             var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                          where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID
+                                          where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                           select ff);
             ViewData["category_discounts"] = category_discounts_val;
             decimal total_discount_val = 0;
@@ -2712,15 +2977,15 @@ namespace SFSAcademy.Controllers
             decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
             ViewBag.total_discount_percentage = total_discount_percentage_val;
             var batch_fine_val = (from ff in db.FEE_FINE
-                                  where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID
+                                  where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                   select ff);
             ViewData["batch_fine"] = batch_fine_val;
             var student_fine_val = (from ff in db.FEE_FINE
-                                    where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID
+                                    where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                     select ff);
             ViewData["student_fine"] = student_fine_val;
             var category_fine_val = (from ff in db.FEE_FINE
-                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID
+                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                      select ff);
             ViewData["category_fine"] = category_fine_val;
             decimal total_fine_val = 0;
@@ -2835,17 +3100,24 @@ namespace SFSAcademy.Controllers
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
 
-                var queryCollections = (from cl in db.FINANCE_FEE_COLLECTION
+                /*var queryCollections = (from cl in db.FINANCE_FEE_COLLECTION
                                         join ff in db.FINANCE_FEE_PARTICULAR on cl.FEE_CAT_ID equals ff.FIN_FEE_CAT_ID
                                         where cl.IS_DEL == false && cl.BTCH_ID == student.BTCH_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
                                         select new { cl.ID, cl.NAME, cl.DUE_DATE })
-             .OrderBy(x => x.NAME).Distinct().ToList();
+             .OrderBy(x => x.NAME).Distinct().ToList();*/
 
+                var queryCollections = (from ff in db.FINANCE_FEE
+                                     join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                     join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                     join bt in db.BATCHes on fc.BTCH_ID equals bt.ID
+                                     join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                     where st.ID == student.ID && fc.BTCH_ID == student.BTCH_ID && ff.IS_PD == false && fc.IS_DEL == false
+                                     select new { fc.ID, fc.NAME, fc.DUE_DATE, cs.CODE }).OrderBy(a => a.CODE).Distinct().ToList();
 
                 List<SelectListItem> options2 = new List<SelectListItem>();
                 foreach (var item in queryCollections)
                 {
-                    string CollectionDate = string.Concat(item.NAME, "-", Convert.ToDateTime(item.DUE_DATE).ToString("dd-MMM-yy"));
+                    string CollectionDate = string.Concat(item.CODE, " / ", item.NAME, " / ", Convert.ToDateTime(item.DUE_DATE).ToString("dd-MMM-yy"));
                     var result = new SelectListItem();
                     result.Text = CollectionDate;
                     result.Value = item.ID.ToString();
@@ -2858,6 +3130,19 @@ namespace SFSAcademy.Controllers
             }
             else
             {
+                int MinStudentId = db.STUDENTs.Min(x => x.ID);
+                STUDENT student = db.STUDENTs.Find(MinStudentId);
+                ViewData["student"] = student;
+                int MinBatchId = db.BATCHes.Min(x => x.ID);
+                var batch_val = (from cs in db.COURSEs
+                                 join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                 where bt.ID == MinBatchId
+                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 .OrderBy(x => x.BatchData.ID).ToList();
+                ViewData["batch"] = batch_val;
+                List<SelectListItem> options2 = new List<SelectListItem>();
+                options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Fee Collection Date" });
+                ViewBag.COLL_ID = options2;
                 ViewBag.FeeCollectionMessage = "This Admission Number does not exit, Or Student has left school. Please contact Admin Office.";
             }
 
@@ -3321,16 +3606,16 @@ namespace SFSAcademy.Controllers
 
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.TYPE == "Batch"
+                                      where ff.TYPE == "Batch" && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.TYPE == "Student"
+                                        where ff.TYPE == "Student" && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
 
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.TYPE == "Student Category"
+                                         where ff.TYPE == "Student Category" && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
 
@@ -3365,6 +3650,13 @@ namespace SFSAcademy.Controllers
                                             where st.BTCH_ID == batch_id && ff.IS_PD ==false && fc.ID == date
                                             select new Models.StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["student"] = StudentValDefaulters;
+
+                var StudentGuardians = (from st in db.STUDENTs
+                                        join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
+                                        where st.BTCH_ID == batch_id && st.IS_DEL == false
+                                        select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                ViewData["guardians"] = StudentGuardians;
+
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
@@ -3395,16 +3687,16 @@ namespace SFSAcademy.Controllers
 
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.TYPE == "Batch"
+                                      where ff.TYPE == "Batch" && (ff.FEE_CLCT_ID == dateVal.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= dateVal.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.TYPE == "Student"
+                                        where ff.TYPE == "Student" && (ff.FEE_CLCT_ID == dateVal.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= dateVal.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
 
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.TYPE == "Student Category"
+                                         where ff.TYPE == "Student Category" && (ff.FEE_CLCT_ID == dateVal.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= dateVal.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
 
@@ -3474,7 +3766,7 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                           where ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                           where ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID 
                                            select ff);
                 ViewData["batch_discounts"] = batch_discounts_val;
                 var student_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -3489,7 +3781,7 @@ namespace SFSAcademy.Controllers
                 
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                      where ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID 
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
@@ -3669,15 +3961,15 @@ namespace SFSAcademy.Controllers
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                           where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                            select ff);
                 ViewData["batch_discounts"] = batch_discounts_val;
                 var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                             where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                             where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                              select ff);
                 ViewData["student_discounts"] = student_discounts_val;
                 var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                              where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                              where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date.DUE_DATE))
                                               select ff);
                 ViewData["category_discounts"] = category_discounts_val;
 
@@ -3718,16 +4010,16 @@ namespace SFSAcademy.Controllers
                 ViewBag.total_discount_percentage = total_discount_percentage_val;
 
                 var batch_fine_val = (from ff in db.FEE_FINE
-                                      where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
+                                      where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                       select ff);
                 ViewData["batch_fine"] = batch_fine_val;
                 var student_fine_val = (from ff in db.FEE_FINE
-                                        where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID
+                                        where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                         select ff);
                 ViewData["student_fine"] = student_fine_val;
 
                 var category_fine_val = (from ff in db.FEE_FINE
-                                         where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID
+                                         where ff.FIN_FEE_CAT_ID == date.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date.DUE_DATE))
                                          select ff);
                 ViewData["category_fine"] = category_fine_val;
                 decimal total_fine_val = 0;
@@ -3797,15 +4089,15 @@ namespace SFSAcademy.Controllers
             ViewData["fee_particulars"] = fee_particulars_val;
 
             var batch_discounts_val = (from ff in db.FEE_DISCOUNT
-                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID
+                                       where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                        select ff);
             ViewData["batch_discounts"] = batch_discounts_val;
             var student_discounts_val = (from ff in db.FEE_DISCOUNT
-                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID
+                                         where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                          select ff);
             ViewData["student_discounts"] = student_discounts_val;
             var category_discounts_val = (from ff in db.FEE_DISCOUNT
-                                          where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID
+                                          where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.DISC_DATE <= date_val.DUE_DATE))
                                           select ff);
             ViewData["category_discounts"] = category_discounts_val;
             decimal total_discount_val = 0;
@@ -3844,15 +4136,15 @@ namespace SFSAcademy.Controllers
             decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
             ViewBag.total_discount_percentage = total_discount_percentage_val;
             var batch_fine_val = (from ff in db.FEE_FINE
-                                  where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID
+                                  where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Batch" && ff.RCVR_ID == StudentVal.BTCH_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                   select ff);
             ViewData["batch_fine"] = batch_fine_val;
             var student_fine_val = (from ff in db.FEE_FINE
-                                    where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID
+                                    where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                     select ff);
             ViewData["student_fine"] = student_fine_val;
             var category_fine_val = (from ff in db.FEE_FINE
-                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID
+                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student Category" && ff.RCVR_ID == StudentVal.STDNT_CAT_ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
                                      select ff);
             ViewData["category_fine"] = category_fine_val;
             decimal total_fine_val = 0;
@@ -4140,7 +4432,7 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Finance
-        public ActionResult Income_List_Update(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        public ActionResult Income_List_Update(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, string ADMSN_NO)
         {
             if (END_TRAN_DATE < START_TRAN_DATE)
             {
@@ -4149,10 +4441,22 @@ namespace SFSAcademy.Controllers
             }
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  join ff in db.FINANCE_FEE on tr.FIN_FE_ID equals ff.ID into gff
+                                  from subgff in gff.DefaultIfEmpty()
+                                  join std in db.STUDENTs on subgff.STDNT_ID equals std.ID into gstd
+                                  from subgstd in gstd.DefaultIfEmpty()
+                                  join bt in db.BATCHes.Include(x => x.COURSE) on subgstd.BTCH_ID equals bt.ID into gbt
+                                  from subgbt in gbt.DefaultIfEmpty()
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).OrderBy(x => x.BatchData.ID).ThenBy(x => x.StudentData.ID).ThenBy(x => x.FinanceTransactionData.TRAN_DATE).Distinct();
+            if (!string.IsNullOrEmpty(ADMSN_NO))
+            {
+                TransactionVal = TransactionVal.Where(x => x.StudentData.ADMSN_NO == ADMSN_NO);
+            }
+               
             ViewBag.START_TRAN_DATE = START_TRAN_DATE;
             ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.ADMSN_NO = ADMSN_NO;
             return View(TransactionVal.ToList());
         }
 
@@ -4173,7 +4477,7 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Finance
-        public ActionResult Income_List_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        public ActionResult Income_List_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, string ADMSN_NO)
         {
             if (END_TRAN_DATE < START_TRAN_DATE)
             {
@@ -4182,10 +4486,23 @@ namespace SFSAcademy.Controllers
             }
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
+                                  join ff in db.FINANCE_FEE on tr.FIN_FE_ID equals ff.ID into gff
+                                  from subgff in gff.DefaultIfEmpty()
+                                  join std in db.STUDENTs on subgff.STDNT_ID equals std.ID into gstd
+                                  from subgstd in gstd.DefaultIfEmpty()
+                                  join bt in db.BATCHes.Include(x => x.COURSE) on subgstd.BTCH_ID equals bt.ID into gbt
+                                  from subgbt in gbt.DefaultIfEmpty()
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).OrderBy(x => x.BatchData.ID).ThenBy(x => x.StudentData.ID).ThenBy(x => x.FinanceTransactionData.TRAN_DATE).Distinct();
+
+            if (!string.IsNullOrEmpty(ADMSN_NO))
+            {
+                TransactionVal = TransactionVal.Where(x => x.StudentData.ADMSN_NO == ADMSN_NO);
+            }
+
             ViewBag.START_TRAN_DATE = START_TRAN_DATE.ToShortDateString();
             ViewBag.END_TRAN_DATE = END_TRAN_DATE.ToShortDateString();
+            ViewBag.ADMSN_NO = ADMSN_NO;
             return View(TransactionVal.ToList());
         }
 

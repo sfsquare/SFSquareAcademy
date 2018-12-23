@@ -14,6 +14,7 @@
         $(".LoaderBox2").hide();
         $('#CollDropDown').change(function () {
 
+            $.ajaxSetup({ cache: false });
         /* Get the selected value of dropdownlist */
             var selectedID = $(this).val();
             var SelectedStd = $('#studentID12').val();

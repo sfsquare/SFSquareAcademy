@@ -12,47 +12,77 @@
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
-        $(".LoaderBox3").hide();
-        $('#submit-button').click(function () {
-
-        /* Get the selected value of dropdownlist */
+        $(".LoaderBox4").hide();
+        $('#submit-button4').click(function () {
+            $.ajaxSetup({ cache: false });
+            /* Get the selected value of dropdownlist */
             var selectedID = $('#fee').val();
+            var selectedDesc = $('#fee_desc').val();
             /* Get the selected value of dropdownlist */
             var SelectedStd = $('#studentID').val();
             var SelectedBatch = $('#batch_id').val();
             var SelectedDate = $('#date').val();
 
-            $(".LoaderBox3").show();
-        /* Request the partial view with .get request. */
-            $.get('/Finance/Update_Fine_Ajax?fee=' + selectedID + "&student=" + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate, function (data) {
+            $(".LoaderBox4").show();
+            /* Request the partial view with .get request. */
+            $.get('/Finance/Update_Fine_Ajax?fee=' + selectedID + "&fee_desc=" + selectedDesc + "&student=" + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate, function (data) {
 
-            /* data is the pure html returned from action method, load it to your page */
-            $('#modal-box').html(data);
-            /* little fade in effect */
-            $('#modal-box').fadeIn('fast');
+                /* data is the pure html returned from action method, load it to your page */
+                $('#modal-box').html(data);
+                /* little fade in effect */
+                $('#modal-box').fadeIn('fast');
             }).success(function (status) {
-                $(".LoaderBox3").hide();
+                $(".LoaderBox4").hide();
+            });
+            $('#resultFine').dialog("close");
+            $.ajaxSetup({ cache: false });
+        });
+
+
+        $(function () {
+            $.noConflict(true);
+            $("#resultFine").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                buttons: {
+                    Cancel: function () {
+                        $("#resultFine").dialog("close"); 
+                    }
+                },
+                modal: true
             });
 
+        });
     });
-   });
+
+    $("#btnCreateFine").click(function () {
+        $('#resultFine').dialog('open');
+    });
 </script>
+
 @if (ViewBag.due_date < System.DateTime.Now)
 {
-    <div id="search_box_bg">
-        <p>
-            <div class="fine_info">
-                <div class="label-field-pair1 label">
-                    <label>Due date has been exceeded. Please collect fine amount</label>
-                    <div class="text-input-bg1"><input type="text" name="fee" id="fee" /></div>
-                </div>
-                <input type="submit" value="Add Fine" id="submit-button" class="submit_button2" />
-                <div class="LoaderBox3"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-            </div>
-            <div class="extender"></div>
-            <input type="hidden" value="@student.ID" id="studentID" name="studentID" />
-            <input type="hidden" value="@batch.FirstOrDefault().BatchData.ID" id="batch_id" name="batch_id" />
-            <input type="hidden" value="@date.ID" id="date" name="date" />
-        </p>
-    </div>
+<button id="btnCreateFine" class="pay_fees_buttons">Due date has been exceeded. Please collect fine amount.</button>
 }
+
+<div id="resultFine" style="display:none" class="form" title="Fine Details">
+    <div class="label-field-pair label">
+        @Html.Label("fee_label", "Fine Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+        <span class="necessary-field" style="font-size:small">* Required Field</span>
+        <div class="text-input-bg">
+            @Html.Editor("fee", new { htmlAttributes = new { @class = "form -control", required = "required" } })
+        </div>
+    </div>
+    <div class="label-field-pair label">
+        @Html.Label("fee_desc_label", "Fine Description", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="text-input-bg">
+            @Html.Editor("fee_desc", new { htmlAttributes = new { @class = "form -control" } })
+        </div>
+    </div>
+    <input type="submit" value="Add Fine" id="submit-button4" class="submit-button" />
+    <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+</div>

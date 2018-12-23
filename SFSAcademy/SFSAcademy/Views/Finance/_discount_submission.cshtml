@@ -1,0 +1,86 @@
+﻿@using SFSAcademy.Models
+@{
+    STUDENT student = (STUDENT)ViewData["student"];
+    FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
+    IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox5").hide();
+        $('#submit-button5').click(function () {
+            $.ajaxSetup({ cache: false });
+            /* Get the selected value of dropdownlist */
+            var selectedID = $('#discount').val();
+            var selectedDesc = $('#discount_desc').val();
+            /* Get the selected value of dropdownlist */
+            var SelectedStd = $('#studentID').val();
+            var SelectedBatch = $('#batch_id').val();
+            var SelectedDate = $('#date').val();
+
+            $(".LoaderBox5").show();
+            /* Request the partial view with .get request. */
+            $.get('/Finance/Update_Discount_Ajax?discount=' + selectedID + "&discount_desc=" + selectedDesc + "&student=" + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#modal-box').html(data);
+                /* little fade in effect */
+                $('#modal-box').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox5").hide();
+            });
+            $('#resultDiscount').dialog("close");
+        });
+
+        $(function () {
+            $("#resultDiscount").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultDiscount").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+    });
+
+    $("#btnCreateDsicount").click(function () {
+        $('#resultDiscount').dialog('open');
+    });
+</script>
+
+@if (Html.Permitted_To("Update_Discount_Ajax", "Finance") || Html.CurrentUser_UserType().Equals("Admin"))
+{
+    <button id="btnCreateDsicount" class="pay_fees_buttons">Add Discount here if applicable.</button>
+}
+
+    <div id="resultDiscount" style="display:none" class="form" title="Discount Details">
+        <div class="label-field-pair label">
+            @Html.Label("discount_label", "Discount Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.Editor("discount", new { htmlAttributes = new { @class = "form -control", required = "required" } })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            @Html.Label("discount_desc_label", "Discount Description", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.Editor("discount_desc", new { htmlAttributes = new { @class = "form -control" } })
+            </div>
+        </div>
+        <input type="submit" value="Add Discount" id="submit-button5" class="submit-button" />
+        <div class="LoaderBox5"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    </div>

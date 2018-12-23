@@ -51,6 +51,7 @@ namespace SFSAcademy.Models
         public STUDENT StudentData { get; set; }
         public BATCH BatchData { get; set; }
         public COURSE CourseData { get; set; }
+        public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
     }
 
     public class FeeFine
@@ -62,6 +63,7 @@ namespace SFSAcademy.Models
         public STUDENT StudentData { get; set; }
         public BATCH BatchData { get; set; }
         public COURSE CourseData { get; set; }
+        public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
     }
     public class FeeCollectionDiscount
     {
@@ -124,6 +126,9 @@ namespace SFSAcademy.Models
         public FINANCE_TRANSACTION FinanceTransactionData { get; set; }
         public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
         public FINANCE_TRANSACTION_TRIGGERS TransactionTriggersData { get; set; }
+        public FINANCE_FEE FinanceFeeData { get; set; }
+        public STUDENT StudentData { get; set; }
+        public BATCH BatchData { get; set; }
     }
 
     public class FeeCollectionFee

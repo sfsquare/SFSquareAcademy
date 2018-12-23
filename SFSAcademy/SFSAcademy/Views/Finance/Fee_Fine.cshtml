@@ -41,7 +41,7 @@
                 @using (Html.BeginForm("Fee_Discounts", "Finance", FormMethod.Get))
                 {
                     <div class="label-field-pair label">
-                        @Html.Label("BTCH_ID", "Select A Course :", htmlAttributes: new { @class = "control-label col-md-2" })
+                        @Html.Label("BTCH_ID", "Select Batch :", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
                             @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "_select_change" })
                         </div>
@@ -52,7 +52,7 @@
                             @Html.DropDownList("FINANCE_FEE_CATGEORY_ID", null, htmlAttributes: new { @class = "_select_change" })
                         </div>
                     </div>
-                    <p><input type="submit" value="Search Discounts" class="submit-button" /></p>
+                    <p><input type="submit" value="Search Fine" class="submit-button" /></p>
                 }
             </form>
         </div>
@@ -68,6 +68,12 @@
                     @Html.ActionLink("Fine Name", "Fee_Fine", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
+                    Fine Description
+                </th>
+                <th>
+                    Fine Date
+                </th>
+                <th>
                     Fee Category
                 </th>
                 <th>
@@ -78,6 +84,9 @@
                 </th>
                 <th>
                     Student Name
+                </th>
+                <th>
+                    Fee Collection Name
                 </th>
                 <th>
                     @Html.ActionLink("Admission Date", "Fee_Fine", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
@@ -99,48 +108,57 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.FeeFineData.NAME)
+            <tr class="@selectedRow">
+                <td class="col-1">@i</td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.FeeFineData.NAME)
+                </td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.FeeFineData.DESCR)
+                </td>
+                <td class="col-2">
+                    @item.FeeFineData.FINE_DATE.Value.ToShortDateString()
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.NAME)
+                </td>
+                <td class="col-4">
+                    @Html.DisplayFor(modelItem => item.CourseData.CODE)
+                    <label>-</label>
+                    @Html.DisplayFor(modelItem => item.BatchData.NAME)
+                </td>
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.StudentCategoryData.NAME)
+                </td>
+                <td class="col-6">
+                    @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME) @Html.DisplayFor(modelItem => item.StudentData.MID_NAME) @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
+                </td>
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.FeeCollectionData.NAME)
+                </td>
+                @if (item.StudentData != null)
+                {
+                    <td class="col-7" nowrap>
+                        @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
                     </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.NAME)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.CourseData.CODE)
-                        <label>-</label>
-                        @Html.DisplayFor(modelItem => item.BatchData.NAME)
-                    </td>
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.StudentCategoryData.NAME)
-                    </td>
+                }
+                else
+                {
                     <td class="col-6">
-                        @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME)
+                        @Html.DisplayFor(modelItem => item.StudentData.ADMSN_DATE)
                     </td>
-                    @if (item.StudentData != null)
-                    {
-                        <td class="col-7" nowrap>
-                            @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
-                        </td>
-                    }
-                    else
-                    {
-                        <td class="col-6">
-                            @Html.DisplayFor(modelItem => item.StudentData.ADMSN_DATE)
-                        </td>
-                    }
-                    <td class="col-8" nowrap>
-                        @Html.DisplayFor(modelItem => item.FeeFineData.FINE)
+                }
+                <td class="col-8" nowrap>
+                    @Html.DisplayFor(modelItem => item.FeeFineData.FINE)
+                </td>
+                @if (Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                    <td class="col-9" nowrap>
+                        @Html.ActionLink("Edit ", "Edit_Fee_Fine", new { id = item.FeeFineData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete_Fee_Fine", new { id = item.FeeFineData.ID }, new { style = "text-decoration:underline" })
                     </td>
-                    @if (Html.CurrentUser_UserType().Equals("Admin"))
-                    {
-                        <td class="col-9" nowrap>
-                            @Html.ActionLink("Edit ", "Edit_Fee_Fine", new { id = item.FeeFineData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete_Fee_Fine", new { id = item.FeeFineData.ID }, new { style = "text-decoration:underline" })
-                        </td>
-                    }
+                }
 
-                </tr>
+            </tr>
                 i = i + 1;
             }
         </table>

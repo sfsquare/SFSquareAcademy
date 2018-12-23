@@ -4,6 +4,7 @@
 @{
     IEnumerable<SFSAcademy.Models.StundentFee> dates = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["dates"];
     IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
+    IList<SFSAcademy.Models.SelectCourseBatch> batches = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batches"];
     IEnumerable<SFSAcademy.Models.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.Models.FeeParticular>)ViewData["fee_particulars"];
     IEnumerable<SFSAcademy.Models.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.Models.FeeTransaction>)ViewData["paid_fees"];
     IEnumerable<FEE_DISCOUNT> batch_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["batch_discounts"];
@@ -61,12 +62,16 @@
     <ul id="category-list">
         @if (dates != null && dates.Count() != 0)
         {
-            <li class="listheading"> <div class="category-name">Fees </div> </li>
+        <li class="listheading">
+            <div class="category-name">Fees </div>
+            <div class="due-date">Last Batch/ Due Date </div>
+            <div class="category-edit">Payment Status</div>
+        </li>
         }
         @{ int i = 0;}
         @foreach (var item in dates)
         {
-            var fee_particulars_inner = fee_particulars.Where(x => (x.FeeParticularData.STDNT_ID == item.StudentData.ID || x.FeeParticularData.STDNT_ID == null) && (x.FeeParticularData.STDNT_CAT_ID == item.StudentData.STDNT_CAT_ID || x.FeeParticularData.STDNT_CAT_ID == null) && (x.FeeCollectionData.ID == item.FeeCollectionData.ID));
+            var fee_particulars_inner = fee_particulars.Where(x => x.FeeCollectionData.ID == item.FeeCollectionData.ID);
             decimal total_fees = 0;
             foreach (var item2 in fee_particulars_inner)
             {
@@ -74,7 +79,7 @@
             }
 
             decimal total_discount_val = 0;
-            var batch_discounts_inner = batch_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var batch_discounts_inner = batch_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.FeeCollectionData.BTCH_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.DISC_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (batch_discounts_inner != null && batch_discounts_inner.Count() != 0)
             {
                 foreach (var item2 in batch_discounts_inner)
@@ -82,7 +87,7 @@
                     total_discount_val += item2.IS_AMT == true ? (decimal)item2.DISC : total_fees * (decimal)item2.DISC / 100;
                 }
             }
-            var student_discounts_inner = student_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var student_discounts_inner = student_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.DISC_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (student_discounts_inner != null && student_discounts_inner.Count() != 0)
             {
                 foreach (var item3 in student_discounts_inner)
@@ -90,7 +95,7 @@
                     total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC : total_fees * (decimal)item3.DISC / 100;
                 }
             }
-            var category_discounts_inner = category_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var category_discounts_inner = category_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.DISC_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (category_discounts_inner != null && category_discounts_inner.Count() != 0)
             {
                 foreach (var item4 in category_discounts_inner)
@@ -104,7 +109,7 @@
             }
 
             decimal total_fine_val = 0;
-            var batch_fine_inner = batch_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var batch_fine_inner = batch_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.FeeCollectionData.BTCH_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.FINE_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (batch_fine_inner != null && batch_fine_inner.Count() != 0)
             {
                 foreach (var item5 in batch_fine_inner)
@@ -113,7 +118,7 @@
                 }
 
             }
-            var student_fine_inner = student_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var student_fine_inner = student_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.FINE_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (student_fine_inner != null && student_fine_inner.Count() != 0)
             {
                 foreach (var item6 in student_fine_inner)
@@ -121,7 +126,7 @@
                     total_fine_val += item6.IS_AMT == true ? (decimal)item6.FINE : total_fees * (decimal)item6.FINE / 100;
                 }
             }
-            var category_fine_inner = category_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID);
+            var category_fine_inner = category_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || (x.FEE_CLCT_ID == null && x.FINE_DATE <= item.FeeCollectionData.DUE_DATE)));
             if (category_fine_inner != null && category_fine_inner.Count() != 0)
             {
                 foreach (var item6 in category_fine_inner)
@@ -155,18 +160,20 @@
             {
                 selectedRow = "listodd";
             }
-            <li class="@selectedRow">
-                <div class="category-name">@Html.ActionLink(item.FeeCollectionData.NAME, "Fee_Details", new { id = Model.ID, id2 = item.FeeCollectionData.ID })</div>
-                <div class="due-date">@item.FeeCollectionData.DUE_DATE.Value.ToShortDateString()</div>
-                @if (item.FinanceFeeData.IS_PD == true)
-                {
-                    <div class="category-edit">PAID</div>
-                }
-                else
-                {
-                   <div class="category-edit">UNPAID - @total_fees</div>
-                }
-            </li>
+            var BatchInner = batches.Where(x => x.BatchData.ID == item.FeeCollectionData.BTCH_ID);
+
+        <li class="@selectedRow">
+            <div class="category-name">@Html.ActionLink(item.FeeCollectionData.NAME, "Fee_Details", new { id = Model.ID, id2 = item.FeeCollectionData.ID })</div>
+            <div class="due-date">@BatchInner.FirstOrDefault().CourseData.CODE / @item.FeeCollectionData.DUE_DATE.Value.ToShortDateString()</div>
+            @if (item.FinanceFeeData.IS_PD == true)
+            {
+                <div class="category-edit">PAID</div>
+            }
+            else
+            {
+                <div class="category-edit">UNPAID - @total_fees</div>
+            }
+        </li>
             i = i + 1;
         }
     </ul>

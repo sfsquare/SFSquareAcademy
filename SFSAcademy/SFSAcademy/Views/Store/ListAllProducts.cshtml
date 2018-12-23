@@ -1,9 +1,69 @@
 ﻿@model PagedList.IPagedList<SFSAcademy.Models.Products>
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
-@{    Layout = null;}
+@{ Layout = null;}
 
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(function () {
+            $.noConflict(true);
+            $("#result").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#result").dialog("close");
+                    }
+                },
+                modal: true
+            });
 
+        });
+
+        $('#myLink').click(function () {
+            var Quantity = $('#QUANTY').val(); // get the textbox value
+            var ProductId = $('#PRODUCTID').val();
+            var url = $(this).attr('href') + '?QUANTY=' + Quantity + "&PRODUCT_ID=" + ProductId; // build new url
+            location.href = url; // redirect
+            return false; // cancel default redirect
+        });
+    });
+
+    function AddQuantity(Value, ProductName) {
+        $('#PRODUCTID').val(Value); 
+        $('#PRODUCT_NAME').val(ProductName);
+        $('#result').dialog('open');
+    }
+
+</script>
+
+<div id="result" style="display:none" class="form" title="Selling Quantity">
+    <div class="label-field-pair label">
+        @Html.Label("PRODUCT_LABEL", "Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="text-input-bg">
+            @Html.Editor("PRODUCT_NAME", new { htmlAttributes = new { @class = "form -control", @readonly = "readonly" } })
+        </div>
+    </div>
+    <div class="label-field-pair label">
+        @Html.Label("QUANTY_LABEL", "Quantity", htmlAttributes: new { @class = "control-label col-md-2" })
+        <span class="necessary-field" style="font-size:small">* Required Field</span>
+        <div class="text-input-bg">
+            @Html.Editor("QUANTY", new { htmlAttributes = new { @class = "form -control", required = "required" } })
+        </div>
+    </div>
+    @Html.ActionLink("  Sell  ", "Purchase", null, new { id = "myLink", style = "color:White;", @class="submit-button" })
+</div>
 <div class="students-table">
     <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
         <tr class="tr-head">
@@ -34,63 +94,68 @@
             <th></th>
         </tr>
         <tr class="tr-blank"></tr>
-        @{int i = 1; }
+        @{int i = 1; int ProductRowNum = 0;}
         @foreach (var item in Model)
+        {
+            string selectedRow = "tr-even";
+            ProductRowNum = i;
+            if (i % 2 == 0)
             {
-                string selectedRow = "tr-even";
-                if (i % 2 == 0)
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="col-1">@i</td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.ProductData.NAME)
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
+                </td>
+                <td class="col-4">
+                    @Html.DisplayFor(modelItem => item.ProductData.BRAND)
+                </td>
+                <td class="col-5" nowrap>
+                    @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
+                </td>
+                <td class="col-6" nowrap>
+                    @Html.DisplayFor(modelItem => item.ProductData.UNIT_LEFT)
+                </td>
+                <td class="col-7" nowrap>
+                    @if (!item.ProductData.PURCHASED_ON.Equals(null))
+                    {
+                        @item.ProductData.PURCHASED_ON.Value.ToShortDateString()
+                    }
+                </td>
+                @if (Html.Permitted_To("Edit", "Store"))
                 {
-                    selectedRow = "tr-odd";
-                }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.ProductData.NAME)
-                    </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
-                    </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.ProductData.BRAND)
-                    </td>
-                    <td class="col-5" nowrap>
-                        @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
-                    </td>
-                    <td class="col-6" nowrap>
-                        @Html.DisplayFor(modelItem => item.ProductData.UNIT_LEFT)
-                    </td>
-                    <td class="col-7" nowrap>
-                        @if (!item.ProductData.PURCHASED_ON.Equals(null))
+                    <td class="col-8" nowrap>
+                        @Html.ActionLink("Edit ", "Edit", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
+                        @Html.ActionLink("Details  ", "Details", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
+                        @Html.ActionLink("Delete ", "Delete", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
+                        @if (item.ProductData.UNIT_LEFT > 0)
                         {
-                            @item.ProductData.PURCHASED_ON.Value.ToShortDateString()
+                            //@Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
+                            //Html.RenderPartial("_Sell_Quantity", new ViewDataDictionary { { "id", item.ProductData.PRODUCT_ID } });
+                            <button id="@string.Concat("btnCreate",ProductRowNum)" value="@item.ProductData.PRODUCT_ID" class="button-label" onclick="AddQuantity(value,'@item.ProductData.NAME');">Sell</button>
                         }
                     </td>
-                    @if (Html.Permitted_To("Edit", "Store"))
-                    {
-                        <td class="col-8" nowrap>
-                            @Html.ActionLink("Edit ", "Edit", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                            @Html.ActionLink("Details  ", "Details", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                            @Html.ActionLink("Delete ", "Delete", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                            @if (item.ProductData.UNIT_LEFT > 0)
-                            {
-                                @Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
-                            }
-                        </td>
-                    }
-                    else
-                    {
-                        <td class="col-8" nowrap>
-                            @if (item.ProductData.UNIT_LEFT > 0)
-                            {
-                                @Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
-                            }
-                        </td>
-                    }
+                }
+                else
+                {
+                    <td class="col-8" nowrap>
+                        @if (item.ProductData.UNIT_LEFT > 0)
+                        {
+                            //@Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
+                            //Html.RenderPartial("_Sell_Quantity", new ViewDataDictionary { { "id", item.ProductData.PRODUCT_ID } });
+                            <button id="@string.Concat("btnCreate",ProductRowNum)" value="@item.ProductData.PRODUCT_ID" class="button-label" onclick="AddQuantity(value,'@item.ProductData.NAME');">Sell</button>
+                        }
+                    </td>
+                }
 
-                </tr>
+            </tr>
             i = i + 1;
         }
     </table>
@@ -98,3 +163,4 @@
     @Html.PagedListPager(Model, page => Url.Action("ListAllProducts",
     new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>
+<input type="hidden" id="PRODUCTID" name="PRODUCTID" />

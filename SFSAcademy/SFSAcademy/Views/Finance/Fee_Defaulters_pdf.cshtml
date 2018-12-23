@@ -15,9 +15,17 @@
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
+    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
 }
 <link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/fee_defaulters_pdf.css">
+<style type="text/css">
+    @@media print {
 
+        html, body {
+            height: 100vh;
+        }
+    }
+</style>
 <div id="page-yield">
     <div class="hor_line"></div>
     <h2>Fees Defaulters</h2>
@@ -30,7 +38,7 @@
         </div>
         <div id="pdf-info">
             <table id="pdf-table" style="width:100%;" cellspacing="0">
-                <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Admission Number</td><td class="col-pdf">Name</td><td class="col-pdf">Amount</td></tr>
+                <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Admission Number</td><td class="col-pdf">Name</td><td class="col-pdf">Parent</td><td class="col-pdf">Phone</td><td class="col-pdf">Amount</td></tr>
                 @{int i = 1; int index = 1; }
                 @foreach (var item in student)
                 {
@@ -38,20 +46,6 @@
                     if (i % 2 == 0)
                     {
                         selectedRow = "odd";
-                    }
-                    if (i == 22)
-                    {
-                        i = 0;
-                        <tr class="page-break"><td colspan="3"></td></tr>
-                        if (selectedRow == "even")
-                        {
-                            <tr class="odd"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Name</td><td class="col-pdf">Amount</td></tr>
-                        }
-                        else
-                        {
-                            <tr class="even"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Name</td><td class="col-pdf">Amount</td></tr>
-                        }
-
                     }
                     var fee_particulars_inner = fee_particulars.Where(x => (x.FeeParticularData.STDNT_ID == item.StudentData.ID || x.FeeParticularData.STDNT_ID ==null) && (x.FeeParticularData.STDNT_CAT_ID == item.StudentData.STDNT_CAT_ID || x.FeeParticularData.STDNT_CAT_ID == null));
                     decimal total_fees = 0;
@@ -61,7 +55,7 @@
                     }
 
                     decimal total_discount_val = 0;
-                    var batch_discounts_inner = batch_discounts.Where(x => (x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID) && (x.RCVR_ID == item.StudentData.BTCH_ID));
+                    var batch_discounts_inner = batch_discounts.Where(x => (x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID) && (x.RCVR_ID == item.StudentData.BTCH_ID) && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (batch_discounts_inner != null && batch_discounts_inner.Count() != 0)
                     {
                         foreach (var item2 in batch_discounts_inner)
@@ -69,7 +63,7 @@
                             total_discount_val += item2.IS_AMT == true ? (decimal)item2.DISC : total_fees * (decimal)item2.DISC / 100;
                         }
                     }
-                    var student_discounts_inner = student_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.ID);
+                    var student_discounts_inner = student_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (student_discounts_inner != null && student_discounts_inner.Count() != 0)
                     {
                         foreach (var item3 in student_discounts_inner)
@@ -77,7 +71,7 @@
                             total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC : total_fees * (decimal)item3.DISC / 100;
                         }
                     }
-                    var category_discounts_inner = category_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.STDNT_CAT_ID);
+                    var category_discounts_inner = category_discounts.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.STDNT_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (category_discounts_inner != null && category_discounts_inner.Count() != 0)
                     {
                         foreach (var item4 in category_discounts_inner)
@@ -91,7 +85,7 @@
                     }
 
                     decimal total_fine_val = 0;
-                    var batch_fine_inner = batch_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.BTCH_ID);
+                    var batch_fine_inner = batch_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.BTCH_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (batch_fine_inner != null && batch_fine_inner.Count() != 0)
                     {
                         foreach (var item5 in batch_fine_inner)
@@ -100,7 +94,7 @@
                         }
 
                     }
-                    var student_fine_inner = student_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.ID);
+                    var student_fine_inner = student_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (student_fine_inner != null && student_fine_inner.Count() != 0)
                     {
                         foreach (var item6 in student_fine_inner)
@@ -108,7 +102,7 @@
                             total_fine_val += item6.IS_AMT == true ? (decimal)item6.FINE : total_fees * (decimal)item6.FINE / 100;
                         }
                     }
-                    var category_fine_inner = category_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.STDNT_CAT_ID);
+                    var category_fine_inner = category_fine.Where(x => x.FIN_FEE_CAT_ID == item.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == item.StudentData.STDNT_CAT_ID && (x.FEE_CLCT_ID == item.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
                     if (category_fine_inner != null && category_fine_inner.Count() != 0)
                     {
                         foreach (var item6 in category_fine_inner)
@@ -137,13 +131,31 @@
                         total_fees -= paid;
                     }
 
+                    var SelGuardian = guardians.Where(x => x.StudentData.ID == item.StudentData.ID);
+                    string Phone_Number = "";
+                    string GuardianName = "";
 
-                    <tr class="@selectedRow">
-                        <td class="col-pdf">@index</td>
-                        <td class="col-pdf">@item.StudentData.ADMSN_NO</td>
-                        <td class="col-pdf">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
-                        <td class="col-pdf">@total_fees</td>
-                    </tr>
+                <tr class="@selectedRow">
+                    <td class="col-pdf">@index</td>
+                    <td class="col-pdf">@item.StudentData.ADMSN_NO</td>
+                    <td class="col-pdf">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
+                    @foreach (var item2 in SelGuardian)
+                    {
+                        Phone_Number = item2.GuardianData.MOBL_PH != null ? string.Concat(Phone_Number, item2.GuardianData.MOBL_PH.ToString(), ",") : Phone_Number;
+                        GuardianName = string.Concat(GuardianName, item2.GuardianData.FIRST_NAME, " ", item2.GuardianData.LAST_NAME, ",");
+                    }
+                    @if (SelGuardian != null)
+                    {
+                        <td class="col-3">@GuardianName</td>
+                        <td class="col-3"> @Phone_Number </td>
+                    }
+                    else
+                    {
+                        <td class="col-3"></td>
+                        <td class="col-3"></td>
+                    }
+                    <td class="col-pdf">@total_fees</td>
+                </tr>
                     i = i + 1;
                     index += 1;
                 }

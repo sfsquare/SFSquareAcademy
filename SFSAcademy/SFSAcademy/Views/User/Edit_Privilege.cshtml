@@ -8,42 +8,67 @@
     ViewBag.Title = "Edit_Privilege";
 }
 
-<script type="text/javascript">
-  function privilege_tag_check_all_or_none(privilege_tag_id, th_is){
-    field_value = th_is.checked
-    $$('.privilege_check_'+privilege_tag_id).each(function(check){
-      check.checked = field_value;
-      if(check.checked == false){
-          $(check).up('tr').removeClassName('active')
-      }
-      else{
-          $(check).up('tr').addClassName('active')
-      }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $(function () {
+        $('.all_privileges_list :checkbox').change(function () {
+            var value = $(this).data('value');
+            var isChecked = $(this).is(':checked');
+            alert(isChecked);
+            var url = $('#checkboxes').data('url');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { data: value, isChecked: isChecked },
+                success: function (result) {
+                    $('#rsvpmsg').html(result);
+                }
+            });
+        });
+    });
 
-    })
-  }
+    function privilege_tag_check_all_or_none(privilege_tag_id, th_is) {
+        alert(privilege_tag_id);
+        var value = $(th_is).data('value');
+        var element = document.getElementById(th_is);
+        var field_value = element.checked();
+        $('.privilege_check_' + privilege_tag_id).each(function (check) {
+            check.checked = field_value;
+            if (check.checked == false) {
+                $(check).up('tr').removeClassName('active')
+            }
+            else {
+                $(check).up('tr').addClassName('active')
+            }
 
-  function privilege_check(privilege_tag_id, th_is){
-    if(th_is.checked == false){
-      $$('.check_all_'+privilege_tag_id).first().checked = false
-      $(th_is).up('tr').removeClassName('active')
+        })
     }
-    else
-    {
-      $(th_is).up('tr').addClassName('active')
-      var flag =0;
-      $$('.privilege_check_'+privilege_tag_id).each(function(check){
-        if(check.checked == false){
-          flag=1;
+
+    function privilege_check(privilege_tag_id, th_is) {
+        alert('Hi');
+        var element = document.getElementById(th_is);
+        if (element.checked == false) {
+            $('.check_all_' + privilege_tag_id).first().checked = false
+            $(element).up('tr').removeClassName('active')
         }
-      });
-      if(flag==0)
-      {
-        $$('.check_all_'+privilege_tag_id).first().checked = true
-      }
+        else {
+            $(element).up('tr').addClassName('active')
+            var flag = 0;
+            $('.privilege_check_' + privilege_tag_id).each(function (check) {
+                if (check.checked == false) {
+                    flag = 1;
+                }
+            });
+            if (flag == 0) {
+                $('.check_all_' + privilege_tag_id).first().checked = true
+            }
 
+        }
     }
-  }
 </script>
 
 <div id="content-header">
@@ -64,79 +89,86 @@
             <div class="privilege_heading" id="application-list">
                 <div class="label_field_pair"><label>Set privileges for @User.FIRST_NAME @User.LAST_NAME</label></div>
                 <div class="user_submit_button1">
-                    <input name="commit" type="submit"  value="►Save" class="user_submit_button" />
+                    <input name="commit" type="submit" value="►Save" class="user_submit_button" />
                 </div>
             </div>
             <div class="all_privileges_list">
                 <table style="width:100%;" align="center" cellspacing="1" cellpadding="1" class="table_design">
-                <tr>
-                    @{ var item0 = Model.FirstOrDefault();}
-                    @{int RowNum = item0.PrivilageList.ID; }
-                    @{string ListItem = item0.PrivilageList.PRIVILEGE_TAG; }
-                    @for (var j = 0; j < Model.Count; j++)
-                    {
-                        if (RowNum == Model[j].PrivilageList.ID)
+                    <tr>
+                        @{ var item0 = Model.FirstOrDefault();}
+                        @{int RowNum = item0.PrivilageList.ID; }
+                        @{string ListItem = item0.PrivilageList.PRIVILEGE_TAG; }
+                        @for (var j = 0; j < Model.Count; j++)
                         {
-                            int Privilege_Tag_ID = RowNum;
-                            <td style="word-wrap:break-word">
-                                <table id="listing" align="center" style="width: 300px;" class="privilege_table" cellpadding="1" cellspacing="1">
-                                    <tr class="tr-head">
-                                        <td class="col-1">@Html.CheckBoxFor(x => x[j].Selected, new { @class = "check_all_" + @Privilege_Tag_ID, @onChange = "privilege_tag_check_all_or_none(" + @Privilege_Tag_ID + ", this)", @id = "privilege_check_" + @Privilege_Tag_ID })</td>
-                                        <td class="col-2" width="50px">@Html.DisplayFor(x => x[j].PrivilageList.PRIVILEGE_TAG)</td>
-                                        @Html.HiddenFor(x => x[j].PrivilageList.PRIVILEGE_TAG)
-                                        @Html.HiddenFor(x => x[j].PrivilageList.ID)
-                                        @Html.HiddenFor(x => x[j].IsActive)
-                                        @Html.HiddenFor(x => x[j].USRS_ID)
-                                    </tr>
-                                    <tr class="tr-blank"></tr>
-                                    @{int k = 1; }
-                                    @for (var i = 0; i < Model.Count; i++)
-                                    {
-                                        string selectedRow = "tr-even";
-                                        if (k % 2 == 0)
+                            if (RowNum == Model[j].PrivilageList.ID)
+                            {
+                                int Privilege_Tag_ID = RowNum;
+                                string TagClassString = string.Concat("check_all_", Privilege_Tag_ID);
+                                string TagOnChangeString = string.Concat("privilege_tag_check_all_or_none(", Privilege_Tag_ID, ",");
+                                string TagIdString = string.Concat("privilege_check_", Privilege_Tag_ID);
+                                <td style="word-wrap:break-word">
+                                    <table id="listing" align="center" style="width: 300px;" class="privilege_table" cellpadding="1" cellspacing="1">
+                                        <tr class="tr-head">
+                                            <td class="col-1">@Html.CheckBoxFor(x => x[j].Selected, new { @class = @TagClassString, @onChange = @TagOnChangeString + @TagIdString + ");", data_value = @TagIdString })</td>
+                                            <td class="col-2" width="50px">@Html.DisplayFor(x => x[j].PrivilageList.PRIVILEGE_TAG)</td>
+                                            @Html.HiddenFor(x => x[j].PrivilageList.PRIVILEGE_TAG)
+                                            @Html.HiddenFor(x => x[j].PrivilageList.ID)
+                                            @Html.HiddenFor(x => x[j].IsActive)
+                                            @Html.HiddenFor(x => x[j].USRS_ID)
+                                        </tr>
+                                        
+                                        <tr class="tr-blank"></tr>
+                                        @{int k = 1; }
+                                        @for (var i = 0; i < Model.Count; i++)
                                         {
-                                            selectedRow = "tr-odd";
-                                        }
-                                        if (ListItem == Model[i].PrivilageList.PRIVILEGE_TAG)
-                                        {
-                                            if (Model[i].PrivilageList.IS_ACT == false)
+                                            string PrClassString = string.Concat("privilege_check_", Privilege_Tag_ID);
+                                            string PrOnChangeString = string.Concat("privilege_check(", Privilege_Tag_ID, ",");
+                                            string PrIdString = string.Concat("privilege_check_", Model[i].PrivilageList.ID);
+                                            string selectedRow = "tr-even";
+                                            if (k % 2 == 0)
                                             {
-                                                <tr class="@selectedRow">
-                                                    <td class="col-8">@Html.CheckBoxFor(x => x[i].Selected, new { @class = "privilege_check_" + @Privilege_Tag_ID, @onChange = "privilege_check(" + @Privilege_Tag_ID + ", this)", @id = "privilege_check_" + @Model[i].PrivilageList.ID, @disabled = true })</td>
-                                                    <td class="col-9">@Html.DisplayFor(x => x[i].PrivilageList.NAME, new { @title = "This feature is not build yet." })</td>
-                                                    @Html.HiddenFor(x => x[i].PrivilageList.NAME)
-                                                    @Html.HiddenFor(x => x[i].PrivilageList.ID)
-                                                    @Html.HiddenFor(x => x[i].IsActive)
-                                                    @Html.HiddenFor(x => x[i].USRS_ID)
-                                                </tr>
+                                                selectedRow = "tr-odd";
                                             }
-                                            else
+                                            if (ListItem == Model[i].PrivilageList.PRIVILEGE_TAG)
                                             {
-                                                <tr class="@selectedRow">
-                                                    <td class="col-8">@Html.CheckBoxFor(x => x[i].Selected, new { @class = "privilege_check_" + @Privilege_Tag_ID, @onChange = "privilege_check(" + @Privilege_Tag_ID + ", this)", @id = "privilege_check_" + @Model[i].PrivilageList.ID })</td>
-                                                    <td class="col-9">@Html.DisplayFor(x => x[i].PrivilageList.NAME)</td>
-                                                    @Html.HiddenFor(x => x[i].PrivilageList.NAME)
-                                                    @Html.HiddenFor(x => x[i].PrivilageList.ID)
-                                                    @Html.HiddenFor(x => x[i].IsActive)
-                                                    @Html.HiddenFor(x => x[i].USRS_ID)
-                                                </tr>
+                                                if (Model[i].PrivilageList.IS_ACT == false)
+                                                {
+                                                    <tr class="@selectedRow">
+                                                        <td class="col-8">@Html.CheckBoxFor(x => x[i].Selected, new { @class = @PrClassString, onchange = @PrOnChangeString + @PrIdString + ")", @id = @PrIdString, data_value = @PrIdString, @disabled = true })</td>
+                                                        <td class="col-9">@Html.DisplayFor(x => x[i].PrivilageList.NAME, new { @title = "This feature is not build yet." })</td>
+                                                        @Html.HiddenFor(x => x[i].PrivilageList.NAME)
+                                                        @Html.HiddenFor(x => x[i].PrivilageList.ID)
+                                                        @Html.HiddenFor(x => x[i].IsActive)
+                                                        @Html.HiddenFor(x => x[i].USRS_ID)
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr class="@selectedRow">
+                                                        <td class="col-8">@Html.CheckBoxFor(x => x[i].Selected, new { @class = @PrClassString, @onChange = @PrOnChangeString + @PrIdString + ")", @id = @PrIdString })</td>
+                                                        <td class="col-9">@Html.DisplayFor(x => x[i].PrivilageList.NAME)</td>
+                                                        @Html.HiddenFor(x => x[i].PrivilageList.NAME)
+                                                        @Html.HiddenFor(x => x[i].PrivilageList.ID)
+                                                        @Html.HiddenFor(x => x[i].IsActive)
+                                                        @Html.HiddenFor(x => x[i].USRS_ID)
+                                                    </tr>
+                                                }
+
                                             }
-
+                                            if (ListItem != Model[i].PrivilageList.PRIVILEGE_TAG && RowNum < Model[i].PrivilageList.ID)
+                                            {
+                                                ListItem = Model[i].PrivilageList.PRIVILEGE_TAG;
+                                                RowNum = Model[i].PrivilageList.ID;
+                                                break;
+                                            }
+                                            k = k + 1;
                                         }
-                                        if (ListItem != Model[i].PrivilageList.PRIVILEGE_TAG && RowNum < Model[i].PrivilageList.ID)
-                                        {
-                                            ListItem = Model[i].PrivilageList.PRIVILEGE_TAG;
-                                            RowNum = Model[i].PrivilageList.ID;
-                                            break;
-                                        }
-                                        k = k + 1;
-                                    }
 
-                                </table>
-                            </td>
-                           }
+                                    </table>
+                                </td>
+                            }
 
-                         }
+                        }
                     </tr>
                 </table>
             </div>
