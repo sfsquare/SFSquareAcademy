@@ -40,8 +40,6 @@
         <EntityTypeShape EntityType="SFSAcademyModel.EXAM_SCORE" Width="1.5" PointX="20.25" PointY="72.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.FEE_COLLECTION_DISCOUNT" Width="1.5" PointX="8.25" PointY="83" />
         <EntityTypeShape EntityType="SFSAcademyModel.FEE_COLLECTION_PARTICULAR" Width="1.5" PointX="14.25" PointY="74.625" />
-        <EntityTypeShape EntityType="SFSAcademyModel.FEE_DISCOUNT" Width="1.5" PointX="3.75" PointY="50.5" />
-        <EntityTypeShape EntityType="SFSAcademyModel.FEE_FINE" Width="1.5" PointX="3.75" PointY="46.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_DONATION" Width="1.5" PointX="21.75" PointY="78.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE" Width="1.5" PointX="14.25" PointY="79.25" />
         <EntityTypeShape EntityType="SFSAcademyModel.FINANCE_FEE_CATGEORY" Width="1.5" PointX="1.5" PointY="54.625" />
@@ -161,8 +159,6 @@
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI2" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FEE__NI" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FEE__NI2" />
-        <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3" />
-        <AssociationConnector Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3" />
         <AssociationConnector Association="SFSAcademyModel.TRAN__FINA_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.FEE_C_FINA_FINA_NI" />
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FINA_NI5" />
@@ -201,12 +197,9 @@
         <AssociationConnector Association="SFSAcademyModel.TIME_T_TIME_T_NI" />
         <AssociationConnector Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE_ACCESS" Width="1.5" PointX="5.25" PointY="60.875" />
-        <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE" Width="1.5" PointX="0.75" PointY="50.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGES_USERS" Width="1.5" PointX="3" PointY="60.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.USERS_ACCESS" Width="1.5" PointX="3" PointY="69.625" />
-        <AssociationConnector Association="SFSAcademyModel.PRI_AC_PRI_USER_NI" />
         <AssociationConnector Association="SFSAcademyModel.USER_AC_PRI_USER_NI" />
-        <AssociationConnector Association="SFSAcademyModel.PRI_PRI_USER_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE" Width="1.5" PointX="14.25" PointY="99.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE_BACKUP" Width="1.5" PointX="14.25" PointY="109.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.STORE_PURCHAGE_CART" Width="1.5" PointX="14.25" PointY="104.5" />
@@ -250,6 +243,13 @@
         <AssociationConnector Association="SFSAcademyModel.USER_PRI_USER_NI" />
         <AssociationConnector Association="SFSAcademyModel.USRID_USER_STUD_NI" />
         <AssociationConnector Association="SFSAcademyModel.USRS__USER_USER_ID" />
+        <EntityTypeShape EntityType="SFSAcademyModel.FEE_FINE" Width="1.5" PointX="3.75" PointY="45.875" />
+        <AssociationConnector Association="SFSAcademyModel.FEE_F_FINA_FEE_NI3" />
+        <EntityTypeShape EntityType="SFSAcademyModel.FEE_DISCOUNT" Width="1.5" PointX="3.75" PointY="50" />
+        <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI3" />
+        <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE" Width="1.5" PointX="10.375" PointY="5" />
+        <AssociationConnector Association="SFSAcademyModel.PRI_AC_PRI_USER_NI" />
+        <AssociationConnector Association="SFSAcademyModel.PRI_PRI_USER_NI" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

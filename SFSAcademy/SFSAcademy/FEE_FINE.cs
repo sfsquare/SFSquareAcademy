@@ -22,6 +22,8 @@ namespace SFSAcademy
         public Nullable<decimal> FINE { get; set; }
         public bool IS_AMT { get; set; }
         public Nullable<System.DateTime> FINE_DATE { get; set; }
+        public Nullable<int> FEE_CLCT_ID { get; set; }
+        public string DESCR { get; set; }
     
         public virtual FINANCE_FEE_CATGEORY FINANCE_FEE_CATGEORY { get; set; }
     }

@@ -68,6 +68,12 @@
                     @Html.ActionLink("Discount Name", "Fee_Discounts", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
+                    Discount Description
+                </th>
+                <th>
+                    Discount Date
+                </th>
+                <th>
                     Fee Category
                 </th>
                 <th>
@@ -78,6 +84,9 @@
                 </th>
                 <th>
                     Student Name
+                </th>
+                <th>
+                    Fee Collection Name
                 </th>
                 <th>
                     @Html.ActionLink("Admission Date", "Fee_Discounts", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
@@ -99,48 +108,57 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.FeeDiscountData.NAME)
+            <tr class="@selectedRow">
+                <td class="col-1">@i</td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.FeeDiscountData.NAME)
+                </td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.FeeDiscountData.DESCR)
+                </td>
+                <td class="col-2">
+                    @item.FeeDiscountData.DISC_DATE.Value.ToShortDateString()
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.NAME)
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.CourseData.CODE)
+                    <label>-</label>
+                    @Html.DisplayFor(modelItem => item.BatchData.NAME)
+                </td>
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.StudentCategoryData.NAME)
+                </td>
+                <td class="col-6">
+                    @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME) @Html.DisplayFor(modelItem => item.StudentData.MID_NAME) @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
+                </td>
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.FeeCollectionData.NAME)
+                </td>
+                @if (item.StudentData != null)
+                {
+                    <td class="col-7" nowrap>
+                        @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
                     </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.NAME)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.CourseData.CODE)
-                        <label>-</label>
-                        @Html.DisplayFor(modelItem => item.BatchData.NAME)
-                    </td>
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.StudentCategoryData.NAME)
-                    </td>
+                }
+                else
+                {
                     <td class="col-6">
-                        @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME)
+                        @Html.DisplayFor(modelItem => item.StudentData.ADMSN_DATE)
                     </td>
-                    @if (item.StudentData != null)
-                    {
-                        <td class="col-7" nowrap>
-                            @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
-                        </td>
-                    }
-                    else
-                    {
-                        <td class="col-6">
-                            @Html.DisplayFor(modelItem => item.StudentData.ADMSN_DATE)
-                        </td>
-                    }
-                    <td class="col-8" nowrap>
-                        @Html.DisplayFor(modelItem => item.FeeDiscountData.DISC)
+                }
+                <td class="col-8" nowrap>
+                    @Html.DisplayFor(modelItem => item.FeeDiscountData.DISC)
+                </td>
+                @if (Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                    <td class="col-9" nowrap>
+                        @Html.ActionLink("Edit ", "Edit_Fee_Discount", new { id = item.FeeDiscountData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete_Fee_Discount", new { id = item.FeeDiscountData.ID }, new { style = "text-decoration:underline" })
                     </td>
-                    @if (Html.CurrentUser_UserType().Equals("Admin"))
-                    {
-                        <td class="col-9" nowrap>
-                            @Html.ActionLink("Edit ", "Edit_Fee_Discount", new { id = item.FeeDiscountData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete_Fee_Discount", new { id = item.FeeDiscountData.ID }, new { style = "text-decoration:underline" })
-                        </td>
-                    }
+                }
 
-                </tr>
+            </tr>
                 i = i + 1;
             }
         </table>

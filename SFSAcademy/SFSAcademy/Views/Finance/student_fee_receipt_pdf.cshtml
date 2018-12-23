@@ -19,7 +19,15 @@
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
 }
 <link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/student_fee_receipt_pdf.css">
+<style type="text/css">
+    @@media print {
 
+    html, body {
+      width:100vh;
+    }
+
+}
+</style>
 <div id="page-yield">
     <div class="hor_line"></div>
     @if (financefee.FirstOrDefault().IS_PD == true)
@@ -47,7 +55,7 @@
                 <tr class="table-header">
                     <td class="col-pdf1">SL No.</td>
                     <td class="col-pdf2">Particulars</td>
-                    <td class="col-pdf3">Fees No.</td>
+                    <td class="col-pdf2">Details</td>
                     <td class="col-pdf3">Receipt No.</td>
                     <td class="col-pdf4"> Amount</td>
                 </tr>
@@ -62,7 +70,7 @@
                     <tr class="@selectedRow">
                         <td class="col-pdf1">@i</td>
                         <td class="col-pdf2">@item.NAME</td>
-                        <td class="col-pdf3"></td>
+                        <td class="col-pdf3">@item.DESCR</td>
                         <td class="col-pdf3"></td>
                         <td class="col-pdf4">@item.AMT</td>
                     </tr>
@@ -94,7 +102,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">@item.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@discount</td>
                         </tr>
@@ -112,7 +120,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text2</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">@item2.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@discount2</td>
                         </tr>
@@ -130,7 +138,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@discount_text3</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">@item3.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@discount3</td>
                             `
@@ -188,7 +196,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">>@item.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@fine</td>
                         </tr>
@@ -206,7 +214,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text2</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">@item.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@fine2</td>
                         </tr>
@@ -224,7 +232,7 @@
                         <tr class="@selectedRow">
                             <td class="col-1">@i</td>
                             <td class="col-2">@fine_text3</td>
-                            <td class="col-3"></td>
+                            <td class="col-3">@item.DESCR</td>
                             <td class="col-3"></td>
                             <td class="col-6">@fine3</td>
                             `
@@ -271,8 +279,8 @@
                         }
                         <tr class="@selectedRow">
                             <td class="col-pdf1">@i</td>
-                            <td class="col-pdf2">Partial Payment On : @item13.FinanceTransactionData.TRAN_DATE</td>
-                            <td class="col-pdf3">@item13.FinanceTransactionData.RCPT_NO</td>
+                            <td class="col-pdf2">Payment On : @item13.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+                            <td class="col-pdf3">@item13.FinanceTransactionData.DESCR</td>
                             <td class="col-pdf3"> @item13.FinanceTransactionData.ID</td>
                             <td class="col-pdf4">@item13.FinanceTransactionData.AMT</td>
                         </tr>
