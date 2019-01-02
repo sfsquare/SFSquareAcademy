@@ -116,9 +116,19 @@
                 <td class="col-2">
                     @Html.DisplayFor(modelItem => item.FeeFineData.DESCR)
                 </td>
-                <td class="col-2">
-                    @item.FeeFineData.FINE_DATE.Value.ToShortDateString()
-                </td>
+                @if (item.FeeFineData.FINE_DATE != null)
+                {
+                    <td class="col-2">
+                        @item.FeeFineData.FINE_DATE.Value.ToShortDateString()
+                    </td>
+                }
+                else
+                {
+                    <td class="col-2">
+                       
+                    </td>
+                }
+
                 <td class="col-3">
                     @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.NAME)
                 </td>
