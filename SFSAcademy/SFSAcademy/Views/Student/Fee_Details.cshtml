@@ -57,6 +57,7 @@
             <tr class="tr-head">
                 <td>Sl. No.</td>
                 <td>Particulars</td>
+                <td>Details</td>
                 <td>Amount</td>
             </tr>
             <tr class="tr-blank"></tr>
@@ -71,6 +72,7 @@
                 <tr class="@selectedRow">
                     <td class="col-1">@i</td>
                     <td class="col-2">@item.FeeParticularData.NAME</td>
+                    <td class="col-2">@item.FeeParticularData.DESCR</td>
                     <td class="col-6">@item.FeeParticularData.AMT</td>
                 </tr>
                 total_fees += (decimal)item.FeeParticularData.AMT;
@@ -89,7 +91,7 @@
                 <tr class="tr-blank"></tr>
                 <tr class="@NextRow" cellpadding="1" cellspacing="1">
                     <td class="col-1"></td>
-                    <td class="col-1" colspan="2"><span class="themed_text">Discounts: </span></td>
+                    <td class="col-1" colspan="3"><span class="themed_text">Discounts: </span></td>
 
                 </tr>
                 foreach (var item in batch_discounts)
@@ -104,6 +106,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@discount_text</td>
+                        <td class="col-2">@item.DESCR</td>
                         <td class="col-6">@discount</td>
                     </tr>
                     i = i + 1;
@@ -120,6 +123,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@discount_text2</td>
+                        <td class="col-2">@item2.DESCR</td>
                         <td class="col-6">@discount2</td>
                     </tr>
                     i = i + 1;
@@ -136,6 +140,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@discount_text3</td>
+                        <td class="col-2">@item3.DESCR</td>
                         <td class="col-6">@discount3</td>
                         `
                     </tr>
@@ -154,14 +159,14 @@
                 <tr class="tr-blank"></tr>
                 <tr class="tr-blank"></tr>
                 <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="2">Total Discount</td>
+                    <td class="col-8" colspan="3">Total Discount</td>
                     <td class="col-6">@ViewBag.total_discount</td>
                 </tr>
                 <tr class="tr-blank"></tr>
                 <tr class="tr-blank"></tr>
                 { total_fees -= total_fees * @ViewBag.total_discount_percentage / 100; }
                 <tr class="@nextToNextRow" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="2">Total Fees</td>
+                    <td class="col-8" colspan="3">Total Fees</td>
                     <td class="col-6">@total_fees.ToString("0.00")</td>
                 </tr>
             }
@@ -182,7 +187,7 @@
                 <tr class="tr-blank"></tr>
                 <tr class="@nextRow" cellpadding="1" cellspacing="1">
                     <td class="col-1"></td>
-                    <td class="col-1" colspan="2"><span class="themed_text">Fine: </span></td>
+                    <td class="col-1" colspan="3"><span class="themed_text">Fine: </span></td>
 
                 </tr>
                 foreach (var item in batch_fine)
@@ -197,6 +202,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@fine_text</td>
+                        <td class="col-2">@item.DESCR</td>
                         <td class="col-6">@fine</td>
                     </tr>
                     i = i + 1;
@@ -213,6 +219,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@fine_text2</td>
+                        <td class="col-2">@item.DESCR</td>
                         <td class="col-6">@fine2</td>
                     </tr>
                     i = i + 1;
@@ -229,6 +236,7 @@
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
                         <td class="col-2">@fine_text3</td>
+                        <td class="col-2">@item.DESCR</td>
                         <td class="col-6">@fine3</td>
                         `
                     </tr>
@@ -247,7 +255,7 @@
                 <tr class="tr-blank"></tr>
                 <tr class="tr-blank"></tr>
                 <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="2">Total Fine</td>
+                    <td class="col-8" colspan="3">Total Fine</td>
                     <td class="col-6">@ViewBag.total_fine</td>
                 </tr>
                 <tr class="tr-blank"></tr>
@@ -271,7 +279,7 @@
                 decimal paid = 0;
                 <tr class="@nextRow" cellpadding="1" cellspacing="1">
                     <td class="col-1"></td>
-                    <td class="col-1" colspan="2"><span class="themed_text">Payment Done: </span></td>
+                    <td class="col-1" colspan="3"><span class="themed_text">Payment Done: </span></td>
 
                 </tr>
                 foreach (var item13 in paid_fees)
@@ -284,7 +292,8 @@
                     }
                     <tr class="@selectedRow">
                         <td class="col-1">@i</td>
-                        <td class="col-2">Partial Payment On : @item13.FinanceTransactionData.TRAN_DATE</td>
+                        <td class="col-2">Payment On : @item13.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+                        <td class="col-2">@item13.FinanceTransactionData.DESCR : Receipt No.- @item13.FinanceTransactionData.ID</td>
                         <td class="col-6">@item13.FinanceTransactionData.AMT</td>
                     </tr>
                     i += 1;
@@ -304,7 +313,7 @@
                 nextToNextRow = "tr-even";
             }
             <tr class="@nextRow" cellpadding="1" cellspacing="1">
-                <td class="col-8" colspan="2">Amount To Pay :</td>
+                <td class="col-8" colspan="3">Amount To Pay :</td>
                 <td class="col-6">@total_fees.ToString("0.00")</td>
             </tr>
         </table>

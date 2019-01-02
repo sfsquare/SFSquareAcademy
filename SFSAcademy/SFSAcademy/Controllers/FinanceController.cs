@@ -2789,16 +2789,16 @@ namespace SFSAcademy.Controllers
 
                             var transaction = new FINANCE_TRANSACTION()
                             {
-                                TIL = fees_paid < total_fees - paid_before ? string.Concat("RN.Partial: ", ReceiptNo) : string.Concat("RN: ", ReceiptNo),
+                                TIL = fees_paid < total_fees - paid_before ? string.Concat("FN.Partial: ", ReceiptNo) : string.Concat("FN: ", ReceiptNo),
                                 CAT_ID = TranCatId,
-                                DESCR = fees_paid < total_fees - paid_before ? string.Concat("Part Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, " : ", ReceiptNo) : string.Concat("Full Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, " : ", ReceiptNo),
+                                DESCR = fees_paid < total_fees - paid_before ? string.Concat(PAYMENT_MODE, " : ", PAYMENT_NOTE, " : FN.-", ReceiptNo) : string.Concat("Full Payment: ", PAYMENT_MODE, " : ", PAYMENT_NOTE, " : FN.", ReceiptNo),
                                 PAYEE_ID = PayeeId,
                                 PAYEE_TYPE = "Student",
                                 AMT = (decimal)fees_paid,
                                 FINE_AMT = total_fine_val,
                                 FINE_INCLD = total_fine_val != 0 ? true : false,
                                 FIN_FE_ID = FinanceFee_id,
-                                MSTRTRAN_ID = -1,
+                                MSTRTRAN_ID = null,
                                 RCPT_NO = ReceiptNo,
                                 TRAN_DATE = PDate,
                                 CRETAED_AT = System.DateTime.Now,
@@ -2830,7 +2830,22 @@ namespace SFSAcademy.Controllers
 
                             if (financefeeVal.FirstOrDefault().TRAN_ID == null)
                             {
-                                transaction.MSTRTRAN_ID = transaction.ID;
+                                //transaction.MSTRTRAN_ID = transaction.ID;
+                                transaction.MSTRTRAN_ID = -1;
+                            }
+                            else
+                            {
+                                int? MasterTransId = 0;
+                                foreach (var item in paid_fees_val)
+                                {
+                                    if(item.FinanceTransactionData.MSTRTRAN_ID == -1)
+                                    {
+                                        MasterTransId = item.FinanceTransactionData.ID;
+                                        break;
+                                    }
+
+                                }
+                                transaction.MSTRTRAN_ID = MasterTransId;
                             }
                             db.Entry(transaction).State = EntityState.Modified;
 
