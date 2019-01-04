@@ -32,11 +32,15 @@
                 <td>Name</td>
                 <td>Description</td>
                 <td>Voucher No.</td>
+                <td>
+                    @Html.ActionLink("Batch", "Income_List_Update", new { sortOrder = ViewBag.NameSortParm, START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, ADMSN_NO = ViewBag.ADMSN_NO })
+                </td>
                 <td>Student Name</td>
                 <td>Admission No.</td>
-                <td>Batch</td>
                 <td>Amount</td>
-                <td>Transaction Date</td>
+                <td>
+                    @Html.ActionLink("Transaction Date", "Income_List_Update", new { sortOrder = ViewBag.DateSortParm, START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, ADMSN_NO = ViewBag.ADMSN_NO })
+                </td>
                 <td></td>
             </tr>
             @{int i = 1; }
@@ -51,9 +55,9 @@
                 <td class="col-1"> @item.FinanceTransactionData.TIL</td>
                 <td class="col-2">@item.FinanceTransactionData.DESCR</td>
                 <td class="col-3">@item.FinanceTransactionData.VCHR_NO</td>
+                <td class="col-2">@item.BatchData.COURSE.CODE - @item.BatchData.NAME</td>
                 <td class="col-4">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
                 <td class="col-5">@item.StudentData.ADMSN_NO</td>
-                <td class="col-6">@item.BatchData.COURSE.CODE - @item.BatchData.NAME</td>
                 <td class="col-6">@item.FinanceTransactionData.AMT</td>
                 <td class="col-6">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
                 <td class="col-6">

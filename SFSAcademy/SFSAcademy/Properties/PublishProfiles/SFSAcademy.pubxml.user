@@ -151,10 +151,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>01/02/2019 18:42:06</publishTime>
+      <publishTime>01/03/2019 16:36:27</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>01/02/2019 18:42:06</publishTime>
+      <publishTime>01/03/2019 16:36:27</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -6784,10 +6784,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Edit_Fee_Discount.cshtml">
-      <publishTime>12/19/2018 14:45:27</publishTime>
+      <publishTime>01/03/2019 13:38:43</publishTime>
     </File>
     <File Include="Views/Finance/Edit_Fee_Fine.cshtml">
-      <publishTime>12/19/2018 14:45:08</publishTime>
+      <publishTime>01/03/2019 13:38:59</publishTime>
     </File>
     <File Include="Views/Finance/Expense_Create.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -6859,13 +6859,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/14/2018 17:26:38</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Discounts.cshtml">
-      <publishTime>01/02/2019 18:11:18</publishTime>
+      <publishTime>01/03/2019 15:29:06</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Discount_New.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Fine.cshtml">
-      <publishTime>01/02/2019 17:37:17</publishTime>
+      <publishTime>01/03/2019 15:29:56</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Fine_New.cshtml">
       <publishTime>12/13/2018 17:01:47</publishTime>
@@ -6889,7 +6889,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Income_List_Update.cshtml">
-      <publishTime>12/23/2018 16:17:22</publishTime>
+      <publishTime>01/03/2019 16:31:04</publishTime>
     </File>
     <File Include="Views/Finance/Index.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7318,7 +7318,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Student/_ListStudentsByCourse.cshtml">
-      <publishTime>12/05/2018 17:27:03</publishTime>
+      <publishTime>01/03/2019 13:50:02</publishTime>
     </File>
     <File Include="Views/Student/_ListStudentsForTransfer.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>

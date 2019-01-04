@@ -119,7 +119,7 @@ namespace SFSAcademy.Controllers
                     break;
             }
 
-            int pageSize = 20;
+            int pageSize = 100;
             int pageNumber = (page ?? 1);
             return View(StudentS.ToPagedList(pageNumber, pageSize));
             //return View(db.USERS.ToList());
@@ -2222,7 +2222,7 @@ namespace SFSAcademy.Controllers
             var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ffp in db.FINANCE_FEE_PARTICULAR on fc.ID equals ffp.FIN_FEE_CAT_ID
-                                       where fc.IS_DEL == false && fcol.ID == id2 && (ffp.STDNT_ID == student.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == student.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
+                                       where fc.IS_DEL == false && fcol.ID == id2 && ffp.IS_DEL == "N" && (ffp.STDNT_ID == student.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == student.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
                                        select new Models.FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["fee_particulars"] = fee_particulars_val;
 
