@@ -3,7 +3,22 @@
 @{
     ViewBag.Title = "Edit_Fee_Discount";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
 
+</script>
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
     <h1>Edit Fee Discounts</h1>
@@ -22,7 +37,7 @@
     </div>
     <div id="flash_box">
         @if (ViewBag.ErrorMessage != null)
-            {
+        {
             <p class="flash-msg"> @ViewBag.ErrorMessage </p>
         }
     </div>
@@ -30,48 +45,62 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
+    <div class="form-horizontal">
 
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.ID)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
 
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.TYPE, "Type", htmlAttributes: new { @class = "control-label col-md-2" })
-                <span class="necessary-field" style="font-size:small">* Required Field</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.TYPE, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.TYPE, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
-                <span class="necessary-field" style="font-size:small">* Required Field</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.DISC, "Discount", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.DISC, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.DISC, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.IS_AMT, "Is this Amount?", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.IS_AMT, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.IS_AMT, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="Admission_form">
-                <div class="extender">
-                    <input type="submit" value="► Save" class="submit_button3" name="Commit" />
-                </div>
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.TYPE, "Type", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.TYPE, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.TYPE, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.DISC_DATE, "Discount Date", htmlAttributes: new { @class = "control-label col-md-2" })
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.DISC_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", required = "required" } })
+                @Html.ValidationMessageFor(model => model.DISC_DATE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.DESCR, "Discount Discription", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.DISC, "Discount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.DISC, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.DISC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.IS_AMT, "Is this Amount?", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.IS_AMT, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.IS_AMT, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="Admission_form">
+            <div class="extender">
+                <input type="submit" value="► Save" class="submit_button3" name="Commit" />
+            </div>
+        </div>
+    </div>
     }
 </div>
 
