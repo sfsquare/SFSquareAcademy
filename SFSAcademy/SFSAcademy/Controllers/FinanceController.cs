@@ -811,16 +811,16 @@ namespace SFSAcademy.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    Fee_discountSData = Fee_discountSData.OrderByDescending(s => s.FeeDiscountData.NAME);
+                    Fee_discountSData = Fee_discountSData.OrderByDescending(s => s.BatchData.ID);
                     break;
                 case "Date":
-                    Fee_discountSData = Fee_discountSData.OrderBy(s => s.StudentData.ADMSN_DATE);
+                    Fee_discountSData = Fee_discountSData.OrderBy(s => s.FeeDiscountData.DISC_DATE);
                     break;
                 case "date_desc":
-                    Fee_discountSData = Fee_discountSData.OrderByDescending(s => s.StudentData.ADMSN_DATE);
+                    Fee_discountSData = Fee_discountSData.OrderByDescending(s => s.FeeDiscountData.DISC_DATE);
                     break;
                 default:  // Name ascending 
-                    Fee_discountSData = Fee_discountSData.OrderBy(s => s.FeeDiscountData.NAME);
+                    Fee_discountSData = Fee_discountSData.OrderBy(s => s.BatchData.ID);
                     break;
             }
 
@@ -1072,7 +1072,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Fee_Discount([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,DISC,IS_AMT")] FEE_DISCOUNT fEE_DISCOUNT)
+        public ActionResult Edit_Fee_Discount([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,DISC,DISC_DATE,DESCR,IS_AMT")] FEE_DISCOUNT fEE_DISCOUNT)
         {
             if (ModelState.IsValid)
             {
@@ -1164,11 +1164,6 @@ namespace SFSAcademy.Controllers
             options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
 
-
-            //List<SelectListItem> options2 = new SelectList(db.FINANCE_FEE_CATGEORY.OrderBy(x => x.NAME).Distinct(), "ID", "NAME", FINANCE_FEE_CATGEORY_ID).ToList();
-            //options2.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
-            //ViewBag.FINANCE_FEE_CATGEORY_ID = options2;
-
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -1218,7 +1213,7 @@ namespace SFSAcademy.Controllers
                                      join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl
                                      from subcat in gl.DefaultIfEmpty()
                                      orderby fd.NAME
-                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgfcol == null ? null : subgfcol) }).Distinct();
+                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgfcol == null ? null : subgfcol) }).OrderBy(x=>x.BatchData.ID).ThenBy(x=>x.FeeFineData.FINE_DATE).Distinct();
 
 
             if (!String.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
@@ -1234,16 +1229,16 @@ namespace SFSAcademy.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.FeeFineData.NAME);
+                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.BatchData.ID);
                     break;
                 case "Date":
-                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.StudentData.ADMSN_DATE);
+                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.FeeFineData.FINE_DATE);
                     break;
                 case "date_desc":
-                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.StudentData.ADMSN_DATE);
+                    Fee_fineSData = Fee_fineSData.OrderByDescending(s => s.FeeFineData.FINE_DATE);
                     break;
                 default:  // Name ascending 
-                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.FeeFineData.NAME);
+                    Fee_fineSData = Fee_fineSData.OrderBy(s => s.BatchData.ID);
                     break;
             }
 
@@ -1483,7 +1478,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Fee_Fine([Bind(Include = "ID,TYPE,NAME,DESCR,RCVR_ID,FIN_FEE_CAT_ID,FINE,IS_AMT,FINE_DATE")] FEE_FINE fEE_FINE)
+        public ActionResult Edit_Fee_Fine([Bind(Include = "ID,TYPE,NAME,RCVR_ID,FIN_FEE_CAT_ID,FINE,FINE_DATE,DESCR,IS_AMT")] FEE_FINE fEE_FINE)
         {
             if (ModelState.IsValid)
             {
@@ -4447,13 +4442,19 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Finance
-        public ActionResult Income_List_Update(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, string ADMSN_NO)
+        public ActionResult Income_List_Update(string sortOrder, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, string ADMSN_NO)
         {
             if (END_TRAN_DATE < START_TRAN_DATE)
             {
                 ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
                 return View();
             }
+            ViewBag.CurrentSort = sortOrder;
+            //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.NameSortParm = sortOrder == "Name" ? "name_desc" : "Name";
+            //ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.DateSortParm = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   join ff in db.FINANCE_FEE on tr.FIN_FE_ID equals ff.ID into gff
@@ -4463,12 +4464,32 @@ namespace SFSAcademy.Controllers
                                   join bt in db.BATCHes.Include(x => x.COURSE) on subgstd.BTCH_ID equals bt.ID into gbt
                                   from subgbt in gbt.DefaultIfEmpty()
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).OrderBy(x => x.BatchData.ID).ThenBy(x => x.StudentData.ID).ThenBy(x => x.FinanceTransactionData.TRAN_DATE).Distinct();
+                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).Distinct();
             if (!string.IsNullOrEmpty(ADMSN_NO))
             {
                 TransactionVal = TransactionVal.Where(x => x.StudentData.ADMSN_NO == ADMSN_NO);
             }
-               
+
+            switch (sortOrder)
+            {
+                case "Name":
+                    TransactionVal = TransactionVal.OrderBy(s => s.BatchData.ID);
+                    break;
+                case "name_desc":
+                    TransactionVal = TransactionVal.OrderByDescending(s => s.BatchData.ID);
+                    break;
+                /*case "Date":
+                    TransactionVal = TransactionVal.OrderBy(s => s.FinanceTransactionData.TRAN_DATE);
+                    break;
+                    */
+                case "date_desc":
+                    TransactionVal = TransactionVal.OrderByDescending(s => s.FinanceTransactionData.TRAN_DATE);
+                    break;
+                default:  // Name ascending 
+                    TransactionVal = TransactionVal.OrderBy(s => s.FinanceTransactionData.TRAN_DATE);
+                    break;
+            }
+
             ViewBag.START_TRAN_DATE = START_TRAN_DATE;
             ViewBag.END_TRAN_DATE = END_TRAN_DATE;
             ViewBag.ADMSN_NO = ADMSN_NO;
