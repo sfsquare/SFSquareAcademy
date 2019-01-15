@@ -1,42 +1,14 @@
-﻿@using SFSAcademy.Models
+﻿@model SFSAcademy.Models.SubmitFeeDiscounts
+@using SFSAcademy.Models
 @{
     STUDENT student = (STUDENT)ViewData["student"];
     FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
     IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $(".LoaderBox5").hide();
-        $('#submit-button5').click(function () {
-            $.ajaxSetup({ cache: false });
-            /* Get the selected value of dropdownlist */
-            var selectedID = $('#discount').val();
-            var selectedDesc = $('#discount_desc').val();
-            /* Get the selected value of dropdownlist */
-            var SelectedStd = $('#studentID').val();
-            var SelectedBatch = $('#batch_id').val();
-            var SelectedDate = $('#date').val();
-
-            $(".LoaderBox5").show();
-            /* Request the partial view with .get request. */
-            $.get('/Finance/Update_Discount_Ajax?discount=' + selectedID + "&discount_desc=" + selectedDesc + "&student=" + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
-                $('#modal-box').html(data);
-                /* little fade in effect */
-                $('#modal-box').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox5").hide();
-            });
-            $('#resultDiscount').dialog("close");
-        });
-
         $(function () {
             $("#resultDiscount").dialog({
                 autoOpen: false,
@@ -60,27 +32,40 @@
     $("#btnCreateDsicount").click(function () {
         $('#resultDiscount').dialog('open');
     });
+
+    function CloseDiscountDialog() {
+        $('#resultDiscount').dialog("close");
+    }
 </script>
 
 @if (Html.Permitted_To("Update_Discount_Ajax", "Finance") || Html.CurrentUser_UserType().Equals("Admin"))
 {
-    <button id="btnCreateDsicount" class="pay_fees_buttons">Add Discount here if applicable.</button>
+    <input type="button" value="Add Discount here if applicable." id="btnCreateDsicount" class="pay_fees_buttons" />
 }
 
-    <div id="resultDiscount" style="display:none" class="form" title="Discount Details">
+<div id="resultDiscount" style="display:none" class="form" title="Discount Details">
+    @using (Ajax.BeginForm("Update_Discount_Ajax", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "modal-box", InsertionMode = InsertionMode.Replace, OnSuccess = "CloseDiscountDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
         <div class="label-field-pair label">
-            @Html.Label("discount_label", "Discount Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="label-container label">@Html.LabelFor(model => model.Discount, "Discount Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
             <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">
-                @Html.Editor("discount", new { htmlAttributes = new { @class = "form -control", required = "required" } })
-            </div>
+            <div class="text-input-bg">@Html.TextBoxFor(model => model.Discount, null, new { @class = "form-control", @id = "Discount" })</div>
+            @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
         </div>
         <div class="label-field-pair label">
-            @Html.Label("discount_desc_label", "Discount Description", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="text-input-bg">
-                @Html.Editor("discount_desc", new { htmlAttributes = new { @class = "form -control" } })
-            </div>
+            <div class="label-container label">@Html.LabelFor(model => model.Discount_Desc, "Discount Description", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">@Html.TextBoxFor(model => model.Discount_Desc, null, new { @class = "form-control", @id = "Discount_Desc" })</div>
+            @Html.ValidationMessageFor(model => model.Discount_Desc, "", new { @class = "text-danger" })
         </div>
+
         <input type="submit" value="Add Discount" id="submit-button5" class="submit-button" />
         <div class="LoaderBox5"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-    </div>
+
+        @Html.HiddenFor(model => model.StudentID, new { id = "studentID", Value = @student.ID })
+        @Html.HiddenFor(model => model.Batch_id, new { id = "batch_id", Value = @batch.FirstOrDefault().BatchData.ID })
+        @Html.HiddenFor(model => model.Date, new { id = "date", Value = @date.ID })
+    }
+
+</div>    
