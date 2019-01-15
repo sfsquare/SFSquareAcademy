@@ -1,4 +1,5 @@
-﻿@using SFSAcademy.Models
+﻿@model SFSAcademy.Models.SubmitFees
+@using SFSAcademy.Models
 @{ Layout = null;}
 
 @{
@@ -17,51 +18,16 @@
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
+    SFSAcademy.Models.SubmitFeeFine FeeFineAdd = (SFSAcademy.Models.SubmitFeeFine)ViewData["FeeFineAdd"];
+    SFSAcademy.Models.SubmitFeeDiscounts FeeDiscountsAdd = (SFSAcademy.Models.SubmitFeeDiscounts)ViewData["FeeDiscountsAdd"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-3.3.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+
+
 <script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $(".LoaderBox3").hide();
-        $('#submit-button1').click(function () {
-
-            if ($("#PAYMENT_NOTE").val() == "") {
-                alert("Reference Receipt No. is mandatory. Please write a note if it is unavailable.");
-            }
-            else if ($("#PAYMENT_AMOUNT").val() <= 0) {
-                alert("Please provide valid value for Amount.");
-            }
-            else if ($('#PAYMENT_MODE option:selected').text() == "Select Mode of Payment") {
-                alert("Please select valid value for Payment Mode.");
-            }
-            else {
-                var SelectedStd = $('#studentID').val();
-                var SelectedBatch = $('#batch_id').val();
-                var SelectedDate = $('#date').val();
-                var SelectedMode = $("#PAYMENT_MODE option:selected").text();
-                var SelectedNote = $('#PAYMENT_NOTE').val();
-                var SelectedPayAmt = $('#PAYMENT_AMOUNT').val();
-                var SelectedPayDt = $('#datepicker').val();
-                $(".LoaderBox3").show();
-                /* Request the partial view with .get request. */
-                $.get('/Finance/update_ajax?student=' + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate + "&PAYMENT_MODE=" + SelectedMode + "&PAYMENT_NOTE=" + SelectedNote + "&PAYMENT_AMOUNT=" + SelectedPayAmt + "&PAYMENT_DATE=" + SelectedPayDt, function (data) {
-
-                    /* data is the pure html returned from action method, load it to your page */
-                    $('#modal-box').html(data);
-                    /* little fade in effect */
-                    $('#modal-box').fadeIn('fast');
-                }).success(function (status) {
-                    $(".LoaderBox3").hide();
-                });
-            }
-        });
 
         $('#submit-button2').click(function () {
 
@@ -101,7 +67,7 @@
 </script>
 <script>
     $(function () {
-        $("#datepicker").datepicker({
+        $("#datepickerFee").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
             dateFormat: 'dd-mm-yy',
@@ -161,12 +127,14 @@ else
     {
         if (financefee.FirstOrDefault().IS_PD != true)
         {
-            Html.RenderPartial("_fine_submission");
-            Html.RenderPartial("_discount_submission");
+            Html.RenderPartial("_fine_submission", FeeFineAdd);
+            Html.RenderPartial("_discount_submission", FeeDiscountsAdd);
         }
     }
     else
-    { Html.RenderPartial("_fine_submission"); }
+    {
+        Html.RenderPartial("_fine_submission", FeeFineAdd);
+    }
 
     <div id="register">
         <div class="header">
@@ -458,41 +426,51 @@ else
             <tr>
                 <td colspan="3">
                     <div class="pay_fees">
-                        @if (total_fees != 0)
+                        @if (total_fees > 0)
                         {
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PAYMENT_MODE", "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                            using (Ajax.BeginForm("update_ajax", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "modal-box", InsertionMode = InsertionMode.Replace }, htmlAttributes: new { @class = "form-horizontal" }))
+                            {
+                                @Html.AntiForgeryToken()
 
-                                <div class="text-input-bg">
-                                    @Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))), "Select Mode of Payment", new { @class = "form-control", @id = "PAYMENT_MODE" })
+                                @Html.HiddenFor(model => model.PreventResubmit)
+                                <div class="label-field-pair label">
+                                    <div class="label-container label">@Html.LabelFor(model => model.PAYMENT_MODE, "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                    <div class="text-input-bg">
+                                        @Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))), "Select Mode of Payment", new { @class = "form-control", @id = "PAYMENT_MODE" })
+                                    </div>
+                                    @Html.Hidden("total_fees", total_fees, htmlAttributes: new { @id = "total_fees" })
                                 </div>
-                                @Html.Hidden("total_fees", total_fees, htmlAttributes: new { @id = "total_fees" })
-                            </div>
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PAYMENT_NOTE", "Reference Receipt No.", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <span class="necessary-field" style="font-size:small">* Required Field</span>
-                                <div class="text-input-bg">@Html.TextBox("PAYMENT_NOTE", null, new { @class = "form-control", @id = "PAYMENT_NOTE" })</div>
-                                @Html.ValidationMessage("PAYMENT_NOTE", "", new { @class = "text-danger" })
-                            </div>
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PAYMENT_AMOUNT", "Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <div class="text-input-bg"><input type="text" name="PAYMENT_AMOUNT" id="PAYMENT_AMOUNT" value="@total_fees.ToString("0.00")" /></div>
-                                @Html.ValidationMessage("PAYMENT_AMOUNT", "", new { @class = "text-danger" })
-                            </div>
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PAYMENT_DATE", "Payment Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <div class="text-input-bg-admission">
-                                    @Html.Editor("PAYMENT_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.ReturnDate } })
-                                    @Html.ValidationMessage("PAYMENT_DATE", "", new { @class = "text-danger" })
+                                <div class="label-field-pair label">
+                                    <div class="label-container label">@Html.LabelFor(model => model.PAYMENT_NOTE, "Reference Receipt No.", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                    <span class="necessary-field" style="font-size:small">* Required Field</span>
+                                    <div class="text-input-bg">@Html.TextBoxFor(model => model.PAYMENT_NOTE, null, new { @class = "form-control", @id = "PAYMENT_NOTE", required = "required" })</div>
+                                    @Html.ValidationMessageFor(model => model.PAYMENT_NOTE, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="pay_fees_buttons">
-                                <input type="submit" value="► Pay Fees" id="submit-button1" class="submit_button" />
-                                @if (financefee != null && financefee.Count() != 0)
-                                {
-                                    @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID }, new { @class = "user_button", @target = "_blank" })
-                                }
-                            </div>
+                                <div class="label-field-pair label">
+                                    <div class="label-container label">@Html.LabelFor(model => model.PAYMENT_AMOUNT, "Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                    <span class="necessary-field" style="font-size:small">* Required Field</span>
+                                    <div class="text-input-bg">@Html.TextBoxFor(model => model.PAYMENT_AMOUNT, null, new { @class = "form-control", @value = @total_fees.ToString("0.00"), required = "required" })</div>
+                                    @Html.ValidationMessageFor(model => model.PAYMENT_AMOUNT, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="label-field-pair label">
+                                    <div class="label-container label">@Html.LabelFor(model => model.PAYMENT_DATE, "Payment Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                                    <div class="text-input-bg-admission">
+                                        @Html.EditorFor(model => model.PAYMENT_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepickerFee", @Value = ViewBag.ReturnDate } })
+                                        @Html.ValidationMessageFor(model => model.PAYMENT_DATE, "", new { @class = "text-danger" })
+                                    </div>
+                                    @Html.HiddenFor(model => model.StudentID, new { id = "studentID", Value = @student.ID })
+                                    @Html.HiddenFor(model => model.Batch_id, new { id = "batch_id", Value = @batch.FirstOrDefault().BatchData.ID })
+                                    @Html.HiddenFor(model => model.Date, new { id = "date", Value = @date.ID })
+                                </div>
+                                <div class="pay_fees_buttons">
+                                    <input type="submit" value="► Pay Fees" id="submit-button1" class="submit_button" />
+                                    @if (financefee != null && financefee.Count() != 0)
+                                    {
+                                        @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID }, new { @class = "user_button", @target = "_blank" })
+                                    }
+                                </div>
+                            }
+
                         }
                         else
                         {
@@ -503,7 +481,7 @@ else
             </tr>
             <tr>
                 <td colspan="3">
-                    @if (paid_fees != null && total_fees == 0)
+                    @if (paid_fees != null && total_fees <= 0)
                     {
                         @Html.ActionLink("Print Receipt", "student_fee_receipt_pdf", new { id = student.ID, id2 = date.ID }, new { @class = "user_button", @target = "_blank" })
                     }

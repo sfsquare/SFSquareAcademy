@@ -2283,13 +2283,6 @@ namespace SFSAcademy.Controllers
                     total_discount_val += item.IS_AMT == true ? (decimal)item.DISC : total_payable * (decimal)item.DISC / 100;
                 }
             }
-            if (total_discount_val > total_payable && total_payable >= 0)
-            {
-                total_discount_val = total_payable;
-            }
-            ViewBag.total_discount = total_discount_val;
-            decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
-            ViewBag.total_discount_percentage = total_discount_percentage_val;
 
             decimal total_fine_val = 0;
             if (batch_fine_val != null && batch_fine_val.Count() != 0)
@@ -2316,6 +2309,14 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.fine = 0;
             ViewBag.total_fine = total_fine_val;
+
+            if (total_discount_val > total_payable + total_fine_val && total_payable + total_fine_val >= 0)
+            {
+                total_discount_val = total_payable + total_fine_val;
+            }
+            ViewBag.total_discount = total_discount_val;
+            decimal total_discount_percentage_val = total_discount_val / total_payable * 100;
+            ViewBag.total_discount_percentage = total_discount_percentage_val;
 
             return View(student);
         }
