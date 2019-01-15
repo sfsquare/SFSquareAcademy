@@ -7,29 +7,35 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
     /* This is change event for your dropdownlist */
     $(document.forms[0]).ready(function () {
         $(".LoaderBox1").hide();
         $('#BatchDropDown').change(function () {
 
-        /* Get the selected value of dropdownlist */
+            /* Get the selected value of dropdownlist */
             var selectedID = $(this).val();
             $(".LoaderBox1").show();
-        /* Request the partial view with .get request. */
-        $.get('/Finance/_fees_collection_dates/' + selectedID, function (data) {
+            /* Request the partial view with .get request. */
+            $.get('/Finance/_fees_collection_dates/' + selectedID, function (data) {
 
-            /* data is the pure html returned from action method, load it to your page */
-            $('#fees_collection_dates').html(data);
-            /* little fade in effect */
-            $('#fees_collection_dates').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox1").hide();
+                /* data is the pure html returned from action method, load it to your page */
+                $('#fees_collection_dates').html(data);
+                /* little fade in effect */
+                $('#fees_collection_dates').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox1").hide();
+            });
+
         });
-        
     });
-   });
 </script>
 
 <div id="content-header">
@@ -61,13 +67,13 @@
             <div class="label-field-pair label">
                 <div class="label-container label">@Html.Label("BTCH_ID", "Select A Batch :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="text-input-bg">
-                    @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown"})
+                    @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown" })
                     <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-                        @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
-                    </div>
+                    @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
+                </div>
             </div>
-                            <!-- Place where you will insert your partial -->
-            <div id="fees_collection_dates" style="display:none;"> </div>            
+            <!-- Place where you will insert your partial -->
+            <div id="fees_collection_dates" style="display:none;"> </div>
         }
         <div id="modal-box" style="display:none;"></div>
     </div>

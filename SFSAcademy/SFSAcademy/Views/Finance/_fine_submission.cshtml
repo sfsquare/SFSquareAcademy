@@ -1,46 +1,15 @@
-﻿@using SFSAcademy.Models
+﻿@model SFSAcademy.Models.SubmitFeeFine
+@using SFSAcademy.Models
 @{
     STUDENT student = (STUDENT)ViewData["student"];
     FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
     IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $(".LoaderBox4").hide();
-        $('#submit-button4').click(function () {
-            $.ajaxSetup({ cache: false });
-            /* Get the selected value of dropdownlist */
-            var selectedID = $('#fee').val();
-            var selectedDesc = $('#fee_desc').val();
-            /* Get the selected value of dropdownlist */
-            var SelectedStd = $('#studentID').val();
-            var SelectedBatch = $('#batch_id').val();
-            var SelectedDate = $('#date').val();
-
-            $(".LoaderBox4").show();
-            /* Request the partial view with .get request. */
-            $.get('/Finance/Update_Fine_Ajax?fee=' + selectedID + "&fee_desc=" + selectedDesc + "&student=" + SelectedStd + "&batch_id=" + SelectedBatch + "&date=" + SelectedDate, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
-                $('#modal-box').html(data);
-                /* little fade in effect */
-                $('#modal-box').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox4").hide();
-            });
-            $('#resultFine').dialog("close");
-            $.ajaxSetup({ cache: false });
-        });
-
-
         $(function () {
-            $.noConflict(true);
             $("#resultFine").dialog({
                 autoOpen: false,
                 draggable: true,
@@ -48,9 +17,10 @@
                 width: 500,
                 height: 'auto',
                 dialogClass: "alert",
+                cache: false,
                 buttons: {
                     Cancel: function () {
-                        $("#resultFine").dialog("close"); 
+                        $("#resultFine").dialog("close");
                     }
                 },
                 modal: true
@@ -62,27 +32,42 @@
     $("#btnCreateFine").click(function () {
         $('#resultFine').dialog('open');
     });
+
+
+    function CloseFineDialog() {
+        $('#resultFine').dialog("close");
+    }
 </script>
 
 @if (ViewBag.due_date < System.DateTime.Now)
 {
-<button id="btnCreateFine" class="pay_fees_buttons">Due date has been exceeded. Please collect fine amount.</button>
+    <button id="btnCreateFine" class="pay_fees_buttons">Due date has been exceeded. Please collect fine amount.</button>
 }
 
 <div id="resultFine" style="display:none" class="form" title="Fine Details">
-    <div class="label-field-pair label">
-        @Html.Label("fee_label", "Fine Amount", htmlAttributes: new { @class = "control-label col-md-2" })
-        <span class="necessary-field" style="font-size:small">* Required Field</span>
-        <div class="text-input-bg">
-            @Html.Editor("fee", new { htmlAttributes = new { @class = "form -control", required = "required" } })
+    @using (Ajax.BeginForm("Update_Fine_Ajax", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "modal-box", InsertionMode = InsertionMode.Replace, OnSuccess = "CloseFineDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.Fine, "Fine Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">@Html.TextBoxFor(model => model.Fine, null, new { @class = "form-control", @id = "Fine" })</div>
+            @Html.ValidationMessageFor(model => model.Fine, "", new { @class = "text-danger" })
         </div>
-    </div>
-    <div class="label-field-pair label">
-        @Html.Label("fee_desc_label", "Fine Description", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="text-input-bg">
-            @Html.Editor("fee_desc", new { htmlAttributes = new { @class = "form -control" } })
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.Fine_Desc, "Fine Description", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">@Html.TextBoxFor(model => model.Fine_Desc, null, new { @class = "form-control", @id = "Fine_Desc" })</div>
+            @Html.ValidationMessageFor(model => model.Fine_Desc, "", new { @class = "text-danger" })
         </div>
-    </div>
-    <input type="submit" value="Add Fine" id="submit-button4" class="submit-button" />
-    <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+
+        <input type="submit" value="Add Fine" id="submit-button4" class="submit-button" />
+        <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+
+        @Html.HiddenFor(model => model.StudentID, new { id = "studentID", Value = @student.ID })
+        @Html.HiddenFor(model => model.Batch_id, new { id = "batch_id", Value = @batch.FirstOrDefault().BatchData.ID })
+        @Html.HiddenFor(model => model.Date, new { id = "date", Value = @date.ID })
+    }
+
 </div>

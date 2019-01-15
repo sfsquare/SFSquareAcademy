@@ -151,10 +151,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>01/03/2019 16:36:27</publishTime>
+      <publishTime>01/15/2019 13:18:35</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>01/03/2019 16:36:27</publishTime>
+      <publishTime>01/15/2019 13:18:35</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -6826,13 +6826,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Fees_Student_Search.cshtml">
-      <publishTime>12/12/2018 17:30:22</publishTime>
+      <publishTime>01/14/2019 17:42:41</publishTime>
     </File>
     <File Include="Views/Finance/Fees_Student_Structure_Search.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Fees_Submission_Batch.cshtml">
-      <publishTime>12/05/2018 17:27:03</publishTime>
+      <publishTime>01/14/2019 16:35:40</publishTime>
     </File>
     <File Include="Views/Finance/Fees_Submission_Index.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -6952,7 +6952,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/_discount_submission.cshtml">
-      <publishTime>12/20/2018 17:41:48</publishTime>
+      <publishTime>01/15/2019 12:15:48</publishTime>
     </File>
     <File Include="Views/Finance/_fees_collection_dates.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -6976,7 +6976,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/_fine_submission.cshtml">
-      <publishTime>12/20/2018 17:44:35</publishTime>
+      <publishTime>01/15/2019 12:15:48</publishTime>
     </File>
     <File Include="Views/Finance/_Master_Category_Create_Form.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7009,7 +7009,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/14/2018 16:39:48</publishTime>
     </File>
     <File Include="Views/Finance/_student_fees_submission.cshtml">
-      <publishTime>12/28/2018 17:12:25</publishTime>
+      <publishTime>01/15/2019 13:06:06</publishTime>
     </File>
     <File Include="Views/Finance/_Transaction_Create_Form.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7429,7 +7429,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/23/2018 18:20:41</publishTime>
     </File>
     <File Include="Views/Web.config">
-      <publishTime>12/05/2018 17:27:03</publishTime>
+      <publishTime>01/10/2019 19:30:33</publishTime>
     </File>
     <File Include="Views/Weekday/EditorTemplates/WeekdaysSelect.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7447,7 +7447,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/23/2018 16:31:33</publishTime>
+      <publishTime>01/15/2019 13:18:36</publishTime>
     </File>
   </ItemGroup>
 </Project>

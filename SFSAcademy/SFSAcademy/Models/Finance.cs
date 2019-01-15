@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using SFSAcademy.Helpers;
 
 namespace SFSAcademy.Models
 {
@@ -174,5 +176,44 @@ namespace SFSAcademy.Models
     {
         public FINANCE_TRANSACTION_TRIGGERS TransactionTriggerData { get; set; }
         public FINANCE_TRANSACTION_CATEGORY TransactionCategoryData { get; set; }
+    }
+
+    public class SubmitFees : NoResubmitAbstract // << Inherit from NoResubmitAbstract
+    {
+        public string PAYMENT_MODE { get; set; }
+        [Required(ErrorMessage = "Reference Receipt Number is required. Add a note if it is not available.")]
+        public string PAYMENT_NOTE { get; set; }
+        [Range(1, int.MaxValue, ErrorMessage = "Payment amount should be bigger than 0.")]
+        [Required(ErrorMessage = "Payment Amount is required.")]
+        public decimal? PAYMENT_AMOUNT { get; set; }
+        [Required(ErrorMessage = "Payment Date is required.")]
+        public string PAYMENT_DATE { get; set; }
+        public int? StudentID { get; set; }
+        public int? Batch_id { get; set; }
+        public int? Date { get; set; }
+    }
+
+    public class SubmitFeeFine
+    {
+        [Required(ErrorMessage = "Fine amount is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Fine amount should be bigger than 0.")]
+        public decimal? Fine { get; set; }
+        [Required(ErrorMessage = "Fine description is required.")]
+        public string Fine_Desc { get; set; }
+        public int? StudentID { get; set; }
+        public int? Batch_id { get; set; }
+        public int? Date { get; set; }
+    }
+
+    public class SubmitFeeDiscounts
+    {
+        [Required(ErrorMessage = "Discount amount is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Discount amount should be bigger than 0.")]
+        public decimal? Discount { get; set; }
+        [Required(ErrorMessage = "Discount description is required.")]
+        public string Discount_Desc { get; set; }
+        public int? StudentID { get; set; }
+        public int? Batch_id { get; set; }
+        public int? Date { get; set; }
     }
 }
