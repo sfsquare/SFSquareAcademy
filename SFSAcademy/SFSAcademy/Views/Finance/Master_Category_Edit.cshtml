@@ -1,5 +1,5 @@
 ﻿@model SFSAcademy.FINANCE_FEE_CATGEORY
-
+@using SFSAcademy.Models
 @{
     ViewBag.Title = "Master_Category_Edit";
 }
@@ -48,7 +48,12 @@
                 @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        <div class="label-field-pair label">
+            <label for="FEE_FREQ">Fee Frequency:</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("FEE_FREQ", new SelectList(Enum.GetValues(typeof(FeeFrequency))), "Select Fee Frequency", new { @class = "form-control", @id = "FEE_FREQ" })
+            </div>
+        </div>
         <div class="label-field-pair label">
             @Html.LabelFor(model => model.BTCH_ID, "Student Batch Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="text-input-bg">

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<SFSAcademy.STORE_BRAND>
+@{
+    ViewBag.Title = "BrandList";
+}
+@{
+    Layout = null;
+}
+<div id="page-yield">
+    <div class="students-table">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td>
+                        @item.NAME
+                    </td>
+                    <td>
+                        @item.DESCRIPTION
+                    </td>
+                    <td>
+                        <span>   </span>
+                        <span>   </span>
+                    </td>
+                    @if (Html.CurrentUser_UserType().Equals("Admin"))
+                    {
+                        <td>
+                            @Html.ActionLink("Edit", "BrandEdit", new { id = item.ID }, new { style = "text-decoration:underline" }) |
+                            @Html.ActionLink("Delete", "BrandDelete", new { id = item.ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" })
+                        </td>
+                    }
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+    </div>
+    <div id="user_information"> </div>
+    <div class="extender"> </div>
+</div>
+
+

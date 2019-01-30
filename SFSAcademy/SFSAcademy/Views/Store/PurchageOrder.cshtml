@@ -3,6 +3,13 @@
 @{
     ViewBag.Title = "Purchage Order";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 
 <div id="content-header">
     <img src="~/Content/images/show_store.png" alt="Store Logo">
@@ -18,16 +25,24 @@
     Purchage Order
 </div>
 <div id="flash_box">
-    @if (ViewBag.POCreateMessage != null)
-            {
-        <p class="flash-msg"> @ViewBag.POCreateMessage </p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 </div>
 <div id="page-yield">
-    <div id="student-category-form">
-        @Html.Partial("~/Views/Store/_purchage_order_create_form.cshtml", new SFSAcademy.STORE_PURCHAGE_ORDER())
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
     </div>
-    <br /><br />
+    <p class="flash-msg"> Create new Purchage Order with below information. </p>
+    <div id="student-category-form">
+        @Html.Partial("_purchage_order_create_form")
+    </div>
+    <div class="extender"></div>
+    <p class="flash-msg"> Existing POs </p>
     <div id="student-category-list">
         @{Html.RenderAction("PurchageOrderList", "Store");}
 

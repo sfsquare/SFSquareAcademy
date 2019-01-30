@@ -17,6 +17,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public STORE_PURCHAGE_VENDOR()
         {
+            this.STORE_PRODUCTS = new HashSet<STORE_PRODUCTS>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
         }
     
@@ -27,6 +28,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> END_DATE { get; set; }
         public bool IS_DEL { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
     }

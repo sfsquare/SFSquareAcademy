@@ -1,4 +1,5 @@
 ﻿@model SFSAcademy.FINANCE_FEE_CATGEORY
+@using SFSAcademy.Models
 
 @{
     ViewBag.Title = "Master_Category_Create";
@@ -27,7 +28,7 @@
 </div>
 <div id="flash_box">
     @if (Session["FeeCatErrorMessage"] != null)
-            {
+    {
         <p class="flash-msg"> @Session["FeeCatErrorMessage"] </p>
     }
 </div>
@@ -51,6 +52,12 @@
                 <div class="input-container">
                     @Html.Editor("DESCR", new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <label for="FEE_FREQ">Fee Frequency:</label>
+                <div class="text-input-bg">
+                    @Html.DropDownList("FEE_FREQ", new SelectList(Enum.GetValues(typeof(FeeFrequency))), "Select Fee Frequency", new { @class = "form-control", @id = "FEE_FREQ" })
                 </div>
             </div>
             <div id="right-side-inputs">

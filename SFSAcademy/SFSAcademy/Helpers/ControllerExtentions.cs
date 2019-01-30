@@ -21,6 +21,7 @@ namespace SFSAcademy.Helpers
         [NonAction]
         public static bool IsResubmit(this System.Web.Mvc.ControllerBase controller, NoResubmitAbstract vModel)
         {
+            // This method is called in case of resubmit done to the same controller method.
             return (Guid)controller.TempData["PreventResubmit"] != vModel.PreventResubmit;
         }
 

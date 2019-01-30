@@ -60,12 +60,12 @@ namespace SFSAcademy
         public Nullable<int> STDNT_CAT_ID { get; set; }
         public string LIBRARY_CARD { get; set; }
     
-        public virtual STUDENT STUDENT { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
+        public virtual STUDENT STUDENT { get; set; }
     }
 }

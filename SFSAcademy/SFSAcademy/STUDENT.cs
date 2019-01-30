@@ -28,6 +28,9 @@ namespace SFSAcademy
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.FINANCE_TRANSACTION = new HashSet<FINANCE_TRANSACTION>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
+            this.STORE_PURCHAGE = new HashSet<STORE_PURCHAGE>();
+            this.STORE_PURCHAGE_BACKUP = new HashSet<STORE_PURCHAGE_BACKUP>();
+            this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
             this.STUDENT_ADDITIONAL_DETAIL = new HashSet<STUDENT_ADDITIONAL_DETAIL>();
             this.STUDENT_PREVIOUS_DATA = new HashSet<STUDENT_PREVIOUS_DATA>();
             this.STUDENT_PREVIOUS_SUBJECT_MARK = new HashSet<STUDENT_PREVIOUS_SUBJECT_MARK>();
@@ -75,6 +78,10 @@ namespace SFSAcademy
         public Nullable<int> NTLTY_ID { get; set; }
         public Nullable<int> IMAGE_DOCUMENTS_ID { get; set; }
         public string LIBRARY_CARD { get; set; }
+        public Nullable<bool> BOOK_PURCHAGED { get; set; }
+        public Nullable<System.DateTime> BOOK_PUR_DT { get; set; }
+        public Nullable<bool> DRESS_PURCHAGED { get; set; }
+        public Nullable<System.DateTime> DRESS_PUR_DT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
@@ -99,6 +106,12 @@ namespace SFSAcademy
         public virtual ICollection<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GUARDIAN> GUARDIANs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         public virtual STUDENT_CATGEORY STUDENT_CATGEORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STUDENT_ADDITIONAL_DETAIL> STUDENT_ADDITIONAL_DETAIL { get; set; }

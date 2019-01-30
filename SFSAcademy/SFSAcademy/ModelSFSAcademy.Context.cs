@@ -62,7 +62,6 @@ namespace SFSAcademy
         public virtual DbSet<FEE_COLLECTION_PARTICULAR> FEE_COLLECTION_PARTICULAR { get; set; }
         public virtual DbSet<FINANCE_DONATION> FINANCE_DONATION { get; set; }
         public virtual DbSet<FINANCE_FEE> FINANCE_FEE { get; set; }
-        public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
         public virtual DbSet<FINANCE_FEE_COLLECTION> FINANCE_FEE_COLLECTION { get; set; }
         public virtual DbSet<FINANCE_FEE_PARTICULAR> FINANCE_FEE_PARTICULAR { get; set; }
         public virtual DbSet<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
@@ -89,11 +88,9 @@ namespace SFSAcademy
         public virtual DbSet<SMS_MESSAGE> SMS_MESSAGE { get; set; }
         public virtual DbSet<SMS_SETTING> SMS_SETTING { get; set; }
         public virtual DbSet<STORE_CATEGORY> STORE_CATEGORY { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
         public virtual DbSet<STORE_PURCHAGE_STATUS> STORE_PURCHAGE_STATUS { get; set; }
         public virtual DbSet<STORE_PURCHAGE_VENDOR> STORE_PURCHAGE_VENDOR { get; set; }
         public virtual DbSet<STORE_SUB_CATEGORY> STORE_SUB_CATEGORY { get; set; }
-        public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<STUDENT_ADDITIONAL_DETAIL> STUDENT_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<STUDENT_ADDITIONAL_FIELD> STUDENT_ADDITIONAL_FIELD { get; set; }
         public virtual DbSet<STUDENT_CATGEORY> STUDENT_CATGEORY { get; set; }
@@ -108,10 +105,6 @@ namespace SFSAcademy
         public virtual DbSet<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
         public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
-        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
-        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
-        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
         public virtual DbSet<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
         public virtual DbSet<ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL> ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<ARCHIVED_EMPLOYEE_BANK_DETAIL> ARCHIVED_EMPLOYEE_BANK_DETAIL { get; set; }
@@ -122,5 +115,13 @@ namespace SFSAcademy
         public virtual DbSet<FEE_FINE> FEE_FINE { get; set; }
         public virtual DbSet<FEE_DISCOUNT> FEE_DISCOUNT { get; set; }
         public virtual DbSet<PRIVILEGE> PRIVILEGES { get; set; }
+        public virtual DbSet<STORE_BRAND> STORE_BRAND { get; set; }
+        public virtual DbSet<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
+        public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
+        public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        public virtual DbSet<STUDENT> STUDENTs { get; set; }
+        public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace SFSAcademy.Models
         public STORE_PRODUCTS ProductData { get; set; }
         public STORE_CATEGORY CategoryData { get; set; }
         public STORE_SUB_CATEGORY SubCategoryData { get; set; }
+        public STORE_BRAND BrandData { get; set; }
     }
 
     public class SubCategory
@@ -22,6 +23,19 @@ namespace SFSAcademy.Models
         public STORE_PURCHAGE PurchaseData { get; set; }
         public STORE_PRODUCTS ProductData { get; set; }
         public STORE_CATEGORY CategoryData { get; set; }
+        public STUDENT StudentData { get; set; }
+        public STORE_PURCHAGE_BACKUP PurchaseBackupData { get; set; }
+        public USER UserData { get; set; }
+        public int? ID { get; set; }
+        public int? UNIT_SOLD { get; set; }
+        public decimal? SOLD_PRICE { get; set; }
+        public int? SOLD_BY_ID { get; set; }
+        public bool? IS_DEPOSITED { get; set; }
+        public DateTime? SOLD_ON { get; set; }
+        public bool? IS_BACKUP { get; set; }
+        public long? STUDENT_CONTACT_NO { get; set; }
+        public int? MONEY_RECEIVED_BY_ID { get; set; }
+        public int? STUDENT_ID { get; set; }
     }
 
     public class PurchaseCart
@@ -32,9 +46,10 @@ namespace SFSAcademy.Models
         public int? UNIT_SOLD { get; set; }
         public decimal? SOLD_AMNT { get; set; }
         public DateTime? PUR_DATE { get; set; }
-        public string SOLD_BY { get; set; }
+        public int? SOLD_BY_ID { get; set; }
         public DateTime? CREATED_AT { get; set; }
         public DateTime? UPDATED_AT { get; set; }
+        public int? MONEY_RECEIVED_BY_ID { get; set; }
     }
 
     public class PurchageOrder

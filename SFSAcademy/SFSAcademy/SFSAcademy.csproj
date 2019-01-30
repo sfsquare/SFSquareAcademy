@@ -797,9 +797,11 @@
     <Content Include="Content\javascripts\tiny_mce\utils\validate.js" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
+    <Content Include="Content\stylesheets\store\setting.css" />
+    <Content Include="Content\stylesheets\store\ViewAll.css" />
     <Content Include="Content\stylesheets\store\create.css" />
     <Content Include="Content\stylesheets\store\edit.css" />
-    <Content Include="Content\stylesheets\store\viewcart.css" />
+    <Content Include="Content\stylesheets\store\ViewCart.css" />
     <Content Include="Content\stylesheets\store\index.css" />
     <Content Include="Content\stylesheets\store\new.css" />
     <Content Include="Content\stylesheets\store\purchase.css" />
@@ -2326,7 +2328,6 @@
     <Content Include="Views\BATCH\Edit.cshtml" />
     <Content Include="Views\BATCH\Index.cshtml" />
     <Content Include="Views\Store\Create.cshtml" />
-    <Content Include="Views\Store\Delete.cshtml" />
     <Content Include="Views\Store\Details.cshtml" />
     <Content Include="Views\Store\Edit.cshtml" />
     <Content Include="Views\Store\Index.cshtml" />
@@ -2372,7 +2373,6 @@
     <Content Include="Views\Store\PurchageOrderList.cshtml" />
     <Content Include="Views\Store\_purchage_order_create_form.cshtml" />
     <Content Include="Views\Store\PurchageOrderEdit.cshtml" />
-    <Content Include="Views\Store\PurchageOrderDelete.cshtml" />
     <Content Include="Views\Store\ShortageProducts.cshtml" />
     <Content Include="Views\Store\_ListShortageProducts.cshtml" />
     <Content Include="Views\Student\Guardians.cshtml" />
@@ -2602,6 +2602,31 @@
     <Content Include="Views\Employee\Change_To_Former.cshtml" />
     <Content Include="Views\Finance\_discount_submission.cshtml" />
     <Content Include="Views\Store\_Sell_Quantity.cshtml" />
+    <Content Include="Views\Store\_Sub_Categories_Select.cshtml" />
+    <Content Include="Views\Store\Setting.cshtml" />
+    <Content Include="Views\Store\VendorList.cshtml" />
+    <Content Include="Views\Store\Vendor.cshtml" />
+    <Content Include="Views\Store\_vendor_create_form.cshtml" />
+    <Content Include="Views\Store\VendorEdit.cshtml" />
+    <Content Include="Views\Store\Brand.cshtml" />
+    <Content Include="Views\Store\_brand_create_form.cshtml" />
+    <Content Include="Views\Store\BrandList.cshtml" />
+    <Content Include="Views\Store\BrandEdit.cshtml" />
+    <Content Include="Views\Store\PurchageStatus.cshtml" />
+    <Content Include="Views\Store\_purchage_status_create_form.cshtml" />
+    <Content Include="Views\Store\PurchageStatusList.cshtml" />
+    <Content Include="Views\Store\PurchageStatusEdit.cshtml" />
+    <Content Include="Views\Store\_brand_select.cshtml" />
+    <Content Include="Views\Store\_vendor_select.cshtml" />
+    <Content Include="Views\Store\New_Procurement.cshtml" />
+    <Content Include="Views\Store\_student_select.cshtml" />
+    <Content Include="Views\Store\_product_select.cshtml" />
+    <Content Include="Views\Store\EditSellingCart.cshtml" />
+    <Content Include="Views\Store\_user_select.cshtml" />
+    <Content Include="Views\Finance\Aggregated_Fees_Due.cshtml" />
+    <Content Include="Views\Finance\ListDefaulterStudentsByCourse.cshtml" />
+    <Content Include="Views\Student\BonafideCertificate.cshtml" />
+    <Content Include="Views\Student\Generate_BC_pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2810,6 +2835,7 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ActionHelper.cs" />
+    <Compile Include="Helpers\ControllerExtentions.cs" />
     <Compile Include="IMAGE_DOCUMENTS.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
@@ -2896,6 +2922,9 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="SMS_SETTING.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STORE_BRAND.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="STORE_CATEGORY.cs">

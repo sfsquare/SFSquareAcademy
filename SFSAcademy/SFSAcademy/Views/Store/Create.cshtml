@@ -3,11 +3,33 @@
 @{
     ViewBag.Title = "Create";
 }
+@{
+    IEnumerable<SFSAcademy.STORE_BRAND> product_brands = (IEnumerable<SFSAcademy.STORE_BRAND>)ViewData["product_brands"];
+    IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
+}
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox1").hide();
+        $('#CategoryDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox1").show();
+            $.get('/Store/Sub_Categories_Select/' + selectedID, function (data) {
+                $('#sub_categories_select').html(data);
+                $('#sub_categories_select').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox1").hide();
+            });
+
+        });
+    });
+</script>
 <script>
     $(function () {
         $("#datepicker").datepicker({
@@ -41,16 +63,21 @@
     Add New Product
 </div>
 <div id="flash_box">
-    @if (ViewBag.StoreCreateMessage != null)
-            {
-        <p class="flash-msg"> @ViewBag.StoreCreateMessage </p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 </div>
 <div id="page-yield">
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-
+        <div id="flash_box">
+            @if (ViewBag.Notice != null)
+            {
+                <p class="flash-msg"> @ViewBag.Notice </p>
+            }
+        </div>
         <div id="admission1_form">
             <div id="necessary-field-notification">
                 Mark
@@ -72,25 +99,20 @@
                 @Html.LabelFor(model => model.CATEGORY_ID, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
-                    @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "CategoryDropDown" })
+                    <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
                     @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <div id="sub_categories_select"> @Html.Partial("_Sub_Categories_Select")</div>
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.SUB_CATEGORY_ID, "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
-                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                @Html.LabelFor(model => model.BRAND_ID, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
-                    @Html.DropDownList("SUB_CATEGORY_ID", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.SUB_CATEGORY_ID, "", new { @class = "text-danger" })
+                    @Html.Partial("_brand_select", product_brands)
+                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.BRAND, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.BRAND, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.BRAND, "", new { @class = "text-danger" })
-                </div>
-            </div>
+
 
             <div id="admission1_form_vertical_block_left">
                 <div class="label-field-pair label">
@@ -134,21 +156,15 @@
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PURCHASED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.PURCHASED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.ReturnDate, @readonly = "readonly" } })
+                        @Html.EditorFor(model => model.PURCHASED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.ReturnDate } })
                         @Html.ValidationMessageFor(model => model.PURCHASED_ON, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.PURCHASED_THROUGH, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.VENDOR_ID, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.DropDownListFor(model => model.PURCHASED_THROUGH, new List<SelectListItem>
-                        { new SelectListItem{Text="Online Portal", Value="Online",Selected=true},
-                          new SelectListItem{Text="Vendor", Value="Vendor"},
-                          new SelectListItem { Text = "Local Shop", Value = "Shop" },
-                          new SelectListItem { Text = "Whole Sale Shop", Value = "Wholesale" },
-                          new SelectListItem{Text="Personnel Item", Value="Personnel"},
-                          new SelectListItem{Text="Others", Value="Others"}}, "Select One")
-                        @Html.ValidationMessageFor(model => model.PURCHASED_THROUGH, "", new { @class = "text-danger" })
+                        @Html.Partial("_vendor_select", product_vendor)
+                        @Html.ValidationMessageFor(model => model.VENDOR_ID, "", new { @class = "text-danger", @Value = ViewBag.PURCHASED_THROUGH })
                     </div>
                 </div>
 
@@ -178,8 +194,8 @@
                     <label class="label_for_student_gender" for="student_gender">Currently Being Sold</label>
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="student_gender_value">
-                        @Html.RadioButtonFor(model => model.IS_ACT, true, false)@Html.Label("Yes")
-                        @Html.RadioButtonFor(model => model.IS_ACT, false, false)@Html.Label("No")
+                        @Html.RadioButtonFor(model => model.IS_ACT, true, new { @checked = "checked" })@Html.Label("Yes")
+                        @Html.RadioButtonFor(model => model.IS_ACT, false)@Html.Label("No")
                     </div>
                 </div>
 
