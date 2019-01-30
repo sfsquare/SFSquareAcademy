@@ -17,22 +17,22 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public STORE_PRODUCTS()
         {
-            this.STORE_PURCHAGE = new HashSet<STORE_PURCHAGE>();
-            this.STORE_PURCHAGE_BACKUP = new HashSet<STORE_PURCHAGE_BACKUP>();
             this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
+            this.STORE_PURCHAGE = new HashSet<STORE_PURCHAGE>();
+            this.STORE_PURCHAGE_BACKUP = new HashSet<STORE_PURCHAGE_BACKUP>();
         }
     
         public int PRODUCT_ID { get; set; }
         public string NAME { get; set; }
         public Nullable<int> CATEGORY_ID { get; set; }
-        public string BRAND { get; set; }
+        public Nullable<int> BRAND_ID { get; set; }
         public Nullable<int> TOTAL_UNIT { get; set; }
         public Nullable<decimal> TOTAL_COST { get; set; }
         public Nullable<decimal> COST_PER_UNIT { get; set; }
         public Nullable<decimal> SELL_PRICE_PER_UNIT { get; set; }
         public Nullable<System.DateTime> PURCHASED_ON { get; set; }
-        public string PURCHASED_THROUGH { get; set; }
+        public Nullable<int> VENDOR_ID { get; set; }
         public string BAR_CODE { get; set; }
         public string PAID_BY { get; set; }
         public Nullable<int> UNIT_LEFT { get; set; }
@@ -42,15 +42,17 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> SUB_CATEGORY_ID { get; set; }
     
+        public virtual STORE_BRAND STORE_BRAND { get; set; }
         public virtual STORE_CATEGORY STORE_CATEGORY { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
+        public virtual STORE_SUB_CATEGORY STORE_SUB_CATEGORY { get; set; }
+        public virtual STORE_PURCHAGE_VENDOR STORE_PURCHAGE_VENDOR { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
-        public virtual STORE_SUB_CATEGORY STORE_SUB_CATEGORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
     }
 }

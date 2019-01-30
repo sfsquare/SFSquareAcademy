@@ -36,6 +36,10 @@
         {
             <li class="a"><a href="@Url.Action("BatchTransfer_Index", "Student")">Batch Transfer</a></li>
         }
+        @if (Html.Permitted_To("Reports", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
+        {
+            <li class="a"><a href="@Url.Action("BonafideCertificate", "Student", new { id = Model.StudentData.ID })">Certificate</a></li>
+        }
     </ul>
 </div>
 <div class="bread_crumb">

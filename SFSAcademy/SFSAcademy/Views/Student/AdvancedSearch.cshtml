@@ -223,6 +223,12 @@
                 <th>
                     Address
                 </th>
+                @if (ViewBag.CurrentFilter12 == "SchoolBook" || ViewBag.CurrentFilter12 == "SchoolDress")
+                {
+                    <th>
+                        Last Pur Date
+                    </th>
+                }
                 @if (Html.CurrentUser_UserType().Equals("Admin"))
                 {
                     <th>
@@ -246,81 +252,107 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME)
-                        <label> </label>
-                        @Html.DisplayFor(modelItem => item.StudentData.MID_NAME)
-                        <label> </label>
-                        @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
-                    </td>
-                    <td class="col-3" nowrap>
-                        @Html.DisplayFor(modelItem => item.CourseData.CODE)
-                        <label>-</label>
-                        @Html.DisplayFor(modelItem => item.BatcheData.NAME)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.StudentData.CLS_ROLL_NO)
-                    </td>
-                    <td class="col-5" nowrap>
-                        @if (!item.StudentData.DOB.Equals(null))
-                        {
-                            @item.StudentData.DOB.Value.ToShortDateString()
-                        }
-                    </td>
-                    <td class="col-5" nowrap>
-                        @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
-                    </td>
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.StudentData.ADMSN_NO)
-                    </td>
-                    <td class="col-5">
-                        @if (!item.StudentData.PH1.Equals(null) && !item.StudentData.PH2.Equals(null))
-                        { @Html.DisplayFor(modelItem => item.StudentData.PH1)
-                            <label>/</label>
-                            @Html.DisplayFor(modelItem => item.StudentData.PH2)
-                        }
-                        else if (!item.StudentData.PH1.Equals(null))
-                        {
-                            @Html.DisplayFor(modelItem => item.StudentData.PH1)
-                        }
-                        else if (!item.StudentData.PH2.Equals(null))
-                        {
-                            @Html.DisplayFor(modelItem => item.StudentData.PH2)
-                        }
-
-                    </td>
-                    @if (SelGuardian != null)
+            <tr class="@selectedRow">
+                <td class="col-1">@i</td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.StudentData.FIRST_NAME)
+                    <label> </label>
+                    @Html.DisplayFor(modelItem => item.StudentData.MID_NAME)
+                    <label> </label>
+                    @Html.DisplayFor(modelItem => item.StudentData.LAST_NAME)
+                </td>
+                <td class="col-3" nowrap>
+                    @Html.DisplayFor(modelItem => item.CourseData.CODE)
+                    <label>-</label>
+                    @Html.DisplayFor(modelItem => item.BatcheData.NAME)
+                </td>
+                <td class="col-4">
+                    @Html.DisplayFor(modelItem => item.StudentData.CLS_ROLL_NO)
+                </td>
+                <td class="col-5" nowrap>
+                    @if (!item.StudentData.DOB.Equals(null))
                     {
-                        <td class="col-5">@GuardianName</td>
+                        @item.StudentData.DOB.Value.ToShortDateString()
+                    }
+                </td>
+                <td class="col-5" nowrap>
+                    @item.StudentData.ADMSN_DATE.Value.ToShortDateString()
+                </td>
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.StudentData.ADMSN_NO)
+                </td>
+                <td class="col-5">
+                    @if (!item.StudentData.PH1.Equals(null) && !item.StudentData.PH2.Equals(null))
+                    {@Html.DisplayFor(modelItem => item.StudentData.PH1)
+                    <label>/</label>
+                    @Html.DisplayFor(modelItem => item.StudentData.PH2)
+                }
+                else if (!item.StudentData.PH1.Equals(null))
+                {
+                    @Html.DisplayFor(modelItem => item.StudentData.PH1)
+                }
+                else if (!item.StudentData.PH2.Equals(null))
+                {
+                    @Html.DisplayFor(modelItem => item.StudentData.PH2)
+                }
+
+                </td>
+                @if (SelGuardian != null)
+                {
+                    <td class="col-5">@GuardianName</td>
+                }
+                else
+                {
+                    <td class="col-5"></td>
+                }
+                <td class="col-5">
+                    @Html.DisplayFor(modelItem => item.StudentData.ADDR_LINE1)
+                    <label>,</label>
+                    @Html.DisplayFor(modelItem => item.StudentData.ADDR_LINE2)
+                </td>
+                @if (ViewBag.CurrentFilter12 == "SchoolBook")
+                {
+                    if (item.StudentData.BOOK_PUR_DT != null)
+                    {
+                        <td class="col-6">
+                            @item.StudentData.BOOK_PUR_DT.Value.ToShortDateString()
+                        </td>
                     }
                     else
                     {
-                        <td class="col-5"></td>
+                        <td class="col-6"></td>
                     }
-                    <td class="col-5">
-                        @Html.DisplayFor(modelItem => item.StudentData.ADDR_LINE1)
-                        <label>,</label>
-                        @Html.DisplayFor(modelItem => item.StudentData.ADDR_LINE2)
-                    </td>
-                    @if (Html.CurrentUser_UserType().Equals("Admin"))
+                }
+                else if (ViewBag.CurrentFilter12 == "SchoolDress")
+                {
+                    if (item.StudentData.DRESS_PUR_DT != null)
                     {
-                        if (ViewBag.currentFilter11 == "N")
-                        {
-                            <td class="col-6" nowrap>
-                                @Html.ActionLink("Make Active ", "ActivateStudent", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
-                            </td>
-                        }
-                        else
-                        {
-                            <td class="col-6" nowrap>
-                                @Html.ActionLink("Edit ", "Edit", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Details ", "Details", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
-                            </td>
-                        }
+                        <td class="col-6">
+                            @item.StudentData.DRESS_PUR_DT.Value.ToShortDateString()
+                        </td>
                     }
+                    else
+                    {
+                        <td class="col-6"></td>
+                    }
+                }
+                @if (Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                    if (ViewBag.currentFilter11 == "N")
+                    {
+                        <td class="col-6" nowrap>
+                            @Html.ActionLink("Make Active ", "ActivateStudent", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-6" nowrap>
+                            @Html.ActionLink("Edit ", "Edit", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Details ", "Details", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete", new { id = item.StudentData.ID }, new { style = "text-decoration:underline" })
+                        </td>
+                    }
+                }
 
-                </tr>
+            </tr>
                 i = i + 1;
             }
         </table>

@@ -27,7 +27,7 @@
                 Unit Left
             </th>
             <th>
-                Purchaged ON
+                Last Purchaged On
             </th>
             <th></th>
         </tr>
@@ -42,7 +42,7 @@
                 }
                 <tr class="@selectedRow">
                     <td class="col-1">@i</td>
-                    <td class="col-2">
+                    <td class="col-3">
                         @Html.DisplayFor(modelItem => item.ProductData.NAME)
                     </td>
                     <td class="col-3">
@@ -51,8 +51,8 @@
                     <td class="col-3">
                         @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
                     </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.ProductData.BRAND)
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.BrandData.NAME)
                     </td>
                     <td class="col-5" nowrap>
                         @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
@@ -67,8 +67,7 @@
                         }
                     </td>
                     <td class="col-8" nowrap>
-                        @Html.ActionLink("Edit ", "Edit", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                        @Html.ActionLink("Details  ", "Details", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
+                        @Html.ActionLink("Edit ", "Edit", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })             
                     </td>
 
                 </tr>

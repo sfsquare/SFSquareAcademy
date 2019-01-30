@@ -1,6 +1,11 @@
 ﻿@model PagedList.IPagedList<SFSAcademy.Models.Purchase>
 @using PagedList.Mvc;
 @using SFSAcademy.Models;
+@{
+    IEnumerable<SFSAcademy.STUDENT> student_select = (IEnumerable<SFSAcademy.STUDENT>)ViewData["student_select"];
+    IEnumerable<SFSAcademy.STORE_PRODUCTS> product_select = (IEnumerable<SFSAcademy.STORE_PRODUCTS>)ViewData["product_select"];
+    IEnumerable<SFSAcademy.USER> user_select = (IEnumerable<SFSAcademy.USER>)ViewData["user_select"];
+}
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
@@ -43,9 +48,9 @@
     </ul>
 </div>
 <div id="flash_box">
-    @if (Session["StoreBackUpMessage"] != null)
-            {
-        <p class="flash-msg"> @Session["StoreBackUpMessage"] </p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 </div>
 
@@ -54,6 +59,12 @@
     Backup Transaction
 </div>
 <div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
     <div id="search_box_bg">
         <div id="searchbox">
             <form name="search-form" id="search-form" action="" style="display:inline">
@@ -67,7 +78,7 @@
                                     <div class="label-field-pair">
                                         <label for="FIRST_NAME">Product Name:</label>
                                         <div class="text-input-bg">
-                                            @Html.DropDownList("SearchString", null, htmlAttributes: new { @class = "form-control" })
+                                            @Html.Partial("_product_select", product_select)
                                         </div>
                                     </div>
                                 </td>
@@ -75,7 +86,7 @@
                                     <div class="label-field-pair">
                                         <label for="ADMSN_NO">Student Name:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("StudentName", ViewBag.CurrentFilter2 as string)
+                                            @Html.Partial("_student_select", student_select)
                                         </div>
                                     </div>
                                 </td>
@@ -91,9 +102,9 @@
                                 </td>
                                 <td>
                                     <div class="label-field-pair">
-                                        <label for="NAME">Money Received By:</label>
+                                        <label for="NAME">Sold By:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("ReceivedBy", ViewBag.CurrentFilter4 as string)
+                                            @Html.Partial("_user_select", user_select)
                                         </div>
                                     </div>
                                 </td>
@@ -103,7 +114,7 @@
                                     <div class="label-field-pair">
                                         <label for="NAME">Is Money Deposited?:</label>
                                         <div class="text-input-bg">
-                                            @Html.TextBox("MoneyDeposited", ViewBag.CurrentFilter5 as string)
+                                            @Html.DropDownList("MoneyDeposited", null, htmlAttributes: new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </td>
@@ -133,7 +144,7 @@
                                 <li><input type="submit" value="Search" class="submit-button" /></li>
                             </ul>
                             <ul>
-                                <li><a href="@Url.Action("BackupSelectedTransactions", "Store",new { searchString = ViewBag.CurrentFilter, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10 })" alt="Backup Selected Transactions" class="submit-button">Backup Selected Transactions</a></li>
+                                <li><a href="@Url.Action("BackupSelectedTransactions", "Store",new { sortOrder = ViewBag.CurrentSort, PRODUCT_ID = ViewBag.CurrentFilter, STUDENT_ID = ViewBag.CurrentFilter2,ContactNumber = ViewBag.CurrentFilter3, USER_ID= ViewBag.CurrentFilter4, MoneyDeposited = ViewBag.CurrentFilter5, SoldFromDate = ViewBag.CurrentFilter9, SoldToDate   = ViewBag.CurrentFilter10 })" alt="Backup Selected Transactions" class="submit-button">Backup Selected Transactions</a></li>
                             </ul>
                         </div>
                     </p>
@@ -151,7 +162,7 @@
                     Sl. No.
                 </th>
                 <th>
-                    Name
+                    @Html.ActionLink("Name", "BackupTransaction", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10 })
                 </th>
                 <th>
                     Category
@@ -172,10 +183,10 @@
                     Student Name
                 </th>
                 <th>
-                    Sold ON
+                    @Html.ActionLink("Sold On", "BackupTransaction", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter, currentFilter2 = ViewBag.CurrentFilter2, currentFilter3 = ViewBag.CurrentFilter3, currentFilter4 = ViewBag.CurrentFilter4, currentFilter5 = ViewBag.CurrentFilter5, currentFilter9 = ViewBag.CurrentFilter9, currentFilter10 = ViewBag.CurrentFilter10 })
                 </th>
                 @if (Html.CurrentUser_UserType().Equals("Admin"))
-            {
+                {
                     <th></th>
                 }
             </tr>
@@ -188,43 +199,57 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.ProductData.NAME)
+            <tr class="@selectedRow">
+                <td class="col-1">@i</td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.ProductData.NAME)
+                </td>
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                </td>
+                <td class="col-4">
+                    @Html.DisplayFor(modelItem => item.PurchaseData.UNIT_SOLD)
+                </td>
+                <td class="col-4">
+                    @Html.DisplayFor(modelItem => item.PurchaseData.SOLD_PRICE)
+                </td>
+                @if (item.UserData != null)
+                {
+                    <td class="col-4" nowrap>
+                        @item.UserData.FIRST_NAME  @item.UserData.LAST_NAME
                     </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.PurchaseData.UNIT_SOLD)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.PurchaseData.SOLD_PRICE)
-                    </td>
-                    <td class="col-4">
-                        @Html.DisplayFor(modelItem => item.PurchaseData.SOLD_BY)
-                    </td>
-                    <td class="col-5" nowrap>
-                        @Html.DisplayFor(modelItem => item.PurchaseData.IS_DEPOSITED)
-                    </td>
+                }
+                else
+                {
+                    <td class="col-4" nowrap></td>
+                }
+                <td class="col-5" nowrap>
+                    @Html.DisplayFor(modelItem => item.PurchaseData.IS_DEPOSITED)
+                </td>
+                @if (item.StudentData != null)
+                {
                     <td class="col-6" nowrap>
-                        @Html.DisplayFor(modelItem => item.PurchaseData.STUDENT_NAME)
+                        @item.StudentData.FIRST_NAME  @item.StudentData.MID_NAME  @item.StudentData.LAST_NAME
                     </td>
-                    <td class="col-7" nowrap>
-                        @if (!item.PurchaseData.SOLD_ON.Equals(null))
-                        {
-                            @item.PurchaseData.SOLD_ON.Value.ToShortDateString()
-                        }
-                    </td>
-                    @if (Html.CurrentUser_UserType().Equals("Admin"))
+                }
+                else
+                {
+                    <td class="col-6" nowrap></td>
+                }
+                <td class="col-7" nowrap>
+                    @if (!item.PurchaseData.SOLD_ON.Equals(null))
                     {
-                        <td class="col-8" nowrap>
-                            @Html.ActionLink("Edit ", "EditSelling", new { id = item.PurchaseData.ID }, new { style = "text-decoration:underline" })
-
-                        </td>
+                        @item.PurchaseData.SOLD_ON.Value.ToShortDateString()
                     }
-                </tr>
+                </td>
+                @if (Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                    <td class="col-8" nowrap>
+                        @Html.ActionLink("Edit ", "EditSelling", new { id = item.PurchaseData.ID }, new { style = "text-decoration:underline" })
+
+                    </td>
+                }
+            </tr>
                 i = i + 1;
             }
         </table>

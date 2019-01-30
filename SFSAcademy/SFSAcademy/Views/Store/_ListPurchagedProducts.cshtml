@@ -1,24 +1,22 @@
 ﻿@model IEnumerable<SFSAcademy.Models.PurchaseCart>
 @using SFSAcademy.Models
-@{    Layout = null;}
+@{ Layout = null;}
+@{
+    IEnumerable<SFSAcademy.STUDENT> student_select = (IEnumerable<SFSAcademy.STUDENT>)ViewData["student_select"];
+}
 
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $('#submit-button1').click(function () {
             /* Get the selected value of dropdownlist */
             var SelectedMode = $("#PAYMENT_MODE option:selected").text();
-            var SelectedStd = $('#STUDENT_NAME').val();
+            var SelectedStd = $("#STUDENT_ID option:selected").val();
             var SelectedAmt = $('#PAYMENT_AMOUNT').val();
             var SelectedPhone = $('#PHONE_NUMBER').val();
             var SelectedDate = $('#datepicker').val();
             /* Request the partial view with .get request. */
-            $.get('/Store/Payment?PAYMENT_MODE=' + SelectedMode + "&STUDENT_NAME=" + SelectedStd + "&PHONE_NUMBER=" + SelectedPhone + "&PAYMENT_AMOUNT=" + SelectedAmt + "&PURCHAGE_DATE=" + SelectedDate, function (data) {
+            $.get('/Store/Payment?PAYMENT_MODE=' + SelectedMode + "&STUDENT_ID=" + SelectedStd + "&PHONE_NUMBER=" + SelectedPhone + "&PAYMENT_AMOUNT=" + SelectedAmt + "&PURCHAGE_DATE=" + SelectedDate, function (data) {
 
                 /* data is the pure html returned from action method, load it to your page */
                 $('#modal-box').html(data);
@@ -59,7 +57,7 @@
 }
 <div id="flash_box" class="noprint">
     @if (ViewBag.PaymentMessage != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.PaymentMessage </p>
     }
 </div>
@@ -117,20 +115,20 @@
                 </td>
 
                 @if (ViewBag.PaidPrice == null)
-                {
-                    <td class="col-8" nowrap>
-                        <input type="submit" value="Edit" id="submit-button2" class="submit_button2" />
-                    </td>
+                { 
+                <td class="col-6">
+                    @Html.ActionLink("Edit ", "EditSellingCart", new { id = item.PurchaseCartData.ID }, new { style = "text-decoration:underline" }) |
+                    @Html.ActionLink(" Delete", "DeleteSellingCart", new { id = item.PurchaseCartData.ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" })
+                </td>
                 }
                 else
                 {
-                    <td></td>
+                    <td class="col-6"></td>
                 }
             </tr>
             i = i + 1;
         }
 
-        <tr class="tr-blank"></tr>
         <tr class="tr-blank"></tr>
         @if (i % 2 == 0)
         {
@@ -146,44 +144,41 @@
                 <td class="col-2" colspan="2"></td>
                 <td class="col-8" colspan="2">Amount To Pay :</td>
                 <td class="col-6">@ViewBag.TotalPrice</td>
+                <td></td>
             </tr>
         }
         <tr class="tr-blank"></tr>
-        <tr>
-            <td colspan="3">
-                <div class="pay_fees">
-                    @if (ViewBag.PaidPrice == null)
-                    {
-                        <div class="label-field-pair label">
-                            <div class="label-container label">@Html.Label("PAYMENT_MODE", "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                            <div class="text-input-bg">@Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))), "Select Mode:", new { @class = "form-control", @id = "PAYMENT_MODE" })</div>
-                        </div>
-                        <div class="label-field-pair label">
-                            <div class="label-container label">@Html.Label("STUDENT_NAME", "Stundet Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                            <span class="necessary-field" style="font-size:small">* Required Field</span>
-                            <div class="text-input-bg"><input type="text" name="STUDENT_NAME" id="STUDENT_NAME" value="@ViewBag.STUDENT_NAME" required = "required" /></div>
-                        </div>
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PHONE_NUMBER", "Phone Number", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <span class="necessary-field" style="font-size:small">* Required Field</span>
-                                <div class="text-input-bg"><input type="text" name="PHONE_NUMBER" id="PHONE_NUMBER" value="@ViewBag.PHONE_NUMBER" required = "required"  /></div>
-                            </div>
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("PURCHAGE_DATE", "Purchage Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <div class="caledar_date_select">@Html.Editor("PURCHAGE_DATE", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.PURCHAGE_DATE, @readonly = "readonly" } })</div>
-                            </div>
-                            <div class="pay_fees_buttons">
-                                <input type="submit" value="Pay Amount" id="submit-button1" class="submit_button" />
-                            </div>
-                    }
-                    else
-                    {
-                        <h4>Amount Paid</h4>
-                        <div class="noprint"><input type="submit" value="Print Receipt" id="submit-button" class="submit_button" onclick="window.print()" /></div>
-                    }
-                </div>
-            </td>
-        </tr>
     </table>
-            }
+    <div class="noprint">
+        @if (ViewBag.PaidPrice == null)
+        {
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("PAYMENT_MODE", "Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">@Html.DropDownList("PAYMENT_MODE", new SelectList(Enum.GetValues(typeof(PaymentMode))), "Select Mode:", new { @class = "form-control", @id = "PAYMENT_MODE" })</div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("STUDENT_ID", "Stundet Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.Partial("_student_select", student_select)
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("PHONE_NUMBER", "Phone Number", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg"><input type="text" name="PHONE_NUMBER" id="PHONE_NUMBER" value="@ViewBag.PHONE_NUMBER" required="required" /></div>
+            </div>
+            <div class="label-field-pair label">
+                <div class="label-container label">@Html.Label("PURCHAGE_DATE", "Purchage Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="caledar_date_select">@Html.Editor("PURCHAGE_DATE", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.PURCHAGE_DATE, @readonly = "readonly" } })</div>
+            </div>
+            <div class="pay_fees_buttons">
+                <input type="submit" value="Pay Amount" id="submit-button1" class="submit_button" />
+            </div>
+        }
+        else
+        {
+            <h4>Amount Paid</h4>
+            <div class="noprint"><input type="submit" value="Print Receipt" id="submit-button" class="submit_button" onclick="window.print()" /></div>
+        }
+    </div>
+}
 <input type="hidden" value="@ViewBag.TotalPrice" id="PAYMENT_AMOUNT" name="studentID" />

@@ -3,16 +3,10 @@
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{ Layout = null;}
 
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $(function () {
-            $.noConflict(true);
             $("#result").dialog({
                 autoOpen: false,
                 draggable: true,
@@ -89,7 +83,7 @@
                 Unit Left
             </th>
             <th>
-                Purchaged ON
+                Purchaged On
             </th>
             <th></th>
         </tr>
@@ -115,7 +109,7 @@
                     @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
                 </td>
                 <td class="col-4">
-                    @Html.DisplayFor(modelItem => item.ProductData.BRAND)
+                    @Html.DisplayFor(modelItem => item.ProductData.STORE_BRAND.NAME)
                 </td>
                 <td class="col-5" nowrap>
                     @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
@@ -133,12 +127,9 @@
                 {
                     <td class="col-8" nowrap>
                         @Html.ActionLink("Edit ", "Edit", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                        @Html.ActionLink("Details  ", "Details", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
-                        @Html.ActionLink("Delete ", "Delete", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" }) |
+                        @Html.ActionLink("Delete ", "Delete", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" }) |
                         @if (item.ProductData.UNIT_LEFT > 0)
                         {
-                            //@Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
-                            //Html.RenderPartial("_Sell_Quantity", new ViewDataDictionary { { "id", item.ProductData.PRODUCT_ID } });
                             <button id="@string.Concat("btnCreate",ProductRowNum)" value="@item.ProductData.PRODUCT_ID" class="button-label" onclick="AddQuantity(value,'@item.ProductData.NAME');">Sell</button>
                         }
                     </td>
@@ -148,8 +139,6 @@
                     <td class="col-8" nowrap>
                         @if (item.ProductData.UNIT_LEFT > 0)
                         {
-                            //@Html.ActionLink("Sell ", "Purchase", new { id = item.ProductData.PRODUCT_ID }, new { style = "text-decoration:underline" })
-                            //Html.RenderPartial("_Sell_Quantity", new ViewDataDictionary { { "id", item.ProductData.PRODUCT_ID } });
                             <button id="@string.Concat("btnCreate",ProductRowNum)" value="@item.ProductData.PRODUCT_ID" class="button-label" onclick="AddQuantity(value,'@item.ProductData.NAME');">Sell</button>
                         }
                     </td>

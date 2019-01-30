@@ -80,11 +80,11 @@
                             @item.PurchaseOrderData.UPDATED_AT.Value.ToShortDateString()
                         }
                     </td>
-                    @if (Html.Permitted_To("PurchageOrderEdit", "Store"))
+                    @if (Html.Permitted_To("PurchageOrderEdit", "Store") || Html.CurrentUser_UserType().Equals("Admin"))
                     {
                         <td class="col-8" nowrap>
                             @Html.ActionLink("Edit ", "PurchageOrderEdit", new { id = item.PurchaseOrderData.ID }, new { style = "text-decoration:underline" }) |
-                            @Html.ActionLink("Delete ", "PurchageOrderDelete", new { id = item.PurchaseOrderData.ID }, new { style = "text-decoration:underline" })
+                            @Html.ActionLink("Delete ", "PurchageOrderDelete", new { id = item.PurchaseOrderData.ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" })
                         </td>
                     }
                 </tr>

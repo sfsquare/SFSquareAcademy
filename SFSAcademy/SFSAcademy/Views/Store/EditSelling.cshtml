@@ -3,7 +3,11 @@
 @{
     ViewBag.Title = "EditSelling";
 }
-
+@{
+    IEnumerable<SFSAcademy.STUDENT> student_select = (IEnumerable<SFSAcademy.STUDENT>)ViewData["student_select"];
+    IEnumerable<SFSAcademy.STORE_PRODUCTS> product_select = (IEnumerable<SFSAcademy.STORE_PRODUCTS>)ViewData["product_select"];
+    IEnumerable<SFSAcademy.USER> user_select = (IEnumerable<SFSAcademy.USER>)ViewData["user_select"];
+}
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
@@ -37,15 +41,21 @@
     Edit Selling
 </div>
 <div id="flash_box">
-    @if (ViewBag.sellingEditMessage != null)
-            {
-        <p class="flash-msg"> @ViewBag.sellingEditMessage </p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 </div>
 <div id="page-yield">
 
     @using (Html.BeginForm())
     {
+        <div id="flash_box">
+            @if (ViewBag.Notice != null)
+            {
+                <p class="flash-msg"> @ViewBag.Notice </p>
+            }
+        </div>
         @Html.AntiForgeryToken()
 
         <div id="admission1_form">
@@ -62,7 +72,7 @@
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.PRODUCT_ID, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
-                    @Html.DropDownList("PRODUCT_ID", null, htmlAttributes: new { @class = "form-control", @Value = ViewBag.PRODUCT_ID })
+                    @Html.Partial("_product_select", product_select)
                     @Html.ValidationMessageFor(model => model.PRODUCT_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -85,17 +95,17 @@
 
             <div id="admission1_form_vertical_block_left">
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.SOLD_BY, "Sold By", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.SOLD_BY_ID, "Sold By", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.SOLD_BY, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.SOLD_BY, "", new { @class = "text-danger" })
+                        @Html.Partial("_user_select", user_select)
+                        @Html.ValidationMessageFor(model => model.SOLD_BY_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.SOLD_ON, "Sold On", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.SOLD_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker"} })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.SOLD_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker" } })
                         @Html.ValidationMessageFor(model => model.SOLD_ON, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -108,24 +118,17 @@
                 <hr class="sub-heading">
 
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.STUDENT_NAME, "Student's Name", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.STUDENT_NAME, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.STUDENT_NAME, "", new { @class = "text-danger" })
+                    @Html.LabelFor(model => model.STUDENT_ID, "Student's Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.Partial("_student_select", student_select)
+                        @Html.ValidationMessageFor(model => model.STUDENT_ID, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.STUDENT_CONTACT_NO, "Student's Contact Number", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
+                    <div class="text-input-bg">
                         @Html.EditorFor(model => model.STUDENT_CONTACT_NO, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.STUDENT_CONTACT_NO, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.MONEY_RECEIVED_BY, "Money Received By", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.MONEY_RECEIVED_BY, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.MONEY_RECEIVED_BY, "", new { @class = "text-danger" })
                     </div>
                 </div>
 

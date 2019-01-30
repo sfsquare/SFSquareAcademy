@@ -31,10 +31,12 @@ namespace SFSAcademy
         public Nullable<decimal> TOTAL_DUE { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
+        public Nullable<int> BRAND_ID { get; set; }
     
         public virtual EMPLOYEE EMPLOYEE { get; set; }
+        public virtual STORE_BRAND STORE_BRAND { get; set; }
+        public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
         public virtual STORE_PURCHAGE_STATUS STORE_PURCHAGE_STATUS { get; set; }
         public virtual STORE_PURCHAGE_VENDOR STORE_PURCHAGE_VENDOR { get; set; }
-        public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
     }
 }

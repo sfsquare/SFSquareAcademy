@@ -121,6 +121,8 @@ namespace SFSAcademy.Models
         public STUDENT StudentData { get; set; }
         public FINANCE_FEE FinanceFeeData { get; set; }
         public FINANCE_FEE_COLLECTION FeeCollectionData { get; set; }
+        public COURSE CourseData { get; set; }
+        public BATCH BatchData { get; set; }
     }
 
     public class FinanceTransaction
@@ -155,6 +157,18 @@ namespace SFSAcademy.Models
     {
         Y,
         N
+    }
+
+    public enum FeeFrequency
+    {
+        [Display(Name = "Monthly")]
+        Monthly,
+        [Display(Name = "Yearly")]
+        Yearly,
+        [Display(Name = "One Time")]
+        One_Time,
+        [Display(Name = "Quarterly")]
+        Quarterly
     }
 
     public class CategoryTransactions

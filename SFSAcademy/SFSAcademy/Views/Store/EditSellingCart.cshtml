@@ -1,0 +1,99 @@
+﻿@model SFSAcademy.STORE_PURCHAGE_CART
+
+@{
+    ViewBag.Title = "EditSellingCart";
+}
+@{
+    IEnumerable<SFSAcademy.STORE_PRODUCTS> product_select = (IEnumerable<SFSAcademy.STORE_PRODUCTS>)ViewData["product_select"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Student Details Logo">
+    <h1>Store</h1>
+    <h3>Update Selling Cart Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("View All Sellings", "ViewAllSelling") &raquo;
+    Edit Selling
+</div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div id="page-yield">
+
+    @using (Html.BeginForm())
+    {
+        <div id="flash_box">
+            @if (ViewBag.Notice != null)
+            {
+                <p class="flash-msg"> @ViewBag.Notice </p>
+            }
+        </div>
+        @Html.AntiForgeryToken()
+
+        <div id="admission1_form">
+            <div id="necessary-field-notification">
+                Mark
+                <span class="necessary-field">*</span> Denotes Necessary Field
+            </div>
+            <span class="span-sub-heading">Unit Details</span>
+            <hr class="sub-heading">
+            <div id="autofill-area">
+                @Html.HiddenFor(model => model.ID)
+                @Html.HiddenFor(model => model.CREATED_AT)
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.PRODUCT_ID, "Product", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.Partial("_product_select", product_select)
+                    @Html.ValidationMessageFor(model => model.PRODUCT_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.UNIT_SOLD, "Unit Sold", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.UNIT_SOLD, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UNIT_SOLD, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <input type="submit" value="► Save " class="user_button" />
+        </div>
+
+    }
+</div>
+
+
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

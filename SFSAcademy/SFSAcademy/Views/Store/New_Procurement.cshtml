@@ -1,0 +1,192 @@
+﻿@model SFSAcademy.Models.Products
+
+@{
+    ViewBag.Title = "New_Procurement";
+}
+
+@{
+    IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Student Details Logo">
+    <h1>Store</h1>
+    <h3>Add New Procurement</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
+</div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Product List", "ViewAll") &raquo;
+    @Html.ActionLink("Edit Product", "Edit", new { id = Model.ProductData.PRODUCT_ID}) &raquo;
+    Add New Procurement Details
+</div>
+<div id="page-yield">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div id="flash_box">
+            @if (ViewBag.Notice != null)
+            {
+                <p class="flash-msg"> @ViewBag.Notice </p>
+            }
+        </div>
+        <div id="admission1_form">
+            <div id="necessary-field-notification">
+                Mark
+                <span class="necessary-field">*</span> Denotes Necessary Field
+            </div>
+            <span class="span-sub-heading">Product Details</span>
+            <hr class="sub-heading">
+            <div id="autofill-area">
+                @Html.HiddenFor(model => model.ProductData.PRODUCT_ID)
+                @Html.HiddenFor(model => model.ProductData.CREATED_AT)
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.ProductData.NAME, "Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.ProductData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.ProductData.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.CategoryData.NAME, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.CategoryData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.CategoryData.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.SubCategoryData.NAME, "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.SubCategoryData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.SubCategoryData.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.BrandData.NAME, "Product Brand", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.BrandData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.BrandData.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div id="admission1_form_vertical_block_left">
+
+                <hr class="label-underline label">
+
+            </div>
+
+            <div id="admission1_form_vertical_block_right">
+                <span class="span-sub-heading">Product Purchase and Payment Details</span>
+                <hr class="sub-heading">
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.TOTAL_UNIT, "Units Purchased", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.ProductData.TOTAL_UNIT, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.ProductData.TOTAL_UNIT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.COST_PER_UNIT, "Cost Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.ProductData.COST_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductData.COST_PER_UNIT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.TOTAL_COST, "Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.ProductData.TOTAL_COST, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductData.TOTAL_COST, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.SELL_PRICE_PER_UNIT, "Selling Price Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.ProductData.SELL_PRICE_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ProductData.SELL_PRICE_PER_UNIT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.PURCHASED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.ProductData.PURCHASED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.ProductData.PURCHASED_ON, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.VENDOR_ID, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        <div id="vendor-modal-box">
+                            @Html.Partial("_vendor_select", product_vendor)
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ProductData.VENDOR_ID, "", new { @class = "text-danger", @Value = ViewBag.PURCHASED_THROUGH })
+                    </div>
+                </div>
+
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.ProductData.PAID_BY, "Mode of Payment", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.DropDownListFor(model => model.ProductData.PAID_BY, new List<SelectListItem>
+                        { new SelectListItem{Text="Cash", Value="Cash",Selected=true},
+                          new SelectListItem{Text="Check", Value="Check"},
+                          new SelectListItem { Text = "Paid Through Online Transaction", Value = "Online" },
+                          new SelectListItem { Text = "Paid from School Book", Value = "School" },
+                          new SelectListItem{Text="Paid from Cash Reserve", Value="CashReserve"},
+                          new SelectListItem{Text="Others", Value="Others"}}, "Select One")
+                        @Html.ValidationMessageFor(model => model.ProductData.PAID_BY, "", new { @class = "text-danger", @Value = ViewBag.PAID_BY })
+                    </div>
+                </div>
+
+                <div class="label_field_pair label">
+                    <label class="label_for_student_gender" for="student_gender">Currently Being Sold</label>
+                    <div class="student_gender_value">
+                        @Html.RadioButtonFor(model => model.ProductData.IS_ACT, true, false)@Html.Label("Yes")
+                        @Html.RadioButtonFor(model => model.ProductData.IS_ACT, false, false)@Html.Label("No")
+                    </div>
+                </div>
+                <hr class="label-underline label">
+                <br />
+
+            </div>
+            <div class="extender"></div>
+            <input type="submit" value="► Save " class="user_button" />
+        </div>
+
+    }
+</div>
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+

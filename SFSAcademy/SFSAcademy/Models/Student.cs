@@ -53,7 +53,9 @@ namespace SFSAcademy.Models
         DateOfBirth,
         PhoneNumber,
         ParentDetails,
-        StundetsPicture
+        StundetsPicture,
+        SchoolBook,
+        SchoolDress
     }
 
     public enum HadPdFees

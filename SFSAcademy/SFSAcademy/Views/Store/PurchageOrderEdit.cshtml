@@ -3,6 +3,11 @@
 @{
     ViewBag.Title = "PurchageOrderEdit";
 }
+@{
+    IEnumerable<SFSAcademy.STORE_BRAND> product_brands = (IEnumerable<SFSAcademy.STORE_BRAND>)ViewData["product_brands"];
+    IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
+    IEnumerable<SFSAcademy.STORE_PRODUCTS> product_select = (IEnumerable<SFSAcademy.STORE_PRODUCTS>)ViewData["product_select"];
+}
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
@@ -40,9 +45,9 @@
     Edit Purchage Order
 </div>
 <div id="flash_box">
-    @if (ViewBag.POEditMessage != null)
-            {
-        <p class="flash-msg"> @ViewBag.POEditMessage </p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 </div>
 @using (Html.BeginForm())
@@ -53,7 +58,7 @@
         @Html.HiddenFor(model => model.ID)
         <div id="edit_user_form">
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.PO_NUMBER,"Purchage Order Number", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.PO_NUMBER, "Purchage Order Number", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.PO_NUMBER, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.PO_NUMBER, "", new { @class = "text-danger" })
@@ -61,9 +66,17 @@
             </div>
 
             <div class="label-field-pair label">
-                @Html.Label("PRODUCT_ID", "Product ID",htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.Label("PRODUCT_ID", "Product ID", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
-                    @Html.Editor("PRODUCT_ID", new { htmlAttributes = new { @class = "form -control", @Value = ViewBag.PRODUCT_ID, @disabled = "disabled" } })
+                    @Html.Partial("_product_select", product_select)
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.BRAND_ID, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.Partial("_brand_select", product_brands)
+                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="label-field-pair label">
@@ -90,7 +103,7 @@
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.VENDOR_ID, "Vendor", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
-                    @Html.DropDownList("VENDOR_ID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.Partial("_vendor_select", product_vendor)
                     @Html.ValidationMessageFor(model => model.VENDOR_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -129,44 +142,44 @@
 
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.SHIP_DATE, "Ship Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.SHIP_DATE, new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @readonly = "readonly" } })
-                    <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                     @Html.ValidationMessageFor(model => model.SHIP_DATE, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.TOTAL_DUE,"Cost to Vendor", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.TOTAL_DUE, "Cost to Vendor", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.TOTAL_DUE, new { htmlAttributes = new { @class = "form-control" } })
-                    <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                     @Html.ValidationMessageFor(model => model.TOTAL_DUE, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.TAX_AMT,"Tax Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.TAX_AMT, "Tax Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.TAX_AMT, new { htmlAttributes = new { @class = "form-control" } })
-                    <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                     @Html.ValidationMessageFor(model => model.TAX_AMT, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.FREIGHT,"Frieght Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.FREIGHT, "Frieght Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.FREIGHT, new { htmlAttributes = new { @class = "form-control" } })
-                    <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                     @Html.ValidationMessageFor(model => model.FREIGHT, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.SUB_TOTAL,"Sub Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.SUB_TOTAL, "Sub Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.SUB_TOTAL, new { htmlAttributes = new { @class = "form-control"} })
-                    <span class="necessary-field" style="font-size:x-small">* Required if status is "Complete"</span>
+                    @Html.EditorFor(model => model.SUB_TOTAL, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.SUB_TOTAL, "", new { @class = "text-danger" })
                 </div>
             </div>
