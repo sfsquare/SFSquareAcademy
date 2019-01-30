@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#resultVendor").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultVendor").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+        $("#VenderList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#SearchVendor").keyup(function () {
+            var SearchVendorText = $("#SearchVendor").val().toLowerCase();
+            $(".SearchVendor").each(function () {
+                if (!Contains($(this).text().toLowerCase(), SearchVendorText)) {
+                    $("#VenderList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#VenderList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#SearchVendor").val() == '') {
+                $("#VenderList").hide();
+            }
+        });
+    });
+
+    function OpenVendorDialog() {
+        $('#resultVendor').dialog("open");
+    }
+</script>
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadVendor(sender) {
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#vendor-modal-box').html(data);
+            /* little fade in effect */
+            $('#vendor-modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $("#resultVendor").dialog("close");
+        });
+    }
+</script>
+
+<div id="vendor-modal-box">
+    @Html.DropDownList("VENDOR_ID", null, htmlAttributes: new { @class = "form-control" })
+    <a href='#' onclick="OpenVendorDialog()"><img src="~/Content/images/search_icon.png" title="Click to search..."></a>
+</div>
+
+<div id="resultVendor" style="display:none" class="form" title="Product Vendor Details">
+    <p class="flash-msg">*Enter Vendor Name or any details to search.</p>
+    <div class="container">
+        <div class="input-group">
+            <input type="text" id="SearchVendor" placeholder="Search" class="form-control" />
+        </div>
+        <br />
+        <div class="students-table" id="VenderList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="SearchVendor @selectedRow">
+                        <td class="col-2">
+                            <a href="@Url.Action("Vendor_Select", "Store",new {id=item.ID})" onclick='LoadVendor(this.href); return false;'>@item.NAME</a>
+                        </td>
+                        <td class="col-3" nowrap>
+                            @Html.DisplayFor(modelItem => item.DESCRIPTION)
+                        </td>
+
+                    </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>
+

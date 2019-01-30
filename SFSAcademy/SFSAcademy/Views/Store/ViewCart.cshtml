@@ -1,14 +1,17 @@
 ﻿@model IEnumerable<SFSAcademy.Models.PurchaseCart>
 @using SFSAcademy.Models
-
 @{
     ViewBag.Title = "ViewCart";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <style type="text/css" media="print">
-
-    #header, #nav, .noprint {
+.noprint {
         display: none;
-    }
+    }  
 </style>
 <div id="content-header" class="noprint">
     <img src="~/Content/images/show_store.png" alt="Show Store Logo">
@@ -24,6 +27,18 @@
     @Html.ActionLink("Products", "ViewAll") &raquo;
     Cart Items
 </div>
-<div id="modal-box" >
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div id="modal-box">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
     @Html.Partial("_ListPurchagedProducts")
 </div>

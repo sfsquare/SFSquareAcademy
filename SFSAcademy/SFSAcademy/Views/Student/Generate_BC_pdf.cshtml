@@ -1,0 +1,106 @@
+﻿@model SFSAcademy.Models.Student
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
+}
+
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/student/generate_tc_pdf.css">
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<div id="student-details">
+    <h4>Date : @System.DateTime.Now.ToShortDateString()</h4>
+</div>
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Bonafide Certificate</h2>
+    <div class="hor_line"></div>
+    <div class="report">
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%" cellspacing="2">
+
+                @if (guardians != null && guardians.Count() != 0)
+                {
+                    foreach (var item in guardians)
+                    {
+                        if (item.GuardianData.REL == "Father")
+                        {
+                            <tr>
+                                <td class="col-pdf">
+                                    This is to certify that Mr./Mrs. @Model.StudentData.FIRST_NAME @Model.StudentData.MID_NAME @Model.StudentData.LAST_NAME , Son of Mr./Mrs. @item.GuardianData.FIRST_NAME @item.GuardianData.LAST_NAME, with
+                                    School Admission Number @Model.StudentData.ADMSN_NO, Is a student of S. F. Square Academy Class @item.CourseData.CRS_NAME - @item.BatchData.NAME. He bears good moral character and
+                                    we wish him success in his life.
+                                </td>
+                            </tr>
+                            break;
+                        }
+                    }
+                }
+                else
+
+                {
+                    <tr>
+                        <td class="col-pdf">
+                            This is to certify that Mr./Mrs. @Model.StudentData.FIRST_NAME @Model.StudentData.MID_NAME @Model.StudentData.LAST_NAME with School Admission Number @Model.StudentData.ADMSN_NO, Is a student of
+                            S. F. Square Academy Class @Model.CourseData.CRS_NAME - @Model.BatcheData.NAME. He bears good moral character and we wish him success in his life.
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-pdf" align="right">
+                        @string.Concat("PRINCIPAL", "         ")
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-pdf" align="right">
+                        S. F. SQUARE ACADEMY
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+

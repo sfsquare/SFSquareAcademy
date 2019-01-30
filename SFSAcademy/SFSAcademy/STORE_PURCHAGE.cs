@@ -18,17 +18,21 @@ namespace SFSAcademy
         public int PRODUCT_ID { get; set; }
         public Nullable<int> UNIT_SOLD { get; set; }
         public Nullable<decimal> SOLD_PRICE { get; set; }
-        public string SOLD_BY { get; set; }
+        public Nullable<int> SOLD_BY_ID { get; set; }
         public Nullable<System.DateTime> SOLD_ON { get; set; }
-        public string STUDENT_NAME { get; set; }
+        public Nullable<int> STUDENT_ID { get; set; }
         public Nullable<long> STUDENT_CONTACT_NO { get; set; }
-        public string MONEY_RECEIVED_BY { get; set; }
+        public Nullable<int> MONEY_RECEIVED_BY_ID { get; set; }
         public bool IS_DEPOSITED { get; set; }
         public bool IS_ACT { get; set; }
         public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
+        public string PAYMENT_MODE { get; set; }
     
         public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
+        public virtual STUDENT STUDENT { get; set; }
     }
 }

@@ -1,0 +1,120 @@
+﻿@model IEnumerable<SFSAcademy.STORE_PRODUCTS>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#resultProduct").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultProduct").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+        $("#ProductList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#SearchProduct").keyup(function () {
+            var SearchProductText = $("#SearchProduct").val().toLowerCase();
+            $(".SearchProduct").each(function () {
+                if (!Contains($(this).text().toLowerCase(), SearchProductText)) {
+                    $("#ProductList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#ProductList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#SearchProduct").val() == '') {
+                $("#ProductList").hide();
+            }
+        });
+    });
+
+    function OpenProductDialog() {
+        $('#resultProduct').dialog("open");
+    }
+
+</script>
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadProduct(sender) {
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#product-model-box').html(data);
+            /* little fade in effect */
+            $('#product-model-box').fadeIn('fast');
+        }).success(function (status) {
+            $("#resultProduct").dialog("close");
+        });
+    }
+</script>
+
+<div id="product-model-box">
+    @Html.DropDownList("PRODUCT_ID", null, htmlAttributes: new { @class = "form-control" })
+    <a href='#' onclick="OpenProductDialog()"><img src="~/Content/images/search_icon.png" title="Click to search..."></a>
+</div>
+
+<div id="resultProduct" style="display:none" class="form" title="Product Details">
+    <p class="flash-msg">*Enter Product Name or any details to search.</p>
+    <div class="container">
+        <div class="input-group">
+            <input type="text" id="SearchProduct" placeholder="Search" class="form-control" />
+        </div>
+        <br />
+        <div class="students-table" id="ProductList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Category
+                    </th>
+                    <th>
+                        Sub Category
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                <tr class="SearchProduct @selectedRow">
+                    <td class="col-2">
+                        <a href="@Url.Action("Product_Select", "Store",new {id=item.PRODUCT_ID})" onclick='LoadProduct(this.href); return false;'>@item.NAME</a>
+                    </td>
+                    <td class="col-3" nowrap>
+                        @Html.DisplayFor(modelItem => item.STORE_CATEGORY.NAME)
+                    </td>
+                    <td class="col-3" nowrap>
+                        @Html.DisplayFor(modelItem => item.STORE_SUB_CATEGORY.NAME)
+                    </td>
+                </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>

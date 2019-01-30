@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "PurchageStatus";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Store Logo">
+    <h1>Store</h1>
+    <h3>Purchage Statuses</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Settings", "Setting") &raquo;
+    Product Purchage Status
+</div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div id="student-category-form">
+        @Html.Partial("~/Views/Store/_purchage_status_create_form.cshtml")
+    </div>
+    <br /><br />
+    <div id="student-category-list">
+        @{Html.RenderAction("PurchageStatusList", "Store");}
+
+    </div>
+</div>
+
+
+

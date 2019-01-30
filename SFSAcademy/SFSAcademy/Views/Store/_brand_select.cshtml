@@ -1,0 +1,115 @@
+﻿@model IEnumerable<SFSAcademy.STORE_BRAND>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#resultBrand").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultBrand").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+        $("#BrandList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#SearchBrand").keyup(function () {
+            var SearchBrandText = $("#SearchBrand").val().toLowerCase();
+            $(".SearchBrand").each(function () {
+                if (!Contains($(this).text().toLowerCase(), SearchBrandText)) {
+                    $("#BrandList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#BrandList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#SearchBrand").val() == '') {
+                $("#BrandList").hide();
+            }
+        });
+    });
+
+    function OpenBrandDialog() {
+        $('#resultBrand').dialog("open");
+    }
+
+</script>
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadBrand(sender) {
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#brand-model-box').html(data);
+            /* little fade in effect */
+            $('#brand-model-box').fadeIn('fast');
+        }).success(function (status) {
+            $("#resultBrand").dialog("close");
+        });
+    }
+</script>
+
+<div id="brand-model-box">
+    @Html.DropDownList("BRAND_ID", null, htmlAttributes: new { @class = "form-control" })
+    <a href='#' onclick="OpenBrandDialog()"><img src="~/Content/images/search_icon.png" title="Click to search..."></a>
+</div>
+
+<div id="resultBrand" style="display:none" class="form" title="Product Brand Details">
+    <p class="flash-msg">*Enter Brand Name or any details to search.</p>
+    <div class="container">
+        <div class="input-group">
+            <input type="text" id="SearchBrand" placeholder="Search" class="form-control" />
+        </div>
+        <br />
+        <div class="students-table" id="BrandList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="SearchBrand @selectedRow">
+                        <td class="col-2">
+                            <a href="@Url.Action("Brand_Select", "Store",new {id=item.ID})" onclick='LoadBrand(this.href); return false;'>@item.NAME</a>
+                        </td>
+                        <td class="col-3" nowrap>
+                            @Html.DisplayFor(modelItem => item.DESCRIPTION)
+                        </td>
+
+                    </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>

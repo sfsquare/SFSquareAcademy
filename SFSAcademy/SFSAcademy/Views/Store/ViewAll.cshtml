@@ -1,9 +1,31 @@
-﻿@model IEnumerable<SFSAcademy.STORE_CATEGORY>
+﻿@model SFSAcademy.STORE_PRODUCTS
 
 @{
     ViewBag.Title = "ViewAll";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox1").hide();
+        $('#CategoryDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox1").show();
+            $.get('/Store/Sub_Categories_Select/' + selectedID, function (data) {
+                $('#sub_categories_select').html(data);
+                $('#sub_categories_select').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox1").hide();
+            });
 
+        });
+    });
+</script>
 <div id="content-header">
     <img src="~/Content/images/show_store.png" alt="Show Store Logo">
     <h1>Store</h1>
@@ -13,19 +35,19 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-<div class="bread_crumb">
-    @Html.ActionLink("Store", "Index") &raquo;
-    View All Products
-</div>
 <div id="inner-tab-menu">
     <ul>
         <li>@Html.ActionLink("Show Cart", "ViewCart")</li>
         @if (Html.Permitted_To("Edit", "Store"))
-            {
+        {
             <li>@Html.ActionLink("Add New Product", "Create")</li>
         }
         <li>@Html.ActionLink("Shortage Products**", "ShortageProducts")@Html.Check_ShortageProducts()</li>
     </ul>
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    View All Products
 </div>
 <div id="flash_box">
     @if (ViewBag.ErrorMessage != null)
@@ -35,39 +57,39 @@
 </div>
 <div id="flash_box">
     @if (ViewBag.CartItems != null && ViewBag.CartItems != 0)
-            {
+    {
         <p class="flash-msg"> Number of Items in the Cart = @ViewBag.CartItems </p>
     }
 </div>
 <div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
     <div id="search_box_bg">
         <div id="searchbox">
             <form name="search-form" id="search-form" action="" style="display:inline">
                 @using (Html.BeginForm("ViewAll", "Store", FormMethod.Get))
                 {
-                    if (ViewBag.IsPostBack == 1)
-                    {
-                        <div class="second_filter">
-                            <p>
-                                @Html.DropDownList("searchString", null, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
-                                @Html.DropDownList("searchString2", null, htmlAttributes: new { @class = "form-control" })
-                                <input type="submit" value="Submit" id="submit-button2" />
-                                @Html.Hidden("searchString", "searchString")
-                            </p>
+                    <div class="label-field-pair label">
+                        @Html.LabelFor(model => model.CATEGORY_ID, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "CategoryDropDown" })
+                            <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                            @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
                         </div>
-                    }
-                    else
-                    {
-                        <div class="firt_filter">
-                            <p>
-                                @Html.DropDownList("searchString", null, htmlAttributes: new { @class = "form-control" })
-                                <input type="submit" value="Submit" id="submit-button1" />
-                            </p>
+                    </div>
+                    <div class="label-field-pair label">
+                        @Html.Label("SUB_CATEGORY_ID", "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.Partial("_Sub_Categories_Select")
+                            @Html.ValidationMessage("SUB_CATEGORY_ID", "", new { @class = "text-danger" })
                         </div>
-                    }
+                    </div>
+                    <input type="submit" value="Search" id="submit-button" class="submit_button" />
                 }
-
-                <div class="extender"></div>
             </form>
         </div>
     </div>

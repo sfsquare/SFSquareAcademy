@@ -509,15 +509,8 @@ namespace SFSAcademy.Controllers
             ViewBag.NameSortParm5 = sortOrder == "DOB" ? "name_desc_5" : "DOB";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
+            if (!string.IsNullOrEmpty(searchString)) { page = 1; }
+            else { searchString = currentFilter; }
             ViewBag.CurrentFilter = searchString;
             if (!string.IsNullOrEmpty(AdmissionNumber)) { page = 1; }
             else { AdmissionNumber = currentFilter2; }
@@ -636,6 +629,15 @@ namespace SFSAcademy.Controllers
             }
             if (!String.IsNullOrEmpty(MissingDetl))
             {
+                DateTime firstDayCurAceYear = System.DateTime.Now;
+                if (System.DateTime.Now.Month <= 3)
+                {
+                    firstDayCurAceYear = new DateTime(System.DateTime.Now.Year - 1, 4, 1);
+                }
+                else
+                {
+                    firstDayCurAceYear = new DateTime(System.DateTime.Now.Year, 4, 1);
+                }
                 switch (MissingDetl)
                 {
                     case "DateOfBirth":
@@ -649,6 +651,12 @@ namespace SFSAcademy.Controllers
                         break;
                     case "StundetsPicture":
                         StudentS = StudentS.Where(s => s.StudentData.IMAGE_DOCUMENTS_ID.Equals(null));
+                        break;
+                    case "SchoolBook":
+                        StudentS = StudentS.Where(s => s.StudentData.BOOK_PURCHAGED.Equals(null) || s.StudentData.BOOK_PURCHAGED== false || s.StudentData.BOOK_PUR_DT < firstDayCurAceYear);
+                        break;
+                    case "SchoolDress":
+                        StudentS = StudentS.Where(s => s.StudentData.DRESS_PURCHAGED.Equals(null) || s.StudentData.DRESS_PURCHAGED == false || s.StudentData.DRESS_PUR_DT < firstDayCurAceYear);
                         break;
                 }
             }
@@ -1573,6 +1581,37 @@ namespace SFSAcademy.Controllers
             ViewBag.CTRY_ID = Country.CTRY_NAME;
 
             return View(StudentVal.ToList());
+        }
+
+        // GET: Fee Index
+        public ActionResult BonafideCertificate(int? id)
+        {
+            var Student = (from st in db.STUDENTs
+                           join bt in db.BATCHes on st.BTCH_ID equals bt.ID
+                           join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                           where st.ID == id
+                           select new Models.Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
+
+            return View(Student);
+        }
+
+        // GET: Fee Index
+        public ActionResult Generate_BC_pdf(int? id)
+        {
+            var Student = (from st in db.STUDENTs
+                           join bt in db.BATCHes on st.BTCH_ID equals bt.ID
+                           join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                           where st.ID == id
+                           select new Models.Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
+            var StudentGuardians = (from st in db.STUDENTs
+                                    join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
+                                    join bt in db.BATCHes on st.BTCH_ID equals bt.ID
+                                    join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                    where st.ID == id
+                                    select new Models.StudentsGuardians { StudentData = st, GuardianData = gd, BatchData = bt, CourseData = cs }).OrderBy(x => x.StudentData.ID).Distinct();
+            ViewData["guardians"] = StudentGuardians;
+
+            return View(Student);
         }
 
         // GET: Student/Delete/5

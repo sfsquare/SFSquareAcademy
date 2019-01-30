@@ -13,6 +13,9 @@
                 Fees Name
             </th>
             <th>
+                Fee Frequency
+            </th>
+            <th>
                 Batch
             </th>
             <th>
@@ -35,35 +38,38 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
-                    <td class="col-4">
-                        @Html.ActionLink(item.FinanceFeeCategoryData.NAME, "master_category_particulars", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" })
-                    </td>
-                    <td class="col-7">
-                        @if (item.FinanceFeeCategoryData.BTCH_ID.Equals(null))
-                        {
-                            @AllBatches
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.CourseData.CODE)
-                            <label>-</label>
-                            @Html.DisplayFor(modelItem => item.BatchData.NAME)
-                        }
+        <tr class="@selectedRow">
+            <td class="col-1">@i</td>
+            <td class="col-4">
+                @Html.ActionLink(item.FinanceFeeCategoryData.NAME, "master_category_particulars", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" })
+            </td>
+            <td class="col-4">
+                @Html.DisplayFor(modelItem => item.FinanceFeeCategoryData.FEE_FREQ)
+            </td>
+            <td class="col-7">
+                @if (item.FinanceFeeCategoryData.BTCH_ID.Equals(null))
+                {
+                    @AllBatches
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.CourseData.CODE)
+                    <label>-</label>
+                    @Html.DisplayFor(modelItem => item.BatchData.NAME)
+                }
 
-                    </td>
-                    <td class="col-5" nowrap>
-                        @item.FinanceFeeCategoryData.CREATED_AT.Value.ToShortDateString()
-                    </td>
-                    @if (Html.CurrentUser_UserType().Equals("Admin"))
-                    {
-                        <td class="col-6" nowrap>
-                            @Html.ActionLink("Delete", "Master_Category_Delete", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" }) |
-                            @Html.ActionLink("Edit", "Master_Category_Edit", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" })
-                        </td>
-                    }
-                </tr>
+            </td>
+            <td class="col-5" nowrap>
+                @item.FinanceFeeCategoryData.CREATED_AT.Value.ToShortDateString()
+            </td>
+            @if (Html.CurrentUser_UserType().Equals("Admin"))
+            {
+                <td class="col-6" nowrap>
+                    @Html.ActionLink("Delete", "Master_Category_Delete", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" }) |
+                    @Html.ActionLink("Edit", "Master_Category_Edit", new { id = item.FinanceFeeCategoryData.ID }, new { style = "text-decoration:underline" })
+                </td>
+            }
+        </tr>
             i = i + 1;
         }
     </table>

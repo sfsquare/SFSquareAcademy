@@ -1,0 +1,117 @@
+﻿@model IEnumerable<SFSAcademy.STUDENT>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#resultStudent").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultStudent").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+        $("#StudentList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#SearchStudent").keyup(function () {
+            var SearchStudentText = $("#SearchStudent").val().toLowerCase();
+            $(".SearchStudent").each(function () {
+                if (!Contains($(this).text().toLowerCase(), SearchStudentText)) {
+                    $("#StudentList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#StudentList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#SearchStudent").val() == '') {
+                $("#StudentList").hide();
+            }
+        });
+    });
+
+    function OpenStdDialog() {
+        $('#resultStudent').dialog("open");
+    }
+
+</script>
+
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadStudent(sender) {
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#student-model-box').html(data);
+            /* little fade in effect */
+            $('#student-model-box').fadeIn('fast');
+        }).success(function (status) {
+            $("#resultStudent").dialog("close");
+        });
+    }
+</script>
+
+<div id="student-model-box">
+    @Html.DropDownList("STUDENT_ID", null, htmlAttributes: new { @class = "form-control" })
+    <a href='#' onclick="OpenStdDialog()"><img src="~/Content/images/search_icon.png" title="Click to search..."></a>
+</div>
+
+<div id="resultStudent" style="display:none" class="form" title="Student Details">
+    <p class="flash-msg">*Enter Admission Number or Name to search.</p>
+    <div class="container">
+        <div class="input-group">
+            <input type="text" id="SearchStudent" placeholder="Search" class="form-control" />
+        </div>
+        <br />
+        <div class="students-table" id="StudentList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="SearchStudent @selectedRow">
+                        <td class="col-1">
+                            <a href="@Url.Action("Student_Select", "Store",new {id=item.ID})" onclick='LoadStudent(this.href); return false;' class="link-text">@item.ADMSN_NO</a>
+                        </td>
+                        <td class="col-3" nowrap>
+                            @item.FIRST_NAME @item.MID_NAME @item.LAST_NAME
+                        </td>
+
+                    </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>
+
