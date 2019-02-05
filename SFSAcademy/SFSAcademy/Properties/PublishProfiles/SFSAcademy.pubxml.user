@@ -151,10 +151,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>01/30/2019 13:15:44</publishTime>
+      <publishTime>02/05/2019 12:05:40</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>01/30/2019 13:15:44</publishTime>
+      <publishTime>02/05/2019 12:05:40</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -4302,6 +4302,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/stylesheets/finance/add_particulars.css">
       <publishTime>12/05/2018 17:27:01</publishTime>
     </File>
+    <File Include="Content/stylesheets/finance/Aggregated_Fees_Due_pdf.css">
+      <publishTime>02/04/2019 15:30:47</publishTime>
+    </File>
     <File Include="Content/stylesheets/finance/approve_monthly_payslip.css">
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
@@ -6742,7 +6745,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Aggregated_Fees_Due.cshtml">
-      <publishTime>01/28/2019 20:18:30</publishTime>
+      <publishTime>02/04/2019 16:22:07</publishTime>
+    </File>
+    <File Include="Views/Finance/Aggregated_Fees_Due_pdf.cshtml">
+      <publishTime>02/05/2019 12:00:46</publishTime>
     </File>
     <File Include="Views/Finance/Automatic_Transactions.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -6865,7 +6871,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Defaulters_pdf.cshtml">
-      <publishTime>12/14/2018 17:26:38</publishTime>
+      <publishTime>02/04/2019 16:01:39</publishTime>
     </File>
     <File Include="Views/Finance/Fee_Discounts.cshtml">
       <publishTime>01/03/2019 15:29:06</publishTime>
@@ -6904,7 +6910,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Finance/ListDefaulterStudentsByCourse.cshtml">
-      <publishTime>01/29/2019 15:52:44</publishTime>
+      <publishTime>02/05/2019 12:00:46</publishTime>
     </File>
     <File Include="Views/Finance/Master_Category_Create.cshtml">
       <publishTime>01/28/2019 19:12:32</publishTime>
@@ -7141,7 +7147,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/20/2019 19:59:12</publishTime>
     </File>
     <File Include="Views/Store/Create.cshtml">
-      <publishTime>01/22/2019 13:25:30</publishTime>
+      <publishTime>02/04/2019 19:15:21</publishTime>
     </File>
     <File Include="Views/Store/Delete.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7216,7 +7222,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/18/2019 14:35:48</publishTime>
     </File>
     <File Include="Views/Store/ViewAll.cshtml">
-      <publishTime>01/24/2019 17:40:20</publishTime>
+      <publishTime>02/04/2019 19:21:36</publishTime>
     </File>
     <File Include="Views/Store/ViewAllSelling.cshtml">
       <publishTime>01/24/2019 16:23:09</publishTime>
@@ -7240,7 +7246,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Store/_ListPurchagedProducts.cshtml">
-      <publishTime>01/25/2019 16:51:03</publishTime>
+      <publishTime>02/04/2019 19:37:31</publishTime>
     </File>
     <File Include="Views/Store/_ListShortageProducts.cshtml">
       <publishTime>01/24/2019 14:31:57</publishTime>
@@ -7276,7 +7282,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Store/_Sub_Categories_Select.cshtml">
-      <publishTime>01/24/2019 17:39:22</publishTime>
+      <publishTime>02/04/2019 19:18:09</publishTime>
     </File>
     <File Include="Views/Store/_user_select.cshtml">
       <publishTime>01/24/2019 16:03:30</publishTime>
@@ -7528,7 +7534,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>01/15/2019 13:18:36</publishTime>
+      <publishTime>02/04/2019 19:41:10</publishTime>
     </File>
   </ItemGroup>
 </Project>

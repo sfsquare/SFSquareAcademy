@@ -18,12 +18,9 @@
     IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
 }
 <link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/fee_defaulters_pdf.css">
-<style type="text/css">
-    @@media print {
-
-        html, body {
-            height: 100vh;
-        }
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
     }
 </style>
 <div id="page-yield">
@@ -159,8 +156,7 @@
                     i = i + 1;
                     index += 1;
                 }
-                <tr class="even" cellpadding="1" cellspacing="1">
-                    <td class="col-8" colspan="3"></td>
+                <tr class="noprint" cellpadding="1" cellspacing="1">
                     <td class="col-pdf"><input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" /></td>
                 </tr>
             </table>

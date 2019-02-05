@@ -25,7 +25,7 @@
             Sl. No.
         </th>
         <th>
-            @Html.ActionLink("Name", "Aggregated_Fees_Due", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Name", "Aggregated_Fees_Due", new { page = ViewBag.CurrentPage, sortOrder = ViewBag.NameSortParm, searchString = ViewBag.CurrentFilter })
         </th>
         <th>
             Batch
@@ -37,7 +37,7 @@
             Admission No.
         </th>
         <th>
-            @Html.ActionLink("Admission Date", "ListDefaulterStudentsByCourse", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Admission Date", "Aggregated_Fees_Due", new { page = ViewBag.CurrentPage, sortOrder = ViewBag.DateSortParm, searchString = ViewBag.CurrentFilter })
         </th>
         <th>
             Father Name
@@ -61,14 +61,16 @@
         {
             var fee_particulars_inner = fee_particulars.Where(x => (x.FeeCollectionData.ID == DefaulterItem.FeeCollectionData.ID) && (x.FeeParticularData.STDNT_ID == DefaulterItem.StudentData.ID || x.FeeParticularData.STDNT_ID == null) && (x.FeeParticularData.STDNT_CAT_ID == DefaulterItem.StudentData.STDNT_CAT_ID || x.FeeParticularData.STDNT_CAT_ID == null));
             decimal total_fees = 0;
-            TimeSpan duration = DefaulterItem.FeeCollectionData.END_DATE != null && DefaulterItem.FeeCollectionData.START_DATE != null ? (TimeSpan)(DefaulterItem.FeeCollectionData.END_DATE - DefaulterItem.FeeCollectionData.START_DATE) : TimeSpan.Zero;
-            double Collectiondays = duration.TotalDays;
+            DateTime StartDate = DefaulterItem.FeeCollectionData.START_DATE ?? System.DateTime.Now;
+            DateTime EndDate = DefaulterItem.FeeCollectionData.END_DATE ?? System.DateTime.Now;
+            //TimeSpan duration = DefaulterItem.FeeCollectionData.END_DATE != null && DefaulterItem.FeeCollectionData.START_DATE != null ? (TimeSpan)(DefaulterItem.FeeCollectionData.END_DATE - DefaulterItem.FeeCollectionData.START_DATE) : TimeSpan.Zero;
+            int Collectiondays = DefaulterItem.FeeCollectionData.END_DATE != null && DefaulterItem.FeeCollectionData.START_DATE != null ? Html.GetMonthsBetween(StartDate, EndDate.AddDays(1)) : 0;
 
-            TimeSpan Currduration = ViewBag.firstDayCurMonth != null && DefaulterItem.FeeCollectionData.START_DATE != null ? (TimeSpan)(ViewBag.firstDayCurMonth - DefaulterItem.FeeCollectionData.START_DATE) : TimeSpan.Zero;
-            double CurrCollectiondays = Currduration.TotalDays;
+            //TimeSpan Currduration = ViewBag.firstDayCurMonth != null && DefaulterItem.FeeCollectionData.START_DATE != null ? (TimeSpan)(ViewBag.firstDayCurMonth - DefaulterItem.FeeCollectionData.START_DATE) : TimeSpan.Zero;
+            int CurrCollectiondays = DefaulterItem.FeeCollectionData.START_DATE != null ? Html.GetMonthsBetween(StartDate, System.DateTime.Now) : 0;
             foreach (var item2 in fee_particulars_inner)
             {
-                if (item2.FeeCategoryData.FEE_FREQ == "Monthly" && ViewBag.CurrentDate >= DefaulterItem.FeeCollectionData.START_DATE && ViewBag.CurrentDate <= DefaulterItem.FeeCollectionData.END_DATE)
+                if (item2.FeeCategoryData.FEE_FREQ == "Monthly" && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
                 {
                     total_fees += (decimal)item2.FeeParticularData.AMT * (decimal)CurrCollectiondays / (decimal)Collectiondays;
                 }
@@ -83,7 +85,7 @@
             {
                 foreach (var item2 in batch_discounts_inner)
                 {
-                    if (item2.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item2.FEE_CLCT_ID == null && ViewBag.CurrentDate >= DefaulterItem.FeeCollectionData.START_DATE && ViewBag.CurrentDate <= DefaulterItem.FeeCollectionData.END_DATE)
+                    if (item2.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item2.FEE_CLCT_ID == null && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
                     {
                         total_discount_val += item2.IS_AMT == true ? (decimal)item2.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays : total_fees * (decimal)item2.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays / 100;
                     }
@@ -98,14 +100,7 @@
             {
                 foreach (var item3 in student_discounts_inner)
                 {
-                    if (item3.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item3.FEE_CLCT_ID == null && ViewBag.CurrentDate >= DefaulterItem.FeeCollectionData.START_DATE && ViewBag.CurrentDate <= DefaulterItem.FeeCollectionData.END_DATE)
-                    {
-                        total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays : total_fees * (decimal)item3.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays / 100;
-                    }
-                    else
-                    {
-                        total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC : total_fees * (decimal)item3.DISC / 100;
-                    }
+                    total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC : total_fees * (decimal)item3.DISC / 100;
 
                 }
             }
@@ -114,7 +109,7 @@
             {
                 foreach (var item4 in category_discounts_inner)
                 {
-                    if (item4.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item4.FEE_CLCT_ID == null && ViewBag.CurrentDate >= DefaulterItem.FeeCollectionData.START_DATE && ViewBag.CurrentDate <= DefaulterItem.FeeCollectionData.END_DATE)
+                    if (item4.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item4.FEE_CLCT_ID == null && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
                     {
                         total_discount_val += item4.IS_AMT == true ? (decimal)item4.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays : total_fees * (decimal)item4.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays / 100;
                     }
@@ -165,7 +160,7 @@
                 total_fees += total_fine_val;
             }
 
-            var paid_fees_inner = paid_fees.Where(x => x.StudentData.ID == DefaulterItem.StudentData.ID);
+            var paid_fees_inner = paid_fees.Where(x => x.StudentData.ID == DefaulterItem.StudentData.ID && x.FinanceFeeData.ID == DefaulterItem.FinanceFeeData.ID);
             if (paid_fees_inner != null)
             {
                 decimal paid = 0;
@@ -217,8 +212,8 @@
 </table>
     <br />
     @Html.PagedListPager(Model, page => Url.Action("Aggregated_Fees_Due",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
-    @Html.ActionLink("► pdf Report", "Fee_Defaulters_pdf", new { batch_id = @ViewBag.CurrentFilter}, new { @class = "user_button", @target = "_blank" })
+    new { page, sortOrder = ViewBag.CurrentSort, searchString = ViewBag.CurrentFilter }))
+    @Html.ActionLink("► pdf Report", "Aggregated_Fees_Due_pdf", new { page = ViewBag.CurrentPage, sortOrder = ViewBag.CurrentSort, batch_id = @ViewBag.CurrentFilter}, new { @class = "user_button", @target = "_blank" })
 }
 else
 {

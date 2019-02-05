@@ -81,14 +81,8 @@
                             @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="label-field-pair label">
-                        @Html.Label("SUB_CATEGORY_ID", "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="text-input-bg">
-                            @Html.Partial("_Sub_Categories_Select")
-                            @Html.ValidationMessage("SUB_CATEGORY_ID", "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    <input type="submit" value="Search" id="submit-button" class="submit_button" />
+                    @Html.Partial("_Sub_Categories_Select")
+                    <input type="submit" value="Search" id="submit-button" class="user_button" />
                 }
             </form>
         </div>

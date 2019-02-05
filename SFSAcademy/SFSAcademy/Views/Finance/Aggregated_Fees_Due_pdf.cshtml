@@ -1,0 +1,199 @@
+﻿@model PagedList.IPagedList<SFSAcademy.Models.Student>
+@{ Layout = null;}
+@{
+    ViewBag.Title = "Aggregated_Fees_Due_pdf";
+}
+@{
+    IEnumerable<SFSAcademy.Models.StundentFee> defaulters = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["defaulters"];
+    IEnumerable<SFSAcademy.Models.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.Models.FeeParticular>)ViewData["fee_particulars"];
+    IEnumerable<SFSAcademy.Models.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.Models.FeeTransaction>)ViewData["paid_fees"];
+    IEnumerable<FEE_DISCOUNT> batch_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["batch_discounts"];
+    IEnumerable<FEE_DISCOUNT> student_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["student_discounts"];
+    IEnumerable<FEE_DISCOUNT> category_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["category_discounts"];
+    IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
+    IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
+    IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
+    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
+}
+<link href="~/Content/stylesheets/finance/Aggregated_Fees_Due_pdf.css" rel="stylesheet" />
+<style type="text/css" media="print">
+    .noprint {
+        display: none;
+    }
+</style>
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Fees Defaulters</h2>
+    <div class="hor_line"></div>
+    <div class="extender"> </div>
+    <div class="report">
+        <div id="main_info">
+            <h4> Class: @ViewBag.Batch</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%;" cellspacing="0">
+                <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Name</td><td class="col-pdf">Batch</td><td class="col-pdf">Roll No.</td><td class="col-pdf">Parent</td><td class="col-pdf">Phone</td><td class="col-pdf">Amount</td></tr>
+                @{int i = 1;}
+                @foreach (var item in Model)
+                {
+                    var defaulters_inner = defaulters.Where(x => x.StudentData.ID == item.StudentData.ID);
+                    decimal total_fees_aggr = 0;
+
+                    foreach (var DefaulterItem in defaulters_inner)
+                    {
+                        var fee_particulars_inner = fee_particulars.Where(x => (x.FeeCollectionData.ID == DefaulterItem.FeeCollectionData.ID) && (x.FeeParticularData.STDNT_ID == DefaulterItem.StudentData.ID || x.FeeParticularData.STDNT_ID == null) && (x.FeeParticularData.STDNT_CAT_ID == DefaulterItem.StudentData.STDNT_CAT_ID || x.FeeParticularData.STDNT_CAT_ID == null));
+                        decimal total_fees = 0;
+                        DateTime StartDate = DefaulterItem.FeeCollectionData.START_DATE ?? System.DateTime.Now;
+                        DateTime EndDate = DefaulterItem.FeeCollectionData.END_DATE ?? System.DateTime.Now;
+                        int Collectiondays = DefaulterItem.FeeCollectionData.END_DATE != null && DefaulterItem.FeeCollectionData.START_DATE != null ? Html.GetMonthsBetween(StartDate, EndDate.AddDays(1)) : 0;
+
+                        int CurrCollectiondays = DefaulterItem.FeeCollectionData.START_DATE != null ? Html.GetMonthsBetween(StartDate, System.DateTime.Now) : 0;
+                        foreach (var item2 in fee_particulars_inner)
+                        {
+                            if (item2.FeeCategoryData.FEE_FREQ == "Monthly" && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
+                            {
+                                total_fees += (decimal)item2.FeeParticularData.AMT * (decimal)CurrCollectiondays / (decimal)Collectiondays;
+                            }
+                            else
+                            {
+                                total_fees += (decimal)item2.FeeParticularData.AMT;
+                            }
+                        }
+                        decimal total_discount_val = 0;
+                        var batch_discounts_inner = batch_discounts.Where(x => (x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID) && (x.RCVR_ID == DefaulterItem.StudentData.BTCH_ID) && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (batch_discounts_inner != null && batch_discounts_inner.Count() != 0)
+                        {
+                            foreach (var item2 in batch_discounts_inner)
+                            {
+                                if (item2.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item2.FEE_CLCT_ID == null && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
+                                {
+                                    total_discount_val += item2.IS_AMT == true ? (decimal)item2.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays : total_fees * (decimal)item2.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays / 100;
+                                }
+                                else
+                                {
+                                    total_discount_val += item2.IS_AMT == true ? (decimal)item2.DISC : total_fees * (decimal)item2.DISC / 100;
+                                }
+                            }
+                        }
+                        var student_discounts_inner = student_discounts.Where(x => x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == DefaulterItem.StudentData.ID && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (student_discounts_inner != null && student_discounts_inner.Count() != 0)
+                        {
+                            foreach (var item3 in student_discounts_inner)
+                            {
+                                total_discount_val += item3.IS_AMT == true ? (decimal)item3.DISC : total_fees * (decimal)item3.DISC / 100;
+
+                            }
+                        }
+                        var category_discounts_inner = category_discounts.Where(x => x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == DefaulterItem.StudentData.STDNT_CAT_ID && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (category_discounts_inner != null && category_discounts_inner.Count() != 0)
+                        {
+                            foreach (var item4 in category_discounts_inner)
+                            {
+                                if (item4.FINANCE_FEE_CATGEORY.FEE_FREQ == "Monthly" && item4.FEE_CLCT_ID == null && System.DateTime.Now >= DefaulterItem.FeeCollectionData.START_DATE && System.DateTime.Now <= DefaulterItem.FeeCollectionData.END_DATE)
+                                {
+                                    total_discount_val += item4.IS_AMT == true ? (decimal)item4.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays : total_fees * (decimal)item4.DISC * (decimal)CurrCollectiondays / (decimal)Collectiondays / 100;
+                                }
+                                else
+                                {
+                                    total_discount_val += item4.IS_AMT == true ? (decimal)item4.DISC : total_fees * (decimal)item4.DISC / 100;
+                                }
+                            }
+                        }
+                        if (total_discount_val > total_fees && total_fees >= 0)
+                        {
+                            total_discount_val = total_fees;
+                        }
+
+                        decimal total_fine_val = 0;
+                        var batch_fine_inner = batch_fine.Where(x => x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == DefaulterItem.StudentData.BTCH_ID && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (batch_fine_inner != null && batch_fine_inner.Count() != 0)
+                        {
+                            foreach (var item5 in batch_fine_inner)
+                            {
+                                total_fine_val += item5.IS_AMT == true ? (decimal)item5.FINE : total_fees * (decimal)item5.FINE / 100;
+                            }
+
+                        }
+                        var student_fine_inner = student_fine.Where(x => x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == DefaulterItem.StudentData.ID && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (student_fine_inner != null && student_fine_inner.Count() != 0)
+                        {
+                            foreach (var item6 in student_fine_inner)
+                            {
+                                total_fine_val += item6.IS_AMT == true ? (decimal)item6.FINE : total_fees * (decimal)item6.FINE / 100;
+                            }
+                        }
+                        var category_fine_inner = category_fine.Where(x => x.FIN_FEE_CAT_ID == DefaulterItem.FeeCollectionData.FEE_CAT_ID && x.RCVR_ID == DefaulterItem.StudentData.STDNT_CAT_ID && (x.FEE_CLCT_ID == DefaulterItem.FeeCollectionData.ID || x.FEE_CLCT_ID == null));
+                        if (category_fine_inner != null && category_fine_inner.Count() != 0)
+                        {
+                            foreach (var item6 in category_fine_inner)
+                            {
+                                total_fine_val += item6.IS_AMT == true ? (decimal)item6.FINE : total_fees * (decimal)item6.FINE / 100;
+                            }
+                        }
+
+                        if (total_discount_val != 0)
+                        {
+                            total_fees -= total_discount_val;
+                        }
+                        if (total_fine_val != 0)
+                        {
+                            total_fees += total_fine_val;
+                        }
+
+                        var paid_fees_inner = paid_fees.Where(x => x.StudentData.ID == DefaulterItem.StudentData.ID && x.FinanceFeeData.ID == DefaulterItem.FinanceFeeData.ID);
+                        if (paid_fees_inner != null)
+                        {
+                            decimal paid = 0;
+                            foreach (var item13 in paid_fees_inner)
+                            {
+                                paid += (decimal)item13.FinanceTransactionData.AMT;
+                            }
+                            total_fees -= paid;
+                        }
+                        total_fees_aggr += total_fees;
+                    }
+
+
+                    string selectedRow = "even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "odd";
+                    }
+                    var SelGuardian = guardians.Where(x => x.StudentData.ID == item.StudentData.ID);
+                    string Phone_Number = "";
+                    string GuardianName = "";
+                    <tr class="@selectedRow">
+                        <td class="col-1">@i</td>
+                        <td class="col-2">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
+                        <td class="col-3">@item.CourseData.CODE - @item.BatcheData.NAME</td>
+                        <td class="col-3">@item.StudentData.CLS_ROLL_NO</td>
+                        @foreach (var item2 in SelGuardian)
+                        {
+                            Phone_Number = item2.GuardianData.MOBL_PH != null ? string.Concat(Phone_Number, item2.GuardianData.MOBL_PH.ToString(), ",") : Phone_Number;
+                            GuardianName = string.Concat(GuardianName, item2.GuardianData.FIRST_NAME, " ", item2.GuardianData.LAST_NAME, ",");
+                        }
+                        @if (SelGuardian != null)
+                        {
+                            <td class="col-4">@GuardianName</td>
+                            <td class="col-5"> @Phone_Number </td>
+                        }
+                        else
+                        {
+                            <td class="col-4"></td>
+                            <td class="col-5"></td>
+                        }
+                        <td class="col-6">@total_fees_aggr.ToString("0.00")</td>
+                    </tr>
+                    i = i + 1;
+                }
+                <tr class="noprint" cellpadding="1" cellspacing="1">
+                    <td class="col-pdf"><input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
