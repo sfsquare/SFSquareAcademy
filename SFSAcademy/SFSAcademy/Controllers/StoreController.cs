@@ -1442,7 +1442,7 @@ namespace SFSAcademy.Controllers
                             orderby pd.NAME, ct.NAME
                             select new Models.PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
 
-            try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_PURCHAGE_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage,"Cart cleared now."); }
+            try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_PURCHAGE_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage," Cart cleared now."); }
             catch (Exception e) { Console.WriteLine(e); ViewBag.StoreDeleteMessage = string.Concat(ViewBag.PaymentMessage, e.InnerException.InnerException.Message); }
           
             return View("_ListPurchagedProducts", ProductS.ToList());

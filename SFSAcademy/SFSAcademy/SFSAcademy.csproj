@@ -796,6 +796,7 @@
     <Content Include="Content\javascripts\tiny_mce\utils\mctabs.js" />
     <Content Include="Content\javascripts\tiny_mce\utils\validate.js" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\stylesheets\finance\Aggregated_Fees_Due_pdf.css" />
     <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
     <Content Include="Content\stylesheets\store\setting.css" />
     <Content Include="Content\stylesheets\store\ViewAll.css" />
@@ -2627,6 +2628,7 @@
     <Content Include="Views\Finance\ListDefaulterStudentsByCourse.cshtml" />
     <Content Include="Views\Student\BonafideCertificate.cshtml" />
     <Content Include="Views\Student\Generate_BC_pdf.cshtml" />
+    <Content Include="Views\Finance\Aggregated_Fees_Due_pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

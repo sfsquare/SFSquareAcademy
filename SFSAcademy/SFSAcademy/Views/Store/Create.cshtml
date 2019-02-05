@@ -104,7 +104,7 @@
                     @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div id="sub_categories_select"> @Html.Partial("_Sub_Categories_Select")</div>
+            @Html.Partial("_Sub_Categories_Select")
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.BRAND_ID, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">

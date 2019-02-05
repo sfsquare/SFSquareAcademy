@@ -1,4 +1,11 @@
 ﻿
 <div id="sub_categories_select">
-    @Html.DropDownList("SUB_CATEGORY_ID", null, htmlAttributes: new { @class = "form-control" })
+    <div class="label-field-pair label">
+        @Html.Label("SUB_CATEGORY_ID", "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
+        <span class="necessary-field" style="font-size:small">* Required Field</span>
+        <div class="text-input-bg">
+            @Html.DropDownList("SUB_CATEGORY_ID", null, htmlAttributes: new { @class = "form-control" })
+            <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        </div>
+    </div>
 </div>
