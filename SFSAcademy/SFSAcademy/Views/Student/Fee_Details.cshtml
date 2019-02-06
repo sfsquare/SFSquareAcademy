@@ -29,24 +29,32 @@
     <ul>
         <li>@Html.ActionLink("Fees", "Fees", new { id = Model.ID })</li>
         <li>@Html.ActionLink("Student Profile", "Profiles", new { id = Model.ID })</li>
+        @if (dates.FirstOrDefault().FinanceFeeData.IS_PD == true)
+        {
+            <li>@Html.ActionLink("Activate", "Activate_Fees", new { id = Model.ID, id2 = dates.FirstOrDefault().FeeCollectionData.ID }, new { @title = "Click this button to mark this fee as Unpaid and Activate in Fee Collection section." })</li>
+        }
     </ul>
 </div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
 <div id="page-yield">
-    <div id="flash_box">
-        @if (ViewBag.ErrorMessage != null)
-            {
-            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-        }
-    </div>
-
     <div id="student_profile_heading">
-
         <div id="student_main_info">
             <span class="name"> @Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME  </span>
             <span class="course">Course and Batch: @batch.FirstOrDefault().CourseData.CODE - @batch.FirstOrDefault().BatchData.NAME </span>
             <span class="adm"> Adm. No.: @Model.ADMSN_NO </span>
         </div>
         <div class="extender"> </div>
+    </div>
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
     </div>
     @{decimal total_fees = 0; }
     @{string nextRow = ""; string nextToNextRow = "";}

@@ -2234,8 +2234,10 @@ namespace SFSAcademy.Controllers
             return View(sTUDENT);
         }
         // GET: Student/Guardian Details
-        public ActionResult Fee_Details(int? id, int? id2)
+        public ActionResult Fee_Details(int? id, int? id2, string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             STUDENT student = db.STUDENTs.Find(id);
             var StudentValDefaulters = (from ff in db.FINANCE_FEE
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
@@ -2358,6 +2360,18 @@ namespace SFSAcademy.Controllers
             ViewBag.total_discount_percentage = total_discount_percentage_val;
 
             return View(student);
+        }
+
+        // GET: Student/Edit/5
+        public ActionResult Activate_Fees(int? id, int? id2)
+        {
+            FINANCE_FEE Fee_To_Activate = db.FINANCE_FEE.Where(x => x.STDNT_ID == id && x.FEE_CLCT_ID == id2).FirstOrDefault();
+            Fee_To_Activate.IS_PD = false;
+            db.Entry(Fee_To_Activate).State = EntityState.Modified;
+            try { db.SaveChanges(); ViewBag.Notice = "Fees Activated successfully to be edited in Fee Collection module."; }
+            catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+
+            return RedirectToAction("Fee_Details", new { id = id, id2 = id2, Notice = ViewBag.Notice , ErrorMessage = ViewBag.ErrorMessage });
         }
 
         // GET: Student/Edit/5

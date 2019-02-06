@@ -2384,93 +2384,85 @@ namespace SFSAcademy.Controllers
                 {
                     if (fees_paid >= 0)
                     {
-                        if (fees_paid <= total_fees - paid_before)
+                        ViewBag.fine = fee;
+                        if (fee > 0)
                         {
-                            ViewBag.fine = fee;
-                            if (fee > 0)
+                            var FeeFine = new FEE_FINE()
                             {
-                                var FeeFine = new FEE_FINE()
-                                {
-                                    TYPE = "Student",
-                                    NAME = "Ad-hoc fine",
-                                    RCVR_ID = StudentVal.FirstOrDefault().Student_data.ID,
-                                    FIN_FEE_CAT_ID = date_val.FEE_CAT_ID,
-                                    FINE = fee,
-                                    DESCR = fee_desc,
-                                    FEE_CLCT_ID = date_val.ID,
-                                    IS_AMT = true,
-                                    FINE_DATE = System.DateTime.Now
-                                };
-                                db.FEE_FINE.Add(FeeFine);
-                                try { db.SaveChanges(); ViewBag.FeeCollectionMessage = string.Concat("Fee Fine added in Collection Successfully"); }
-                                catch (Exception e) { ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Fine"); Console.WriteLine(e); }
-                            }
-                            else
-                            {
-                                ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Fine");
-                            }
-
-                            FINANCE_FEE ffUpdate = db.FINANCE_FEE.Find(financefeeVal.FirstOrDefault().ID);
-                            ffUpdate.IS_PD = fees_paid == total_fees - paid_before ? true : false;
-                            db.Entry(ffUpdate).State = EntityState.Modified;
-                            try { db.SaveChanges(); }
-                            catch (DbEntityValidationException e)
-                            {
-                                foreach (var eve in e.EntityValidationErrors)
-                                {
-                                    foreach (var ve in eve.ValidationErrors)
-                                    {
-                                        ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", ve.ErrorMessage);
-                                    }
-                                }
-                                return PartialView("_Student_Fees_Submission");
-                            }
-                            catch (Exception e)
-                            {
-                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
-                                return PartialView("_Student_Fees_Submission");
-                            }
-                            var student_fine_val2 = (from ff in db.FEE_FINE
-                                                     where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
-                                                     select ff);
-                            ViewData["student_fine"] = student_fine_val2;
-                            decimal updated_fine_val = 0;
-                            if (batch_fine_val != null && batch_fine_val.Count() != 0)
-                            {
-                                foreach (var item in batch_fine_val)
-                                {
-                                    updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
-                                }
-                            }
-                            if (student_fine_val2 != null && student_fine_val2.Count() != 0)
-                            {
-                                foreach (var item in student_fine_val2)
-                                {
-                                    updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
-                                }
-                            }
-                            if (category_fine_val != null && category_fine_val.Count() != 0)
-                            {
-                                foreach (var item in category_fine_val)
-                                {
-                                    updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
-                                }
-                            }
-                            ViewBag.total_fine = updated_fine_val;
-
-                            if (total_discount_val > total_payable + updated_fine_val && total_payable + updated_fine_val >= 0)
-                            {
-                                total_discount_val = total_payable + updated_fine_val;
-                            }
-                            ViewBag.total_discount = total_discount_val;
-                            total_discount_percentage_val = total_discount_val / total_payable * 100;
-                            ViewBag.total_discount_percentage = total_discount_percentage_val;
+                                TYPE = "Student",
+                                NAME = "Ad-hoc fine",
+                                RCVR_ID = StudentVal.FirstOrDefault().Student_data.ID,
+                                FIN_FEE_CAT_ID = date_val.FEE_CAT_ID,
+                                FINE = fee,
+                                DESCR = fee_desc,
+                                FEE_CLCT_ID = date_val.ID,
+                                IS_AMT = true,
+                                FINE_DATE = System.DateTime.Now
+                            };
+                            db.FEE_FINE.Add(FeeFine);
+                            try { db.SaveChanges(); ViewBag.FeeCollectionMessage = string.Concat("Fee Fine added in Collection Successfully"); }
+                            catch (Exception e) { ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Fine"); Console.WriteLine(e); }
                         }
                         else
                         {
-                            ViewBag.fine = fee;
-                            ViewBag.FeeCollectionMessage = string.Concat("After fine, you are paying more then the Fees. Please correct amount first.");
+                            ViewBag.FeeCollectionMessage = string.Concat("Please eneter valid value for Fine");
                         }
+
+                        FINANCE_FEE ffUpdate = db.FINANCE_FEE.Find(financefeeVal.FirstOrDefault().ID);
+                        ffUpdate.IS_PD = fees_paid == total_fees - paid_before ? true : false;
+                        db.Entry(ffUpdate).State = EntityState.Modified;
+                        try { db.SaveChanges(); }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors)
+                            {
+                                foreach (var ve in eve.ValidationErrors)
+                                {
+                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", ve.ErrorMessage);
+                                }
+                            }
+                            return PartialView("_Student_Fees_Submission");
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                            return PartialView("_Student_Fees_Submission");
+                        }
+                        var student_fine_val2 = (from ff in db.FEE_FINE
+                                                 where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
+                                                 select ff);
+                        ViewData["student_fine"] = student_fine_val2;
+                        decimal updated_fine_val = 0;
+                        if (batch_fine_val != null && batch_fine_val.Count() != 0)
+                        {
+                            foreach (var item in batch_fine_val)
+                            {
+                                updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                            }
+                        }
+                        if (student_fine_val2 != null && student_fine_val2.Count() != 0)
+                        {
+                            foreach (var item in student_fine_val2)
+                            {
+                                updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                            }
+                        }
+                        if (category_fine_val != null && category_fine_val.Count() != 0)
+                        {
+                            foreach (var item in category_fine_val)
+                            {
+                                updated_fine_val += item.IS_AMT == true ? (decimal)item.FINE : total_payable * (decimal)item.FINE / 100;
+                            }
+                        }
+                        ViewBag.total_fine = updated_fine_val;
+
+                        if (total_discount_val > total_payable + updated_fine_val && total_payable + updated_fine_val >= 0)
+                        {
+                            total_discount_val = total_payable + updated_fine_val;
+                        }
+                        ViewBag.total_discount = total_discount_val;
+                        total_discount_percentage_val = total_discount_val / total_payable * 100;
+                        ViewBag.total_discount_percentage = total_discount_percentage_val;
                     }
                     else
                     {
@@ -4144,13 +4136,13 @@ namespace SFSAcademy.Controllers
                     StudentS = StudentS.OrderByDescending(s => s.StudentData.FIRST_NAME).ThenByDescending(s => s.StudentData.MID_NAME).ThenByDescending(s => s.StudentData.LAST_NAME);
                     break;
                 case "Date":
-                    StudentS = StudentS.OrderBy(s => s.StudentData.ADMSN_DATE);
+                    StudentS = StudentS.OrderBy(s => s.StudentData.CLS_ROLL_NO);
                     break;
                 case "date_desc":
-                    StudentS = StudentS.OrderByDescending(s => s.StudentData.ADMSN_DATE);
+                    StudentS = StudentS.OrderByDescending(s => s.StudentData.CLS_ROLL_NO);
                     break;
                 default:  // Name ascending 
-                    StudentS = StudentS.OrderBy(s => s.StudentData.FIRST_NAME).ThenBy(s => s.StudentData.MID_NAME).ThenBy(s => s.StudentData.LAST_NAME);
+                    StudentS = StudentS.OrderBy(s => s.StudentData.CLS_ROLL_NO);
                     break;
             }
 
@@ -4162,9 +4154,6 @@ namespace SFSAcademy.Controllers
         // GET: Student/Edit/5
         public ActionResult Aggregated_Fees_Due_pdf(string sortOrder, int? batch_id, int? page)
         {
-            //ViewBag.CurrentDate = System.DateTime.Now;
-            //DateTime firstDayCurMonth = new DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, 1);
-            //ViewBag.firstDayCurMonth = firstDayCurMonth;
             BATCH BatchVal = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
             ViewBag.Batch = string.Concat(BatchVal.COURSE.CRS_NAME, " - ", BatchVal.NAME);
 
@@ -4258,17 +4247,20 @@ namespace SFSAcademy.Controllers
             }
             switch (sortOrder)
             {
+                case "Name":
+                    StudentS = StudentS.OrderBy(s => s.StudentData.FIRST_NAME).ThenBy(s => s.StudentData.MID_NAME).ThenBy(s => s.StudentData.LAST_NAME);
+                    break;
                 case "name_desc":
                     StudentS = StudentS.OrderByDescending(s => s.StudentData.FIRST_NAME).ThenByDescending(s => s.StudentData.MID_NAME).ThenByDescending(s => s.StudentData.LAST_NAME);
                     break;
                 case "Date":
-                    StudentS = StudentS.OrderBy(s => s.StudentData.ADMSN_DATE);
+                    StudentS = StudentS.OrderBy(s => s.StudentData.CLS_ROLL_NO);
                     break;
                 case "date_desc":
-                    StudentS = StudentS.OrderByDescending(s => s.StudentData.ADMSN_DATE);
+                    StudentS = StudentS.OrderByDescending(s => s.StudentData.CLS_ROLL_NO);
                     break;
                 default:  // Name ascending 
-                    StudentS = StudentS.OrderBy(s => s.StudentData.FIRST_NAME).ThenBy(s => s.StudentData.MID_NAME).ThenBy(s => s.StudentData.LAST_NAME);
+                    StudentS = StudentS.OrderBy(s => s.StudentData.CLS_ROLL_NO);
                     break;
             }
 
