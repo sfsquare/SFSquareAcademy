@@ -31,13 +31,13 @@
             Batch
         </th>
         <th>
-            Roll No.
-        </th>
-        <th>
             Admission No.
         </th>
         <th>
-            @Html.ActionLink("Admission Date", "Aggregated_Fees_Due", new { page = ViewBag.CurrentPage, sortOrder = ViewBag.DateSortParm, searchString = ViewBag.CurrentFilter })
+            @Html.ActionLink("Roll No.", "Aggregated_Fees_Due", new { page = ViewBag.CurrentPage, sortOrder = ViewBag.DateSortParm, searchString = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            Admission Date
         </th>
         <th>
             Father Name
@@ -186,8 +186,8 @@
         <td class="col-1">@i</td>
         <td class="col-2">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</td>
         <td class="col-3">@item.CourseData.CODE - @item.BatcheData.NAME</td>
-        <td class="col-3">@item.StudentData.CLS_ROLL_NO</td>
-        <td class="col-5">@item.StudentData.ADMSN_NO</td>
+        <td class="col-3">@item.StudentData.ADMSN_NO</td>
+        <td class="col-5">@item.StudentData.CLS_ROLL_NO</td>
         <td class="col-6">@item.StudentData.ADMSN_DATE.Value.ToShortDateString()</td>
         @foreach (var item2 in SelGuardian)
         {
@@ -204,7 +204,7 @@
             <td class="col-7"></td>
             <td class="col-8"></td>
         }
-        <td class="col-9">@total_fees_aggr</td>
+        <td class="col-9">@total_fees_aggr.ToString("0.00")</td>
         <td class="col-10">@Html.ActionLink("►Pay Fees", "Fees_Student_Search")</td>
     </tr>
         i = i + 1;

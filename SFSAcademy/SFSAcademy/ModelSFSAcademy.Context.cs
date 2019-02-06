@@ -26,7 +26,6 @@ namespace SFSAcademy
         }
     
         public virtual DbSet<APPLY_LEAVE> APPLY_LEAVE { get; set; }
-        public virtual DbSet<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
         public virtual DbSet<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
         public virtual DbSet<ASSET> ASSETs { get; set; }
         public virtual DbSet<ATTENDENCE> ATTENDENCEs { get; set; }
@@ -74,7 +73,6 @@ namespace SFSAcademy
         public virtual DbSet<GALLERY_TAGS> GALLERY_TAGS { get; set; }
         public virtual DbSet<GRADING_LEVEL> GRADING_LEVEL { get; set; }
         public virtual DbSet<GUARDIAN> GUARDIANs { get; set; }
-        public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
         public virtual DbSet<INDIVIDUAL_PAYSLIP_CATGEORY> INDIVIDUAL_PAYSLIP_CATGEORY { get; set; }
         public virtual DbSet<LIABILITY> LIABILITies { get; set; }
         public virtual DbSet<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
@@ -121,7 +119,9 @@ namespace SFSAcademy
         public virtual DbSet<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
         public virtual DbSet<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
         public virtual DbSet<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP { get; set; }
-        public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
+        public virtual DbSet<STUDENT> STUDENTs { get; set; }
+        public virtual DbSet<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
+        public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
     }
 }
