@@ -100,9 +100,16 @@
             }
             <tr class="@selectedRow">
                 <td class="td-name">
-                    @item.EmployeeData.FIRST_NAME
+                    @if (item.EmployeeData.FIRST_NAME.Contains("MD") || item.EmployeeData.FIRST_NAME.Contains("Md") || item.EmployeeData.FIRST_NAME.Contains("md"))
+                    {
+                        @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME
+                    }
+                    else
+                    {
+                        @item.EmployeeData.FIRST_NAME
+                    }
                     <div class="date">
-                        <span><div class="themed_text">@item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                        <div class="themed_text"><span>@item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span></div>
                     </div>
                 </td>
                 @for (DateVal = ViewBag.start_date; DateVal < ViewBag.end_date; DateVal = DateVal.AddDays(1))
@@ -120,7 +127,7 @@
                                 <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
                             }
                             <div class="date">
-                                <span class="themed_text">@DateVal.ToShortDateString() <div> @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                                <div> <span class="themed_text"> @DateVal.ToShortDateString() @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
                             </div>
                         </td>
                     }
@@ -136,7 +143,7 @@
                                 <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
                             }
                             <div class="date">
-                                <span class="themed_text">@DateVal.ToShortDateString() <div> @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</div></span>
+                                 <div><span class="themed_text">@DateVal.ToShortDateString()  @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
                             </div>
                         </td>
                     }

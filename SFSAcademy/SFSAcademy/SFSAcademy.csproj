@@ -2446,7 +2446,7 @@
     <Content Include="Views\Employee\Create.cshtml" />
     <Content Include="Views\Employee\Delete.cshtml" />
     <Content Include="Views\Employee\Details.cshtml" />
-    <Content Include="Views\Employee\Edit.cshtml" />
+    <Content Include="Views\Employee\Edit1.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\Employee\HR.cshtml" />
     <Content Include="Views\Employee\Settings.cshtml" />
@@ -2629,6 +2629,13 @@
     <Content Include="Views\Student\BonafideCertificate.cshtml" />
     <Content Include="Views\Student\Generate_BC_pdf.cshtml" />
     <Content Include="Views\Finance\Aggregated_Fees_Due_pdf.cshtml" />
+    <Content Include="Views\Employee\Edit_Personal.cshtml" />
+    <Content Include="Views\Employee\Edit2.cshtml" />
+    <Content Include="Views\Employee\Edit_Contact.cshtml" />
+    <Content Include="Views\Employee\Edit3.cshtml" />
+    <Content Include="Views\Payroll\Edit_Payroll_Details.cshtml" />
+    <Content Include="Views\Employee\_Attendance_Report.cshtml" />
+    <Content Include="Views\Employee\_Edit_Leave_Count.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

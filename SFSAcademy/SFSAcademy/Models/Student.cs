@@ -66,21 +66,21 @@ namespace SFSAcademy.Models
     public enum BloodGroup
     {
         [Display(Name = "O+")]
-        OPositive,
+        O_Positive,
         [Display(Name = "A+")]
-        APositive,
+        A_Positive,
         [Display(Name = "B+")]
-        BPositive,
+        B_Positive,
         [Display(Name = "AB+")]
-        ABPositive,
+        AB_Positive,
         [Display(Name = "AB-")]
-        ABNegative,
+        AB_Negative,
         [Display(Name = "A-")]
-        ANegative,
+        A_Negative,
         [Display(Name = "B-")]
-        BNegative,
+        B_Negative,
         [Display(Name = "O-")]
-        ONegative
+        O_Negative
 
     }
 }

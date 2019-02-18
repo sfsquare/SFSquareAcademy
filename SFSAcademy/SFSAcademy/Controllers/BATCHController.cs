@@ -57,7 +57,7 @@ namespace SFSAcademy.Controllers
 
             var CourseBatchS = (from cs in db.COURSEs
                                 join bt in db.BATCHes on cs.ID equals bt.CRS_ID 
-                                where cs.IS_DEL.Equals(false) && bt.IS_DEL.Equals(false)
+                                where cs.IS_DEL == false && bt.IS_DEL == false
                                 orderby cs.CODE
                                 select new Models.CoursesBatch { CourseData = cs, BatchData = bt}).Distinct();
 

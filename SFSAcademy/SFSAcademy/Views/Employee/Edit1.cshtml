@@ -1,0 +1,202 @@
+﻿@model SFSAcademy.EMPLOYEE
+
+@{
+    ViewBag.Title = "Edit";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Edit Employee Information</h1>
+    <h3>General</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Human Resources", "HR") &raquo;
+    @Html.ActionLink("Profile", "Profiles", new { id = Model.ID }) &raquo;
+    Edit General Information
+</div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        <div id="admission1_form">
+            <div id="necessary-field-notification"> Fields marked with  <span class="necessary-field">*</span> must be filled.</div>
+            <span class="span-sub-heading">General Details</span>
+            <hr class="sub-heading" />
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.EMP_NUM, "Employee Number", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.EMP_NUM, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    <span class="necessary-field">*</span>
+                    @Html.ValidationMessageFor(model => model.EMP_NUM, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.JOINING_DATE, "Admission Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.JOINING_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker" } })
+                    @Html.ValidationMessageFor(model => model.JOINING_DATE, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.FIRST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.MID_NAME, "Middle Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.MID_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MID_NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.LAST_NAME, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.LAST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.EML, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.EML, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EML, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.EMP_DEPT_ID, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.DropDownList("EMP_DEPT_ID", null, htmlAttributes: new { @class = "form-control" })
+                    <span class="necessary-field">*</span>
+                    @Html.ValidationMessageFor(model => model.EMP_DEPT_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline label" />
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.EMP_CAT_ID, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.DropDownList("EMP_CAT_ID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.EMP_CAT_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.EMP_POS_ID, "Position", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.DropDownList("EMP_POS_ID", null, htmlAttributes: new { @class = "form-control" })
+                    <span class="necessary-field">*</span>
+                    @Html.ValidationMessageFor(model => model.EMP_POS_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.EMP_GRADE_ID, "Grade", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.DropDownList("EMP_GRADE_ID", null, htmlAttributes: new { @class = "form-control" })
+                    <span class="necessary-field">*</span>
+                    @Html.ValidationMessageFor(model => model.EMP_GRADE_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.JOB_TIL, "Job Title", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.JOB_TIL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.JOB_TIL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.QUAL, "Qualification", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.QUAL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.QUAL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.EXPNC_DETL, "Experience Deteail", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.EXPNC_DETL, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.EXPNC_DETL, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.EXPNC_DETL, "Total Experince", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.EXPNC_YEAR, new { htmlAttributes = new { @class = "form-control", @title = "Year" } })
+                    @Html.EditorFor(model => model.EXPNC_MONTH, new { htmlAttributes = new { @class = "form-control", @title = "Month" } })
+                </div>
+            </div>
+            <hr class="label-underline" />
+
+            <div class="label_field_pair">
+                @Html.LabelFor(model => model.GNDR, "Gender", htmlAttributes: new { @class = "label_for_employee_gender" })
+                <div class="employee_gender_value">
+                    @Html.Label("Male", new { @class = "label_for_gender" })@Html.RadioButtonFor(model => model.GNDR, "M")
+                    @Html.Label("Female", new { @class = "label_for_gender" })@Html.RadioButtonFor(model => model.GNDR, "F")
+                </div>
+            </div>
+            <hr class="label-underline label" />
+
+        </div>
+        <input type="submit" value="► Update" class="submit_button" />
+    }
+</div>

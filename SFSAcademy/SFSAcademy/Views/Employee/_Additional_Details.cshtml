@@ -10,12 +10,20 @@
             @{int i = 1;}
             @foreach (var item in additional_details)
             {
-            string code = "even";
-            if (i % 2 == 0)
-            {
-            code = "odd";
-            }
-            <tr class="@code left"><td>@item.AdditionalFieldData.NAME</td><td class="right">@item.AdditionalDetailData.ADDL_INFO</td></tr>
+                string code = "even";
+                if (i % 2 == 0)
+                {
+                    code = "odd";
+                }
+                if(item.AdditionalDetailData != null)
+                {
+                    <tr class="@code left"><td>@item.AdditionalFieldData.NAME</td><td class="right">@item.AdditionalDetailData.ADDL_INFO</td></tr>
+                }
+                else
+                {
+                    <tr class="@code left"><td>@item.AdditionalFieldData.NAME</td><td class="right"> </td></tr>
+                }
+            
                 i += 1;
             }
 

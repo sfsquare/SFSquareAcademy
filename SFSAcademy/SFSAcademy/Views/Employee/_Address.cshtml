@@ -8,11 +8,17 @@
     <tr class="odd left"><td>Home Address</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE1 &nbsp;@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE2</td></tr>
     <tr class="even left"><td>City</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_CITY</td></tr>
     <tr class="odd left"><td>State</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_STATE</td></tr>
-    <tr class="even left"><td>Country</td><td class="right">@home_country.CTRY_NAME</td></tr>
+    @if (home_country != null)
+    {
+        <tr class="even left"><td>Country</td><td class="right">@home_country.CTRY_NAME</td></tr>
+    }
     <tr class="odd left"><td>Zip</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_PIN_CODE</td></tr>
     <tr class="even left"><td>Office Address</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE1 &nbsp;@Employee.FirstOrDefault().EmployeeData.OFF_ADDR_LINE2</td></tr>
     <tr class="odd left"><td>City</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_CITY </td></tr>
-    <tr class="even left"><td>Country</td><td class="right">@office_country.CTRY_NAME</td></tr>
+    @if (office_country != null)
+    {
+        <tr class="even left"><td>Country</td><td class="right">@office_country.CTRY_NAME</td></tr>
+    }
     <tr class="odd left"><td>Zip</td><td class="right">@Employee.FirstOrDefault().EmployeeData.OFF_PIN_CODE</td></tr>
 </table>
 <div class="extender"></div>

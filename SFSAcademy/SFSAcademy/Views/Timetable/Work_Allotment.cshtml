@@ -1,6 +1,6 @@
 ﻿@using SFSAcademy.Models
 @{
-    IEnumerable<SFSAcademy.EMPLOYEE> admin_ids = (IEnumerable<SFSAcademy.EMPLOYEE>)ViewData["admin_ids"];
+    IEnumerable<SFSAcademy.EMPLOYEE_CATEGORY> admin = (IEnumerable<SFSAcademy.EMPLOYEE_CATEGORY>)ViewData["admin"];
     IEnumerable<SFSAcademy.Models.CoursesBatch> batches = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batches"];
     IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment> employees = (IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment>)ViewData["employees"];
 }
@@ -20,10 +20,12 @@
 
 <div id="inner-tab-menu">
     <ul>
-        <li>
-            <a href="@Url.Action("Subject_Assignment", "Employee")">Assign Multiple Teachers</a>
-        </li>
+        <li><a href="@Url.Action("Subject_Assignment", "Employee")">Assign Multiple Teachers</a></li>
     </ul>
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Timetable", "Index") &raquo;
+    Work Allotment
 </div>
 <div id="page-yield">
     @if (ViewBag.Notice != null)

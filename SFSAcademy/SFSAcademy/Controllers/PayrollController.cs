@@ -385,6 +385,152 @@ namespace SFSAcademy.Controllers
 
             return View(Employee);
         }
+
+        // GET: Payroll/Delete/5
+        public ActionResult Edit_Payroll_Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
+            ViewData["Employee"] = Employee;
+            var independent_categories = (from pc in db.PAYROLL_CATEGORY
+                                          join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == id) on pc.ID equals est.PYRL_CAT_ID into gest
+                                          from subgest in gest.DefaultIfEmpty()
+                                          where pc.PYRL_CAT_ID == null && pc.STAT == true
+                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+            ViewData["independent_categories"] = independent_categories;
+            var dependent_categories = (from pc in db.PAYROLL_CATEGORY
+                                        join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == id) on pc.ID equals est.PYRL_CAT_ID into gest
+                                        from subgest in gest.DefaultIfEmpty()
+                                        join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
+                                        where dpc.PYRL_CAT_ID != null && pc.STAT == true
+                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+            ViewData["dependent_categories"] = dependent_categories;
+
+            return View(Employee);
+        }
+
+        // POST: Payroll/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Payroll_Details(IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories)
+        {
+            int EmpId = independent_categories == null ? dependent_categories.FirstOrDefault().DependentEmployeeId : independent_categories.FirstOrDefault().EmployeeId;
+
+            EMPLOYEE Employee = db.EMPLOYEEs.Find(EmpId);
+            ViewData["Employee"] = Employee;
+            var independent_categories_inner = (from pc in db.PAYROLL_CATEGORY
+                                          join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == EmpId) on pc.ID equals est.PYRL_CAT_ID into gest
+                                          from subgest in gest.DefaultIfEmpty()
+                                          where pc.PYRL_CAT_ID == null && pc.STAT == true
+                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+            ViewData["independent_categories"] = independent_categories_inner;
+            var dependent_categories_inner = (from pc in db.PAYROLL_CATEGORY
+                                        join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == EmpId) on pc.ID equals est.PYRL_CAT_ID into gest
+                                        from subgest in gest.DefaultIfEmpty()
+                                        join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
+                                        where dpc.PYRL_CAT_ID != null && pc.STAT == true
+                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+            ViewData["dependent_categories"] = dependent_categories_inner;
+
+            if (ModelState.IsValid)
+            {
+                if (independent_categories != null || dependent_categories != null)
+                {
+                    foreach (var item in independent_categories)
+                    {
+                        if (item.PayrollCategoryId != 0)
+                        {
+                            EMPLOYEE_SALARY_STRUCTURE row_id = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == item.EmployeeId && x.PYRL_CAT_ID == item.PayrollCategoryId).FirstOrDefault();
+                            if (row_id != null)
+                            {
+                                row_id.AMT = item.Amount;
+                                db.Entry(row_id).State = EntityState.Modified;
+                                try { db.SaveChanges(); }
+                                catch (DbEntityValidationException e)
+                                {
+                                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                                    return RedirectToAction("Profiles", new { id = item.EmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                                catch (Exception e)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                                    return RedirectToAction("Profiles", new { id = item.EmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+
+                            }
+                            else
+                            {
+                                var EmpSalStr = new EMPLOYEE_SALARY_STRUCTURE() { EMP_ID = item.EmployeeId, PYRL_CAT_ID = item.PayrollCategoryId, AMT = item.Amount };
+                                db.EMPLOYEE_SALARY_STRUCTURE.Add(EmpSalStr);
+                                try { db.SaveChanges(); }
+                                catch (DbEntityValidationException e)
+                                {
+                                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                                    return RedirectToAction("Profiles", new { id = item.EmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                                catch (Exception e)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                                    return RedirectToAction("Profiles", new { id = item.EmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                            }                           
+                        }
+                    }
+
+                    foreach (var item in dependent_categories)
+                    {
+                        if (item.DependentPayrollCategoryId != 0)
+                        {
+                            EMPLOYEE_SALARY_STRUCTURE row_id = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == item.DependentEmployeeId && x.PYRL_CAT_ID == item.DependentPayrollCategoryId).FirstOrDefault();
+                            if (row_id != null)
+                            {
+                                row_id.AMT = item.DependentAmount;
+                                db.Entry(row_id).State = EntityState.Modified;
+                                try { db.SaveChanges(); }
+                                catch (DbEntityValidationException e)
+                                {
+                                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                                    return RedirectToAction("Profiles", new { id = item.DependentEmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                                catch (Exception e)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                                    return RedirectToAction("Profiles", new { id = item.DependentEmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+
+                            }
+                            else
+                            {
+                                var EmpSalStr = new EMPLOYEE_SALARY_STRUCTURE() { EMP_ID = item.DependentEmployeeId, PYRL_CAT_ID = item.DependentPayrollCategoryId, AMT = item.DependentAmount };
+                                db.EMPLOYEE_SALARY_STRUCTURE.Add(EmpSalStr);
+                                try { db.SaveChanges(); }
+                                catch (DbEntityValidationException e)
+                                {
+                                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                                    return RedirectToAction("Profiles", new { id = item.DependentEmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                                catch (Exception e)
+                                {
+                                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                                    return RedirectToAction("Profiles", new { id = item.DependentEmployeeId, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                                }
+                            }
+                        }
+
+                    }                    
+                }
+                ViewBag.Notice = string.Concat("Data saved for ", Employee.FIRST_NAME);
+                return RedirectToAction("Profiles", "Employee", new { id = EmpId });
+            }
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
+            return View(Employee);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

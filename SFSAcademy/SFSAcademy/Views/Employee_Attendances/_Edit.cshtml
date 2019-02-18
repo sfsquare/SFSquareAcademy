@@ -4,7 +4,16 @@
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
 }
 
-<label class="head_label">Edit attendance for:  <span>@employee.FIRST_NAME</span></label>
+<label class="head_label">Edit attendance for:  <span>
+    @if (employee.FIRST_NAME.Contains("MD") || employee.FIRST_NAME.Contains("Md") || employee.FIRST_NAME.Contains("md"))
+    {
+        @employee.FIRST_NAME @employee.MID_NAME
+    }
+    else
+    {
+        @employee.FIRST_NAME
+    }
+</span></label>
 <div id="ajax-edit">
     @using (Html.BeginForm())
     {
@@ -15,6 +24,7 @@
             <div class="text-input-bg">
                 @Html.DropDownList("EMP_LEAVE_TYPE_ID", null, htmlAttributes: new { @class = "form-control" })
                 @Html.HiddenFor(model => model.ID)
+                @Html.HiddenFor(model => model.EMP_ID)
             </div>
         </div>
         <div class="label-field-pair label">

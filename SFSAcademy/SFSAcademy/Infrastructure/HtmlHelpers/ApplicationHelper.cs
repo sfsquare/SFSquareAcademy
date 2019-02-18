@@ -387,6 +387,17 @@ namespace SFSAcademy.HtmlHelpers
             }
         }
 
+        public static DateTime AcademicYearStartDate()
+        {
+            DateTime YearStartDate = new DateTime(DateTime.Now.Year, 4, 1);
+            int CurrentMonth = DateTime.Now.Month;
+            if (CurrentMonth <= 3)
+            {
+                YearStartDate = new DateTime(DateTime.Now.Year - 1, 4, 1);
+            }
+            return YearStartDate;
+        }
+
         public static int GetMonthsBetween(this HtmlHelper HtmlHelper, DateTime from, DateTime to)
         {
             if (from > to) return GetMonthsBetween(HtmlHelper, to, from);
