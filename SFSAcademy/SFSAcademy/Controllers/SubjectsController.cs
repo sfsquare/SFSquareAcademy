@@ -19,9 +19,10 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
+            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL== false
+                                    where cs.IS_DEL== false && bt.END_DATE >= StartDate
                                     select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -52,7 +53,7 @@ namespace SFSAcademy.Controllers
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt, Elective_Batch_Subject = (subgsub == null ? null : subgsub) })
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
-            var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == id && x.ELECTIVE_GRP_ID == null && x.IS_DEL ==false).ToList();
+            var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == id && x.ELECTIVE_GRP_ID == null && x.IS_DEL ==false).OrderBy(x=>x.NAME).ToList();
             ViewData["subjects"] = subjects;
             var elective_groups = (from eg in db.ELECTIVE_GROUP
                                    join sub in db.SUBJECTs.Where(x=>x.IS_DEL == false) on eg.ID equals sub.ELECTIVE_GRP_ID

@@ -1,5 +1,5 @@
 ﻿@model SFSAcademy.STUDENT
-
+@using SFSAcademy.Models
 @{
     ViewBag.Title = "Edit";
 }
@@ -147,18 +147,10 @@
                 <hr class="label-underline label">
 
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.BLOOD_GRP, "Blood Group", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <label for="BLOOD_GRP">Blood Group</label>
                     <div class="text-input-bg">
-                        @Html.DropDownListFor(model => model.BLOOD_GRP, new List<SelectListItem>
-                        { new SelectListItem{Text="A+", Value="A+"},
-                          new SelectListItem{Text="A-", Value="A-"},
-                          new SelectListItem { Text = "B+", Value = "B+" },
-                          new SelectListItem { Text = "B-", Value = "B-" },
-                          new SelectListItem{Text="O+", Value="O+"},
-                          new SelectListItem{Text="O-", Value="O-"},
-                          new SelectListItem{Text="AB+", Value="AB+"},
-                          new SelectListItem{Text="AB-", Value="AB-"}}, "Select Blood Group")
-                        @Html.ValidationMessageFor(model => model.BLOOD_GRP, "", new { @class = "text-danger" })
+                        @Html.DropDownList("BLOOD_GRP", new SelectList(Enum.GetValues(typeof(BloodGroup))), "Select Blood Group", new { @class = "form-control", @id = "BLOOD_GRP" })
+                        <div class="extender"></div>
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -347,16 +339,16 @@
 
     <script type="text/javascript">
 
-$(document).ready(function () {
-    $("#preview").fadeOut(15);
-    $("#refreshButton").click(function () {
-        var imageToLoad = $("#imageId").val();
-        if (imageToLoad.length > 0) {
-            $("#preview").attr("src", "/Document/Show/" + imageToLoad);
-            $("#preview").fadeIn();
-        }
-    });
-});
+        $(document).ready(function () {
+            $("#preview").fadeOut(15);
+            $("#refreshButton").click(function () {
+                var imageToLoad = $("#imageId").val();
+                if (imageToLoad.length > 0) {
+                    $("#preview").attr("src", "/Document/Show/" + imageToLoad);
+                    $("#preview").fadeIn();
+                }
+            });
+        });
 
     </script>
 }

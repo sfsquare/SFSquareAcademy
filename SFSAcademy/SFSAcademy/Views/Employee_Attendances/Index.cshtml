@@ -11,6 +11,8 @@
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
+        $.noConflict();
+        $.ajaxSetup({ cache: false });
         $(".LoaderBox").hide();
         $('#DepDropDown').change(function () {
 

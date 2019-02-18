@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
+using System.Web;
 
 namespace SFSAcademy.Models
 {
@@ -136,6 +137,105 @@ namespace SFSAcademy.Models
                                  select prev).ToList();
 
             return userprevilege;
+        }
+
+        public string UserType(int? UserId)
+        {
+            if(UserId != null)
+            {
+                USER CurrentUser = db.USERS.Find(UserId);
+                if (CurrentUser.ADMIN_IND.Equals(true))
+                {
+                    return "Admin";
+                }
+                else if (CurrentUser.EMP_IND.Equals(true))
+                {
+                    var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
+                                            join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
+                                            where prusr.USER_ID == UserId
+                                            select pr).ToList();
+                    foreach (var item in CurrentPrivilege)
+                    {
+                        if (item.NAME.Contains("HR"))
+                        {
+                            return "HR";
+                        }
+                        else if (item.PRIVILEGE_TAG.Contains("Finance"))
+                        {
+                            return "Finance";
+                        }
+                        else if (item.NAME.Contains("Inventory"))
+                        {
+                            return "Inventory";
+                        }
+                    }
+                    return "Empoyee";
+                }
+                else if (CurrentUser.STDNT_IND.Equals(true))
+                {
+                    return "Student";
+                }
+                else if (CurrentUser.PARNT_IND.Equals(true))
+                {
+                    return "Parent";
+                }
+                else
+                {
+                    return "Visitor";
+                }
+            }
+            else
+            {
+                return "User Type canot be determined as UserId is null";
+            }           
+        }
+
+        public string UserType()
+        {
+            HttpContext context = HttpContext.Current;
+            int UserId = Convert.ToInt32(context.Session["UserId"]);
+
+            USER CurrentUser = db.USERS.Find(UserId);
+            if (CurrentUser.ADMIN_IND.Equals(true))
+            {
+                return "Admin";
+            }
+            else if (CurrentUser.EMP_IND.Equals(true))
+            {
+                var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
+                                        join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
+                                        where prusr.USER_ID == UserId
+                                        select pr).ToList();
+                foreach (var item in CurrentPrivilege)
+                {
+                    if (item.NAME.Contains("HR"))
+                    {
+                        return "HR";
+                    }
+                    else if (item.PRIVILEGE_TAG.Contains("Finance"))
+                    {
+                        return "Finance";
+                    }
+                    else if (item.NAME.Contains("Inventory"))
+                    {
+                        return "Inventory";
+                    }
+                }
+                return "Empoyee";
+            }
+            else if (CurrentUser.STDNT_IND.Equals(true))
+            {
+                return "Student";
+            }
+            else if (CurrentUser.PARNT_IND.Equals(true))
+            {
+                return "Parent";
+            }
+            else
+            {
+                return "Visitor";
+            }
+
         }
     }
 

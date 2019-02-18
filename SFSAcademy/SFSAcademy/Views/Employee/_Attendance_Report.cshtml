@@ -1,0 +1,121 @@
+﻿@using SFSAcademy.Models
+@{
+    SFSAcademy.EMPLOYEE employee = (SFSAcademy.EMPLOYEE)ViewData["employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> EmployeeLeave = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["EmployeeLeave"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> leave_count = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["leave_count"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> attendance_report = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["attendance_report"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
+}
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#profile-infos').html(data);
+            /* little fade in effect */
+            $('#profile-infos').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+
+</script>
+<div id="attendance-report">
+    @{int i = 1;}
+    @foreach (var item in leave_types)
+    {
+        var leave_count_inner = EmployeeLeave.Where(x => x.EMP_LEAVE_TYPE_ID == item.ID && x.EMP_ID == employee.ID).FirstOrDefault();
+        string code = "type_nameeven";
+        if (i % 2 == 0)
+        {
+            code = "type_nameodd";
+        }
+        <div class="@code">@item.NAME:</div>
+        var report = EmployeeAttendance.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == item.ID).ToList();
+        if (leave_count_inner != null && leave_count_inner.RST_DATE != null)
+        {
+            report = report.Where(x => x.ATNDENCE_DATE >= leave_count_inner.RST_DATE).ToList();
+        }
+        if (report == null || report.Count() == 0)
+        {
+            <div class="date-even">No dates found</div>
+        }
+        else
+        {
+            foreach (var item2 in report)
+            {
+                i += 1;
+                string code_date = "date-even";
+                if (i % 2 == 0)
+                {
+                    code_date = "date-odd";
+                }
+                <div class="@code_date">
+                    @item2.ATNDENCE_DATE.Value.ToShortDateString()
+                    @if (item2.IS_HALF_DAY == true)
+                    {
+                        <span>Half Day</span>
+                    }
+                </div>
+            }
+
+        }
+        i += 1;
+    }
+
+    <div class="attendance-stats">
+        @{decimal total_leave = 0; int k = 1;
+            int month = DateTime.Now.Month;
+            DateTime StartDate = new DateTime(DateTime.Now.Year, 4, 1);
+            DateTime EndDate = new DateTime(DateTime.Now.Year + 1, 3, 31);
+            if (month <= 3)
+            {
+                StartDate = new DateTime(DateTime.Now.Year - 1, 4, 1);
+                EndDate = new DateTime(DateTime.Now.Year, 3, 31);
+            }
+
+            int CollectionMonths = Html.GetMonthsBetween(StartDate, EndDate.AddDays(1));
+            int CurrCollectionMonths = Html.GetMonthsBetween(StartDate, System.DateTime.Now.AddDays(1));
+
+        }
+        @foreach (var item in leave_count)
+        {
+            var leave_type = leave_types.Where(x => x.ID == item.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+            decimal ProratedCount = (decimal)(item.LEAVE_CNT * (CurrCollectionMonths + 1) / CollectionMonths);
+            string code2 = "type_nameeven";
+            if (k % 2 == 0)
+            {
+                code2 = "type_nameodd";
+            }
+            <div class="@code2">
+                @if (item.LEAVE_TAKE != null)
+                {
+                    <div class="total">Total @leave_type.NAME :</div><div class="count">@item.LEAVE_TAKE / @ProratedCount.ToString("0.00")  </div>
+                }
+                else
+                {
+                    <div class="total">Total @leave_type.NAME :</div><div class="count">0.00 / @ProratedCount.ToString("0.00") </div>
+                }
+                @if (Html.Permitted_To("Employee_Leave_Count_Edit", "Employee") || Html.CurrentUser_UserType().Equals("Admin"))
+                {
+                    <div class="edit-leave"><a href="@Url.Action("Employee_Leave_Count_Edit", "Employee", new { id = item.ID, leave_type_id = item.EMP_LEAVE_TYPE_ID })" class="Profile_Menu" id="EditLeave" onclick='LoadPartialPage(this.href); return false;'>► Edit</a></div>
+                }
+            </div>
+            if (item.LEAVE_TAKE != null)
+            {
+                total_leave += (decimal)item.LEAVE_TAKE;
+            }
+            k += 1;
+        }
+
+        <div class="type_nameeven"><div class="total">Total Leaves Taken:</div><div class="count">@total_leave</div></div>
+    </div>
+    <div class="pdf-link">
+        <a href="@Url.Action("Employee_Attendance_pdf", "Employee_Attendance",new { id = employee.ID })" class="user_button" title="View pdf Report"><p>► pdf Report</p></a>
+    </div>
+</div>
+<div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Data Loading" style="align-self:center; border:none"></div>

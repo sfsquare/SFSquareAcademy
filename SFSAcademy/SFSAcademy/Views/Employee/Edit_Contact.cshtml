@@ -1,0 +1,90 @@
+﻿@model SFSAcademy.EMPLOYEE
+@{
+    ViewBag.Title = "Edit_Contact";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Edit Employee Information</h1>
+    <h3>Contact</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div> <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"> </div>
+<div class="bread_crumb">
+    @Html.ActionLink("Human Resources", "HR") &raquo;
+    @Html.ActionLink("Profile", "Profiles", new { id = Model.ID }) &raquo;
+    Edit Contact Information
+</div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    @using (Html.BeginForm())
+    {
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        <span class="span-sub-heading">Contact Details</span>
+        <hr class="sub-heading" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.OFF_PH1, "Office Phone1", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_PH1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_PH1, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.OFF_PH2, "Office Phone2", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_PH2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_PH2, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.MOBL_PH, "Mobile", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.MOBL_PH, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOBL_PH, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_PH, "Home Phone", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_PH, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_PH, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.FAX, "Fax", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.FAX, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FAX, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+
+        <div class="save-proceed-button">
+            <input type="submit" value="► Update" class="submit_button" />
+        </div>
+    }
+
+
+</div>
+

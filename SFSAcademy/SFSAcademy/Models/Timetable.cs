@@ -28,7 +28,7 @@ namespace SFSAcademy.Models
     public class EmployeeWorkAllotment
     {
         public EMPLOYEE EmployeeData { get; set; }
-        public int? Total_Time { get; set; }
+        public decimal? Total_Time { get; set; }
     }
 
 }

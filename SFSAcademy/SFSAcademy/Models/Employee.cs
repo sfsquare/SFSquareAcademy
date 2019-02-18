@@ -44,7 +44,10 @@ namespace SFSAcademy.Models
     {
         public EMPLOYEE_BANK_DETAIL BankDetailData { get; set; }
         public BANK_FIELD BankFieldData { get; set; }
-        public EMPLOYEE EmployeedData { get; set; }
+        public EMPLOYEE EmployeeData { get; set; }
+        public int? EMPLOYEE_ID { get; set; }
+        public int? BANK_FIELD_ID { get; set; }
+        public string FIELD_VALUE { get; set; }
 
     }
 
@@ -60,7 +63,7 @@ namespace SFSAcademy.Models
     {
         public EMPLOYEE_ADDITIONAL_DETAIL AdditionalDetailData { get; set; }
         public EMPLOYEE_ADDITIONAL_FIELD AdditionalFieldData { get; set; }
-        public EMPLOYEE EmployeedData { get; set; }
+        public EMPLOYEE EmployeeData { get; set; }
 
     }
 
