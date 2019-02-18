@@ -27,31 +27,21 @@ namespace SFSAcademy.Controllers
         // GET: Timetable/Create
         public ActionResult Work_Allotment()
         {
-            var admin_ids = (from emp in db.EMPLOYEEs
+            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
+            var admin = db.EMPLOYEE_CATEGORY.Where(x => !x.PRFX.Contains("admin")).ToList();
+            ViewData["admin"] = admin;
+
+            var employees = (from emp in db.EMPLOYEEs.Include(x=>x.EMPLOYEE_GRADE).Include(x=>x.EMPLOYEES_SUBJECT)
                              join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
-                             where empcat.NAME.Contains("%Admin%")
-                             select emp).Distinct().ToList();
-            ViewData["admin_ids"] = admin_ids;
-            /*var EmployeeSubject = (from empsub in db.EMPLOYEES_SUBJECT
-                             where !(from aid in admin_ids
-                                     select aid.ID).Contains(Convert.ToInt32(empsub.EMP_ID))
-                             select empsub).ToList();
-            ViewData["EmployeeSubject"] = EmployeeSubject;*/
-            var employees = (from emp in db.EMPLOYEEs
-                              where !(from aid in admin_ids
-                                      select aid.ID).Contains(emp.ID)
-                              select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = 0}).ToList();
+                             where !empcat.PRFX.Contains("admin")
+                              select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS}).ToList();
             ViewData["employees"] = employees;
+
             var batches = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
+                           where bt.END_DATE >= StartDate
                            select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches;
-            /*var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N"
-                                    select bt).Include(x=>x.COURSE).Include(x=>x.SUBJECTs)
-                         .OrderBy(x => x.ID).ToList();
-            ViewData["batches"] = queryCourceBatch;*/
 
             return View();
         }
@@ -60,40 +50,20 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Work_Allotment(IEnumerable<SFSAcademy.Models.CoursesBatch> batches, IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment> employees)
         {
-            /*var admin_ids = (from emp in db.EMPLOYEEs
-                             join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
-                             where empcat.NAME.Contains("%Admin%")
-                             select emp).Distinct().ToList();
-            ViewData["admin_ids"] = admin_ids;
-            var employees = (from emp in db.EMPLOYEEs
-                             where !(from aid in admin_ids
-                                     select aid.ID).Contains(emp.ID)
-                             select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = 0 }).Distinct().ToList();
-            ViewData["employees"] = employees;
-            var Sub = db.SUBJECTs.Include(x => x.EMPLOYEES_SUBJECT).ToList();
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == "N"
-                                    select bt).Include(x => x.COURSE).Include(x => x.SUBJECTs)
-                         .OrderBy(x => x.ID).ToList();
-            ViewData["batches"] = queryCourceBatch;
-            var EmployeeSubject = db.EMPLOYEES_SUBJECT.ToList();
-            ViewData["EmployeeSubject"] = EmployeeSubject;*/
+            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
+            var admin = db.EMPLOYEE_CATEGORY.Where(x => !x.PRFX.Contains("admin")).ToList();
+            ViewData["admin"] = admin;
 
-            var admin_ids = (from emp in db.EMPLOYEEs
+            var employees_Inner = (from emp in db.EMPLOYEEs.Include(x => x.EMPLOYEE_GRADE).Include(x => x.EMPLOYEES_SUBJECT)
                              join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
-                             where empcat.NAME.Contains("%Admin%")
-                             select emp).Distinct().ToList();
-            ViewData["admin_ids"] = admin_ids;
-
-            var employees_Inner = (from emp in db.EMPLOYEEs
-                             where !(from aid in admin_ids
-                                     select aid.ID).Contains(emp.ID)
-                             select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = 0 }).ToList();
+                             where !empcat.PRFX.Contains("admin")
+                             select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS }).ToList();
             ViewData["employees"] = employees_Inner;
+
             var batches_Inner = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
-                           select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                           where bt.END_DATE >= StartDate
+                                 select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches_Inner;
 
             return View();

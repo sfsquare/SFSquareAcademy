@@ -3,8 +3,16 @@
 @{
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
 }
-
-<label class="head_label">Attendance for: <span>@employee.FIRST_NAME</span></label>
+<label class="head_label">Attendance for: <span>
+    @if (employee.FIRST_NAME.Contains("MD") || employee.FIRST_NAME.Contains("Md") || employee.FIRST_NAME.Contains("md"))
+    {
+        @employee.FIRST_NAME @employee.MID_NAME
+    }
+    else
+    {
+        @employee.FIRST_NAME
+    }
+</span></label>
 <div id="ajax-edit">
     <div id="form-errors"></div>
     @using (Html.BeginForm())

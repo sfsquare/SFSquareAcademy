@@ -47,14 +47,26 @@ namespace SFSAcademy.Controllers
         // GET: Employee/Create
         public ActionResult Create()
         {
-            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME");
-            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME");
+            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", "99");
+            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", "99");
             ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME");
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY, "ID", "NAME");
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
             ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION, "ID", "POS_NAME");
-            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "CODE");
+            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "NAMES");
             ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM");
-            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_CODE");
+            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_NAME");
             ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME");
             return View();
         }
@@ -76,17 +88,30 @@ namespace SFSAcademy.Controllers
             ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.NTLTY_ID);
             ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.HOME_CTRY_ID);
             ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.OFF_CTRY_ID);
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY, "ID", "NAME", eMPLOYEE.EMP_CAT_ID);
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == eMPLOYEE.EMP_CAT_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
             ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION, "ID", "POS_NAME", eMPLOYEE.EMP_POS_ID);
-            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "CODE", eMPLOYEE.EMP_DEPT_ID);
+            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "NAMES", eMPLOYEE.EMP_DEPT_ID);
             ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE.RPTG_MGR_ID);
-            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_CODE", eMPLOYEE.EMP_GRADE_ID);
+            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_NAME", eMPLOYEE.EMP_GRADE_ID);
             ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME", eMPLOYEE.USRID);
             return View(eMPLOYEE);
         }
 
         // GET: Employee/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit1(int? id)
         {
             if (id == null)
             {
@@ -97,15 +122,25 @@ namespace SFSAcademy.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.NTLTY_ID);
-            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.HOME_CTRY_ID);
-            ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.OFF_CTRY_ID);
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY, "ID", "NAME", eMPLOYEE.EMP_CAT_ID);
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == eMPLOYEE.EMP_CAT_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
             ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION, "ID", "POS_NAME", eMPLOYEE.EMP_POS_ID);
-            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "CODE", eMPLOYEE.EMP_DEPT_ID);
-            ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE.RPTG_MGR_ID);
-            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_CODE", eMPLOYEE.EMP_GRADE_ID);
+            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true).OrderBy(x => x.GRADE_NAME), "ID", "GRADE_NAME", eMPLOYEE.EMP_GRADE_ID);
+            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x => x.NAMES), "ID", "NAMES", eMPLOYEE.EMP_DEPT_ID);
             ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME", eMPLOYEE.USRID);
+
             return View(eMPLOYEE);
         }
 
@@ -114,26 +149,441 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE eMPLOYEE)
+        public ActionResult Edit1([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE eMPLOYEE)
         {
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == eMPLOYEE.EMP_CAT_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;           
+            ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION, "ID", "POS_NAME", eMPLOYEE.EMP_POS_ID);
+            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true).OrderBy(x => x.GRADE_NAME), "ID", "GRADE_NAME", eMPLOYEE.EMP_GRADE_ID);
+            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x => x.NAMES), "ID", "NAMES", eMPLOYEE.EMP_DEPT_ID);
+            ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME", eMPLOYEE.USRID);
+
             if (ModelState.IsValid)
             {
-                db.Entry(eMPLOYEE).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                Models.User Emp_User = new Models.User();
+                string User_Type = Emp_User.UserType(eMPLOYEE.USRID);
+
+                if (eMPLOYEE.USRID == null || !User_Type.Equals("Admin"))
+                {
+                    EMPLOYEE eMPLOYEE_Upd = db.EMPLOYEEs.Find(eMPLOYEE.ID);
+                    eMPLOYEE_Upd.JOINING_DATE = eMPLOYEE.JOINING_DATE;
+                    eMPLOYEE_Upd.FIRST_NAME = eMPLOYEE.FIRST_NAME;
+                    eMPLOYEE_Upd.MID_NAME = eMPLOYEE.MID_NAME;
+                    eMPLOYEE_Upd.LAST_NAME = eMPLOYEE.LAST_NAME;
+                    eMPLOYEE_Upd.EML = eMPLOYEE.EML;
+                    eMPLOYEE_Upd.EMP_DEPT_ID = eMPLOYEE.EMP_DEPT_ID;
+                    eMPLOYEE_Upd.EMP_CAT_ID = eMPLOYEE.EMP_CAT_ID;
+                    eMPLOYEE_Upd.EMP_POS_ID = eMPLOYEE.EMP_POS_ID;
+                    eMPLOYEE_Upd.EMP_GRADE_ID = eMPLOYEE.EMP_GRADE_ID;
+                    eMPLOYEE_Upd.JOB_TIL = eMPLOYEE.JOB_TIL;
+                    eMPLOYEE_Upd.QUAL = eMPLOYEE.QUAL;
+                    eMPLOYEE_Upd.EXPNC_DETL = eMPLOYEE.EXPNC_DETL;
+                    eMPLOYEE_Upd.EXPNC_YEAR = eMPLOYEE.EXPNC_YEAR;
+                    eMPLOYEE_Upd.EXPNC_MONTH = eMPLOYEE.EXPNC_MONTH;
+                    eMPLOYEE_Upd.GNDR = eMPLOYEE.GNDR;
+                    db.Entry(eMPLOYEE_Upd).State = EntityState.Modified;
+                    try { db.SaveChanges(); }
+                    catch (DbEntityValidationException e)
+                    {
+                        foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                        return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                    }
+                    ViewBag.Notice = string.Concat("Employee ", eMPLOYEE.FIRST_NAME, "'s general information updated.");
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = string.Concat("Employee ", eMPLOYEE.EMP_NUM, " should_not_be_admin.");
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }                
             }
-            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.NTLTY_ID);
-            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.HOME_CTRY_ID);
-            ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.OFF_CTRY_ID);
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY, "ID", "NAME", eMPLOYEE.EMP_CAT_ID);
-            ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION, "ID", "POS_NAME", eMPLOYEE.EMP_POS_ID);
-            ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT, "ID", "CODE", eMPLOYEE.EMP_DEPT_ID);
-            ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE.RPTG_MGR_ID);
-            ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE, "ID", "GRADE_CODE", eMPLOYEE.EMP_GRADE_ID);
-            ViewBag.USRID = new SelectList(db.USERS, "ID", "USRNAME", eMPLOYEE.USRID);
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
             return View(eMPLOYEE);
         }
 
+        // GET: Employee/Edit/5
+        public ActionResult Edit_Personal(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.NTLTY_ID != null ? eMPLOYEE.NTLTY_ID : 99);
+            return View(eMPLOYEE);
+        }
+
+        // POST: Employee/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Personal([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE eMPLOYEE)
+        {
+            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.NTLTY_ID != null ? eMPLOYEE.NTLTY_ID : 99);
+
+            if (ModelState.IsValid)
+            {
+                EMPLOYEE eMPLOYEE_Upd = db.EMPLOYEEs.Find(eMPLOYEE.ID);
+
+                /////Picture Upload Code
+                string FileName = null;
+                SuccessModel viewModel = new SuccessModel();
+                if (Request.Files.Count == 1 && Request.Files[0].FileName != "")
+                {
+                    var name = Request.Files[0].FileName;
+                    var size = Request.Files[0].ContentLength;
+                    var type = Request.Files[0].ContentType;
+                    FileName = name;
+                    eMPLOYEE_Upd.IMAGE_DOCUMENTS_ID = HandleUpload(Request.Files[0].InputStream, name, size, type, Convert.ToInt32(eMPLOYEE.IMAGE_DOCUMENTS_ID));
+                }
+                ////End to Picture Upload Code
+                ///
+                eMPLOYEE_Upd.DOB = eMPLOYEE.DOB;
+                eMPLOYEE_Upd.MARITAL_STAT = eMPLOYEE.MARITAL_STAT;
+                eMPLOYEE_Upd.CHLD_CNT = eMPLOYEE.CHLD_CNT;
+                eMPLOYEE_Upd.FTHR_NAME = eMPLOYEE.FTHR_NAME;
+                eMPLOYEE_Upd.MTHR_NAME = eMPLOYEE.MTHR_NAME;
+                eMPLOYEE_Upd.HUSBND_NAME = eMPLOYEE.HUSBND_NAME;
+                eMPLOYEE_Upd.BLOOD_GRP = eMPLOYEE.BLOOD_GRP;
+                eMPLOYEE_Upd.NTLTY_ID = eMPLOYEE.NTLTY_ID;
+
+                db.Entry(eMPLOYEE_Upd).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = string.Concat("Employee ", eMPLOYEE.FIRST_NAME, "'s personal information updated.");
+                return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
+            return View(eMPLOYEE);
+        }
+
+        // GET: Employee/Edit/5
+        public ActionResult Edit2(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.HOME_CTRY_ID != null ? eMPLOYEE.HOME_CTRY_ID : 99);
+            ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.OFF_CTRY_ID != null ? eMPLOYEE.OFF_CTRY_ID : 99);
+
+            return View(eMPLOYEE);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit2([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE eMPLOYEE)
+        {
+            ViewBag.HOME_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.HOME_CTRY_ID != null ? eMPLOYEE.HOME_CTRY_ID : 99);
+            ViewBag.OFF_CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", eMPLOYEE.OFF_CTRY_ID != null ? eMPLOYEE.OFF_CTRY_ID : 99);
+
+            if (ModelState.IsValid)
+            {
+                EMPLOYEE eMPLOYEE_Upd = db.EMPLOYEEs.Find(eMPLOYEE.ID);
+                eMPLOYEE_Upd.HOME_ADDR_LINE1 = eMPLOYEE.HOME_ADDR_LINE1;
+                eMPLOYEE_Upd.HOME_ADDR_LINE2 = eMPLOYEE.HOME_ADDR_LINE2;
+                eMPLOYEE_Upd.HOME_CITY = eMPLOYEE.HOME_CITY;
+                eMPLOYEE_Upd.HOME_STATE = eMPLOYEE.HOME_STATE;
+                eMPLOYEE_Upd.HOME_CTRY_ID = eMPLOYEE.HOME_CTRY_ID;
+                eMPLOYEE_Upd.HOME_PIN_CODE = eMPLOYEE.HOME_PIN_CODE;
+                eMPLOYEE_Upd.OFF_ADDR_LINE1 = eMPLOYEE.OFF_ADDR_LINE1;
+                eMPLOYEE_Upd.OFF_ADDR_LINE2 = eMPLOYEE.OFF_ADDR_LINE2;
+                eMPLOYEE_Upd.OFF_CITY = eMPLOYEE.OFF_CITY;
+                eMPLOYEE_Upd.OFF_STATE = eMPLOYEE.OFF_STATE;
+                eMPLOYEE_Upd.OFF_CTRY_ID = eMPLOYEE.OFF_CTRY_ID;
+                eMPLOYEE_Upd.OFF_PIN_CODE = eMPLOYEE.OFF_PIN_CODE;
+                db.Entry(eMPLOYEE_Upd).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = string.Concat("Employee contact details saved for ", eMPLOYEE.FIRST_NAME);
+                return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
+            return View(eMPLOYEE);
+        }
+
+        // GET: Employee/Edit/5
+        public ActionResult Edit_Contact(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            //ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE.RPTG_MGR_ID);
+
+            return View(eMPLOYEE);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Contact([Bind(Include = "ID,RPTG_MGR_ID,EMP_CAT_ID,EMP_NUM,JOINING_DATE,FIRST_NAME,MID_NAME,LAST_NAME,GNDR,JOB_TIL,EMP_POS_ID,EMP_DEPT_ID,EMP_GRADE_ID,QUAL,EXPNC_DETL,EXPNC_YEAR,EXPNC_MONTH,STAT,STAT_DESCR,DOB,MARITAL_STAT,CHLD_CNT,FTHR_NAME,MTHR_NAME,HUSBND_NAME,BLOOD_GRP,NTLTY_ID,HOME_ADDR_LINE1,HOME_ADDR_LINE2,HOME_CITY,HOME_STATE,HOME_CTRY_ID,HOME_PIN_CODE,OFF_ADDR_LINE1,OFF_ADDR_LINE2,OFF_CITY,OFF_STATE,OFF_CTRY_ID,OFF_PIN_CODE,OFF_PH1,OFF_PH2,MOBL_PH,HOME_PH,EML,FAX,PHTO_FILENAME,PHTO_CNTNT_TYPE,PHTO_DATA,CREATED_AT,UPDATED_AT,PHTO_FILE_SIZE,USRID")] EMPLOYEE eMPLOYEE)
+        {
+            if (ModelState.IsValid)
+            {
+                EMPLOYEE eMPLOYEE_Upd = db.EMPLOYEEs.Find(eMPLOYEE.ID);
+                eMPLOYEE_Upd.OFF_PH1 = eMPLOYEE.OFF_PH1;
+                eMPLOYEE_Upd.OFF_PH2 = eMPLOYEE.OFF_PH2;
+                eMPLOYEE_Upd.MOBL_PH = eMPLOYEE.MOBL_PH;
+                eMPLOYEE_Upd.HOME_PH = eMPLOYEE.HOME_PH;
+                eMPLOYEE_Upd.FAX = eMPLOYEE.FAX;
+                db.Entry(eMPLOYEE_Upd).State = EntityState.Modified;
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                }
+                ViewBag.Notice = string.Concat("Contact details updated for ", eMPLOYEE.FIRST_NAME);
+                return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
+            return View(eMPLOYEE);
+        }
+
+        // GET: Employee/Edit/5
+        public ActionResult Edit3(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            ViewData["employee"] = eMPLOYEE;
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            var employee_bank_details = (from bf in db.BANK_FIELD
+                                         join ebd in db.EMPLOYEE_BANK_DETAIL.Where(x=>x.EMP_ID == id) on bf.ID equals ebd.BANK_FLD_ID into gebd
+                                         from subgebd in gebd.DefaultIfEmpty()
+                                         where bf.STAT == true
+                                         select new Models.EmployeeBankDetail { BankFieldData = bf, BankDetailData = (subgebd == null ? null : subgebd) }).OrderBy(x => x.BankFieldData.NAME).ToList();
+            ViewData["employee_bank_details"] = employee_bank_details;
+
+            if (employee_bank_details == null)
+            {
+                ViewBag.ErrorMessage = "No additional fields available";
+                return RedirectToAction("Profiles", new { id = id, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+
+            //ViewBag.RPTG_MGR_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE.RPTG_MGR_ID);
+
+            return View(employee_bank_details);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit3(IEnumerable<SFSAcademy.Models.EmployeeBankDetail> EmpDet)
+        {
+            if (ModelState.IsValid)
+            {
+                foreach (var item in EmpDet)
+                {
+                    EMPLOYEE_BANK_DETAIL row_id = db.EMPLOYEE_BANK_DETAIL.Where(x => x.EMP_ID == item.EMPLOYEE_ID && x.BANK_FLD_ID == item.BANK_FIELD_ID).FirstOrDefault();
+                    if(row_id != null)
+                    {
+                        row_id.BANK_INFO = item.FIELD_VALUE;
+                        db.Entry(row_id).State = EntityState.Modified;
+                        try { db.SaveChanges(); }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                            return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                        }
+
+                    }
+                    else
+                    {
+                        var EmpBankDet = new EMPLOYEE_BANK_DETAIL() { EMP_ID = item.EMPLOYEE_ID, BANK_FLD_ID = item.BANK_FIELD_ID, BANK_INFO = item.FIELD_VALUE };
+                        db.EMPLOYEE_BANK_DETAIL.Add(EmpBankDet);
+                        try { db.SaveChanges(); }
+                        catch (DbEntityValidationException e)
+                        {
+                            foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                            return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+                        }
+                    }
+                    
+                }
+                EMPLOYEE EmpEdit = db.EMPLOYEEs.Find(EmpDet.FirstOrDefault().EMPLOYEE_ID);
+                ViewBag.Notice = string.Concat("Employee ", EmpEdit.FIRST_NAME, "'s Bank details updated.");
+                return RedirectToAction("Profiles", new { id = EmpDet.FirstOrDefault().EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State does nto seem to be valid.";
+            return View(EmpDet);
+        }
+
+        // GET: Employee/Edit/5
+        public ActionResult View_Attendance(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            EMPLOYEE eMPLOYEE = db.EMPLOYEEs.Find(id);
+            if (eMPLOYEE == null)
+            {
+                return HttpNotFound();
+            }
+            ViewData["employee"] = eMPLOYEE;
+            var attendance_report = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == id).ToList();
+            ViewData["attendance_report"] = attendance_report;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
+            ViewData["leave_types"] = leave_types;
+            var leave_count = (from el in db.EMPLOYEE_LEAVE
+                               join elt in db.EMPLOYEE_LEAVE_TYPE on el.EMP_LEAVE_TYPE_ID equals elt.ID
+                               where elt.STAT == true && el.EMP_ID == id
+                               select el).ToList();
+            ViewData["leave_count"] = leave_count;
+
+            decimal total_leaves = 0;
+            foreach(var item in leave_types)
+            {
+                foreach(var item2 in leave_count)
+                {
+                    if(item2.EMP_LEAVE_TYPE_ID == item.ID)
+                    {
+                        EMPLOYEE_LEAVE leave_count_inner = db.EMPLOYEE_LEAVE.Find(item2.ID);
+                        total_leaves += (decimal)leave_count_inner.LEAVE_CNT;
+                    }
+                }
+            }
+            ViewBag.total_leaves = total_leaves;
+
+            var EmployeeLeave = db.EMPLOYEE_LEAVE.ToList();
+            ViewData["EmployeeLeave"] = EmployeeLeave;
+            var EmployeeAttendance = db.EMPLOYEE_ATTENDENCES.ToList();
+            ViewData["EmployeeAttendance"] = EmployeeAttendance;
+
+            return PartialView("_Attendance_Report");
+        }
+
+        // GET: Employee/Edit/5
+        public ActionResult Employee_Leave_Count_Edit(int? id, int? leave_type_id)
+        {
+            EMPLOYEE_LEAVE leave_count = db.EMPLOYEE_LEAVE.Include(x=>x.EMPLOYEE_LEAVE_TYPE).Where(x=>x.ID == id).FirstOrDefault();
+            if (leave_count == null)
+            {
+                return HttpNotFound();
+            }
+            ViewData["leave_count"] = leave_count;
+
+
+            return PartialView("_Edit_Leave_Count", leave_count);
+        }
+
+
+        public ActionResult employee_leave_count_update(int? id, decimal? LeaveCount)
+        {
+            decimal available_leave = (decimal)LeaveCount;
+            EMPLOYEE_LEAVE leave = db.EMPLOYEE_LEAVE.Find(id);
+            leave.LEAVE_CNT = available_leave;
+            db.Entry(leave).State = EntityState.Modified;
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e){foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
+                return View();
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View();
+            }
+            EMPLOYEE employee = db.EMPLOYEEs.Find(leave.EMP_ID);
+            ViewData["employee"] = employee;
+
+            var attendance_report = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == employee.ID).ToList();
+            ViewData["attendance_report"] = attendance_report;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
+            ViewData["leave_types"] = leave_types;
+            var leave_count = db.EMPLOYEE_LEAVE.Include(x => x.EMPLOYEE_LEAVE_TYPE).Where(x => x.EMP_ID == employee.ID).ToList();
+            ViewData["leave_count"] = leave_count;
+
+            decimal total_leaves = 0;
+            foreach (var item in leave_types)
+            {
+                foreach (var item2 in leave_count)
+                {
+                    if (item2.EMP_LEAVE_TYPE_ID == item.ID)
+                    {
+                        EMPLOYEE_LEAVE leave_count_inner = db.EMPLOYEE_LEAVE.Find(item2.ID);
+                        total_leaves += (decimal)leave_count_inner.LEAVE_CNT;
+                    }
+                }
+            }
+            ViewBag.total_leaves = total_leaves;
+
+            var EmployeeLeave = db.EMPLOYEE_LEAVE.ToList();
+            ViewData["EmployeeLeave"] = EmployeeLeave;
+            var EmployeeAttendance = db.EMPLOYEE_ATTENDENCES.ToList();
+            ViewData["EmployeeAttendance"] = EmployeeAttendance;
+
+            return PartialView("_Attendance_Report");
+        }
 
         public ActionResult HR(string Notice)
         {
@@ -332,7 +782,6 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x=>x.NAME), "ID", "NAME");
             var positions = (from ep in db.EMPLOYEE_POSITION
                              join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                               where ep.IS_ACT == true
@@ -347,6 +796,20 @@ namespace SFSAcademy.Controllers
                             .OrderBy(x => x.PositionData.POS_NAME).ToList();
             ViewData["inactive_positions"] = inactive_positions;
 
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
+
             return View();
         }
 
@@ -357,7 +820,20 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x=>x.STAT==true).OrderBy(x => x.NAME), "ID", "NAME");
+                var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+                List<SelectListItem> options = new List<SelectListItem>();
+                foreach (var item in queryCategory)
+                {
+                    string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                    var result = new SelectListItem();
+                    result.Text = CategoryFullName;
+                    result.Value = item.ID.ToString();
+                    result.Selected = item.ID == eMPLOYEEpOSITION.EMP_CAT_ID ? true : false;
+                    options.Add(result);
+                }
+                // add the 'ALL' option
+                options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+                ViewBag.EMP_CAT_ID = options;
                 var positions = (from ep in db.EMPLOYEE_POSITION
                                  join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                                  where ep.IS_ACT == true
@@ -400,7 +876,20 @@ namespace SFSAcademy.Controllers
         public ActionResult Edit_Position(int? id)
         {
             EMPLOYEE_POSITION EmployeePos = db.EMPLOYEE_POSITION.Find(id);
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME", EmployeePos.EMP_CAT_ID);
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == EmployeePos.EMP_CAT_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
 
             return View(EmployeePos);
         }
@@ -496,7 +985,6 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            //ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x => x.STAT == "Y").OrderBy(x => x.NAME), "ID", "NAME");
             var departments = (from dp in db.EMPLOYEE_DEPARTMENT
                              where dp.STAT == true
                              select new Models.EmployeeDepartment { DepartmentData = dp})
@@ -1099,7 +1587,21 @@ namespace SFSAcademy.Controllers
             DateTime PDate = Convert.ToDateTime(System.DateTime.Now);
             ViewBag.ReturnDate = PDate.ToShortDateString();
             ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x=>x.STAT == true).ToList(), "ID", "NAMES");
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).ToList(), "ID", "NAME");
+
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
+
             ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true).ToList(), "ID", "POS_NAME");
             ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true).ToList(), "ID", "GRADE_NAME");
 
@@ -1124,9 +1626,22 @@ namespace SFSAcademy.Controllers
             ViewBag.NewEmployeeNumberNum = eMPLOYEE.EMP_NUM;
             DateTime PDate = Convert.ToDateTime(eMPLOYEE.JOINING_DATE);
             ViewBag.ReturnDate = PDate.ToShortDateString();
-            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies.Where(o => o.NTLTY != " ").ToList(), "ID", "NTLTY", eMPLOYEE.NTLTY_ID);
+            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies.Where(o => o.NTLTY != " ").ToList(), "ID", "NTLTY", eMPLOYEE.NTLTY_ID != null ? eMPLOYEE.NTLTY_ID : 99);
             ViewBag.EMP_DEPT_ID = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true), "ID", "NAME", eMPLOYEE.EMP_DEPT_ID);
-            ViewBag.EMP_CAT_ID = new SelectList(db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true), "ID", "NAME", eMPLOYEE.EMP_CAT_ID);
+            var queryCategory = db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true).OrderBy(x => x.NAME).ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCategory)
+            {
+                string CategoryFullName = string.Concat(item.NAME, " (", item.PRFX, ")");
+                var result = new SelectListItem();
+                result.Text = CategoryFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == eMPLOYEE.EMP_CAT_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee Category" });
+            ViewBag.EMP_CAT_ID = options;
             ViewBag.EMP_POS_ID = new SelectList(db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true), "ID", "POS_NAME", eMPLOYEE.EMP_POS_ID);
             ViewBag.EMP_GRADE_ID = new SelectList(db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true), "ID", "GRADE_NAME", eMPLOYEE.EMP_GRADE_ID);
 
@@ -1186,7 +1701,12 @@ namespace SFSAcademy.Controllers
 
                 EMPLOYEE EmpResult =  db.EMPLOYEEs.Find(eMPLOYEE.ID) ;
                 EmpResult.USRID = StdUser.ID;
-
+                var leave_type = db.EMPLOYEE_LEAVE_TYPE.ToList();
+                foreach(var item in leave_type)
+                {
+                    var EmployeeLeave = new EMPLOYEE_LEAVE() { EMP_ID = eMPLOYEE.ID, EMP_LEAVE_TYPE_ID = item.ID, LEAVE_CNT = item.MAX_LEAVE_CNT, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
+                    db.EMPLOYEE_LEAVE.Add(EmployeeLeave);
+                }
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
                 {
@@ -1370,13 +1890,14 @@ namespace SFSAcademy.Controllers
                         return View(EmpAddDet);
                     }
                 }
+                ViewBag.Notice = "Additional Details saved for Employee.";
                 if (edit_request == null)
                 {
                     return RedirectToAction("Edit_Privilege", "User", new { id = NewEmp.USRID, Calling_Method = "Employee" });
                 }
                 else
                 {
-                    return RedirectToAction("Profiles", "Employee", new { Emp_id = NewEmp.ID });
+                    return RedirectToAction("Profiles", "Employee", new { id = NewEmp.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
 
             }
@@ -1470,15 +1991,16 @@ namespace SFSAcademy.Controllers
             return View(EmployeeDetail);
         }
 
-        public ActionResult Profiles(int? id, string Notice)
+        public ActionResult Profiles(int? id, string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             var current_user = this.Session["CurrentUser"] as UserDetails;
             ViewData["current_user"] = current_user;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
             ViewData["Employee"] = Employee;
             int new_reminder_count = 0;
-            ViewBag.Notice = Notice;
             var EventReminder = (from EV in db.EVENTs
                                  join EDE in db.EMPLOYEE_DEPARTMENT_EVENT on EV.ID equals EDE.EV_ID
                                  join ED in db.EMPLOYEE_DEPARTMENT on EDE.EMP_DEPT_ID equals ED.ID
@@ -1491,7 +2013,10 @@ namespace SFSAcademy.Controllers
                 new_reminder_count = new_reminder_count + 1;
             }
             ViewBag.new_reminder_count = new_reminder_count;
-            ViewBag.gender = Employee.GNDR == "M" ? "Male" : "Female";
+            if(Employee.GNDR != null)
+            {
+                ViewBag.gender = Employee.GNDR == "M" ? "Male" : "Female";
+            }
             ViewBag.status = Employee.STAT == true ? "Active" : "Inactive";
             if(Employee.RPTG_MGR_ID != null)
             {
@@ -1654,13 +2179,10 @@ namespace SFSAcademy.Controllers
         {
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
             ViewData["Employee"] = Employee;
-            var bank_details = (from emp in db.EMPLOYEEs
-                                join ebd in db.EMPLOYEE_BANK_DETAIL on emp.ID equals ebd.EMP_ID into gebd
+            var bank_details = (from bf in db.BANK_FIELD
+                                join ebd in db.EMPLOYEE_BANK_DETAIL.Where(x=>x.EMP_ID == id) on bf.ID equals ebd.BANK_FLD_ID into gebd
                                 from subgebd in gebd.DefaultIfEmpty()
-                                join bf in db.BANK_FIELD on subgebd.BANK_FLD_ID equals bf.ID into gbf
-                                from subgbf in gbf.DefaultIfEmpty()
-                               where emp.ID == id
-                               select new SFSAcademy.Models.EmployeeBankDetail { EmployeedData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
+                               select new SFSAcademy.Models.EmployeeBankDetail { BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = bf })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
             return PartialView("_Bank_Details");
@@ -1670,13 +2192,10 @@ namespace SFSAcademy.Controllers
         {
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
             ViewData["Employee"] = Employee;
-            var additional_details = (from emp in db.EMPLOYEEs
-                                join ead in db.EMPLOYEE_ADDITIONAL_DETAIL on emp.ID equals ead.EMP_ID into gead
-                                from subgead in gead.DefaultIfEmpty()
-                                join af in db.EMPLOYEE_ADDITIONAL_FIELD on subgead.ADDL_FLD_ID equals af.ID into gaf
-                                from subgaf in gaf.DefaultIfEmpty()
-                                where emp.ID == id
-                                select new SFSAcademy.Models.EmployeeAdditionalDetail { EmployeedData = emp, AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = (subgaf == null ? null : subgaf) })
+            var additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
+                                      join ead in db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x=>x.EMP_ID == id) on af.ID equals ead.ADDL_FLD_ID into gead
+                                      from subgead in gead.DefaultIfEmpty()
+                                select new SFSAcademy.Models.EmployeeAdditionalDetail {AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = af })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["additional_details"] = additional_details;
             return PartialView("_Additional_Details");
@@ -1804,7 +2323,7 @@ namespace SFSAcademy.Controllers
                                 join bf in db.BANK_FIELD on subgebd.BANK_FLD_ID equals bf.ID into gbf
                                 from subgbf in gbf.DefaultIfEmpty()
                                 where emp.ID == id
-                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeedData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
+                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
             var additional_details = (from emp in db.EMPLOYEEs
@@ -1813,7 +2332,7 @@ namespace SFSAcademy.Controllers
                                       join af in db.EMPLOYEE_ADDITIONAL_FIELD on subgead.ADDL_FLD_ID equals af.ID into gaf
                                       from subgaf in gaf.DefaultIfEmpty()
                                       where emp.ID == id
-                                      select new SFSAcademy.Models.EmployeeAdditionalDetail { EmployeedData = emp, AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = (subgaf == null ? null : subgaf) })
+                                      select new SFSAcademy.Models.EmployeeAdditionalDetail { EmployeeData = emp, AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = (subgaf == null ? null : subgaf) })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["additional_details"] = additional_details;
 
@@ -2014,7 +2533,7 @@ namespace SFSAcademy.Controllers
                     EmployeeDetail = EmployeeDetail.OrderBy(s => s.EmployeeData.FIRST_NAME);
                     break;
             }
-            List<SelectListItem> options = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", Nationality_Id==null ? 99: Nationality_Id).Distinct().ToList();
+            List<SelectListItem> options = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", Nationality_Id==null ? 99 : Nationality_Id).Distinct().ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Nationality" });
             ViewBag.Nationality_Id = options;
@@ -3045,7 +3564,7 @@ namespace SFSAcademy.Controllers
                                 join bf in db.BANK_FIELD on subgebd.BANK_FLD_ID equals bf.ID into gbf
                                 from subgbf in gbf.DefaultIfEmpty()
                                 where emp.ID == id
-                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeedData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
+                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
 
@@ -3130,9 +3649,10 @@ namespace SFSAcademy.Controllers
         public ActionResult Subject_Assignment(string Notice)
         {
             ViewBag.Notice = Notice;
+            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false
+                                    where cs.IS_DEL == false && bt.END_DATE >= StartDate
                                     select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
                         .OrderBy(x => x.BatchData.ID).ToList();
 

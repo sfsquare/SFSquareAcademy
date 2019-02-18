@@ -83,7 +83,27 @@ namespace SFSAcademy.Controllers
             {
                 eMPLOYEE_ATTENDENCES.ATNDENCE_DATE = Convert.ToDateTime(eMPLOYEE_ATTENDENCES.ATNDENCE_DATE);
                 db.EMPLOYEE_ATTENDENCES.Add(eMPLOYEE_ATTENDENCES);
-                try { db.SaveChanges(); }
+                EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == eMPLOYEE_ATTENDENCES.EMP_ID && x.EMP_LEAVE_TYPE_ID == eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                try {
+                    db.SaveChanges();
+                    decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
+                    if (eMPLOYEE_ATTENDENCES.IS_HALF_DAY)
+                    {
+                        leaves_taken = leaves_taken + (decimal)0.5;
+                    }
+                    else
+                    {
+                        leaves_taken = leaves_taken + (decimal)1.0;
+                    }
+                    reset_count.LEAVE_TAKE = leaves_taken;
+                    db.Entry(reset_count).State = EntityState.Modified;
+                    try { db.SaveChanges(); }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                    }
+                }
                 catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
                     return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage});
                 }
@@ -130,12 +150,79 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES_upd = db.EMPLOYEE_ATTENDENCES.Find(eMPLOYEE_ATTENDENCES.ID);
-                eMPLOYEE_ATTENDENCES_upd.EMP_LEAVE_TYPE_ID = eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID;
-                eMPLOYEE_ATTENDENCES_upd.RSN = eMPLOYEE_ATTENDENCES.RSN;
-                eMPLOYEE_ATTENDENCES_upd.IS_HALF_DAY = eMPLOYEE_ATTENDENCES.IS_HALF_DAY;
-                db.Entry(eMPLOYEE_ATTENDENCES_upd).State = EntityState.Modified;
-                try { db.SaveChanges(); }
+                EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(eMPLOYEE_ATTENDENCES.ID);
+                EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
+                bool day_status = attendance.IS_HALF_DAY;
+                EMPLOYEE_LEAVE_TYPE leave_type = db.EMPLOYEE_LEAVE_TYPE.Find(attendance.EMP_LEAVE_TYPE_ID);
+                bool half_day = true;
+                decimal leave = 0;
+                if (attendance.IS_HALF_DAY)
+                {
+                    half_day = true;
+                }
+                else
+                {
+                    half_day = false;
+                }
+
+                attendance.EMP_LEAVE_TYPE_ID = eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID;
+                attendance.RSN = eMPLOYEE_ATTENDENCES.RSN;
+                attendance.IS_HALF_DAY = eMPLOYEE_ATTENDENCES.IS_HALF_DAY;
+                db.Entry(attendance).State = EntityState.Modified;
+                try
+                {
+                    db.SaveChanges();
+                    if(attendance.EMP_LEAVE_TYPE_ID == leave_type.ID)
+                    {
+                        if(day_status != attendance.IS_HALF_DAY)
+                        {
+                            if(half_day)
+                            {
+                                leave = leaves_taken + (decimal)0.5;
+                            }
+                            else
+                            {
+                                leave = leaves_taken - (decimal)0.5;
+                            }
+                            reset_count.LEAVE_TAKE = leave;
+                            db.Entry(reset_count).State = EntityState.Modified;
+                        }
+                    }
+                    else
+                    {
+                        if (half_day)
+                        {
+                            leave = leaves_taken - (decimal)0.5;
+                        }
+                        else
+                        {
+                            leave = leaves_taken - (decimal)1.0;
+                        }
+                        reset_count.LEAVE_TAKE = leave;
+                        db.Entry(reset_count).State = EntityState.Modified;
+                        EMPLOYEE_LEAVE new_reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                        leaves_taken = (decimal)new_reset_count.LEAVE_TAKE;
+                        if(attendance.IS_HALF_DAY)
+                        {
+                            leave = leaves_taken + (decimal)0.5;
+                            new_reset_count.LEAVE_TAKE = leave;
+                            db.Entry(new_reset_count).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            leave = leaves_taken + (decimal)1.0;
+                            new_reset_count.LEAVE_TAKE = leave;
+                            db.Entry(new_reset_count).State = EntityState.Modified;
+                        }
+                    }                    
+                    try { db.SaveChanges(); }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                    }
+                }
                 catch (DbEntityValidationException e)
                 {
                     foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
@@ -156,8 +243,21 @@ namespace SFSAcademy.Controllers
         // GET: Employee_Attendances/Delete/5
         public ActionResult Delete(int? id)
         {
-            EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES = db.EMPLOYEE_ATTENDENCES.Find(id);
-            db.EMPLOYEE_ATTENDENCES.Remove(eMPLOYEE_ATTENDENCES);
+            EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(id);
+            EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+            decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
+            decimal leave = 0;
+            if(attendance.IS_HALF_DAY)
+            {
+                leave = leaves_taken - (decimal)0.5;
+            }
+            else
+            {
+                leave = leaves_taken - (decimal)1.0;
+            }
+            db.EMPLOYEE_ATTENDENCES.Remove(attendance);
+            reset_count.LEAVE_TAKE = leave;
+            db.Entry(reset_count).State = EntityState.Modified;
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e)
             {

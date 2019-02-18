@@ -1,0 +1,155 @@
+﻿@model SFSAcademy.EMPLOYEE
+@{
+    ViewBag.Title = "Edit2";
+}
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Edit Employee Information</h1>
+    <h3>Address</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div> <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"> </div>
+<div class="bread_crumb">
+    @Html.ActionLink("Human Resources", "HR") &raquo;
+    @Html.ActionLink("Profile", "Profiles", new { id = Model.ID }) &raquo;
+    Edit Address
+</div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+        <span class="span-sub-heading">Home Address</span>
+        <hr class="sub-heading" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.HOME_ADDR_LINE1, "Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_ADDR_LINE1, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_ADDR_LINE2, "Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_ADDR_LINE2, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline label" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_CITY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_CITY, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline label" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_STATE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_STATE, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline label" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.DropDownList("HOME_CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.HOME_CTRY_ID, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline label" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.HOME_PIN_CODE, "PIN Code", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.HOME_PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.HOME_PIN_CODE, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <br />
+        <span class="span-sub-heading">Office Address</span>
+        <hr class="sub-heading" />
+
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.OFF_ADDR_LINE1, "Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_ADDR_LINE1, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.OFF_ADDR_LINE2, "Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_ADDR_LINE2, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.OFF_CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_CITY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_CITY, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.OFF_STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_STATE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_STATE, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.OFF_CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.DropDownList("OFF_CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.OFF_CTRY_ID, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <hr class="label-underline" />
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.OFF_PIN_CODE, "PIN Code", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.OFF_PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OFF_PIN_CODE, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        </div>
+        <div class="save-proceed-button">
+            <input type="submit" value="► Update" class="submit_button" />
+        </div>
+    }
+
+</div>
+

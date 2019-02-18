@@ -6,20 +6,27 @@
 
 @if (bank_details != null && bank_details.Count() != 0)
 {
-    <table width="700">
-        @{int i = 1;}
-        @foreach (var item in bank_details)
+<table width="700">
+    @{int i = 1;}
+    @foreach (var item in bank_details)
+    {
+        string code = "even";
+        if (i % 2 == 0)
         {
-            string code = "even";
-            if (i % 2 == 0)
-            {
-                code = "odd";
-            }
-            <tr class="@code left"><td>@item.BankFieldData.NAME</td><td class="right">@item.BankDetailData.BANK_INFO</td></tr>
-            i += 1;
+            code = "odd";
         }
+        if (item.BankDetailData != null)
+        {
+            <tr class="@code left"><td>@item.BankFieldData.NAME</td><td class="right">@item.BankDetailData.BANK_INFO</td></tr>
+        }
+        else
+        {
+            <tr class="@code left"><td>@item.BankFieldData.NAME</td><td class="right"> </td></tr>
+        }
+        i += 1;
+    }
 
-    </table>
+</table>
         <div class="edit-pdf-group">
             @if (Html.Permitted_To("Edit3", "Employee"))
             {

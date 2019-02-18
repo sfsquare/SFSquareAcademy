@@ -12,9 +12,15 @@
 <table width="700">
     <tr class="odd left"><td>Joining Date</td><td class="right">@Employee.FirstOrDefault().EmployeeData.JOINING_DATE.Value.ToShortDateString()</td></tr>
     <tr class="even left"><td>Department</td><td class="right">@Employee.FirstOrDefault().DepartmentData.NAMES</td></tr>
-    <tr class="odd left"><td>Category</td><td class="right">@Employee.FirstOrDefault().CategoryData.NAME</td></tr>
-    <tr class="even left"><td>Position</td><td class="right">@Employee.FirstOrDefault().PositionData.POS_NAME</td></tr>
-    @if (Employee.FirstOrDefault().GradeData.GRADE_NAME != null)
+    @if (Employee.FirstOrDefault().CategoryData != null)
+    {
+        <tr class="odd left"><td>Category</td><td class="right">@Employee.FirstOrDefault().CategoryData.NAME</td></tr>
+    }
+    @if (Employee.FirstOrDefault().PositionData != null)
+    {
+        <tr class="even left"><td>Position</td><td class="right">@Employee.FirstOrDefault().PositionData.POS_NAME</td></tr>
+    }
+    @if (Employee.FirstOrDefault().GradeData != null)
     {
         <tr class="odd left"><td>Grade</td><td class="right">@Employee.FirstOrDefault().GradeData.GRADE_NAME</td></tr>
     }
@@ -26,7 +32,7 @@
     <tr class="odd left">
         <td>Manager</td>
         @if (Html.CurrentUser_UserType().Equals("Admin"))
-            {
+        {
             <td class="right">
                 <a href="@Url.Action("Profile", "Employee", new { id = Reporting_Manager.ID })" id="RepManager">@Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME</a>
                 <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>

@@ -1,0 +1,82 @@
+﻿@model SFSAcademy.EMPLOYEE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["independent_categories"];
+    IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll>)ViewData["dependent_categories"];
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+}
+@{
+    ViewBag.Title = "Edit_Payroll_Details";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Edit Payroll</h1>
+    <h3>Payroll Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div id="employee_profile_heading">
+        <div id="profile_picture_display">
+            @if (Model.IMAGE_DOCUMENTS_ID != null)
+            {
+                <img src="/Employee/Show/@Model.IMAGE_DOCUMENTS_ID" alt="" height=150 width=150 />
+            }
+            else
+            {
+                <img src="~/Content/images/HR/default_employee.png" alt="" height=150 width=150 />
+            }
+        </div>
+        <div id="employee_main_info">
+            <h3> @Model.FIRST_NAME @Model.MID_NAME @Model.LAST_NAME  </h3>
+            <h4> Employee Id : @Model.EMP_NUM </h4>
+        </div>
+        <div id="profile-general-info">
+
+        </div>
+        <div class="extender"></div>
+    </div>
+    <div id="form-content">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            for (int i = 0; i < independent_categories.Count(); i++)
+            {
+                <div class="payroll-field-pair">
+                    @Html.Label("[" + i + "].PayrollCatData.NAME", independent_categories.ElementAt(i).PayrollCatData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="payroll-input-bg">
+                        @Html.TextBox("[" + i + "].Amount", independent_categories.ElementAt(i).SalaryStructureData.AMT)
+                        @Html.Hidden("[" + i + "].EmployeeId", Model.ID)
+                        @Html.Hidden("[" + i + "].PayrollCategoryId", independent_categories.ElementAt(i).PayrollCatData.ID)
+                    </div>
+                </div>
+            }
+
+            for (int j = 0; j < dependent_categories.Count(); j++)
+            {
+                <div class="payroll-field-pair">
+                    @Html.Label("[" + j + "].DependentPayrollCatData.NAME", dependent_categories.ElementAt(j).DependentPayrollCatData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="payroll-input-bg">
+                        @Html.TextBox("[" + j + "].DependentAmount", dependent_categories.ElementAt(j).SalaryStructureData.AMT) <span class="necessary-field" style="font-size:small">@string.Concat(dependent_categories.ElementAt(j).DependentPayrollCatData.PCT, "% of ", dependent_categories.ElementAt(j).PayrollCatData.NAME) </span>
+                        @Html.Hidden("[" + j + "].DependentEmployeeId", Model.ID)
+                        @Html.Hidden("[" + j + "].DependentPayrollCategoryId", dependent_categories.ElementAt(j).DependentPayrollCatData.ID)
+                    </div>
+                </div>
+            }
+            <div id="submit-button">
+                <input type="submit" value="► Update" class="submit_button" />
+            </div>
+        }
+    </div>
+</div>
+

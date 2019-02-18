@@ -18,7 +18,6 @@
         $('.all_privileges_list :checkbox').change(function () {
             var value = $(this).data('value');
             var isChecked = $(this).is(':checked');
-            alert(isChecked);
             var url = $('#checkboxes').data('url');
             $.ajax({
                 url: url,
@@ -32,7 +31,6 @@
     });
 
     function privilege_tag_check_all_or_none(privilege_tag_id, th_is) {
-        alert(privilege_tag_id);
         var value = $(th_is).data('value');
         var element = document.getElementById(th_is);
         var field_value = element.checked();
@@ -49,7 +47,6 @@
     }
 
     function privilege_check(privilege_tag_id, th_is) {
-        alert('Hi');
         var element = document.getElementById(th_is);
         if (element.checked == false) {
             $('.check_all_' + privilege_tag_id).first().checked = false
