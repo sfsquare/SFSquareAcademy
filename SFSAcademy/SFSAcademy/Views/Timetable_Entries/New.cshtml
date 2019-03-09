@@ -1,8 +1,4 @@
-﻿@using SFSAcademy.Models
-@{
-    IEnumerable<SFSAcademy.BATCH> batches = (IEnumerable<SFSAcademy.BATCH>)ViewData["batches"];
-    TIMETABLE_ENTRY timetable = (TIMETABLE_ENTRY)ViewData["timetable"];
-}
+﻿@model SFSAcademy.TIMETABLE
 @{
     ViewBag.Title = "New";
 }
@@ -10,23 +6,21 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/timetable/new_timetable.css" />
 <script type="text/javascript">
     $(document.forms[0]).ready(function () {
         $(".LoaderBox").hide();
         $('#BatchDropDown').change(function () {
-
-            /* Get the selected value of dropdownlist */
             var selectedID = $(this).val();
             var SelectedTTId = $('#timetable_id').val();
             $(".LoaderBox").show();
-            /* Request the partial view with .get request. */
             $.get('/Timetable_Entries/New_Entry?batch_id=' + selectedID + "&timetable_id=" + SelectedTTId, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
                 $('#render_area').html(data);
-                /* little fade in effect */
                 $('#render_area').fadeIn('fast');
             }).success(function (status) {
                 $(".LoaderBox").hide();
@@ -53,15 +47,17 @@
     var selected_divs = new Array();
 
     function update_selected_divs(id) {
+        var DropId = 'drop_' + id;
+        var DropDiv = document.getElementById(DropId);
         var exists_in_list = 0;
         for (x in selected_divs)
             if (id == selected_divs[x]) {
                 exists_in_list = 1;
                 selected_divs.splice(x, 1)
-                $('drop_' + id).className = "drop";
+                DropDiv.className = "drop";
             }
         if (!exists_in_list) {
-            $('drop_' + id).className = "selected_div";
+            DropDiv.className = "selected_div";
             selected_divs.push(id);
         }
     }
@@ -70,30 +66,26 @@
         selected_divs = [];
     }
 
-    function make_ajax_calls(tte_id, emp_sub_id) {
-        if (selected_divs.length == 0) {
-            var SelectedTTId = $('#timetable_id').val();
-            $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId, function (data) {
 
-                /* data is the pure html returned from action method, load it to your page */
-                $('#modal-box').html(data);
-                /* little fade in effect */
-                $('#modal-box').fadeIn('fast');
+    function make_ajax_calls(tte_id, emp_sub_id) {
+        var SelectedTTId = $('#timetable_id').val();
+        var SelectedBatch = $('#batch_id').val();
+        $(".LoaderBox").show();
+        if (selected_divs.length == 0) {
+            $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId + "&batch_id=" + SelectedBatch, function (data) {
+                $('#timetable').html(data);
+                $('#timetable').fadeIn('fast');
             }).success(function (status) {
-                $(".LoaderBox2").hide();
+                $(".LoaderBox").hide();
                 clear_selected_divs();
             });
         }
         else if (selected_divs.length == 1) {
-            var SelectedTTId = $('#timetable_id').val();
-            $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
-                $('#modal-box').html(data);
-                /* little fade in effect */
-                $('#modal-box').fadeIn('fast');
+            $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId + "&batch_id=" + SelectedBatch, function (data) {
+                $('#timetable').html(data);
+                $('#timetable').fadeIn('fast');
             }).success(function (status) {
-                $(".LoaderBox2").hide();
+                $(".LoaderBox").hide();
                 clear_selected_divs();
             });
             if (selected_divs[0] == tte_id) selected_divs.pop();
@@ -104,32 +96,24 @@
                 if (tte_id == selected_divs[x])
                     exists_in_list = 1;
             if (exists_in_list) {
-                tte_list = selected_divs.join(',');
-                var SelectedTTId = $('#timetable_id').val();
-                $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId, function (data) {
-
-                    /* data is the pure html returned from action method, load it to your page */
-                    $('#modal-box').html(data);
-                    /* little fade in effect */
-                    $('#modal-box').fadeIn('fast');
+                var tte_list = selected_divs.join(',');
+                $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_list + "&timetable_id=" + SelectedTTId + "&batch_id=" + SelectedBatch, function (data) {
+                    $('#timetable').html(data);
+                    $('#timetable').fadeIn('fast');
                 }).success(function (status) {
-                    $(".LoaderBox2").hide();
+                    $(".LoaderBox").hide();
                     clear_selected_divs();
                 });
                 selected_divs = [];
             }
             else
-                var SelectedTTId = $('#timetable_id').val();
-            $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
-                $('#modal-box').html(data);
-                /* little fade in effect */
-                $('#modal-box').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox2").hide();
-                clear_selected_divs();
-            });
+                $.get('/Timetable_Entries/update_multiple_timetable_entries2?emp_sub_id=' + emp_sub_id + "&tte_ids=" + tte_id + "&timetable_id=" + SelectedTTId + "&batch_id=" + SelectedBatch, function (data) {
+                    $('#timetable').html(data);
+                    $('#timetable').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                    clear_selected_divs();
+                });
         }
     }
 </script>
@@ -146,21 +130,25 @@
 
 <div id="inner-tab-menu">
     <ul>
-        @if (Html.Permitted_To("Subject_Assignment", "Employee"))
+        @if (Html.Permitted_To("Subject_Assignment", "Employee") || Html.CurrentUser_UserType().Equals("Admin"))
         {
             <li><a href="@Url.Action("Subject_Assignment", "Employee")">Employee Subject Association</a></li>
         }
     </ul>
 </div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable</a> &raquo;
+    Create Timetable Entries
+</div>
 <div id="page-yield">
     <div class="box">
         @if (ViewBag.Notice != null)
-            {
+        {
             <p class="flash-msg"> @ViewBag.Notice </p>
         }
-        @if (timetable != null && timetable.ID != 0)
+        @if (Model != null && Model.ID != 0)
         {
-            @Html.Hidden("timetable_id", timetable.ID)
+            @Html.Hidden("timetable_id", Model.ID)
         }
 
         <div class="label-field-pair label">
@@ -175,23 +163,23 @@
             <div>
                 @if (ViewBag.Edit == "Edit")
                 {
-                    using (Html.BeginForm("Update", "Timetable", FormMethod.Post, new { @encType = "multipart/form-data" }))
+                    using (Html.BeginForm("Update_Timetable", "Timetable", FormMethod.Post, new { @encType = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
-                        if (timetable != null && timetable.ID != 0)
+                        if (Model != null && Model.ID != 0)
                         {
-                            @Html.Hidden("tt_id", timetable.ID)
+                            @Html.Hidden("tt_id", Model.ID)
                         }
                         <div class="label-field-pair label">
                             <label for="start_date"> Start Date </label>
                             <div class="text-input-bg">
-                                @Html.Editor("START_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker" } })
+                                @Html.EditorFor(model => model.START_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = Model.START_DATE } })
                             </div>
                         </div>
                         <div class="label-field-pair label">
                             <label for="start_date"> End Date </label>
                             <div class="text-input-bg">
-                                @Html.Editor("END_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2" } })
+                                @Html.EditorFor(model => model.END_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2", @Value = Model.END_DATE } })
                             </div>
                         </div>
                         <input type="submit" value="► Create" class="submit_button" />
@@ -202,4 +190,5 @@
     </div>
 </div>
 <input type="hidden" value="@Model.ID" id="timetable_id" name="timetable_id" />
+<input type="hidden" value='@ViewBag.batch_id' name="batch_id" id="batch_id" />
 

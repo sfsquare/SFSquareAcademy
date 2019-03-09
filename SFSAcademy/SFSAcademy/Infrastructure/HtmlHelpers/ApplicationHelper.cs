@@ -387,6 +387,30 @@ namespace SFSAcademy.HtmlHelpers
             }
         }
 
+        public static IEnumerable<string> SplitCommaString(string str)
+        {
+            if (String.IsNullOrEmpty(str))
+                yield break;
+
+            foreach (var s in str.Split(','))
+            {
+                yield return s;
+            }
+        }
+
+        public static IEnumerable<int> SplitUnderscoreInt(string str)
+        {
+            if (String.IsNullOrEmpty(str))
+                yield break;
+
+            foreach (var s in str.Split('_'))
+            {
+                int num;
+                if (int.TryParse(s, out num))
+                    yield return num;
+            }
+        }
+
         public static DateTime AcademicYearStartDate()
         {
             DateTime YearStartDate = new DateTime(DateTime.Now.Year, 4, 1);

@@ -52,6 +52,9 @@ namespace SFSAcademy.Controllers
         {
             var weekdays = db.WEEKDAYs.Where(x => x.BTCH_ID == id && x.IS_DEL == false).ToList();
             ViewData["weekdays"] = weekdays;
+            //var ClassTimingSet = db.CLASS_TIMING_SET.Include(x=>x.CLASS_TIMING_ENTRY.Where(m=>m.IS_DEL == false)).Where(x => x.IS_DEL == false).ToList();
+            //ViewData["ClassTimingSet"] = ClassTimingSet;
+            ViewBag.ClassTimingSet = new SelectList(db.CLASS_TIMING_SET.Where(x => x.IS_DEL == false), "ID", "NAME");
             var wd = new SFSAcademy.Models.Weekdays();
             int match = 0;
             foreach(var item in weekdays)
@@ -59,77 +62,84 @@ namespace SFSAcademy.Controllers
                 if(item.WKDAY == "Sunday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Sunday", Id = 0, Select =true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Sunday", Id = 0, Select =true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if(match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Sunday", Id = 0 });  }
+            if(match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Sunday", Id = 0, ClassTimingSet = "Default" });  }
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Monday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Monday", Id = 1, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Monday", Id = 1, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Monday", Id = 1 }); }
+            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Monday", Id = 1, ClassTimingSet = "Default" }); }
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Tuesday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Tuesday", Id = 2, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Tuesday", Id = 2, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Tuesday", Id = 2 }); }
+            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Tuesday", Id = 2, ClassTimingSet = "Default" }); }
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Wednesday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Wednesday", Id = 3, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Wednesday", Id = 3, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0){ wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Wednesday", Id = 3 });}
+            if (match == 0){ wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Wednesday", Id = 3, ClassTimingSet = "Default" });}
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Thursday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Thursday", Id = 4, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Thursday", Id = 4, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Thursday", Id = 4 }); }
+            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Thursday", Id = 4, ClassTimingSet = "Default" }); }
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Friday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Friday", Id = 5, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Friday", Id = 5, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Friday", Id = 5 });}
+            if (match == 0) { wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Friday", Id = 5, ClassTimingSet = "Default" });}
             match = 0;
             foreach (var item in weekdays)
             {
                 if (item.WKDAY == "Saturday")
                 {
                     match = 1;
-                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Saturday", Id = 6, Select = true });
+                    string ClassTimingSetVal = item.CLASS_TIMING_SET_ID == null ? "Default" : db.CLASS_TIMING_SET.Find(item.CLASS_TIMING_SET_ID).NAME.ToString();
+                    wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Saturday", Id = 6, Select = true, ClassTimingSet = ClassTimingSetVal });
                     break;
                 }
             }
-            if (match == 0){ wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Saturday", Id = 6 }); }
+            if (match == 0){ wd.WeekdayIds.Add(new SFSAcademy.Models.WeekdaysSelect { Day = "Saturday", Id = 6, ClassTimingSet = "Default" }); }
             //return View(vm);
             ViewBag.BTCH_ID = id;
 
@@ -143,10 +153,12 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 var old = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false).ToList();
-                var old_Inactive = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == true).ToList();
+                var old_Inactive = db.WEEKDAYs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == true).ToList();                
+
                 foreach (var item in model.WeekdayIds.Where(x=>x.Select == true))
                 {
                     int match = 0;
+                    int? TimingSetId = db.CLASS_TIMING_SET.Where(x => x.NAME == item.ClassTimingSet).FirstOrDefault().ID;
                     foreach (var item21 in old_Inactive)
                     {
                         if (item.Day == item21.WKDAY)
@@ -154,7 +166,8 @@ namespace SFSAcademy.Controllers
                             match = 1;
                             WEEKDAY WkToUpdate = db.WEEKDAYs.Find(item21.ID);
                             WkToUpdate.IS_DEL = false;
-                            db.Entry(WkToUpdate).State = EntityState.Modified;
+                            WkToUpdate.CLASS_TIMING_SET_ID = TimingSetId;                            
+                            db.Entry(WkToUpdate).State = EntityState.Modified;                                        
                             break;
                         }
                     }
@@ -163,14 +176,41 @@ namespace SFSAcademy.Controllers
                         if(item.Day == item2.WKDAY)
                         {
                             match = 2;
+                            WEEKDAY WkToUpdate = db.WEEKDAYs.Find(item2.ID);
+                            WkToUpdate.IS_DEL = false;
+                            WkToUpdate.CLASS_TIMING_SET_ID = TimingSetId;
+                            db.Entry(WkToUpdate).State = EntityState.Modified;
                             break;
                         }
                     }
                     if (match == 0)
                     {
-                        WEEKDAY WkDay = new WEEKDAY() { NAME = item.Day, WKDAY = item.Day, BTCH_ID = batch_id, DAY_OF_WK = item.Id, SRT_ORD = item.Id, IS_DEL = false };
+
+                        WEEKDAY WkDay = new WEEKDAY() { NAME = item.Day, WKDAY = item.Day, BTCH_ID = batch_id, DAY_OF_WK = item.Id, SRT_ORD = item.Id, IS_DEL = false, CLASS_TIMING_SET_ID = TimingSetId };
                         db.WEEKDAYs.Add(WkDay);
                     }
+                    int matchClassTiming = 0;
+                    var ClassTiming = db.CLASS_TIMING.Where(x => x.BTCH_ID == batch_id).ToList();
+                    var ClassTimingEntry = db.CLASS_TIMING_ENTRY.Where(x => x.CLASS_TIMING_SET_ID == TimingSetId).ToList();
+                    foreach (var item22 in ClassTimingEntry)
+                    {
+                        foreach (var item23 in ClassTiming)
+                        {
+                            if (item22.START_TIME == item23.START_TIME && item22.END_TIME == item23.END_TIME)
+                            {
+                                matchClassTiming = 1;
+                                item22.IS_DEL = false;
+                                db.Entry(item22).State = EntityState.Modified;
+                            }
+                        }
+                        if (matchClassTiming == 0)
+                        {
+                            CLASS_TIMING ct = new CLASS_TIMING() { BTCH_ID = batch_id, NAME = item22.NAME, START_TIME = item22.START_TIME, END_TIME = item22.END_TIME, IS_BRK = item22.IS_BRK, IS_DEL = false };
+                            db.CLASS_TIMING.Add(ct);
+                        }
+                    }
+                    try { db.SaveChanges(); }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
                 }
                 foreach(var item3 in old)
                 {
@@ -188,12 +228,37 @@ namespace SFSAcademy.Controllers
                         WEEKDAY WkToUpdate = db.WEEKDAYs.Find(item3.ID);
                         WkToUpdate.IS_DEL = true;
                         db.Entry(WkToUpdate).State = EntityState.Modified;
-                    }
+                    }                  
                 }
-                try { db.SaveChanges();}
-                catch (Exception e) { Console.WriteLine(e); ViewBag.Notice = e.InnerException.InnerException.Message; }
+                var CT_Old = db.CLASS_TIMING.Where(x => x.BTCH_ID == batch_id).ToList();
+                foreach (var item41 in CT_Old)
+                {
+                    int matchClassTiming2 = 0;               
+                    foreach (var item42 in model.WeekdayIds.Where(x => x.Select == true))
+                    {
+                        var wk_inner = db.WEEKDAYs.Where(x => x.WKDAY == item42.Day).FirstOrDefault();
+                        var ClassTimingEntry = db.CLASS_TIMING_ENTRY.Where(x => x.CLASS_TIMING_SET_ID == wk_inner.CLASS_TIMING_SET_ID).ToList();
+                        foreach (var item22 in ClassTimingEntry)
+                        {
+                            if (item22.START_TIME == item41.START_TIME && item22.END_TIME == item41.END_TIME)
+                            {
+                                matchClassTiming2 = 1;
+
+                            }
+                        }
+                    }
+                    if (matchClassTiming2 == 0)
+                    {
+                        CLASS_TIMING ct_inner = db.CLASS_TIMING.Find(item41.ID);
+                        ct_inner.IS_DEL = true;
+                        db.Entry(ct_inner).State = EntityState.Modified;
+                    }
+
+                }
+                try { db.SaveChanges(); }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
                 ViewBag.Notice = "Weekdays modified.";
-                return RedirectToAction("Index",new { Notice = ViewBag.Notice });
+                return RedirectToAction("Index",new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }
 
             ViewBag.BTCH_ID = batch_id;

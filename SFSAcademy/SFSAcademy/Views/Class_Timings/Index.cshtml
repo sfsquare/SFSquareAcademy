@@ -1,64 +1,63 @@
-﻿@model IEnumerable<SFSAcademy.CLASS_TIMING>
-
+﻿@model IEnumerable<SFSAcademy.CLASS_TIMING_SET>
 @{
     ViewBag.Title = "Index";
 }
-
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    /* This is change event for your dropdownlist */
-    $(document.forms[0]).ready(function () {
-        $(".LoaderBox").hide();
-        $('#BatchDropDown').change(function () {
-
-        /* Get the selected value of dropdownlist */
-            var selectedID = $(this).val();
-            $(".LoaderBox").show();
-        /* Request the partial view with .get request. */
-        $.get('/Class_Timings/Show/' + selectedID, function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
-            $('#class-timings-list').html(data);
-            /* little fade in effect */
-            $('#class-timings-list').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox").hide();
-        });
-
-    });
-   });
-</script>
 <div id="content-header">
     <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
     <h1>Timetable</h1>
-    <h3>Set Class Timings</h3>
+    <h3>Class Timing Sets</h3>
     <div id="app-back-button">
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("New", "Class_TimingSet_New")</li>
+    </ul>
+</div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable &raquo; </a> 
+    Class Timings Set
+</div>
 <div id="page-yield">
     @if (ViewBag.Notice != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
-
-    <div class="box">
-        <div class="label-field-pair label">
-            <div class="label-container label">@Html.Label("BTCH_ID", "Select A Batch :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-            <div class="text-input-bg">
-                @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown" })
-                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-                @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div id="class-timings-list" style="display:none;"></div>
-        <div id="modal-box" style="display:none;"></div>
-        <div class="extender"></div>
-    </div>
+    <table id="class-timings-list" style="width:100%">
+        <tr>
+            <th>
+                Sl. No.
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+        @{int i = 1; }
+        @foreach (var item in Model)
+        {
+            string selectedRow = "tr-even";
+            if (i % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr id="class-timing-@item.ID" class="@selectedRow">
+                <td class="col-1">
+                    @i
+                </td>
+                <td class="col-2">
+                    @Html.DisplayFor(modelItem => item.NAME)
+                </td>
+                <td class="col-2">
+                    @Html.ActionLink("View class timings", "Class_TimingSet_View", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Class_TimingSet_Delete", new { id = item.ID }, new { @onclick = "return confirm('are you sure you want to delete this?')" })
+                </td>
+            </tr>
+            i = i + 1;
+        }
+    </table>
 </div>

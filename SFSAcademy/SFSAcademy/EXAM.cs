@@ -42,8 +42,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_SCORE> EXAM_SCORE { get; set; }
         public virtual GRADING_LEVEL GRADING_LEVEL { get; set; }
-        public virtual SUBJECT SUBJECT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
+        public virtual SUBJECT SUBJECT { get; set; }
     }
 }

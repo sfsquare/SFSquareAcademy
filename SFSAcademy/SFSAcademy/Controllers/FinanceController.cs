@@ -4818,7 +4818,7 @@ namespace SFSAcademy.Controllers
                     ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
                     return View(PageName);
                 }
-                ViewBag.ErrorMessage = "Transaction Added Successfully!";
+                ViewBag.ErrorMessage = string.Concat("Transaction Added Successfully. Receipt No. - ", fINANCEtRANSACTIONS.ID);
                 return View(PageName);
             }
 
@@ -4959,6 +4959,8 @@ namespace SFSAcademy.Controllers
             fINANCEtRANSACTIONS_UPD.TIL = fINANCEtRANSACTIONS.TIL;
             fINANCEtRANSACTIONS_UPD.DESCR = fINANCEtRANSACTIONS.DESCR;
             fINANCEtRANSACTIONS_UPD.AMT = fINANCEtRANSACTIONS.AMT;
+            fINANCEtRANSACTIONS_UPD.VCHR_NO = fINANCEtRANSACTIONS.VCHR_NO;
+            fINANCEtRANSACTIONS_UPD.TRAN_DATE = fINANCEtRANSACTIONS.TRAN_DATE;
             fINANCEtRANSACTIONS_UPD.CAT_ID = fINANCEtRANSACTIONS.CAT_ID;
             fINANCEtRANSACTIONS_UPD.UPDATED_AT = System.DateTime.Now;
             db.Entry(fINANCEtRANSACTIONS_UPD).State = EntityState.Modified;

@@ -22,6 +22,14 @@
     @Html.Hidden("PageName",ViewData["PageName"].ToString())
     <div id="create_user_form">
         <div class="label-field-pair label">
+            @Html.LabelFor(model => model.CAT_ID, "Transaction Category", htmlAttributes: new { @class = "control-label col-md-2" })
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.DropDownList("CAT_ID", null, htmlAttributes: new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(model => model.CAT_ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
             <div class="label-container label">@Html.LabelFor(model => model.TIL, "Title", htmlAttributes: new { @class = "control-label col-md-2" })</div>
             <div class="text-field-bg">
                 @Html.EditorFor(model => model.TIL, new { htmlAttributes = new { @class = "form-control", required = "required", @value = ViewBag.TransactionTitle } })
@@ -44,18 +52,17 @@
             </div>
         </div>
         <div class="label-field-pair label">
+            <div class="label-container label">@Html.LabelFor(model => model.VCHR_NO, "Voucher No.", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="text-field-bg">
+                @Html.EditorFor(model => model.VCHR_NO, new { htmlAttributes = new { @class = "form-control", @value = ViewBag.TransactionTitle } })
+                @Html.ValidationMessageFor(model => model.VCHR_NO, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair label">
             <div class="label-container label">@Html.LabelFor(model => model.TRAN_DATE, "Transaction Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
             <div class="text-field-bg">
                 @Html.EditorFor(model => model.TRAN_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker" } })
                 @Html.ValidationMessageFor(model => model.TRAN_DATE, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="label-field-pair label">
-            @Html.LabelFor(model => model.CAT_ID, "Transaction Category", htmlAttributes: new { @class = "control-label col-md-2" })
-            <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">
-                @Html.DropDownList("CAT_ID", null, htmlAttributes: new { @class = "form-control", required = "required" })
-                @Html.ValidationMessageFor(model => model.CAT_ID, "", new { @class = "text-danger" })
             </div>
         </div>
         <input type="submit" value="►Save" class="user_button"/>

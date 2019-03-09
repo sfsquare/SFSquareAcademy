@@ -1,0 +1,320 @@
+﻿@using System.Data
+@using SFSAcademy.Models
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<SFSAcademy.CLASS_TIMING> class_timing = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["class_timing"];
+    IEnumerable<SFSAcademy.WEEKDAY> weekday = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["weekday"];
+    IEnumerable<SFSAcademy.TIMETABLE_ENTRY> timetable = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["timetable"];
+    IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
+    IEnumerable<SFSAcademy.SUBJECT> ele_subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["ele_subjects"];
+    IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
+    IEnumerable<SFSAcademy.TIMETABLE_ENTRY> TimetableEntry = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["TimetableEntry"];
+    IEnumerable<SFSAcademy.Models.Timetable_Entries> overlap = (IEnumerable<SFSAcademy.Models.Timetable_Entries>)ViewData["overlap"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> EmployeesSubject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["EmployeesSubject"];
+    IEnumerable<SFSAcademy.CLASS_TIMING> ClassTiming = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["ClassTiming"];
+    IEnumerable<SFSAcademy.WEEKDAY> WeekdayAll = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["WeekdayAll"];
+}
+<script>
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SubjectDropDown').change(function () {
+            $.ajaxSetup({ cache: false });
+            var selectedID = $(this).val();
+            var SelectedBatch = $('#batch_id').val();
+            var SelectedTimetable = $('#timetable_id').val();
+            $(".LoaderBox").show();
+            $.get('/Timetable_Entries/Update_Employees?subject_id=' + selectedID + "&batch_id=" + SelectedBatch + "&timetable_id=" + SelectedTimetable, function (data) {
+                $('#employee-list').html(data);
+                $('#employee-list').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+
+    });
+
+    function LoadPartialPage(sender) {
+        clear_selected_divs();
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#timetable').html(data);
+            $('#timetable').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+    
+    function LoadUpdatePartialPage(sub_id, tte_id, emp_id, timetable_id, batch_id, overwrite, message) {
+        $(".LoaderBox").show();
+        var DivIdVal = 'error_div_' + tte_id;
+        var dvDivIdVal = document.getElementById(DivIdVal);
+        $.ajax({
+            type: 'GET',
+            url: "/Timetable_Entries/TT_Entry_Update2",
+            dataType: 'json',
+            data: {
+                sub_id: sub_id,
+                tte_id: tte_id,
+                emp_id: emp_id,
+                timetable_id: timetable_id,
+                batch_id: batch_id,
+                overwrite: overwrite,
+                message: message
+            },
+            success: function (result) {
+                if (result != null) {
+                    $("#subjects-select").html(result.EmployeeSelectPartialView);
+                    $('#subjects-select').fadeIn('fast');
+                    $("#box").html(result.TimetableBoxPartialView);
+                    $('#box').fadeIn('fast');
+                    dvDivIdVal.textContent = 'Done';
+                    $(".LoaderBox").hide();
+                } else {
+                    alert('Error getting data.');
+                    $(".LoaderBox").hide();
+                }
+            },
+            error: function () {
+                alert('Error getting data.');
+                $(".LoaderBox").hide();
+            }
+        });
+    }
+
+    function LoadErrorPartialPage(IdVal) {
+        var DivIdVal = 'error_div_' + IdVal;
+        var dvDivIdVal = document.getElementById(DivIdVal);
+        dvDivIdVal.textContent = 'Cancelled';
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(TargetId, ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var draggable_element = document.getElementById(data);
+        $('.selected_div').css({ "background-color": "#FDFF47" });
+        make_ajax_calls(TargetId, draggable_element.id.split('_').last());
+    }
+</script>
+
+<div id="timetable">
+    <div id="box">
+        <table border="0" align="center" style="width:100%" id="table" cellspacing="0">
+            <tr>
+                <td><div class="blank"></div></td>
+                <td><div class="blank"></div></td>
+                @foreach (var item in class_timing)
+                {
+                    <td class="td">
+                        <div class="top">
+                            @if (item.START_TIME != null && item.END_TIME != null)
+                            {
+                                if (item.IS_BRK == true)
+                                {
+                                    <div class="top">@item.NAME</div>
+                                }
+                                else
+                                {
+                                    <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - @item.END_TIME.Value.Hours:@item.END_TIME.Value.Minutes</div>
+                                }
+                            }
+                            else if (item.START_TIME != null)
+                            {
+                                if (item.IS_BRK == true)
+                                {
+                                    <div class="top">@item.NAME</div>
+                                }
+                                else
+                                {
+                                    <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - ET Not Defined</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="top">ST Not Defined - ET Not Defined</div>
+                            }
+                        </div>
+                    </td>
+                }
+            </tr>
+            @if (weekday != null && weekday.Count() != 0 && weekday.ElementAt(0).ID != 0)
+            {
+                foreach (var item in weekday)
+                {
+                    <tr>
+                        <td class="td"><div class="name">Date::@item.NAME</div></td>
+                        <td class="td-blank"></td>
+                        @foreach (var item2 in class_timing)
+                        {
+                            var tte = timetable.Where(x => x.WK_DAY_ID == item.ID && x.CLS_TMNG_ID == item2.ID).ToList();
+                            string TagIDString = string.Concat("drop_", item.ID, "_", item2.ID);
+                            string TagOnClickString = string.Concat("update_selected_divs('", item.ID, "_", item2.ID, "');");
+                            string CheckBoxIdString = string.Concat("CheckBox", item.ID, "_", item2.ID);
+                            string OnDropString = string.Concat("drop('", item.ID, "_", item2.ID, "',event);");
+                            <td class="td">
+                                @{ string DragId = string.Concat(item.ID, "_", item2.ID); string DropId = string.Concat("drop_", item.ID, "_", item2.ID); }
+                                @{ string div_id_1 = "";}
+                                @if (tte != null && tte.Count() != 0)
+                                {
+                                    div_id_1 = string.Concat("subject_name_", tte.FirstOrDefault().ID);
+                                    <div id="@TagIDString" class="drop" onClick="@TagOnClickString" ondrop="@OnDropString" ondragover="allowDrop(event)">
+                                        <div class="tt-subject" id="@div_id_1">
+                                            <div class="subject">
+                                                @if (tte.FirstOrDefault().SUBJECT != null)
+                                                {
+                                                    if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                                                    {
+                                                        @tte.FirstOrDefault().SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME
+                                                    }
+                                                    else
+                                                    {
+                                                        @tte.FirstOrDefault().SUBJECT.CODE
+                                                    }
+                                                    <span>
+                                                        @if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                                                        {
+                                                            var subj_in_elective = Subject.Where(x => x.ELECTIVE_GRP_ID == tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID && x.IS_DEL == false);
+                                                            foreach (var subItem in subj_in_elective)
+                                                            {
+                                                                if (subItem.NAME != null)
+                                                                {
+                                                                    @subItem.NAME
+                                                                }
+                                                                var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == subItem.ID);
+                                                                if (sub_emp != null && sub_emp.Count() != 0)
+                                                                {
+                                                                    <div class="emp-name">@sub_emp.FirstOrDefault().EMPLOYEE.FIRST_NAME @sub_emp.FirstOrDefault().EMPLOYEE.MID_NAME @sub_emp.FirstOrDefault().EMPLOYEE.LAST_NAME</div>
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (tte.FirstOrDefault().SUBJECT.NAME != null)
+                                                            {
+                                                                @tte.FirstOrDefault().SUBJECT.NAME
+                                                            }
+                                                            if (tte.FirstOrDefault().EMPLOYEE != null)
+                                                            {
+                                                                <div class="emp-name">@tte.FirstOrDefault().EMPLOYEE.FIRST_NAME @tte.FirstOrDefault().EMPLOYEE.MID_NAME @tte.FirstOrDefault().EMPLOYEE.LAST_NAME</div>
+                                                            }
+                                                        }
+                                                    </span>
+                                                }
+                                            </div>
+                                            <div class="employee">
+                                                @{ string LinkVal = "";}
+                                                @if (tte.FirstOrDefault().SUBJECT != null)
+                                                {
+                                                    if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                                                    {
+                                                        LinkVal = "Elective";
+                                                    }
+                                                    else
+                                                    {
+                                                        if (tte.FirstOrDefault().EMPLOYEE != null)
+                                                        {
+                                                            if (tte.FirstOrDefault().EMPLOYEE.FIRST_NAME.Contains("MD") || tte.FirstOrDefault().EMPLOYEE.FIRST_NAME.Contains("Md") || tte.FirstOrDefault().EMPLOYEE.FIRST_NAME.Contains("md"))
+                                                            {
+                                                                LinkVal = string.Concat(tte.FirstOrDefault().EMPLOYEE.FIRST_NAME, " ", tte.FirstOrDefault().EMPLOYEE.MID_NAME);
+                                                            }
+                                                            else
+                                                            {
+                                                                LinkVal = tte.FirstOrDefault().EMPLOYEE.FIRST_NAME;
+                                                            }
+                                                        }
+                                                    }
+                                                    <a href="@Url.Action("Delete_Employee2", "Timetable_Entries",new {id = tte.FirstOrDefault().ID})" style="border:none" class="absent themed_text" onclick='LoadPartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png">@LinkVal</a>
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                }
+                            </td>
+                        }
+                    </tr>
+
+                }
+            }
+
+        </table>
+    </div>
+    <h4>Add Subjects / Employee</h4>
+    <div id="subjects-select">
+        <div class="label-field-pair">
+            <div class="text-input-bg">
+                @if (ele_subjects != null && ele_subjects.Count() != 0)
+                {
+                    foreach (var item in ele_subjects)
+                    {
+                        item.NAME = item.ELECTIVE_GROUP.ELECTIVE_GRP_NAME;
+                    }
+                    subjects = subjects.Union(ele_subjects).Distinct();
+                }
+
+                @{
+                    List<SelectListItem> options = new List<SelectListItem>();
+                }
+                @foreach (var item2 in subjects)
+                {
+                    var result = new SelectListItem();
+                    result.Text = item2.NAME;
+                    result.Value = item2.ID.ToString();
+                    options.Add(result);
+                }
+                @{ options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Subject" });
+                    ViewBag.SUB_ID = options;
+                }
+                @Html.DropDownList("SUB_ID", null, htmlAttributes: new { @class = "form-control", @id = "SubjectDropDown" })
+            </div>
+        </div>
+        <div id="employee-list"></div>
+    </div>
+</div>
+@if (ViewBag.validation_problems != null && !String.IsNullOrEmpty(ViewBag.validation_problems.ToString()))
+{
+    <div id="errors">
+        @foreach (var tte_id in ViewBag.validation_problems)
+        {
+            int? weekday_inner = tte_id["weekday_id"];
+            int? class_timing_inner = tte_id["class_timing_id"];
+            var ClassTimingInner = ClassTiming.Where(x => x.ID == class_timing_inner).FirstOrDefault();
+            var WeekDayInner = WeekdayAll.Where(x => x.ID == weekday_inner).FirstOrDefault();
+            var tte = TimetableEntry.Where(x => x.WEEKDAY.NAME == WeekDayInner.NAME && x.CLASS_TIMING.START_TIME == ClassTimingInner.START_TIME && x.CLASS_TIMING.END_TIME == ClassTimingInner.END_TIME && x.BTCH_ID == batch.ID && x.TIMT_ID == ViewBag.timetable_id).FirstOrDefault();
+            if (tte != null)
+            {
+                tte_id["tte_id"] = string.Concat(tte.WK_DAY_ID,"_",tte.CLS_TMNG_ID);
+            }
+            string PartialErrorPageCall = string.Concat("LoadErrorPartialPage('", tte_id["tte_id"], "');  return false;");
+            string PartialValidationPageCall = string.Concat("LoadUpdatePartialPage('", tte_id["sub_id"], "','", tte_id["tte_id"], "','", tte_id["emp_id"], "','", ViewBag.timetable_id, "','", ViewBag.batch_id, "','", null, "','", tte_id["messages"], "');  return false;");
+            string PartialUpdatePageCall = string.Concat("LoadUpdatePartialPage('", tte_id["sub_id"], "','", tte_id["tte_id"], "','", tte_id["emp_id"], "','", ViewBag.timetable_id, "','", ViewBag.batch_id, "','", 1, "','", tte_id["messages"], "');  return false;");
+
+            <div id="error_div_@tte_id["tte_id"]" class="error-explanation">
+                <b>Warning</b> : @tte_id["messages"] On DATE:: @WeekDayInner.NAME ( @ClassTimingInner.NAME )
+                @if (overlap != null && overlap.Count() != 0)
+                {
+                    <a href="#" onclick="@PartialUpdatePageCall">Override</a>
+                    <span>|</span>
+                    <a href="#" onclick="@PartialValidationPageCall">Retain All</a>
+                }
+                else
+                {
+                    <a href="#" onclick="@PartialValidationPageCall">Continue</a>
+                }
+                | <a href="#" onclick="@PartialErrorPageCall">Cancel</a>
+            </div>
+        }
+    </div>
+}
+<input type="hidden" value='@ViewBag.timetable_id' name="timetable_id" id="timetable_id" />
+<input type="hidden" value='@ViewBag.batch_id' name="batch_id" id="batch_id" />

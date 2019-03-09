@@ -1,0 +1,85 @@
+﻿@model IEnumerable<SFSAcademy.TIMETABLE>
+@{
+    ViewBag.Title = "ViewTimetable";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        var selectedBatchID = $('#BatchDropDown').val();
+        var SelectedTTId = $('#TiemtableDropDown').val();
+        $.get('/Timetable/Update_Timetable_View?course_id=' + selectedBatchID + "&timetable_id=" + SelectedTTId, function (data) {
+            $('#timetable_view').html(data);
+            $('#timetable_view').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    });
+
+    function show_timetable() {
+        $(".LoaderBox").show();
+        var selectedBatchID = $('#BatchDropDown').val();
+        var SelectedTTId = $('#TiemtableDropDown').val();
+        $.get('/Timetable/Update_Timetable_View?course_id=' + selectedBatchID + "&timetable_id=" + SelectedTTId, function (data) {
+            $('#timetable_view').html(data);
+            $('#timetable_view').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Select batch to view</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (Model == null || Model.Count() == 0)
+    {
+        <p class="flash-msg"> No timetables found </p>
+    }
+    else
+    {        
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="label-field-pair">
+                <div class="timetable_entry_course_id">@Html.Label("TIMT_ID", "Select a Timetable :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.DropDownList("TIMT_ID", null, htmlAttributes: new { @class = "form-control", @id = "TiemtableDropDown", @onChange = "show_timetable()" })
+                    @Html.ValidationMessage("TIMT_ID", "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <div class="timetable_entry_course_id">@Html.Label("BTCH_ID", "Select A Batch :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="text-input-bg">
+                    @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown", @onChange = "show_timetable()" })
+                    <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                    @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+    }
+    <div class="extender"> </div>
+    <div id="timetable_view"> </div>
+</div>
+

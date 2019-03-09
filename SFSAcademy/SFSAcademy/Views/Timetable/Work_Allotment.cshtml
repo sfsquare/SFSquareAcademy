@@ -41,7 +41,7 @@
                 <li class="heading">
                     @batches.ElementAt(i).CourseData.CODE - @batches.ElementAt(i).BatchData.NAME
                 </li>
-                @{ int i1 = 0;}
+                @{ int i1 = 0; batches.ElementAt(i).BatchData.SUBJECTs = batches.ElementAt(i).BatchData.SUBJECTs.Where(x => x.IS_DEL == false).ToList();}
                 @for (int j = 0; j < batches.ElementAt(i).BatchData.SUBJECTs.Count(); j++)
                 {
                     string selectedRow = "listeven"; int FirstRow = 0; string EmployeeList = "";
@@ -83,7 +83,7 @@
                     i1 += 1;
                 }
             </ul>
-                    }
+         }
 
           <input type="submit" value="► Update" class="submit_button" />
     }

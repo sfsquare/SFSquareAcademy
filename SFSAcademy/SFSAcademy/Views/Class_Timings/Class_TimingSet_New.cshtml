@@ -1,0 +1,48 @@
+﻿@model SFSAcademy.CLASS_TIMING_SET
+@{
+    ViewBag.Title = "Class_TimingSet_New";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Create Class Timing Set</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("Class Timings", "Index")</li>
+    </ul>
+</div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable &raquo; </a>
+    @Html.ActionLink("Class Timing Sets", "Index") &raquo;
+    New
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="label-field-pair label">
+            @Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <input type="submit" value="► Submit" class="user_button" />
+    }
+
+</div>
+

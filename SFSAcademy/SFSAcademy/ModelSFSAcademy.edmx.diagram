@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="SFSAcademyModel.BANK_FIELD" Width="1.5" PointX="15" PointY="52.625" />
         <EntityTypeShape EntityType="SFSAcademyModel.BATCH" Width="1.5" PointX="9.75" PointY="41.625" />
         <EntityTypeShape EntityType="SFSAcademyModel.CLASS_DESIGNATION" Width="1.5" PointX="9.75" PointY="34" />
-        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING" Width="1.5" PointX="9" PointY="90.25" />
         <EntityTypeShape EntityType="SFSAcademyModel.CONFIGURATION" Width="1.5" PointX="5.75" PointY="8.75" />
         <EntityTypeShape EntityType="SFSAcademyModel.COUNTRY" Width="1.5" PointX="6.75" PointY="48.375" />
         <EntityTypeShape EntityType="SFSAcademyModel.COURSE" Width="1.5" PointX="7.5" PointY="43" />
@@ -75,11 +74,9 @@
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_PREVIOUS_DATA" Width="1.5" PointX="8.25" PointY="119.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" Width="1.5" PointX="11.25" PointY="73.5" />
         <EntityTypeShape EntityType="SFSAcademyModel.STUDENT_SUBJECT" Width="1.5" PointX="8.25" PointY="79.375" />
-        <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT" Width="1.5" PointX="12" PointY="41.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT_LEAVE" Width="1.5" PointX="11.25" PointY="68.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.TIMETABLE" Width="1.5" PointX="9" PointY="87.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.TIMETABLE_ENTRY" Width="1.5" PointX="11.25" PointY="63.75" />
-        <EntityTypeShape EntityType="SFSAcademyModel.WEEKDAY" Width="1.5" PointX="9" PointY="37.625" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_APPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_APPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_ASSE_NI" />
@@ -87,23 +84,17 @@
         <AssociationConnector Association="SFSAcademyModel.EXAM__EXAM_ASSE_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_ATTE_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_BANK_FLD_NI3" />
-        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_CLAS_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_EXAM_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_FINA_NI2" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_FINA_NI3" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_GRAD_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_PERE_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_STUD_NI" />
-        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI2" />
         <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_TIME_NI" />
-        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_WEEK_NI" />
         <AssociationConnector Association="SFSAcademyModel.BTCH_EL_GRP_NI" />
         <AssociationConnector Association="SFSAcademyModel.CRS_I_COUR_BATC_NI" />
         <AssociationConnector Association="SFSAcademyModel.CRS_I_COUR_CLAS_NI" />
-        <AssociationConnector Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI" />
-        <AssociationConnector Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" />
-        <AssociationConnector Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" />
         <AssociationConnector Association="SFSAcademyModel.HOME__COUN_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.NTLTY_COUN_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.OFF_C_COUN_EMPL_NI" />
@@ -133,12 +124,10 @@
         <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" />
         <AssociationConnector Association="SFSAcademyModel.PYRL__PAYR_EMPL_NI" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EXAM_NI" />
         <AssociationConnector Association="SFSAcademyModel.EXAM__EXAM_EXAM_NI" />
         <AssociationConnector Association="SFSAcademyModel.EXAM__EXAM_EXAM_NI2" />
         <AssociationConnector Association="SFSAcademyModel.GRADI_GRAD_EXAM_NI" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" />
         <AssociationConnector Association="SFSAcademyModel.GRADI_GRAD_EXAM_NI2" />
         <AssociationConnector Association="SFSAcademyModel.FIN_F_FINA_FEE__NI2" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_FEE__NI" />
@@ -154,16 +143,10 @@
         <AssociationConnector Association="SFSAcademyModel.GAL_PHT_GAL_TAG_NI" />
         <AssociationConnector Association="SFSAcademyModel.PYRL__PAYR_MONT_NI" />
         <AssociationConnector Association="SFSAcademyModel.NEWS__NEWS_NEWS_NI" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI" />
         <AssociationConnector Association="SFSAcademyModel.SMS_M_SMS__SMS__NI" />
         <AssociationConnector Association="SFSAcademyModel.STSUBCAT_STCAT_ASSE_NI" />
         <AssociationConnector Association="SFSAcademyModel.ADDL__STUD_STUD_NI" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" />
-        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" />
-        <AssociationConnector Association="SFSAcademyModel.TIME_T_SUBJ_NI" />
         <AssociationConnector Association="SFSAcademyModel.TIME_T_TIME_T_NI" />
-        <AssociationConnector Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGE_ACCESS" Width="1.5" PointX="5.25" PointY="60.875" />
         <EntityTypeShape EntityType="SFSAcademyModel.PRIVILEGES_USERS" Width="1.5" PointX="3" PointY="60.125" />
         <EntityTypeShape EntityType="SFSAcademyModel.USERS_ACCESS" Width="1.5" PointX="3" PointY="69.625" />
@@ -263,6 +246,28 @@
         <AssociationConnector Association="SFSAcademyModel.NTLTY_COUN_ARCH_NI" />
         <AssociationConnector Association="SFSAcademyModel.STDNT_STUD_ARCH_NI" />
         <EntityTypeShape EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="SFSAcademyModel.SUBJECT" Width="1.5" PointX="14.25" PointY="40.875" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ_ELECT_GR_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_SUBJ_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING_SET" Width="1.5" PointX="5.375" PointY="11.875" />
+        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING_ENTRY" Width="1.5" PointX="9.75" PointY="25.125" />
+        <AssociationConnector Association="SFSAcademyModel.CLAS_TIMS_CLASS_TIME_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.WEEKDAY" Width="1.5" PointX="12" PointY="28.125" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_WEEK_NI" />
+        <AssociationConnector Association="SFSAcademyModel.WEEK_DY_CLAS_TIMS_NI" />
+        <AssociationConnector Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.CLASS_TIMING" Width="1.5" PointX="12" PointY="43" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH__BATC_CLAS_NI" />
+        <AssociationConnector Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI" />
+        <AssociationConnector Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" />
+        <AssociationConnector Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
