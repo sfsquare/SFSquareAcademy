@@ -49,7 +49,7 @@
                     <td class="col-1">@item.FinanceTransactionData.VCHR_NO</td>
                     <td class="col-1">@item.FinanceTransactionData.AMT</td>
                     <td class="col-4">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
-                    <td class="col-3"><small>    @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID }, new { style = "text-decoration:underline" }) |
+                    <td class="col-3"><small>    @Html.ActionLink("Delete", "Delete_Transaction", new { id = item.FinanceTransactionData.ID }, new { style = "text-decoration:underline", onclick = "return confirm('Are you sure you want to delete this?')" }) |
                     @Html.ActionLink("Edit", "Expense_Edit", new { id = item.FinanceTransactionData.ID }, new { style = "text-decoration:underline" })</small></td>
                 </tr>
                 i = i + 1;

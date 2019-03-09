@@ -1,44 +1,48 @@
-﻿@model SFSAcademy.CLASS_TIMING
+﻿@model SFSAcademy.CLASS_TIMING_ENTRY
 @using SFSAcademy.Models
 @{
-    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    SFSAcademy.CLASS_TIMING_SET Class_Timing_Set = (SFSAcademy.CLASS_TIMING_SET)ViewData["Class_Timing_Set"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<script src="~/Content/javascripts/jquery/jquery.timepicker.js"></script>
-<script src="~/Content/javascripts/jquery/jquery.timepicker.min.js"></script>
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
 
-<link href="~/Content/stylesheets/_styles/jquery.timepicker.css" rel="stylesheet" />
-<link href="~/Content/stylesheets/_styles/jquery.timepicker.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script>
-    // initialize input widgets first
-    $('.timepicker').timepicker({
-        'showDuration': true,
-        'timeFormat': 'g:ia',
-        'minTime': '7:00am',
-        'maxTime': '8:00pm',
-        'step': 5,
-        'timeFormat': 'H:i:s'
+        });
+
+        // initialize input widgets first
+        $('.timepicker').timepicker({
+            'showDuration': true,
+            'timeFormat': 'g:ia',
+            'minTime': '7:00am',
+            'maxTime': '8:00pm',
+            'step': 5,
+            'timeFormat': 'H:i:s'
+        });
+
+        // initialize datepair
+        var basicExampleEl = document.getElementById('timepicker');
+        var basicExampleEl2 = document.getElementById('timepicker2');
     });
-
-    // initialize datepair
-    var basicExampleEl = document.getElementById('timepicker');
-    var basicExampleEl2 = document.getElementById('timepicker2');
+    $('#modal-box').dialog("open");
 </script>
 
 <label class="head_label">
-    Edit class timing for
-    @if (batch == null || batch.Count() == 0)
-    {
-        <span> Common </span>
-    }
-    else
-    {
-        <span> @batch.FirstOrDefault().CourseData.CODE - @batch.FirstOrDefault().BatchData.NAME </span>
-    }
+    Edit class timing for @Model.CLASS_TIMING_SET.NAME
 
 </label>
 <div id="ajax-edit">
@@ -46,7 +50,7 @@
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.ID)
-        @Html.Hidden("BatchId", batch.FirstOrDefault().BatchData.ID)
+        @Html.Hidden("CLASS_TIMING_SET_ID", Class_Timing_Set.ID)
         <div id="form-errors"></div>
         <div class="label-field-pair label">
             <label for="name">Name</label>

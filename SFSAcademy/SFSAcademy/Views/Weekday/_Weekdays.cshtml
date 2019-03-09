@@ -1,11 +1,109 @@
 ﻿@model SFSAcademy.Models.Weekdays
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".Dropdown").hide();
+        var Id = 1;
+        @foreach (var d in Model.WeekdayIds)
+        {
+            @:var Div1Id = 'UncheckedHide1' + Id;
+            @:var CheckBoxId = 'CheckBox' + Id;
+            @:var dvUncheck1Hide = document.getElementById(Div1Id);
+            @:var chCheckBox = document.getElementById(CheckBoxId);
+            @:dvUncheck1Hide.style.display = chCheckBox.checked ? "block" : "none";
+            @: Id = Id + 1;
+        }
+
+    });
+
+    function ShowHideDiv(Id) {
+        var Div1Id = 'UncheckedHide1' + Id;
+        var CheckBoxId = 'CheckBox' + Id;
+        var dvUncheck1Hide = document.getElementById(Div1Id);
+        var chCheckBox = document.getElementById(CheckBoxId);
+        dvUncheck1Hide.style.display = chCheckBox.checked ? "block" : "none";
+    }
+
+    function ShowHideDivCancel(Id) {
+        var DivDropdown = 'Dropdown' + Id;
+        var DivNoDropdown = 'NoDropdown' + Id;
+        var dvDropdown = document.getElementById(DivDropdown);
+        var dvNoDropdown = document.getElementById(DivNoDropdown);
+        dvDropdown.style.display = "none";
+        dvNoDropdown.style.display = "block";
+    }
+
+    function ShowHideDivChange(Id) {
+        var DivDropdown = 'Dropdown' + Id;
+        var DivNoDropdown = 'NoDropdown' + Id;
+        var dvDropdown = document.getElementById(DivDropdown);
+        var dvNoDropdown = document.getElementById(DivNoDropdown);
+        dvDropdown.style.display = "block";
+        dvNoDropdown.style.display = "none";
+    }
+
+    function SetTimingSet(Id, val) {
+        var TextBoxId = 'TextBox' + Id;
+        var txTextBox = document.getElementById(TextBoxId);
+        txTextBox.value = val;
+    }
+
+</script>
+
 @using (Html.BeginForm("Create", "Weekday", FormMethod.Post, new { @encType = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    <div>
-        @Html.EditorFor(m => m.WeekdayIds)
-    </div>
+    <table id="class-timings-list" style="width:100%">
+        <tr class="tr-head">
+            <td>Weekday</td>
+            <td>Class timing set</td>
+        </tr>
+        @{int i = 1;}
+        @for (int j = 0; j < Model.WeekdayIds.Count(); j++)
+        {
+            string code = "tr-even";
+            string CheckBoxId = string.Concat("CheckBox", i);
+            string TextBoxId = string.Concat("TextBox", i);
+            string UncheckedHide1Id = string.Concat("UncheckedHide1", i);
+            string NoDropdownId = string.Concat("NoDropdown", i);
+            string DropdownId = string.Concat("Dropdown", i);
+            string OnClickString = string.Concat("ShowHideDiv(", i, ")");
+            string OnClickCancelString = string.Concat("ShowHideDivCancel(", i, ")");
+            string OnClickChangeString = string.Concat("ShowHideDivChange(", i, ")");
+            string OnDropdownChangeString = string.Concat("SetTimingSet(", i, ", this.options[this.selectedIndex].text);");
+            if (i % 2 == 0)
+            {
+                code = "tr-odd";
+            }
+            <tr class="@code">
+                <td class="col-2">
+                    @Html.CheckBox("WeekdayIds[" + j + "].Select", Model.WeekdayIds.ElementAt(j).Select, new { id = @CheckBoxId, onclick = @OnClickString }) @Model.WeekdayIds.ElementAt(j).Day
+                </td>
+                <td class="col-2" id="@UncheckedHide1Id" style="width: 200px;">
+                    @Html.Hidden("WeekdayIds[" + j + "].Day", Model.WeekdayIds.ElementAt(j).Day)
+                    @Html.Hidden("WeekdayIds[" + j + "].Id", Model.WeekdayIds.ElementAt(j).Id)
+                    <div class="label-field-pair">
+                        <div class="text-input-bg">
+                            <div id=@NoDropdownId>
+                                <span style="display: inline-block;">
+                                    @Html.TextBox("WeekdayIds[" + j + "].ClassTimingSet", Model.WeekdayIds.ElementAt(j).ClassTimingSet, new { id = TextBoxId })
+                                    <a href="#" id="Change" onclick=@OnClickChangeString>Change</a>
+                                </span>
+                            </div>
+                            <div id=@DropdownId class="Dropdown">
+                                <span style="display: inline-block;">
+                                    @Html.DropDownList("ClassTimingSet", null, htmlAttributes: new { @class = "form-control", @value = Model.WeekdayIds.ElementAt(j).ClassTimingSet, onchange = @OnDropdownChangeString })
+                                    <a href="#" id="Cancel" onclick=@OnClickCancelString>Cancel</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            i += 1;
+        }
+    </table>
+    
     <input type="hidden" value="@ViewBag.BTCH_ID" id="batch_id" name="batch_id" />
     <input type="submit" value="► Save" class="submit_button" />
 }

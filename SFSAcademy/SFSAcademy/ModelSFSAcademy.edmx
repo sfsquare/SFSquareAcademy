@@ -275,6 +275,28 @@
           <Property Name="IS_BRK" Type="bit" Nullable="false" />
           <Property Name="IS_DEL" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="CLASS_TIMING_ENTRY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CLASS_TIMING_SET_ID" Type="int" />
+          <Property Name="NAME" Type="varchar" MaxLength="50" />
+          <Property Name="START_TIME" Type="time" Precision="7" />
+          <Property Name="END_TIME" Type="time" Precision="7" />
+          <Property Name="IS_BRK" Type="bit" Nullable="false" />
+          <Property Name="IS_DEL" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CLASS_TIMING_SET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="varchar" MaxLength="50" />
+          <Property Name="CREATED_AT" Type="datetime" />
+          <Property Name="UPDATED_AT" Type="datetime" />
+          <Property Name="IS_DEL" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="CONFIGURATION">
           <Key>
             <PropertyRef Name="ID" />
@@ -1406,6 +1428,7 @@
           <Property Name="SRT_ORD" Type="int" />
           <Property Name="DAY_OF_WK" Type="int" />
           <Property Name="IS_DEL" Type="bit" Nullable="false" />
+          <Property Name="CLASS_TIMING_SET_ID" Type="int" />
         </EntityType>
         <Association Name="ADDL__STUD_EMPL_NI">
           <End Role="EMPLOYEE_ADDITIONAL_FIELD" Type="Self.EMPLOYEE_ADDITIONAL_FIELD" Multiplicity="0..1" />
@@ -1656,6 +1679,18 @@
             </Principal>
             <Dependent Role="FINANCE_TRANSACTION">
               <PropertyRef Name="CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CLAS_TIMS_CLASS_TIME_NI">
+          <End Role="CLASS_TIMING_SET" Type="Self.CLASS_TIMING_SET" Multiplicity="0..1" />
+          <End Role="CLASS_TIMING_ENTRY" Type="Self.CLASS_TIMING_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING_SET">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLASS_TIMING_ENTRY">
+              <PropertyRef Name="CLASS_TIMING_SET_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3039,6 +3074,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="SUBJ_ELECT_GR_NI">
+          <End Role="ELECTIVE_GROUP" Type="Self.ELECTIVE_GROUP" Multiplicity="0..1" />
+          <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ELECTIVE_GROUP">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT">
+              <PropertyRef Name="ELECTIVE_GRP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="SUBJ_PERD_ENTR_NI">
           <End Role="SUBJECT" Type="Self.SUBJECT" Multiplicity="0..1" />
           <End Role="PERIOD_ENTRIES" Type="Self.PERIOD_ENTRIES" Multiplicity="*" />
@@ -3315,6 +3362,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="WEEK_DY_CLAS_TIMS_NI">
+          <End Role="CLASS_TIMING_SET" Type="Self.CLASS_TIMING_SET" Multiplicity="0..1" />
+          <End Role="WEEKDAY" Type="Self.WEEKDAY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING_SET">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="WEEKDAY">
+              <PropertyRef Name="CLASS_TIMING_SET_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="WK_DA_WEEK_TIME_NI">
           <End Role="WEEKDAY" Type="Self.WEEKDAY" Multiplicity="0..1" />
           <End Role="TIMETABLE_ENTRY" Type="Self.TIMETABLE_ENTRY" Multiplicity="*" />
@@ -3343,6 +3402,8 @@
           <EntitySet Name="BATCH" EntityType="Self.BATCH" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLASS_DESIGNATION" EntityType="Self.CLASS_DESIGNATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CLASS_TIMING" EntityType="Self.CLASS_TIMING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLASS_TIMING_ENTRY" EntityType="Self.CLASS_TIMING_ENTRY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CLASS_TIMING_SET" EntityType="Self.CLASS_TIMING_SET" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CONFIGURATION" EntityType="Self.CONFIGURATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="COUNTRY" EntityType="Self.COUNTRY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="COURSE" EntityType="Self.COURSE" Schema="dbo" store:Type="Tables" />
@@ -3509,6 +3570,10 @@
           <AssociationSet Name="CAT_I_FINA_FINA_NI" Association="Self.CAT_I_FINA_FINA_NI">
             <End Role="FINANCE_TRANSACTION_CATEGORY" EntitySet="FINANCE_TRANSACTION_CATEGORY" />
             <End Role="FINANCE_TRANSACTION" EntitySet="FINANCE_TRANSACTION" />
+          </AssociationSet>
+          <AssociationSet Name="CLAS_TIMS_CLASS_TIME_NI" Association="Self.CLAS_TIMS_CLASS_TIME_NI">
+            <End Role="CLASS_TIMING_SET" EntitySet="CLASS_TIMING_SET" />
+            <End Role="CLASS_TIMING_ENTRY" EntitySet="CLASS_TIMING_ENTRY" />
           </AssociationSet>
           <AssociationSet Name="CLS_T_CLAS_SUBJ_NI" Association="Self.CLS_T_CLAS_SUBJ_NI">
             <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
@@ -3970,6 +4035,10 @@
             <End Role="SUBJECT" EntitySet="SUBJECT" />
             <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
           </AssociationSet>
+          <AssociationSet Name="SUBJ_ELECT_GR_NI" Association="Self.SUBJ_ELECT_GR_NI">
+            <End Role="ELECTIVE_GROUP" EntitySet="ELECTIVE_GROUP" />
+            <End Role="SUBJECT" EntitySet="SUBJECT" />
+          </AssociationSet>
           <AssociationSet Name="SUBJ_PERD_ENTR_NI" Association="Self.SUBJ_PERD_ENTR_NI">
             <End Role="SUBJECT" EntitySet="SUBJECT" />
             <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
@@ -4062,6 +4131,10 @@
             <End Role="ARCHIVED_STUDENT" EntitySet="ARCHIVED_STUDENT" />
             <End Role="ARCHIVED_GUARDIAN" EntitySet="ARCHIVED_GUARDIAN" />
           </AssociationSet>
+          <AssociationSet Name="WEEK_DY_CLAS_TIMS_NI" Association="Self.WEEK_DY_CLAS_TIMS_NI">
+            <End Role="CLASS_TIMING_SET" EntitySet="CLASS_TIMING_SET" />
+            <End Role="WEEKDAY" EntitySet="WEEKDAY" />
+          </AssociationSet>
           <AssociationSet Name="WK_DA_WEEK_TIME_NI" Association="Self.WK_DA_WEEK_TIME_NI">
             <End Role="WEEKDAY" EntitySet="WEEKDAY" />
             <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
@@ -4079,7 +4152,6 @@
           <EntitySet Name="BANK_FIELD" EntityType="SFSAcademyModel.BANK_FIELD" />
           <EntitySet Name="BATCHes" EntityType="SFSAcademyModel.BATCH" />
           <EntitySet Name="CLASS_DESIGNATION" EntityType="SFSAcademyModel.CLASS_DESIGNATION" />
-          <EntitySet Name="CLASS_TIMING" EntityType="SFSAcademyModel.CLASS_TIMING" />
           <EntitySet Name="CONFIGURATIONs" EntityType="SFSAcademyModel.CONFIGURATION" />
           <EntitySet Name="COUNTRies" EntityType="SFSAcademyModel.COUNTRY" />
           <EntitySet Name="COURSEs" EntityType="SFSAcademyModel.COURSE" />
@@ -4142,11 +4214,9 @@
           <EntitySet Name="STUDENT_PREVIOUS_DATA" EntityType="SFSAcademyModel.STUDENT_PREVIOUS_DATA" />
           <EntitySet Name="STUDENT_PREVIOUS_SUBJECT_MARK" EntityType="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" />
           <EntitySet Name="STUDENT_SUBJECT" EntityType="SFSAcademyModel.STUDENT_SUBJECT" />
-          <EntitySet Name="SUBJECTs" EntityType="SFSAcademyModel.SUBJECT" />
           <EntitySet Name="SUBJECT_LEAVE" EntityType="SFSAcademyModel.SUBJECT_LEAVE" />
           <EntitySet Name="TIMETABLEs" EntityType="SFSAcademyModel.TIMETABLE" />
           <EntitySet Name="TIMETABLE_ENTRY" EntityType="SFSAcademyModel.TIMETABLE_ENTRY" />
-          <EntitySet Name="WEEKDAYs" EntityType="SFSAcademyModel.WEEKDAY" />
           <AssociationSet Name="EMP_I_EMPL_APPL_NI" Association="SFSAcademyModel.EMP_I_EMPL_APPL_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
@@ -4175,10 +4245,6 @@
             <End Role="BANK_FIELD" EntitySet="BANK_FIELD" />
             <End Role="EMPLOYEE_BANK_DETAIL" EntitySet="EMPLOYEE_BANK_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="BTCH__BATC_CLAS_NI" Association="SFSAcademyModel.BTCH__BATC_CLAS_NI">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
-          </AssociationSet>
           <AssociationSet Name="BTCH__BATC_EXAM_NI" Association="SFSAcademyModel.BTCH__BATC_EXAM_NI">
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="EXAM_GROUP" EntitySet="EXAM_GROUP" />
@@ -4203,10 +4269,6 @@
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
           </AssociationSet>
-          <AssociationSet Name="BTCH__BATC_SUBJ_NI" Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-          </AssociationSet>
           <AssociationSet Name="BTCH__BATC_SUBJ_NI2" Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI2">
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
@@ -4214,10 +4276,6 @@
           <AssociationSet Name="BTCH__BATC_TIME_NI" Association="SFSAcademyModel.BTCH__BATC_TIME_NI">
             <End Role="BATCH" EntitySet="BATCHes" />
             <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
-          </AssociationSet>
-          <AssociationSet Name="BTCH__BATC_WEEK_NI" Association="SFSAcademyModel.BTCH__BATC_WEEK_NI">
-            <End Role="BATCH" EntitySet="BATCHes" />
-            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
           </AssociationSet>
           <AssociationSet Name="BTCH_EL_GRP_NI" Association="SFSAcademyModel.BTCH_EL_GRP_NI">
             <End Role="BATCH" EntitySet="BATCHes" />
@@ -4230,18 +4288,6 @@
           <AssociationSet Name="CRS_I_COUR_CLAS_NI" Association="SFSAcademyModel.CRS_I_COUR_CLAS_NI">
             <End Role="COURSE" EntitySet="COURSEs" />
             <End Role="CLASS_DESIGNATION" EntitySet="CLASS_DESIGNATION" />
-          </AssociationSet>
-          <AssociationSet Name="BTCH_CLASS_TIMG_NI" Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI">
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
-            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
-          </AssociationSet>
-          <AssociationSet Name="CLS_T_CLAS_SUBJ_NI" Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI">
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
-            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="TIME_T_CLAS_TIMING_NI" Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI">
-            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
-            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           <AssociationSet Name="HOME__COUN_EMPL_NI" Association="SFSAcademyModel.HOME__COUN_EMPL_NI">
             <End Role="COUNTRY" EntitySet="COUNTRies" />
@@ -4359,10 +4405,6 @@
             <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
             <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
           </AssociationSet>
-          <AssociationSet Name="SUBJ__SUBJ_EMPL_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
-          </AssociationSet>
           <AssociationSet Name="EV_ID_EVEN_EXAM_NI" Association="SFSAcademyModel.EV_ID_EVEN_EXAM_NI">
             <End Role="EVENT" EntitySet="EVENTs" />
             <End Role="EXAM" EntitySet="EXAMs" />
@@ -4377,10 +4419,6 @@
           </AssociationSet>
           <AssociationSet Name="GRADI_GRAD_EXAM_NI" Association="SFSAcademyModel.GRADI_GRAD_EXAM_NI">
             <End Role="GRADING_LEVEL" EntitySet="GRADING_LEVEL" />
-            <End Role="EXAM" EntitySet="EXAMs" />
-          </AssociationSet>
-          <AssociationSet Name="SUBJ__SUBJ_EXAM_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
             <End Role="EXAM" EntitySet="EXAMs" />
           </AssociationSet>
           <AssociationSet Name="GRADI_GRAD_EXAM_NI2" Association="SFSAcademyModel.GRADI_GRAD_EXAM_NI2">
@@ -4443,10 +4481,6 @@
             <End Role="NEWS" EntitySet="NEWS" />
             <End Role="NEWS_COMMENTS" EntitySet="NEWS_COMMENTS" />
           </AssociationSet>
-          <AssociationSet Name="SUBJ_PERD_ENTR_NI" Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
-          </AssociationSet>
           <AssociationSet Name="SMS_M_SMS__SMS__NI" Association="SFSAcademyModel.SMS_M_SMS__SMS__NI">
             <End Role="SMS_MESSAGE" EntitySet="SMS_MESSAGE" />
             <End Role="SMS_LOG" EntitySet="SMS_LOG" />
@@ -4459,28 +4493,8 @@
             <End Role="STUDENT_ADDITIONAL_FIELD" EntitySet="STUDENT_ADDITIONAL_FIELD" />
             <End Role="STUDENT_ADDITIONAL_DETAIL" EntitySet="STUDENT_ADDITIONAL_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="SUBJ__SUBJ_STUD_NI" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="STUDENT_PREVIOUS_SUBJECT_MARK" EntitySet="STUDENT_PREVIOUS_SUBJECT_MARK" />
-          </AssociationSet>
-          <AssociationSet Name="SUBJ__SUBJ_STUD_NI2" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
-          </AssociationSet>
-          <AssociationSet Name="SUBJ__SUBJ_SUBJ_NI" Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
-          </AssociationSet>
-          <AssociationSet Name="TIME_T_SUBJ_NI" Association="SFSAcademyModel.TIME_T_SUBJ_NI">
-            <End Role="SUBJECT" EntitySet="SUBJECTs" />
-            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
-          </AssociationSet>
           <AssociationSet Name="TIME_T_TIME_T_NI" Association="SFSAcademyModel.TIME_T_TIME_T_NI">
             <End Role="TIMETABLE" EntitySet="TIMETABLEs" />
-            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
-          </AssociationSet>
-          <AssociationSet Name="WK_DA_WEEK_TIME_NI" Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI">
-            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
             <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
           <EntitySet Name="PRIVILEGE_ACCESS" EntityType="SFSAcademyModel.PRIVILEGE_ACCESS" />
@@ -4810,6 +4824,79 @@
             <End Role="ARCHIVED_STUDENT" EntitySet="ARCHIVED_STUDENT" />
           </AssociationSet>
           <EntitySet Name="IMAGE_DOCUMENTS" EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" />
+          <EntitySet Name="SUBJECTs" EntityType="SFSAcademyModel.SUBJECT" />
+          <AssociationSet Name="BTCH__BATC_SUBJ_NI" Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ_ELECT_GR_NI" Association="SFSAcademyModel.SUBJ_ELECT_GR_NI">
+            <End Role="ELECTIVE_GROUP" EntitySet="ELECTIVE_GROUP" />
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_EMPL_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="EMPLOYEES_SUBJECT" EntitySet="EMPLOYEES_SUBJECT" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_EXAM_NI" Association="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="EXAM" EntitySet="EXAMs" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ_PERD_ENTR_NI" Association="SFSAcademyModel.SUBJ_PERD_ENTR_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_STUD_NI" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="STUDENT_PREVIOUS_SUBJECT_MARK" EntitySet="STUDENT_PREVIOUS_SUBJECT_MARK" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_STUD_NI2" Association="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="STUDENT_SUBJECT" EntitySet="STUDENT_SUBJECT" />
+          </AssociationSet>
+          <AssociationSet Name="SUBJ__SUBJ_SUBJ_NI" Association="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_SUBJ_NI" Association="SFSAcademyModel.TIME_T_SUBJ_NI">
+            <End Role="SUBJECT" EntitySet="SUBJECTs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <EntitySet Name="CLASS_TIMING_SET" EntityType="SFSAcademyModel.CLASS_TIMING_SET" />
+          <EntitySet Name="CLASS_TIMING_ENTRY" EntityType="SFSAcademyModel.CLASS_TIMING_ENTRY" />
+          <AssociationSet Name="CLAS_TIMS_CLASS_TIME_NI" Association="SFSAcademyModel.CLAS_TIMS_CLASS_TIME_NI">
+            <End Role="CLASS_TIMING_SET" EntitySet="CLASS_TIMING_SET" />
+            <End Role="CLASS_TIMING_ENTRY" EntitySet="CLASS_TIMING_ENTRY" />
+          </AssociationSet>
+          <EntitySet Name="WEEKDAYs" EntityType="SFSAcademyModel.WEEKDAY" />
+          <AssociationSet Name="BTCH__BATC_WEEK_NI" Association="SFSAcademyModel.BTCH__BATC_WEEK_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
+          </AssociationSet>
+          <AssociationSet Name="WEEK_DY_CLAS_TIMS_NI" Association="SFSAcademyModel.WEEK_DY_CLAS_TIMS_NI">
+            <End Role="CLASS_TIMING_SET" EntitySet="CLASS_TIMING_SET" />
+            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
+          </AssociationSet>
+          <AssociationSet Name="WK_DA_WEEK_TIME_NI" Association="SFSAcademyModel.WK_DA_WEEK_TIME_NI">
+            <End Role="WEEKDAY" EntitySet="WEEKDAYs" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
+          <EntitySet Name="CLASS_TIMING" EntityType="SFSAcademyModel.CLASS_TIMING" />
+          <AssociationSet Name="BTCH__BATC_CLAS_NI" Association="SFSAcademyModel.BTCH__BATC_CLAS_NI">
+            <End Role="BATCH" EntitySet="BATCHes" />
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+          </AssociationSet>
+          <AssociationSet Name="BTCH_CLASS_TIMG_NI" Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
+          </AssociationSet>
+          <AssociationSet Name="CLS_T_CLAS_SUBJ_NI" Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="SUBJECT_LEAVE" EntitySet="SUBJECT_LEAVE" />
+          </AssociationSet>
+          <AssociationSet Name="TIME_T_CLAS_TIMING_NI" Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI">
+            <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
+            <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="APPLY_LEAVE">
           <Key>
@@ -4898,20 +4985,20 @@
           <Property Name="GRADING_TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ASSESSMENT_SCORE" Relationship="SFSAcademyModel.BTCH__BATC_ASSE_NI" FromRole="BATCH" ToRole="ASSESSMENT_SCORE" />
           <NavigationProperty Name="ATTENDENCEs" Relationship="SFSAcademyModel.BTCH__BATC_ATTE_NI" FromRole="BATCH" ToRole="ATTENDENCE" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="BATCH" ToRole="CLASS_TIMING" />
           <NavigationProperty Name="EXAM_GROUP" Relationship="SFSAcademyModel.BTCH__BATC_EXAM_NI" FromRole="BATCH" ToRole="EXAM_GROUP" />
           <NavigationProperty Name="FINANCE_FEE_COLLECTION" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI2" FromRole="BATCH" ToRole="FINANCE_FEE_COLLECTION" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI3" FromRole="BATCH" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
           <NavigationProperty Name="GRADING_LEVEL" Relationship="SFSAcademyModel.BTCH__BATC_GRAD_NI" FromRole="BATCH" ToRole="GRADING_LEVEL" />
           <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.BTCH__BATC_PERE_NI" FromRole="BATCH" ToRole="PERIOD_ENTRIES" />
           <NavigationProperty Name="STUDENT_SUBJECT" Relationship="SFSAcademyModel.BTCH__BATC_STUD_NI" FromRole="BATCH" ToRole="STUDENT_SUBJECT" />
-          <NavigationProperty Name="SUBJECTs" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="BATCH" ToRole="SUBJECT" />
           <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI2" FromRole="BATCH" ToRole="SUBJECT_LEAVE" />
           <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.BTCH__BATC_TIME_NI" FromRole="BATCH" ToRole="TIMETABLE_ENTRY" />
-          <NavigationProperty Name="WEEKDAYs" Relationship="SFSAcademyModel.BTCH__BATC_WEEK_NI" FromRole="BATCH" ToRole="WEEKDAY" />
           <NavigationProperty Name="ELECTIVE_GROUP" Relationship="SFSAcademyModel.BTCH_EL_GRP_NI" FromRole="BATCH" ToRole="ELECTIVE_GROUP" />
           <NavigationProperty Name="COURSE" Relationship="SFSAcademyModel.CRS_I_COUR_BATC_NI" FromRole="BATCH" ToRole="COURSE" />
           <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.BTCH__BATC_FINA_NI" FromRole="BATCH" ToRole="FINANCE_FEE_CATGEORY" />
+          <NavigationProperty Name="SUBJECTs" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="BATCH" ToRole="SUBJECT" />
+          <NavigationProperty Name="WEEKDAYs" Relationship="SFSAcademyModel.BTCH__BATC_WEEK_NI" FromRole="BATCH" ToRole="WEEKDAY" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="BATCH" ToRole="CLASS_TIMING" />
         </EntityType>
         <EntityType Name="CLASS_DESIGNATION">
           <Key>
@@ -4925,22 +5012,6 @@
           <Property Name="MKS" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CRS_ID" Type="Int32" />
           <NavigationProperty Name="COURSE" Relationship="SFSAcademyModel.CRS_I_COUR_CLAS_NI" FromRole="CLASS_DESIGNATION" ToRole="COURSE" />
-        </EntityType>
-        <EntityType Name="CLASS_TIMING">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="START_TIME" Type="Time" Precision="7" />
-          <Property Name="END_TIME" Type="Time" Precision="7" />
-          <Property Name="IS_BRK" Type="Boolean" Nullable="false" />
-          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="CLASS_TIMING" ToRole="BATCH" />
-          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="CLASS_TIMING" ToRole="PERIOD_ENTRIES" />
-          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="CLASS_TIMING" ToRole="SUBJECT_LEAVE" />
-          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="CLASS_TIMING" ToRole="TIMETABLE_ENTRY" />
         </EntityType>
         <EntityType Name="CONFIGURATION">
           <Key>
@@ -5007,6 +5078,7 @@
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH_EL_GRP_NI" FromRole="ELECTIVE_GROUP" ToRole="BATCH" />
           <NavigationProperty Name="ELECTIVES" Relationship="SFSAcademyModel.ELT_GRP_ELECT_NI" FromRole="ELECTIVE_GROUP" ToRole="ELECTIVE" />
+          <NavigationProperty Name="SUBJECTs" Relationship="SFSAcademyModel.SUBJ_ELECT_GR_NI" FromRole="ELECTIVE_GROUP" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="ELECTIVE">
           <Key>
@@ -5302,8 +5374,8 @@
           <NavigationProperty Name="EXAM_GROUP" Relationship="SFSAcademyModel.EXAM__EXAM_EXAM_NI" FromRole="EXAM" ToRole="EXAM_GROUP" />
           <NavigationProperty Name="EXAM_SCORE" Relationship="SFSAcademyModel.EXAM__EXAM_EXAM_NI2" FromRole="EXAM" ToRole="EXAM_SCORE" />
           <NavigationProperty Name="GRADING_LEVEL" Relationship="SFSAcademyModel.GRADI_GRAD_EXAM_NI" FromRole="EXAM" ToRole="GRADING_LEVEL" />
-          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="EXAM" ToRole="SUBJECT" />
           <NavigationProperty Name="ARCHIVED_EXAM_SCORE" Relationship="SFSAcademyModel.EXAM_ARCH_EXAM_EXAM_NI2" FromRole="EXAM" ToRole="ARCHIVED_EXAM_SCORE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="EXAM" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="EXAM_GROUP">
           <Key>
@@ -5698,9 +5770,9 @@
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_PERE_NI" FromRole="PERIOD_ENTRIES" ToRole="BATCH" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="PERIOD_ENTRIES" ToRole="CLASS_TIMING" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_PERD_ENTR_NI" FromRole="PERIOD_ENTRIES" ToRole="EMPLOYEE" />
           <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ_PERD_ENTR_NI" FromRole="PERIOD_ENTRIES" ToRole="SUBJECT" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="PERIOD_ENTRIES" ToRole="CLASS_TIMING" />
         </EntityType>
         <EntityType Name="PHOTO_MASTER">
           <Key>
@@ -5867,8 +5939,8 @@
           <Property Name="STDNT_ID" Type="Int32" />
           <Property Name="MK" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="SUBJECT_ID" Type="Int32" />
-          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_STUD_NI4" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="STUDENT" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="STUDENT_PREVIOUS_SUBJECT_MARK" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="STUDENT_SUBJECT">
           <Key>
@@ -5879,35 +5951,8 @@
           <Property Name="BTCH_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_STUD_NI" FromRole="STUDENT_SUBJECT" ToRole="BATCH" />
-          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="STUDENT_SUBJECT" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_STUD_NI5" FromRole="STUDENT_SUBJECT" ToRole="STUDENT" />
-        </EntityType>
-        <EntityType Name="SUBJECT">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NO_EXAMS" Type="Boolean" Nullable="false" />
-          <Property Name="MAX_WKILY_CLSES" Type="Int32" />
-          <Property Name="ELECTIVE_GRP_ID" Type="Int32" />
-          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="CR_HRS" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="PREF_CNSC" Type="Boolean" Nullable="false" />
-          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="LANG" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="SUBJECT" ToRole="BATCH" />
-          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" FromRole="SUBJECT" ToRole="EMPLOYEES_SUBJECT" />
-          <NavigationProperty Name="EXAMs" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="SUBJECT" ToRole="EXAM" />
-          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.SUBJ_PERD_ENTR_NI" FromRole="SUBJECT" ToRole="PERIOD_ENTRIES" />
-          <NavigationProperty Name="STUDENT_PREVIOUS_SUBJECT_MARK" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="SUBJECT" ToRole="STUDENT_PREVIOUS_SUBJECT_MARK" />
-          <NavigationProperty Name="STUDENT_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="SUBJECT" ToRole="STUDENT_SUBJECT" />
-          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT" ToRole="SUBJECT_LEAVE" />
-          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="SUBJECT" ToRole="TIMETABLE_ENTRY" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="STUDENT_SUBJECT" ToRole="SUBJECT" />
         </EntityType>
         <EntityType Name="SUBJECT_LEAVE">
           <Key>
@@ -5924,10 +5969,10 @@
           <Property Name="BTCH_ID" Type="Int32" />
           <Property Name="SUBJECT_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI2" FromRole="SUBJECT_LEAVE" ToRole="BATCH" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="CLASS_TIMING" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="SUBJECT" />
           <NavigationProperty Name="STUDENT" Relationship="SFSAcademyModel.STDNT_STUD_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="STUDENT" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="SUBJECT" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="SUBJECT_LEAVE" ToRole="CLASS_TIMING" />
         </EntityType>
         <EntityType Name="TIMETABLE">
           <Key>
@@ -5953,25 +5998,11 @@
           <Property Name="CLS_TMNG_ID" Type="Int32" />
           <Property Name="SUBJ_ID" Type="Int32" />
           <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_TIME_NI" FromRole="TIMETABLE_ENTRY" ToRole="BATCH" />
-          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="TIMETABLE_ENTRY" ToRole="CLASS_TIMING" />
           <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.TIME_T_EMPL_NI" FromRole="TIMETABLE_ENTRY" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="TIMETABLE_ENTRY" ToRole="SUBJECT" />
           <NavigationProperty Name="TIMETABLE" Relationship="SFSAcademyModel.TIME_T_TIME_T_NI" FromRole="TIMETABLE_ENTRY" ToRole="TIMETABLE" />
+          <NavigationProperty Name="SUBJECT" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="TIMETABLE_ENTRY" ToRole="SUBJECT" />
           <NavigationProperty Name="WEEKDAY" Relationship="SFSAcademyModel.WK_DA_WEEK_TIME_NI" FromRole="TIMETABLE_ENTRY" ToRole="WEEKDAY" />
-        </EntityType>
-        <EntityType Name="WEEKDAY">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="WKDAY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="BTCH_ID" Type="Int32" />
-          <Property Name="SRT_ORD" Type="Int32" />
-          <Property Name="DAY_OF_WK" Type="Int32" />
-          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_WEEK_NI" FromRole="WEEKDAY" ToRole="BATCH" />
-          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.WK_DA_WEEK_TIME_NI" FromRole="WEEKDAY" ToRole="TIMETABLE_ENTRY" />
+          <NavigationProperty Name="CLASS_TIMING" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="TIMETABLE_ENTRY" ToRole="CLASS_TIMING" />
         </EntityType>
         <Association Name="EMP_I_EMPL_APPL_NI">
           <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
@@ -6057,18 +6088,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="BTCH__BATC_CLAS_NI">
-          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="CLASS_TIMING">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="BTCH__BATC_EXAM_NI">
           <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.EXAM_GROUP" Role="EXAM_GROUP" Multiplicity="*" />
@@ -6141,18 +6160,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="BTCH__BATC_SUBJ_NI">
-          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="BTCH__BATC_SUBJ_NI2">
           <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
@@ -6173,18 +6180,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="TIMETABLE_ENTRY">
-              <PropertyRef Name="BTCH_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="BTCH__BATC_WEEK_NI">
-          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BATCH">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="WEEKDAY">
               <PropertyRef Name="BTCH_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -6222,42 +6217,6 @@
             </Principal>
             <Dependent Role="CLASS_DESIGNATION">
               <PropertyRef Name="CRS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="BTCH_CLASS_TIMG_NI">
-          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CLASS_TIMING">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PERIOD_ENTRIES">
-              <PropertyRef Name="CLASS_TIMING_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="CLS_T_CLAS_SUBJ_NI">
-          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CLASS_TIMING">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT_LEAVE">
-              <PropertyRef Name="CLS_TMNG_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="TIME_T_CLAS_TIMING_NI">
-          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CLASS_TIMING">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TIMETABLE_ENTRY">
-              <PropertyRef Name="CLS_TMNG_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6609,18 +6568,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="SUBJ__SUBJ_EMPL_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.EMPLOYEES_SUBJECT" Role="EMPLOYEES_SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEES_SUBJECT">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="EV_ID_EVEN_EXAM_NI">
           <End Type="SFSAcademyModel.EVENT" Role="EVENT" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.EXAM" Role="EXAM" Multiplicity="*" />
@@ -6666,18 +6613,6 @@
             </Principal>
             <Dependent Role="EXAM">
               <PropertyRef Name="GRADING_LVL_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="SUBJ__SUBJ_EXAM_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.EXAM" Role="EXAM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EXAM">
-              <PropertyRef Name="SUBJ_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -6861,18 +6796,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="SUBJ_PERD_ENTR_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PERIOD_ENTRIES">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="SMS_M_SMS__SMS__NI">
           <End Type="SFSAcademyModel.SMS_MESSAGE" Role="SMS_MESSAGE" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.SMS_LOG" Role="SMS_LOG" Multiplicity="*" />
@@ -6909,54 +6832,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="SUBJ__SUBJ_STUD_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" Role="STUDENT_PREVIOUS_SUBJECT_MARK" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STUDENT_PREVIOUS_SUBJECT_MARK">
-              <PropertyRef Name="SUBJECT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="SUBJ__SUBJ_STUD_NI2">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.STUDENT_SUBJECT" Role="STUDENT_SUBJECT" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="STUDENT_SUBJECT">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="SUBJ__SUBJ_SUBJ_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SUBJECT_LEAVE">
-              <PropertyRef Name="SUBJECT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="TIME_T_SUBJ_NI">
-          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SUBJECT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TIMETABLE_ENTRY">
-              <PropertyRef Name="SUBJ_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="TIME_T_TIME_T_NI">
           <End Type="SFSAcademyModel.TIMETABLE" Role="TIMETABLE" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
@@ -6966,18 +6841,6 @@
             </Principal>
             <Dependent Role="TIMETABLE_ENTRY">
               <PropertyRef Name="TIMT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="WK_DA_WEEK_TIME_NI">
-          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="WEEKDAY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TIMETABLE_ENTRY">
-              <PropertyRef Name="WK_DAY_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8453,6 +8316,295 @@
           <Property Name="CREATEDON" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIEDON" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="SUBJECT">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NO_EXAMS" Type="Boolean" Nullable="false" />
+          <Property Name="MAX_WKILY_CLSES" Type="Int32" />
+          <Property Name="ELECTIVE_GRP_ID" Type="Int32" />
+          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="CR_HRS" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PREF_CNSC" Type="Boolean" Nullable="false" />
+          <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="LANG" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_SUBJ_NI" FromRole="SUBJECT" ToRole="BATCH" />
+          <NavigationProperty Name="ELECTIVE_GROUP" Relationship="SFSAcademyModel.SUBJ_ELECT_GR_NI" FromRole="SUBJECT" ToRole="ELECTIVE_GROUP" />
+          <NavigationProperty Name="EMPLOYEES_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" FromRole="SUBJECT" ToRole="EMPLOYEES_SUBJECT" />
+          <NavigationProperty Name="EXAMs" Relationship="SFSAcademyModel.SUBJ__SUBJ_EXAM_NI" FromRole="SUBJECT" ToRole="EXAM" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.SUBJ_PERD_ENTR_NI" FromRole="SUBJECT" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="STUDENT_PREVIOUS_SUBJECT_MARK" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI" FromRole="SUBJECT" ToRole="STUDENT_PREVIOUS_SUBJECT_MARK" />
+          <NavigationProperty Name="STUDENT_SUBJECT" Relationship="SFSAcademyModel.SUBJ__SUBJ_STUD_NI2" FromRole="SUBJECT" ToRole="STUDENT_SUBJECT" />
+          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.SUBJ__SUBJ_SUBJ_NI" FromRole="SUBJECT" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_SUBJ_NI" FromRole="SUBJECT" ToRole="TIMETABLE_ENTRY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_SUBJ_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ_ELECT_GR_NI">
+          <End Type="SFSAcademyModel.ELECTIVE_GROUP" Role="ELECTIVE_GROUP" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ELECTIVE_GROUP">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT">
+              <PropertyRef Name="ELECTIVE_GRP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_EMPL_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEES_SUBJECT" Role="EMPLOYEES_SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEES_SUBJECT">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_EXAM_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EXAM" Role="EXAM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EXAM">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ_PERD_ENTR_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_STUD_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STUDENT_PREVIOUS_SUBJECT_MARK" Role="STUDENT_PREVIOUS_SUBJECT_MARK" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STUDENT_PREVIOUS_SUBJECT_MARK">
+              <PropertyRef Name="SUBJECT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_STUD_NI2">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.STUDENT_SUBJECT" Role="STUDENT_SUBJECT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STUDENT_SUBJECT">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SUBJ__SUBJ_SUBJ_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="SUBJECT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_SUBJ_NI">
+          <End Type="SFSAcademyModel.SUBJECT" Role="SUBJECT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SUBJECT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="SUBJ_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CLASS_TIMING_SET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CLASS_TIMING_ENTRY" Relationship="SFSAcademyModel.CLAS_TIMS_CLASS_TIME_NI" FromRole="CLASS_TIMING_SET" ToRole="CLASS_TIMING_ENTRY" />
+          <NavigationProperty Name="WEEKDAYs" Relationship="SFSAcademyModel.WEEK_DY_CLAS_TIMS_NI" FromRole="CLASS_TIMING_SET" ToRole="WEEKDAY" />
+        </EntityType>
+        <EntityType Name="CLASS_TIMING_ENTRY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CLASS_TIMING_SET_ID" Type="Int32" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="START_TIME" Type="Time" Precision="7" />
+          <Property Name="END_TIME" Type="Time" Precision="7" />
+          <Property Name="IS_BRK" Type="Boolean" Nullable="false" />
+          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CLASS_TIMING_SET" Relationship="SFSAcademyModel.CLAS_TIMS_CLASS_TIME_NI" FromRole="CLASS_TIMING_ENTRY" ToRole="CLASS_TIMING_SET" />
+        </EntityType>
+        <Association Name="CLAS_TIMS_CLASS_TIME_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING_SET" Role="CLASS_TIMING_SET" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.CLASS_TIMING_ENTRY" Role="CLASS_TIMING_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING_SET">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLASS_TIMING_ENTRY">
+              <PropertyRef Name="CLASS_TIMING_SET_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="WEEKDAY">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WKDAY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="SRT_ORD" Type="Int32" />
+          <Property Name="DAY_OF_WK" Type="Int32" />
+          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
+          <Property Name="CLASS_TIMING_SET_ID" Type="Int32" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_WEEK_NI" FromRole="WEEKDAY" ToRole="BATCH" />
+          <NavigationProperty Name="CLASS_TIMING_SET" Relationship="SFSAcademyModel.WEEK_DY_CLAS_TIMS_NI" FromRole="WEEKDAY" ToRole="CLASS_TIMING_SET" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.WK_DA_WEEK_TIME_NI" FromRole="WEEKDAY" ToRole="TIMETABLE_ENTRY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_WEEK_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="WEEKDAY">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="WEEK_DY_CLAS_TIMS_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING_SET" Role="CLASS_TIMING_SET" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING_SET">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="WEEKDAY">
+              <PropertyRef Name="CLASS_TIMING_SET_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="WK_DA_WEEK_TIME_NI">
+          <End Type="SFSAcademyModel.WEEKDAY" Role="WEEKDAY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WEEKDAY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="WK_DAY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CLASS_TIMING">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BTCH_ID" Type="Int32" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="START_TIME" Type="Time" Precision="7" />
+          <Property Name="END_TIME" Type="Time" Precision="7" />
+          <Property Name="IS_BRK" Type="Boolean" Nullable="false" />
+          <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="BATCH" Relationship="SFSAcademyModel.BTCH__BATC_CLAS_NI" FromRole="CLASS_TIMING" ToRole="BATCH" />
+          <NavigationProperty Name="PERIOD_ENTRIES" Relationship="SFSAcademyModel.BTCH_CLASS_TIMG_NI" FromRole="CLASS_TIMING" ToRole="PERIOD_ENTRIES" />
+          <NavigationProperty Name="SUBJECT_LEAVE" Relationship="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" FromRole="CLASS_TIMING" ToRole="SUBJECT_LEAVE" />
+          <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" FromRole="CLASS_TIMING" ToRole="TIMETABLE_ENTRY" />
+        </EntityType>
+        <Association Name="BTCH__BATC_CLAS_NI">
+          <End Type="SFSAcademyModel.BATCH" Role="BATCH" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BATCH">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CLASS_TIMING">
+              <PropertyRef Name="BTCH_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="BTCH_CLASS_TIMG_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PERIOD_ENTRIES" Role="PERIOD_ENTRIES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PERIOD_ENTRIES">
+              <PropertyRef Name="CLASS_TIMING_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CLS_T_CLAS_SUBJ_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.SUBJECT_LEAVE" Role="SUBJECT_LEAVE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SUBJECT_LEAVE">
+              <PropertyRef Name="CLS_TMNG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TIME_T_CLAS_TIMING_NI">
+          <End Type="SFSAcademyModel.CLASS_TIMING" Role="CLASS_TIMING" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.TIMETABLE_ENTRY" Role="TIMETABLE_ENTRY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CLASS_TIMING">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TIMETABLE_ENTRY">
+              <PropertyRef Name="CLS_TMNG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8550,19 +8702,6 @@
                 <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
                 <ScalarProperty Name="CGPA" ColumnName="CGPA" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CLASS_TIMING">
-            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING">
-              <MappingFragment StoreEntitySet="CLASS_TIMING">
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="IS_BRK" ColumnName="IS_BRK" />
-                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
-                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -9409,26 +9548,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SUBJECTs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT">
-              <MappingFragment StoreEntitySet="SUBJECT">
-                <ScalarProperty Name="LANG" ColumnName="LANG" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="AMT" ColumnName="AMT" />
-                <ScalarProperty Name="PREF_CNSC" ColumnName="PREF_CNSC" />
-                <ScalarProperty Name="CR_HRS" ColumnName="CR_HRS" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="ELECTIVE_GRP_ID" ColumnName="ELECTIVE_GRP_ID" />
-                <ScalarProperty Name="MAX_WKILY_CLSES" ColumnName="MAX_WKILY_CLSES" />
-                <ScalarProperty Name="NO_EXAMS" ColumnName="NO_EXAMS" />
-                <ScalarProperty Name="CODE" ColumnName="CODE" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="SUBJECT_LEAVE">
             <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT_LEAVE">
               <MappingFragment StoreEntitySet="SUBJECT_LEAVE">
@@ -9466,19 +9585,6 @@
                 <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
                 <ScalarProperty Name="WK_DAY_ID" ColumnName="WK_DAY_ID" />
                 <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WEEKDAYs">
-            <EntityTypeMapping TypeName="SFSAcademyModel.WEEKDAY">
-              <MappingFragment StoreEntitySet="WEEKDAY">
-                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
-                <ScalarProperty Name="DAY_OF_WK" ColumnName="DAY_OF_WK" />
-                <ScalarProperty Name="SRT_ORD" ColumnName="SRT_ORD" />
-                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
-                <ScalarProperty Name="WKDAY" ColumnName="WKDAY" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -9956,6 +10062,77 @@
                 <ScalarProperty Name="SIZE" ColumnName="SIZE" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="DOCUMENTID" ColumnName="DOCUMENTID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUBJECTs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT">
+              <MappingFragment StoreEntitySet="SUBJECT">
+                <ScalarProperty Name="LANG" ColumnName="LANG" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="AMT" ColumnName="AMT" />
+                <ScalarProperty Name="PREF_CNSC" ColumnName="PREF_CNSC" />
+                <ScalarProperty Name="CR_HRS" ColumnName="CR_HRS" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="ELECTIVE_GRP_ID" ColumnName="ELECTIVE_GRP_ID" />
+                <ScalarProperty Name="MAX_WKILY_CLSES" ColumnName="MAX_WKILY_CLSES" />
+                <ScalarProperty Name="NO_EXAMS" ColumnName="NO_EXAMS" />
+                <ScalarProperty Name="CODE" ColumnName="CODE" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLASS_TIMING_SET">
+            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING_SET">
+              <MappingFragment StoreEntitySet="CLASS_TIMING_SET">
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLASS_TIMING_ENTRY">
+            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING_ENTRY">
+              <MappingFragment StoreEntitySet="CLASS_TIMING_ENTRY">
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="IS_BRK" ColumnName="IS_BRK" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="CLASS_TIMING_SET_ID" ColumnName="CLASS_TIMING_SET_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WEEKDAYs">
+            <EntityTypeMapping TypeName="SFSAcademyModel.WEEKDAY">
+              <MappingFragment StoreEntitySet="WEEKDAY">
+                <ScalarProperty Name="CLASS_TIMING_SET_ID" ColumnName="CLASS_TIMING_SET_ID" />
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="DAY_OF_WK" ColumnName="DAY_OF_WK" />
+                <ScalarProperty Name="SRT_ORD" ColumnName="SRT_ORD" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="WKDAY" ColumnName="WKDAY" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CLASS_TIMING">
+            <EntityTypeMapping TypeName="SFSAcademyModel.CLASS_TIMING">
+              <MappingFragment StoreEntitySet="CLASS_TIMING">
+                <ScalarProperty Name="IS_DEL" ColumnName="IS_DEL" />
+                <ScalarProperty Name="IS_BRK" ColumnName="IS_BRK" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

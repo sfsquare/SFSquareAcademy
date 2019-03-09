@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -19,55 +20,81 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
-                         .OrderBy(x => x.BatchData.ID).ToList();
 
-
-            List<SelectListItem> options = new List<SelectListItem>();
-            foreach (var item in queryCourceBatch)
-            {
-                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
-                var result = new SelectListItem();
-                result.Text = BatchFullName;
-                result.Value = item.BatchData.ID.ToString();
-                options.Add(result);
-            }
-            // add the 'ALL' option
-            options.Insert(0, new SelectListItem() { Value = null, Text = "Select a Batch" });
-            ViewBag.BTCH_ID = options;
-
-            var cLASS_TIMING = db.CLASS_TIMING.Where(x=>x.BTCH_ID== null && x.IS_DEL ==false).OrderBy(x=>x.START_TIME).Include(c => c.BATCH);
-            return View(cLASS_TIMING.ToList());
+            var Class_Timings_Entry = db.CLASS_TIMING_SET.Where(x=>x.IS_DEL ==false);
+            return View(Class_Timings_Entry.ToList());
         }
 
         // GET: Class_Timings/Create
-        public ActionResult Show(int? id)
+        public ActionResult Class_TimingSet_View(int? id, string Notice, string ErrorMessage)
         {
-            var class_timings = db.CLASS_TIMING.Where(x => x.BTCH_ID == id).ToList();
-            ViewData["class_timings"] = class_timings;
-            var PeriodEntry = db.PERIOD_ENTRIES.Where(x => x.BTCH_ID == id).ToList();
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            CLASS_TIMING_SET Class_Timing_Set = db.CLASS_TIMING_SET.Find(id);
+            ViewData["Class_Timing_Set"] = Class_Timing_Set;
+
+            var PeriodEntry = db.PERIOD_ENTRIES.ToList();
             ViewData["PeriodEntry"] = PeriodEntry;
-            ViewBag.BTCH_ID = id;
-            return PartialView("_show_batch_timing");
+            var Class_Timing_Entries = db.CLASS_TIMING_ENTRY.Include(x=>x.CLASS_TIMING_SET).Where(x => x.CLASS_TIMING_SET_ID == id && x.IS_DEL == false).OrderBy(x => x.START_TIME);
+            ViewBag.CLASS_TIMING_SET_ID = id;
+            return View(Class_Timing_Entries.ToList());
+        }
+
+
+        // GET: Class_Timings/Create
+        public ActionResult Class_TimingSet_New()
+        {          
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Class_TimingSet_New([Bind(Include = "ID,NAME,CREATED_AT,UPDATED_AT,IS_DEL")] CLASS_TIMING_SET cLASS_TIMING_sET)
+        {
+            if (ModelState.IsValid)
+            {
+                cLASS_TIMING_sET.UPDATED_AT = DateTime.Now;
+                cLASS_TIMING_sET.CREATED_AT = DateTime.Now;
+                db.CLASS_TIMING_SET.Add(cLASS_TIMING_sET);
+                db.SaveChanges();
+                ViewBag.Notice = "Class timing set was successfully created.";
+                return RedirectToAction("Index", new { Notice = ViewBag.Notice });
+            }
+            ViewBag.Notice = "There seems to be some issue with Model State.";
+            return View();
+        }
+
+        // GET: Class_Timings/Create
+        public ActionResult Class_TimingSet_Delete(int? id)
+        {
+            CLASS_TIMING_SET Class_Timing_Set = db.CLASS_TIMING_SET.Find(id);
+            var Class_Timing_Entry = db.CLASS_TIMING_ENTRY.Where(x => x.CLASS_TIMING_SET_ID == Class_Timing_Set.ID).ToList();
+
+            foreach(var item in Class_Timing_Entry)
+            {
+                db.CLASS_TIMING_ENTRY.Remove(item);
+            }
+            db.CLASS_TIMING_SET.Remove(Class_Timing_Set);
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return RedirectToAction("Index", new {ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.Notice = string.Concat("Class Timing Set deleted successfully.");
+            return RedirectToAction("Index", new {ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
         // GET: Class_Timings/Create
         public ActionResult New(int? id)
         {
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.ID == id
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
-            .OrderBy(x => x.BatchData.ID).ToList();
-            ViewData["batch"] = queryCourceBatch;
-            /*List<SelectListItem> StartTime = new List<SelectListItem>();
-            StartTime.Add(new SelectListItem { Text = "00:00", Value = "00:00" });
-            StartTime.Add(new SelectListItem { Text = "00:30", Value = "Option2" });
-            StartTime.Add(new SelectListItem { Text = "Option3", Value = "Option3", Selected = true });
-            ViewBag.START_TIME = StartTime;*/
+            CLASS_TIMING_SET Class_Timing_Set = db.CLASS_TIMING_SET.Find(id);
+            ViewData["Class_Timing_Set"] = Class_Timing_Set;
             return PartialView("_New");
         }
 
@@ -76,42 +103,37 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,BTCH_ID,NAME,START_TIME,END_TIME,IS_BRK,IS_DEL")] CLASS_TIMING cLASS_TIMING, int? BatchId)
+        public ActionResult Create([Bind(Include = "ID,CLASS_TIMING_SET_ID,NAME,START_TIME,END_TIME,IS_BRK,IS_DEL")] CLASS_TIMING_ENTRY cLASS_TIMING_ENTRY, int? CLASS_TIMING_SET_ID)
         {
             if (ModelState.IsValid)
             {
-                cLASS_TIMING.BTCH_ID = BatchId;
-                cLASS_TIMING.IS_DEL = false;
-                db.CLASS_TIMING.Add(cLASS_TIMING);
+                cLASS_TIMING_ENTRY.CLASS_TIMING_SET_ID = CLASS_TIMING_SET_ID;
+                cLASS_TIMING_ENTRY.IS_DEL = false;
+                db.CLASS_TIMING_ENTRY.Add(cLASS_TIMING_ENTRY);
                 db.SaveChanges();
-                ViewBag.Notice = "Class timing was successfully created.";
-                return RedirectToAction("Index",new { Notice = ViewBag.Notice});
+                ViewBag.Notice = "Class timing entry was successfully created.";
+                return RedirectToAction("Class_TimingSet_View", new { id= CLASS_TIMING_SET_ID, Notice = ViewBag.Notice});
             }
 
-            ViewBag.BTCH_ID = BatchId;
-            ViewBag.Notice = "There seems to be some issue with Model State.";
-            return PartialView("_Edit", cLASS_TIMING);
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State.";
+            return RedirectToAction("Class_TimingSet_View", new { id = CLASS_TIMING_SET_ID, ErrorMessage = ViewBag.ErrorMessage });
         }
 
         // GET: Class_Timings/Edit/5
-        public ActionResult Edit(int? id, int? BatchId)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CLASS_TIMING cLASS_TIMING = db.CLASS_TIMING.Find(id);
-            if (cLASS_TIMING == null)
+            CLASS_TIMING_ENTRY cLASS_TIMING_ENTRY = db.CLASS_TIMING_ENTRY.Include(x=>x.CLASS_TIMING_SET).Where(x=>x.ID == id).FirstOrDefault();
+            CLASS_TIMING_SET Class_Timing_Set = db.CLASS_TIMING_SET.Find(cLASS_TIMING_ENTRY.CLASS_TIMING_SET_ID);
+            ViewData["Class_Timing_Set"] = Class_Timing_Set;
+            if (cLASS_TIMING_ENTRY == null)
             {
                 return HttpNotFound();
             }
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.ID == BatchId
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
-             .OrderBy(x => x.BatchData.ID).ToList();
-            ViewData["batch"] = queryCourceBatch;
-            return PartialView("_Edit",cLASS_TIMING);
+            return PartialView("_Edit", cLASS_TIMING_ENTRY);
         }
 
         // POST: Class_Timings/Edit/5
@@ -119,24 +141,24 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update([Bind(Include = "ID,BTCH_ID,NAME,START_TIME,END_TIME,IS_BRK,IS_DEL")] CLASS_TIMING cLASS_TIMING, int? BatchId)
+        public ActionResult Update([Bind(Include = "ID,CLASS_TIMING_SET_ID,NAME,START_TIME,END_TIME,IS_BRK,IS_DEL")] CLASS_TIMING_ENTRY cLASS_TIMING_ENTRY, int? CLASS_TIMING_SET_ID)
         {
             if (ModelState.IsValid)
             {
-                CLASS_TIMING cLASS_TIMING_Update = db.CLASS_TIMING.Find(cLASS_TIMING.ID);
-                cLASS_TIMING_Update.BTCH_ID = BatchId;
-                cLASS_TIMING_Update.NAME = cLASS_TIMING.NAME;
-                cLASS_TIMING_Update.START_TIME = cLASS_TIMING.START_TIME;
-                cLASS_TIMING_Update.END_TIME = cLASS_TIMING.END_TIME;
-                cLASS_TIMING_Update.IS_BRK = cLASS_TIMING.IS_BRK;
-                cLASS_TIMING_Update.IS_DEL = false;
-                db.Entry(cLASS_TIMING_Update).State = EntityState.Modified;
+                CLASS_TIMING_ENTRY cLASS_TIMING_ENTRY_Update = db.CLASS_TIMING_ENTRY.Find(cLASS_TIMING_ENTRY.ID);
+                cLASS_TIMING_ENTRY_Update.CLASS_TIMING_SET_ID = CLASS_TIMING_SET_ID;
+                cLASS_TIMING_ENTRY_Update.NAME = cLASS_TIMING_ENTRY.NAME;
+                cLASS_TIMING_ENTRY_Update.START_TIME = cLASS_TIMING_ENTRY.START_TIME;
+                cLASS_TIMING_ENTRY_Update.END_TIME = cLASS_TIMING_ENTRY.END_TIME;
+                cLASS_TIMING_ENTRY_Update.IS_BRK = cLASS_TIMING_ENTRY.IS_BRK;
+                cLASS_TIMING_ENTRY_Update.IS_DEL = false;
+                db.Entry(cLASS_TIMING_ENTRY_Update).State = EntityState.Modified;
                 db.SaveChanges();
                 ViewBag.Notice = "Class timing updated successfully.";
-                return RedirectToAction("Index",new { Notice = ViewBag.Notice});
+                return RedirectToAction("Class_TimingSet_View", new { id = CLASS_TIMING_SET_ID, Notice = ViewBag.Notice });
             }
-            ViewData["batch"] = BatchId;
-            return PartialView("_Edit", cLASS_TIMING);
+            ViewBag.ErrorMessage = "There seems to be some issue with the Model State.";
+            return RedirectToAction("Class_TimingSet_View", new { id = CLASS_TIMING_SET_ID, ErrorMessage = ViewBag.ErrorMessage });
         }
 
         // GET: Class_Timings/Delete/5
@@ -146,15 +168,16 @@ namespace SFSAcademy.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            CLASS_TIMING cLASS_TIMING = db.CLASS_TIMING.Find(id);
-            if (cLASS_TIMING == null)
+            CLASS_TIMING_ENTRY cLASS_TIMING_ENTRY = db.CLASS_TIMING_ENTRY.Find(id);
+            int? CLASS_TIMING_SET_ID = cLASS_TIMING_ENTRY.CLASS_TIMING_SET_ID;
+            if (cLASS_TIMING_ENTRY == null)
             {
                 return HttpNotFound();
             }
-            db.CLASS_TIMING.Remove(cLASS_TIMING);
+            db.CLASS_TIMING_ENTRY.Remove(cLASS_TIMING_ENTRY);
             db.SaveChanges();
-            ViewBag.Notice = "Class timing deleted successfully.";
-            return RedirectToAction("Index",new { Notice = ViewBag.Notice});
+            ViewBag.Notice = "Class timing entry deleted successfully.";
+            return RedirectToAction("Class_TimingSet_View", new { id = CLASS_TIMING_SET_ID, Notice = ViewBag.Notice });
         }
 
 

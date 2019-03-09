@@ -32,7 +32,6 @@ namespace SFSAcademy
         public virtual DbSet<BANK_FIELD> BANK_FIELD { get; set; }
         public virtual DbSet<BATCH> BATCHes { get; set; }
         public virtual DbSet<CLASS_DESIGNATION> CLASS_DESIGNATION { get; set; }
-        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
         public virtual DbSet<CONFIGURATION> CONFIGURATIONs { get; set; }
         public virtual DbSet<COUNTRY> COUNTRies { get; set; }
         public virtual DbSet<COURSE> COURSEs { get; set; }
@@ -95,11 +94,9 @@ namespace SFSAcademy
         public virtual DbSet<STUDENT_PREVIOUS_DATA> STUDENT_PREVIOUS_DATA { get; set; }
         public virtual DbSet<STUDENT_PREVIOUS_SUBJECT_MARK> STUDENT_PREVIOUS_SUBJECT_MARK { get; set; }
         public virtual DbSet<STUDENT_SUBJECT> STUDENT_SUBJECT { get; set; }
-        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
         public virtual DbSet<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual DbSet<TIMETABLE> TIMETABLEs { get; set; }
         public virtual DbSet<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
-        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
         public virtual DbSet<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
         public virtual DbSet<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         public virtual DbSet<USERS_ACCESS> USERS_ACCESS { get; set; }
@@ -123,5 +120,10 @@ namespace SFSAcademy
         public virtual DbSet<STUDENT> STUDENTs { get; set; }
         public virtual DbSet<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
         public virtual DbSet<IMAGE_DOCUMENTS> IMAGE_DOCUMENTS { get; set; }
+        public virtual DbSet<SUBJECT> SUBJECTs { get; set; }
+        public virtual DbSet<CLASS_TIMING_SET> CLASS_TIMING_SET { get; set; }
+        public virtual DbSet<CLASS_TIMING_ENTRY> CLASS_TIMING_ENTRY { get; set; }
+        public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
+        public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
     }
 }

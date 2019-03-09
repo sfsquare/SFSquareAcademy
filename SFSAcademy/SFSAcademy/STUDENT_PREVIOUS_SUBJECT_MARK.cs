@@ -19,7 +19,7 @@ namespace SFSAcademy
         public string MK { get; set; }
         public Nullable<int> SUBJECT_ID { get; set; }
     
-        public virtual SUBJECT SUBJECT { get; set; }
         public virtual STUDENT STUDENT { get; set; }
+        public virtual SUBJECT SUBJECT { get; set; }
     }
 }

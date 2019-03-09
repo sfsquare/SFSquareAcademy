@@ -42,6 +42,7 @@ namespace SFSAcademy
         public bool LANG { get; set; }
     
         public virtual BATCH BATCH { get; set; }
+        public virtual ELECTIVE_GROUP ELECTIVE_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

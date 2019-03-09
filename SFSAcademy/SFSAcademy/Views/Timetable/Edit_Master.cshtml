@@ -1,0 +1,58 @@
+﻿@model IEnumerable<SFSAcademy.TIMETABLE>
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batches = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batches"];
+}
+@{
+    ViewBag.Title = "Edit_Master";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Edit</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Timetable", "Index") &raquo;
+    Edit Master
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (Model == null && Model.Count() == 0)
+    {
+        <p class="flash-msg">No editable timetables </p>
+    }
+    else
+    {
+        <div id="department-list">
+            <ul id="department-list">
+                <li class="listheading">
+                    <div class="department-edit">Sl. No.</div>
+                    <div class="department-name">Time Period</div>
+                </li>
+                @{ int i = 1;}
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "listeven";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "listodd";
+                    }
+                    <li class="@selectedRow">
+                        <div class="department-edit">@i</div>
+                        <div class="department-name">@Html.ActionLink(string.Concat(item.START_DATE.Value.ToShortDateString(), " - ", item.END_DATE.Value.ToShortDateString()), "Update_Timetable", new { id = item.ID })</div>
+                    </li>
+                    i += 1;
+                }
+            </ul>
+        </div>
+    }
+</div>
+
