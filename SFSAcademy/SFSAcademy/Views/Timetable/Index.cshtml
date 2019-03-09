@@ -26,23 +26,14 @@
         @if (Html.Permitted_To("New_Timetable", "Timetable"))
         {
             <div class="link-box">
-                <div class="link-heading"><a href="@Url.Action("Index", "Weekday")">Create Weekdays</a></div>
-                <div class="link-descr">Create Weekdays for this academic year.</div>
+                <div class="link-heading"><a href="@Url.Action("Index", "Class_Timings")">Manage Class Timing Set</a></div>
+                <div class="link-descr">Create and edit class timeing sets.</div>
             </div>
-        }
-        <div class="link-box">
-            <div class="link-heading"><a href="@Url.Action("Index", "Class_Timings")">Set Class Timings</a></div>
-            <div class="link-descr">Select a class and edit the timetable for that class.</div>
-        </div>
-
-        @if (Html.Permitted_To("Work_Allotment", "Timetable"))
-        {
             <div class="link-box">
-                <div class="link-heading"><a href="@Url.Action("Work_Allotment", "Timetable")">Work Allotment</a></div>
-                <div class="link-descr">Create Weekdays for this academic year.</div>
+                <div class="link-heading"><a href="@Url.Action("Index", "Weekday")">Set Weekdays and Class Timing Sets</a></div>
+                <div class="link-descr">Set weeksdays and class timing sets for each batch.</div>
             </div>
         }
-
         @if (Html.Permitted_To("New_Timetable", "Timetable"))
         {
             <div class="link-box">
@@ -62,7 +53,7 @@
                 }
                 <div class="link-descr">Create timetable for all the classes.</div>
             </div>
-                    }
+        }
 
         @if (Html.Permitted_To("Edit_Master", "Timetable"))
         {
@@ -83,17 +74,25 @@
                 }
                 <div class="link-descr">Select a class and edit the timetable for that class.</div>
             </div>
-                    }
+        }
 
-        @if (Html.Permitted_To("View", "Timetable"))
+        @if (Html.Permitted_To("ViewTimetable", "Timetable"))
         {
             <div class="link-box">
-                <div class="link-heading"><a href="@Url.Action("View", "Timetable")">View Timetable</a></div>
+                <div class="link-heading"><a href="@Url.Action("ViewTimetable", "Timetable")">View Timetable</a></div>
                 <div class="link-descr">View the timetable for a class.</div>
             </div>
             <div class="link-box">
                 <div class="link-heading"><a href="@Url.Action("Teachers_Timetable", "Timetable")">Teachers Timetable</a></div>
                 <div class="link-descr">View timetable for teachers.</div>
+            </div>
+        }
+
+        @if (Html.Permitted_To("Work_Allotment", "Timetable"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Work_Allotment", "Timetable")">Work Allotment</a></div>
+                <div class="link-descr">Create Weekdays for this academic year.</div>
             </div>
         }
         @if (Html.Permitted_To("Edit", "Timetable"))

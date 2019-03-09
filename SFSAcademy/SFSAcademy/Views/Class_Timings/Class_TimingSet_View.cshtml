@@ -1,0 +1,138 @@
+﻿@model IEnumerable<SFSAcademy.CLASS_TIMING_ENTRY>
+@{
+    SFSAcademy.CLASS_TIMING_SET Class_Timing_Set = (SFSAcademy.CLASS_TIMING_SET)ViewData["Class_Timing_Set"];
+    IEnumerable<SFSAcademy.PERIOD_ENTRIES> PeriodEntry = (IEnumerable<SFSAcademy.PERIOD_ENTRIES>)ViewData["PeriodEntry"];
+}
+@{
+    ViewBag.Title = "Class_Timing_View";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.timepicker.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.timepicker.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.timepicker.css"/>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.timepicker.min.css"/>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+
+
+<script type="text/javascript" language="javascript">
+
+    //Very similar function as before (except this time with an argument)
+    function LoadOneClickPartialPage(sender) {
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get(sender, function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#modal-box').html(data);
+            /* little fade in effect */
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Set Class Timings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable &raquo; </a>
+    @Html.ActionLink("Class Timing Sets", "Index") &raquo;
+    @Class_Timing_Set.NAME
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div class="box">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        @{ string NameString = string.Concat("Class timing set name : ", @Class_Timing_Set.NAME);}
+        @Html.Label("NAME", NameString, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.ActionLink("Edit", "Index")
+        <div class="linker">
+            <a href="@Url.Action("New", "Class_Timings",new {id= ViewBag.CLASS_TIMING_SET_ID })" onclick='LoadOneClickPartialPage(this.href); return false;'>Add Class Timing</a>
+        </div>
+        @if (Model != null && Model.Count() != 0)
+        {
+            <table id="class-timings-list" style="width:100%">
+                <tr class="tr-head">
+                    <td>Name</td>
+                    <td>Start Time</td>
+                    <td>End Time</td>
+                    <td>Operations</td>
+                </tr>
+                @{int i = 1;}
+                @foreach (var item in Model)
+                {
+                    string code = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        code = "tr-odd";
+                    }
+                    <tr id="class-timing-@item.ID" class="@code">
+                        <td class="col-1">@item.NAME</td>
+                        @if (item.START_TIME != null)
+                        {
+                            <td class="col-3">@item.START_TIME</td>
+                        }
+                        else
+                        {
+                            <td class="col-3"> </td>}
+                        @if (item.END_TIME != null)
+                        {
+                            <td class="col-3">@item.END_TIME</td>
+                        }
+                        else
+                        {
+                            <td class="col-3"> </td>}
+                        <td class="col-3">
+                            <small>
+                                <a href="@Url.Action("Edit", "Class_Timings",new {id=item.ID})" onclick='LoadOneClickPartialPage(this.href); return false;'>Edit</a>
+                                |
+                                @{ var tt = PeriodEntry.Where(x => x.CLASS_TIMING_ID == item.ID).ToList();}
+                                @if (tt == null || tt.Count() == 0)
+                                {
+                                    @Html.ActionLink("Delete", "Destroy", new { id = item.ID }, new { @onclick = "return confirm('are you sure?')" })
+                                }
+                                else
+                                {
+                                    <s>Delete</s>
+                                }
+                            </small>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p class="flash-msg"> No class timings found </p>
+        }
+        <div id="modal-box" style="display:none;"></div>
+        <div class="extender"></div>
+        <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    </div>
+
+</div>
+
+

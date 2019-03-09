@@ -1,0 +1,46 @@
+﻿@model IEnumerable<SFSAcademy.Models.Timetable_Entries_Select>
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> employees_subject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["employees_subject"];
+}
+
+@if (employees_subject != null && employees_subject.Count() != 0)
+{
+    if (employees_subject.ElementAt(0).SUBJECT.ELECTIVE_GRP_ID != null)
+    {
+        employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME = string.Concat(employees_subject.ElementAt(0).SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME, " Employees");
+        string IdVal = string.Concat("emp_sub_", employees_subject.ElementAt(0).ID);
+        <div class="employees_subject" id="@IdVal" draggable="true" ondragstart="drag(event)">
+            @if (employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME.Contains("MD") || employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME.Contains("Md") || employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME.Contains("md"))
+            {
+                @employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME @employees_subject.ElementAt(0).EMPLOYEE.MID_NAME
+            }
+            else
+            {
+                @employees_subject.ElementAt(0).EMPLOYEE.FIRST_NAME
+            }
+        </div>
+    }
+    else
+    {
+        foreach (var item in employees_subject)
+        {
+            string IdVal = string.Concat("emp_sub_", item.ID);
+            <div class="employees_subject" id="@IdVal" draggable="true" ondragstart="drag(event)">
+                @if (item.EMPLOYEE.FIRST_NAME.Contains("MD") || item.EMPLOYEE.FIRST_NAME.Contains("Md") || item.EMPLOYEE.FIRST_NAME.Contains("md"))
+                {
+                    @item.EMPLOYEE.FIRST_NAME @item.EMPLOYEE.MID_NAME
+                }
+                else
+                {
+                    @item.EMPLOYEE.FIRST_NAME
+                }
+            </div>
+
+        }
+    }
+}
+else
+{
+    <h5>No teacher associated to this subject</h5>
+}

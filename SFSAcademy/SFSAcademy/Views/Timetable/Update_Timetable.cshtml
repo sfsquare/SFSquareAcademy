@@ -1,0 +1,106 @@
+﻿@model SFSAcademy.TIMETABLE
+@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.Models.CoursesBatch> batches = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batches"];
+}
+@{
+    ViewBag.Title = "Update_Timetable";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<link href="~/Content/stylesheets/timetable/new_timetable.css" rel="stylesheet" />
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Edit Tiemtable</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (ViewBag.current == false)
+        {
+            <li>
+                <a href="@Url.Action("New", "Timetable_Entries", new { timetable_id = Model.ID})" title="Edit Entries">Edit Entries</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("New", "Timetable_Entries", new { timetable_id = Model.ID})" title="Edit Entries" onclick="return confirm('This timetable is currently in use. Please remove the attendance related to the class timings of removing timetable entries before editing if subject-wise attendance is in use.')">Edit Entries</a>
+            </li>
+        }
+        @if (ViewBag.removable)
+        {
+            <li>
+                @Html.ActionLink("Delete", "Destroy", new { id = Model.ID }, new { @class = "delete-button", @onclick = "return confirm('Are you sure you want to delete this timetable?')" })
+            </li>
+        }
+    </ul>
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Timetable", "Index") &raquo;
+    @Html.ActionLink("Edit Master", "Edit_Master") &raquo;
+    Edit Timetable
+</div>
+@if (ViewBag.ErrorMessage != null)
+{
+    <div id="errorExplanation" class="errorExplanation">
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    </div>
+
+
+}
+<div id="page-yield">
+    <div class="box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+        @using (Html.BeginForm())
+        {
+            bool current = ViewBag.current; bool removable = ViewBag.removable;
+            @Html.Hidden("current", current)
+            @Html.Hidden("removable", removable)
+            @Html.Hidden("_method", "post")
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ID)
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.START_DATE, "Start Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.START_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker"} })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                @Html.LabelFor(model => model.END_DATE, "End Date", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.END_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2" } })
+                </div>
+            </div>
+            <input type="submit" value="► Save" class="submit_button" />
+        }
+    </div>
+</div>

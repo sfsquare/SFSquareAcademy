@@ -10,6 +10,7 @@ namespace SFSAcademy.Models
         public string Day { get; set; }
         public int Id { set; get; }
         public bool Select { get; set; }
+        public string ClassTimingSet { get; set; }
     }
 
     public class Weekdays
@@ -23,6 +24,14 @@ namespace SFSAcademy.Models
             WeekdayIds = new List<WeekdaysSelect>();
         }
 
+    }
+
+    public class BatchWeekdaysSelect
+    {
+        public string Day { get; set; }
+        public int Id { set; get; }
+        public bool Select { get; set; }
+        public string ClassTimingSet { get; set; }
     }
 
     public class EmployeeWorkAllotment

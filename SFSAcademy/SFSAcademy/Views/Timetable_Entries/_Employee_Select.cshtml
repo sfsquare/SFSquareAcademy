@@ -1,0 +1,49 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
+    IEnumerable<SFSAcademy.SUBJECT> ele_subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["ele_subjects"];
+    IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SubjectDropDown').change(function () {
+            $.ajaxSetup({ cache: false });
+            var selectedID = $(this).val();
+            var SelectedBatch = $('#batch_id').val();
+            var SelectedTimetable = $('#timetable_id').val();
+            $(".LoaderBox").show();
+            $.get('/Timetable_Entries/Update_Employees?subject_id=' + selectedID, function (data) {
+                $('#employee-list').html(data);
+                $('#employee-list').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+
+    });
+</script>   
+<div class="label-field-pair">
+    <div class="text-input-bg">
+        @foreach (var s in ele_subjects)
+        {
+            s.NAME = s.ELECTIVE_GROUP.ELECTIVE_GRP_NAME;
+        }
+        @{  subjects = subjects.Union(ele_subjects).Distinct();
+            List<SelectListItem> options = new List<SelectListItem>();
+        }
+        @foreach (var item2 in subjects)
+        {
+            var result = new SelectListItem();
+            result.Text = item2.NAME;
+            result.Value = item2.ID.ToString();
+            options.Add(result);
+        }
+        @{ options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Subject" });
+            ViewBag.SUB_ID = options;
+        }
+        @Html.DropDownList("SUB_ID", null, htmlAttributes: new { @class = "form-control", @id = "SubjectDropDown" })
+    </div>
+</div>
+<div id="employee-list"></div>

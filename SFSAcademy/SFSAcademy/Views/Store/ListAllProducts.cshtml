@@ -149,7 +149,7 @@
         }
     </table>
     <br />
-    @Html.PagedListPager(Model, page => Url.Action("ListAllProducts",
+    @Html.PagedListPager(Model, page => Url.Action("ViewAll",
     new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 </div>
 <input type="hidden" id="PRODUCTID" name="PRODUCTID" />

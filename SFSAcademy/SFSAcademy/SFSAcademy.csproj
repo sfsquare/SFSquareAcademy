@@ -796,6 +796,7 @@
     <Content Include="Content\javascripts\tiny_mce\utils\mctabs.js" />
     <Content Include="Content\javascripts\tiny_mce\utils\validate.js" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\stylesheets\class_timings\class_timingset_view.css" />
     <Content Include="Content\stylesheets\finance\Aggregated_Fees_Due_pdf.css" />
     <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
     <Content Include="Content\stylesheets\store\setting.css" />
@@ -2115,7 +2116,7 @@
     <Content Include="Content\stylesheets\timetable\teachers_timetable.css" />
     <Content Include="Content\stylesheets\timetable\timetable.css" />
     <Content Include="Content\stylesheets\timetable\timetable_pdf.css" />
-    <Content Include="Content\stylesheets\timetable\view.css" />
+    <Content Include="Content\stylesheets\timetable\ViewTimetable.css" />
     <Content Include="Content\stylesheets\timetable\work_allotment.css" />
     <Content Include="Content\stylesheets\timetable_entries\new.css" />
     <Content Include="Content\stylesheets\weekday\index.css" />
@@ -2565,7 +2566,6 @@
     <Content Include="Views\Weekday\_Weekdays.cshtml" />
     <Content Include="Views\Weekday\EditorTemplates\WeekdaysSelect.cshtml" />
     <Content Include="Views\Class_Timings\Index.cshtml" />
-    <Content Include="Views\Class_Timings\_show_batch_timing.cshtml" />
     <Content Include="Views\Class_Timings\_Edit.cshtml" />
     <Content Include="Views\Class_Timings\_New.cshtml" />
     <Content Include="Views\Timetable\Work_Allotment.cshtml" />
@@ -2636,6 +2636,16 @@
     <Content Include="Views\Payroll\Edit_Payroll_Details.cshtml" />
     <Content Include="Views\Employee\_Attendance_Report.cshtml" />
     <Content Include="Views\Employee\_Edit_Leave_Count.cshtml" />
+    <Content Include="Views\Timetable\Edit_Master.cshtml" />
+    <Content Include="Views\Timetable\Update_Timetable.cshtml" />
+    <Content Include="Views\Timetable_Entries\_New_Entry.cshtml" />
+    <Content Include="Views\Timetable_Entries\_Employee_List.cshtml" />
+    <Content Include="Views\Class_Timings\Class_TimingSet_View.cshtml" />
+    <Content Include="Views\Class_Timings\Class_TimingSet_New.cshtml" />
+    <Content Include="Views\Timetable_Entries\_Employee_Select.cshtml" />
+    <Content Include="Views\Timetable_Entries\_Timetable_Box.cshtml" />
+    <Content Include="Views\Timetable\ViewTimetable.cshtml" />
+    <Content Include="Views\Timetable\_View_Timetable.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2690,6 +2700,12 @@
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="CLASS_TIMING.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CLASS_TIMING_ENTRY.cs">
+      <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CLASS_TIMING_SET.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>
     </Compile>
     <Compile Include="CONFIGURATION.cs">
@@ -2891,6 +2907,7 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Subjects.cs" />
     <Compile Include="Models\Timetable.cs" />
+    <Compile Include="Models\Timetable_Entries.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="MONTHLY_PAYSLIP.cs">
       <DependentUpon>ModelSFSAcademy.tt</DependentUpon>

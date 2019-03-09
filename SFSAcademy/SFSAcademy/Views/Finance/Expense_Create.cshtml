@@ -22,6 +22,10 @@
     @Html.ActionLink("Transactions", "Transactions") &raquo;
     Create Expenses
 </div>
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
 <div id="page-yield">
     @if (ViewBag.ErrorMessage != null)
     {

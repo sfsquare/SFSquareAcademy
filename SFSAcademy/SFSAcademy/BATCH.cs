@@ -19,19 +19,19 @@ namespace SFSAcademy
         {
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.ATTENDENCEs = new HashSet<ATTENDENCE>();
-            this.CLASS_TIMING = new HashSet<CLASS_TIMING>();
             this.EXAM_GROUP = new HashSet<EXAM_GROUP>();
             this.FINANCE_FEE_COLLECTION = new HashSet<FINANCE_FEE_COLLECTION>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GRADING_LEVEL = new HashSet<GRADING_LEVEL>();
             this.PERIOD_ENTRIES = new HashSet<PERIOD_ENTRIES>();
             this.STUDENT_SUBJECT = new HashSet<STUDENT_SUBJECT>();
-            this.SUBJECTs = new HashSet<SUBJECT>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
-            this.WEEKDAYs = new HashSet<WEEKDAY>();
             this.ELECTIVE_GROUP = new HashSet<ELECTIVE_GROUP>();
             this.FINANCE_FEE_CATGEORY = new HashSet<FINANCE_FEE_CATGEORY>();
+            this.SUBJECTs = new HashSet<SUBJECT>();
+            this.WEEKDAYs = new HashSet<WEEKDAY>();
+            this.CLASS_TIMING = new HashSet<CLASS_TIMING>();
         }
     
         public int ID { get; set; }
@@ -49,8 +49,6 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATTENDENCE> ATTENDENCEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CLASS_TIMING> CLASS_TIMING { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_GROUP> EXAM_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE_COLLECTION> FINANCE_FEE_COLLECTION { get; set; }
@@ -63,17 +61,19 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STUDENT_SUBJECT> STUDENT_SUBJECT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SUBJECT> SUBJECTs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WEEKDAY> WEEKDAYs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
         public virtual COURSE COURSE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE_CATGEORY> FINANCE_FEE_CATGEORY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SUBJECT> SUBJECTs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<WEEKDAY> WEEKDAYs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CLASS_TIMING> CLASS_TIMING { get; set; }
     }
 }

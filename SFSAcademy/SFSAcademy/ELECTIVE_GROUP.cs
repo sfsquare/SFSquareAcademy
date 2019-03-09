@@ -18,6 +18,7 @@ namespace SFSAcademy
         public ELECTIVE_GROUP()
         {
             this.ELECTIVES = new HashSet<ELECTIVE>();
+            this.SUBJECTs = new HashSet<SUBJECT>();
         }
     
         public int ID { get; set; }
@@ -31,5 +32,7 @@ namespace SFSAcademy
         public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ELECTIVE> ELECTIVES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SUBJECT> SUBJECTs { get; set; }
     }
 }

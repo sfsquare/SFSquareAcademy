@@ -8,6 +8,11 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
@@ -15,22 +20,22 @@
         $(".LoaderBox").hide();
         $('#BatchDropDown').change(function () {
 
-        /* Get the selected value of dropdownlist */
+            /* Get the selected value of dropdownlist */
             var selectedID = $(this).val();
             $(".LoaderBox").show();
-        /* Request the partial view with .get request. */
-        $.get('/Weekday/Week/' + selectedID, function (data) {
+            /* Request the partial view with .get request. */
+            $.get('/Weekday/Week/' + selectedID, function (data) {
 
-            /* data is the pure html returned from action method, load it to your page */
-            $('#weekdays').html(data);
-            /* little fade in effect */
-            $('#weekdays').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox").hide();
+                /* data is the pure html returned from action method, load it to your page */
+                $('#weekdays').html(data);
+                /* little fade in effect */
+                $('#weekdays').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
         });
-
     });
-   });
 </script>
 <div id="content-header">
     <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
@@ -41,10 +46,13 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable</a> &raquo;
+    Weekdays
+</div>
 <div id="page-yield">
     @if (ViewBag.Notice != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
 
