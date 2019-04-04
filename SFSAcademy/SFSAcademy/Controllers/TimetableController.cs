@@ -471,6 +471,142 @@ namespace SFSAcademy.Controllers
             return PartialView("_View_Timetable");
         }
 
+        public ActionResult Teachers_Timetable(string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+
+            var timetables = db.TIMETABLEs.ToList();
+            TIMETABLE current = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.START_DATE, DateTime.Now) <= 0 && DateTime.Compare((DateTime)x.END_DATE, DateTime.Now) >= 0).FirstOrDefault();
+            ViewData["current"] = current;
+            int? current_id = current != null ? current.ID : timetables.FirstOrDefault().ID;
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in timetables)
+            {
+                string TimetableFullName = string.Concat(item.START_DATE.Value.ToShortDateString(), " To ", item.END_DATE.Value.ToShortDateString());
+                var result = new SelectListItem();
+                result.Text = TimetableFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == current_id ? true : false;
+                options2.Add(result);
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select a Batch" });
+            ViewBag.TIMT_ID = options2;
+            if(current != null)
+            {
+                var all_timetable_entries = db.TIMETABLE_ENTRY.Where(x => x.TIMT_ID == current.ID && x.BATCH.IS_ACT == true && x.CLASS_TIMING.IS_DEL == false && x.WEEKDAY.IS_DEL == false).ToList();
+                ViewData["all_timetable_entries"] = all_timetable_entries;
+                var all_batches = all_timetable_entries.AsEnumerable().Select(x => x.BATCH).GroupBy(BATCH => BATCH.ID).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_batches"] = all_batches;
+                var all_weekdays = all_timetable_entries.AsEnumerable().Select(x => x.WEEKDAY).GroupBy(WEEKDAY => new { WEEKDAY.NAME, WEEKDAY.WKDAY, WEEKDAY.SRT_ORD, WEEKDAY.DAY_OF_WK }).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_weekdays"] = all_weekdays;
+                var all_classtimings = all_timetable_entries.AsEnumerable().Select(x => x.CLASS_TIMING).GroupBy(CLASS_TIMING => new { CLASS_TIMING.NAME, CLASS_TIMING.START_TIME, CLASS_TIMING.END_TIME}).Select(g => g.FirstOrDefault()).Distinct();              
+                ViewData["all_classtimings"] = all_classtimings;
+                var all_subjects = all_timetable_entries.Where(x=>x.SUBJ_ID != null).AsEnumerable().Select(x => x.SUBJECT).GroupBy(SUBJECT => SUBJECT.ID).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_subjects"] = all_subjects;
+                var all_teachers = all_timetable_entries.Where(x => x.EMP_ID != null).AsEnumerable().Select(x => x.EMPLOYEE).GroupBy(EMPLOYEE => EMPLOYEE.ID).Select(g => g.FirstOrDefault()).Distinct();                
+                foreach(var sub in all_subjects)
+                {
+                    if(sub.ELECTIVE_GRP_ID != null)
+                    {
+                        var electiveGroupEmpSub = sub.ELECTIVE_GROUP.SUBJECTs.Select(x => x.EMPLOYEES_SUBJECT).ToList();
+                        var elective_teachers = db.EMPLOYEEs.Where(x=>x.ID == -1).DefaultIfEmpty();
+                        foreach (var item in electiveGroupEmpSub)
+                        {
+                            var employee = db.EMPLOYEEs.Where(x=>x.ID == item.FirstOrDefault().EMP_ID).ToList() ;
+                            all_teachers = all_teachers.Union(employee);
+                            elective_teachers = elective_teachers.Union(employee);
+                        }
+                        ViewData["elective_teachers"] = elective_teachers;
+                    }
+                }
+                all_teachers = all_teachers.Distinct();
+                ViewData["all_teachers"] = all_teachers;
+            }
+            else
+            {
+                ViewData["all_timetable_entries"] = null;
+            }
+
+            var timetable_entries = db.TIMETABLE_ENTRY.Where(x=>x.TIMT_ID == current.ID).Include(x=>x.EMPLOYEE).Include(x=>x.SUBJECT).Include(x=>x.BATCH).Include(x=>x.BATCH.COURSE).Include(x => x.CLASS_TIMING).Include(x => x.WEEKDAY).ToList();
+            ViewData["timetable_entries"] = timetable_entries;
+
+            return View();
+        }
+
+        public ActionResult Update_Teacher_TT(int? timetable_id, string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+
+            var timetables = db.TIMETABLEs.ToList();
+            TIMETABLE current = db.TIMETABLEs.Where(x => x.ID == -1).FirstOrDefault();
+            if(timetable_id == null)
+            {
+                current = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.START_DATE, DateTime.Now) <= 0 && DateTime.Compare((DateTime)x.END_DATE, DateTime.Now) >= 0).FirstOrDefault();
+            }
+            else
+            {
+                current = db.TIMETABLEs.Find(timetable_id);
+            }
+            ViewData["current"] = current;
+            int? current_id = current != null ? current.ID : timetables.FirstOrDefault().ID;
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in timetables)
+            {
+                string TimetableFullName = string.Concat(item.START_DATE.Value.ToShortDateString(), " To ", item.END_DATE.Value.ToShortDateString());
+                var result = new SelectListItem();
+                result.Text = TimetableFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == current_id ? true : false;
+                options2.Add(result);
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select a Batch" });
+            ViewBag.TIMT_ID = options2;
+            if (current != null)
+            {
+                var all_timetable_entries = db.TIMETABLE_ENTRY.Where(x => x.TIMT_ID == current.ID && x.BATCH.IS_ACT == true && x.CLASS_TIMING.IS_DEL == false && x.WEEKDAY.IS_DEL == false).ToList();
+                ViewData["all_timetable_entries"] = all_timetable_entries;
+                var all_batches = all_timetable_entries.AsEnumerable().Select(x => x.BATCH).GroupBy(BATCH => BATCH.ID).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_batches"] = all_batches;
+                var all_weekdays = all_timetable_entries.AsEnumerable().Select(x => x.WEEKDAY).GroupBy(WEEKDAY => new { WEEKDAY.NAME, WEEKDAY.WKDAY, WEEKDAY.SRT_ORD, WEEKDAY.DAY_OF_WK }).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_weekdays"] = all_weekdays;
+                var all_classtimings = all_timetable_entries.AsEnumerable().Select(x => x.CLASS_TIMING).GroupBy(CLASS_TIMING => new { CLASS_TIMING.NAME, CLASS_TIMING.START_TIME, CLASS_TIMING.END_TIME, CLASS_TIMING.IS_BRK }).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_classtimings"] = all_classtimings;
+                var all_subjects = all_timetable_entries.Where(x => x.SUBJ_ID != null).AsEnumerable().Select(x => x.SUBJECT).GroupBy(SUBJECT => SUBJECT.ID).Select(g => g.FirstOrDefault()).Distinct();
+                ViewData["all_subjects"] = all_subjects;
+                var all_teachers = all_timetable_entries.Where(x => x.EMP_ID != null).AsEnumerable().Select(x => x.EMPLOYEE).GroupBy(EMPLOYEE => EMPLOYEE.ID).Select(g => g.FirstOrDefault()).Distinct();
+                foreach (var sub in all_subjects)
+                {
+                    if (sub.ELECTIVE_GRP_ID != null)
+                    {
+                        var electiveGroupEmpSub = sub.ELECTIVE_GROUP.SUBJECTs.Select(x => x.EMPLOYEES_SUBJECT).ToList();
+                        var elective_teachers = db.EMPLOYEEs.Where(x => x.ID == -1).DefaultIfEmpty();
+                        foreach (var item in electiveGroupEmpSub)
+                        {
+                            var employee = db.EMPLOYEEs.Where(x => x.ID == item.FirstOrDefault().EMP_ID).ToList();
+                            all_teachers = all_teachers.Union(employee);
+                            elective_teachers = elective_teachers.Union(employee);
+                        }
+                        ViewData["elective_teachers"] = elective_teachers;
+                    }
+                }
+                all_teachers = all_teachers.Where(x=>x.ID != 0).Distinct();
+                ViewData["all_teachers"] = all_teachers;
+            }
+            else
+            {
+                ViewData["all_timetable_entries"] = null;
+            }
+
+            var timetable_entries = db.TIMETABLE_ENTRY.Where(x => x.TIMT_ID == current.ID).Include(x => x.EMPLOYEE).Include(x => x.SUBJECT).Include(x => x.BATCH).Include(x => x.BATCH.COURSE).Include(x => x.CLASS_TIMING).Include(x => x.WEEKDAY).ToList();
+            ViewData["timetable_entries"] = timetable_entries;
+
+            return PartialView("_Teacher_Timetable");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

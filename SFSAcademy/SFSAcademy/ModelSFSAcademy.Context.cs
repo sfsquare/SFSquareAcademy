@@ -41,7 +41,6 @@ namespace SFSAcademy
         public virtual DbSet<EMPLOYEE> EMPLOYEEs { get; set; }
         public virtual DbSet<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_ADDITIONAL_FIELD> EMPLOYEE_ADDITIONAL_FIELD { get; set; }
-        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         public virtual DbSet<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         public virtual DbSet<EMPLOYEE_CATEGORY> EMPLOYEE_CATEGORY { get; set; }
         public virtual DbSet<EMPLOYEE_DEPARTMENT> EMPLOYEE_DEPARTMENT { get; set; }
@@ -125,5 +124,6 @@ namespace SFSAcademy
         public virtual DbSet<CLASS_TIMING_ENTRY> CLASS_TIMING_ENTRY { get; set; }
         public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
         public virtual DbSet<CLASS_TIMING> CLASS_TIMING { get; set; }
+        public virtual DbSet<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -38,6 +39,28 @@ namespace SFSAcademy.Models
     {
         public EMPLOYEE EmployeeData { get; set; }
         public decimal? Total_Time { get; set; }
+    }
+
+    public class ClassTimings
+    {
+        public string NAME { get; set; }
+        [Required(ErrorMessage = "Start Time is required")]
+        [DataType(DataType.Time)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}")]
+        public Nullable<System.TimeSpan> StartTimeVal { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm tt}")]
+        public DateTime? START_TIME { get { return (StartTimeVal.HasValue) ? (DateTime?)DateTime.Today.Add(StartTimeVal.Value) : null; } }
+
+        [Required(ErrorMessage = "End Time is required")]
+        [DataType(DataType.Time)]
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm}")]
+        public Nullable<System.TimeSpan> EndTimeVal { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:hh\\:mm tt}")]
+        public DateTime? END_TIME { get { return (EndTimeVal.HasValue) ? (DateTime?)DateTime.Today.Add(EndTimeVal.Value) : null; } }
+
+        public bool IS_BRK { get; set; }
     }
 
 }

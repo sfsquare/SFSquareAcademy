@@ -1,0 +1,79 @@
+﻿@using SFSAcademy.Models
+@{
+    TIMETABLE current = (TIMETABLE)ViewData["current"];
+}
+@{
+    ViewBag.Title = "Teachers_Timetable";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        var SelectedTTId = $('#timetable_id').val();
+        $.get('/Timetable/Update_Teacher_TT?timetable_id=' + SelectedTTId, function (data) {
+            $('#timetable_view').html(data);
+            $('#timetable_view').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    });
+    function show_timetable() {
+        $(".LoaderBox").show();
+        var SelectedTTId = $('#TiemtableDropDown').val();
+        $.get('/Timetable/Update_Teacher_TT?timetable_id=' + SelectedTTId, function (data) {
+            $('#timetable_view').html(data);
+            $('#timetable_view').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Teacher Timetable</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable</a> &raquo;
+    Teacher's Timetable
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Html.BeginForm())
+    {
+        <div class="label-field-pair">
+            <label for="timetable_entry_course_id">Select a timetable</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("TIMT_ID", null, htmlAttributes: new { @class = "form-control", @id = "TiemtableDropDown", @onChange = "show_timetable()" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+    }
+
+
+    <div id="timetable_view">
+        @if (current != null)
+        {
+            @Html.Partial("_Teacher_Timetable")
+        }
+
+    </div>
+</div>
+<input type="hidden" value="@current.ID" id="timetable_id" name="timetable_id" />
+

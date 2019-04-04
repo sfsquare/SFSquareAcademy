@@ -31,25 +31,34 @@
     <tr class="even left"><td>Job Title</td><td class="right">@Employee.FirstOrDefault().EmployeeData.JOB_TIL</td></tr>
     <tr class="odd left">
         <td>Manager</td>
-        @if (Html.CurrentUser_UserType().Equals("Admin"))
+        @if (Reporting_Manager != null)
         {
-            <td class="right">
-                <a href="@Url.Action("Profile", "Employee", new { id = Reporting_Manager.ID })" id="RepManager">@Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME</a>
-                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
-            </td>
-        }
-        else if (Html.Permitted_To("Change_Reporting_Manager", "Employee"))
-        {
-            <td class="right">
-                @Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME
-                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
-            </td>
+            if (Html.CurrentUser_UserType().Equals("Admin"))
+            {
+                <td class="right">
+                    <a href="@Url.Action("Profiles", "Employee", new { id = Reporting_Manager.ID })" id="RepManager">@Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME </a> <span> / </span>
+                    <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { Emp_id = Employee.FirstOrDefault().EmployeeData.ID, Reporting_Mn_Id =  Reporting_Manager.ID})" id="RepManagerChange">Change</a>
+                </td>
+            }
+            else if (Html.Permitted_To("Change_Reporting_Manager", "Employee"))
+            {
+                <td class="right">
+                    @Reporting_Manager.FIRST_NAME @Reporting_Manager.MID_NAME @Reporting_Manager.LAST_NAME <span> / </span>
+                    <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { Emp_id = Employee.FirstOrDefault().EmployeeData.ID, Reporting_Mn_Id =  Reporting_Manager.ID })" id="RepManagerChange">Change</a>
+                </td>
 
+            }
+            else
+            {
+                <td class="right">
+                    <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { Emp_id = Employee.FirstOrDefault().EmployeeData.ID, Reporting_Mn_Id =  Reporting_Manager.ID })" id="RepManagerChange">Change</a>
+                </td>
+            }
         }
         else
         {
-            <td class="right">
-                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { id = Employee.FirstOrDefault().EmployeeData.ID })" id="RepManagerChange">Change</a>
+            <td class="right"> 
+                <a href="@Url.Action("Change_Reporting_Manager", "Employee", new { Emp_id = Employee.FirstOrDefault().EmployeeData.ID})" id="RepManagerChange">Change</a>
             </td>
         }
     </tr>
