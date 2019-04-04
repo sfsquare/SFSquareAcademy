@@ -86,7 +86,7 @@ namespace SFSAcademy.Controllers
                 EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == eMPLOYEE_ATTENDENCES.EMP_ID && x.EMP_LEAVE_TYPE_ID == eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID).FirstOrDefault();
                 try {
                     db.SaveChanges();
-                    decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
+                    decimal? leaves_taken = reset_count.LEAVE_TAKE;
                     if (eMPLOYEE_ATTENDENCES.IS_HALF_DAY)
                     {
                         leaves_taken = leaves_taken + (decimal)0.5;
@@ -152,11 +152,11 @@ namespace SFSAcademy.Controllers
             {
                 EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(eMPLOYEE_ATTENDENCES.ID);
                 EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
-                decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
+                decimal? leaves_taken = reset_count.LEAVE_TAKE;
                 bool day_status = attendance.IS_HALF_DAY;
                 EMPLOYEE_LEAVE_TYPE leave_type = db.EMPLOYEE_LEAVE_TYPE.Find(attendance.EMP_LEAVE_TYPE_ID);
                 bool half_day = true;
-                decimal leave = 0;
+                decimal? leave = 0;
                 if (attendance.IS_HALF_DAY)
                 {
                     half_day = true;
@@ -245,8 +245,8 @@ namespace SFSAcademy.Controllers
         {
             EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(id);
             EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
-            decimal leaves_taken = (decimal)reset_count.LEAVE_TAKE;
-            decimal leave = 0;
+            decimal? leaves_taken = reset_count.LEAVE_TAKE;
+            decimal? leave = 0;
             if(attendance.IS_HALF_DAY)
             {
                 leave = leaves_taken - (decimal)0.5;

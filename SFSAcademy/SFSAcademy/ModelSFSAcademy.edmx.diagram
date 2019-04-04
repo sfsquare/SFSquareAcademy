@@ -21,7 +21,6 @@
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE" Width="1.5" PointX="9" PointY="57.5" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL" Width="1.5" PointX="11.25" PointY="60.5" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD" Width="1.5" PointX="9" PointY="50.625" />
-        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Width="1.5" PointX="17.25" PointY="60.25" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_BANK_DETAIL" Width="1.5" PointX="17.25" PointY="67.5" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_CATEGORY" Width="1.5" PointX="6.75" PointY="87.25" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_DEPARTMENT" Width="1.5" PointX="6.75" PointY="90.125" />
@@ -105,7 +104,6 @@
         <AssociationConnector Association="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" />
-        <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" />
         <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI5" />
@@ -118,7 +116,6 @@
         <AssociationConnector Association="SFSAcademyModel.RPTG__EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.TIME_T_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.ADDL__STUD_EMPL_NI" />
-        <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_C_EMPL_POS_NI" />
         <AssociationConnector Association="SFSAcademyModel.EMP_D_EMPL_EMPL_NI2" />
         <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EMPL_NI" />
@@ -268,6 +265,9 @@
         <AssociationConnector Association="SFSAcademyModel.BTCH_CLASS_TIMG_NI" />
         <AssociationConnector Association="SFSAcademyModel.CLS_T_CLAS_SUBJ_NI" />
         <AssociationConnector Association="SFSAcademyModel.TIME_T_CLAS_TIMING_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Width="1.5" PointX="17.25" PointY="60.625" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

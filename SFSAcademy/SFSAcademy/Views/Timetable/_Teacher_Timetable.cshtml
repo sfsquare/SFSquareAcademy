@@ -1,0 +1,170 @@
+﻿@using SFSAcademy.Models
+@{
+    TIMETABLE current = (TIMETABLE)ViewData["current"];
+    IEnumerable<TIMETABLE_ENTRY> all_timetable_entries = (IEnumerable<TIMETABLE_ENTRY>)ViewData["all_timetable_entries"];
+    IEnumerable<BATCH> all_batches = (IEnumerable<BATCH>)ViewData["all_batches"];
+    IEnumerable<WEEKDAY> all_weekdays = (IEnumerable<WEEKDAY>)ViewData["all_weekdays"];
+    IEnumerable<CLASS_TIMING> all_classtimings = (IEnumerable<CLASS_TIMING>)ViewData["all_classtimings"];
+    IEnumerable<SUBJECT> all_subjects = (IEnumerable<SUBJECT>)ViewData["all_subjects"];
+    IEnumerable<EMPLOYEE> all_teachers = (IEnumerable<EMPLOYEE>)ViewData["all_teachers"];
+    IEnumerable<EMPLOYEE> elective_teachers = (IEnumerable<EMPLOYEE>)ViewData["elective_teachers"];
+    IEnumerable<TIMETABLE_ENTRY> timetable_entries = (IEnumerable<TIMETABLE_ENTRY>)ViewData["timetable_entries"];
+}
+
+@if (all_timetable_entries != null && all_timetable_entries.Count() != 0)
+{
+    <div id="timetable-container"  style="width: 5000px;">
+        <div class="employee_list">
+            <table id="teacher" cellspacing="1">
+                <tr id="weekday-header" class="themed_text"><th></th></tr>
+                <tr id="period-count" class="themed_text"><td></td></tr>
+                @foreach (var teacher in all_teachers)
+                {
+                    if (teacher != null)
+                    {
+                        <tr class="batch">
+                            <td class="batch_name themed_text">@teacher.FIRST_NAME @teacher.MID_NAME @teacher.LAST_NAME [@teacher.EMP_NUM]</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+        <div id="table-viewer">
+            <table id="timetable" cellspacing="1">                
+                <tr id="weekday-header" class="themed_text">
+                    @foreach (var weekday in all_weekdays)
+                    {
+                        <th colspan="@all_classtimings.Count()">@weekday.NAME</th>
+                    }
+                </tr>
+                <tr id="period-count" class="themed_text">
+                    @foreach (var weekday in all_weekdays)
+                    {
+                        foreach (var ct in all_classtimings)
+                        {
+                            if (ct.START_TIME != null && ct.END_TIME != null)
+                            {
+                                if (ct.IS_BRK == true)
+                                {
+                                    <td class="tte">
+                                        @ct.NAME
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="tte">
+                                        @ct.START_TIME.Value.Hours:@ct.START_TIME.Value.Minutes - @ct.END_TIME.Value.Hours:@ct.END_TIME.Value.Minutes
+                                    </td>
+                                }
+                            }
+                            else if (ct.START_TIME != null)
+                            {
+                                if (ct.IS_BRK == true)
+                                {
+                                    <td class="tte">
+                                        @ct.NAME
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="tte">
+                                        @ct.START_TIME.Value.Hours:@ct.START_TIME.Value.Minutes - ET Not Defined
+                                    </td>
+                                }
+                            }
+                            else
+                            {
+                                <td class="tte">
+                                    ST Not Defined - ET Not Defined
+                                </td>
+                            }
+
+                        }
+                    }
+                </tr>
+                @foreach (var teacher in all_teachers)
+                {
+                    if (teacher != null)
+                    {
+                        <tr class="batch">
+                            @foreach (var weekday in all_weekdays)
+                            {
+                                foreach (var ct in all_classtimings)
+                                {
+                                    <td class="tte" data-html="true">
+                                        @if (timetable_entries.Where(x => x.EMP_ID == teacher.ID && x.WEEKDAY.NAME == weekday.NAME && x.CLASS_TIMING.NAME == ct.NAME).ToList().Count() > 1)
+                                        {
+                                            <div class="entries_wrapper">
+                                                <div class="entries">
+                                                    @foreach (var k in timetable_entries.Where(x => x.EMP_ID == teacher.ID && x.WEEKDAY.NAME == weekday.NAME && x.CLASS_TIMING.NAME == ct.NAME).ToList())
+                                                    {
+                                                        if (k.SUBJECT != null)
+                                                        {
+                                                            <div class="sub_name">
+                                                                @string.Concat(k.SUBJECT.CODE, "\n")
+                                                            </div>
+                                                        }
+                                                        if (k.BATCH != null)
+                                                        {
+                                                            <div class="batch_code">
+                                                                @k.BATCH.COURSE.CODE-@k.BATCH.NAME
+                                                            </div>
+                                                        }
+                                                        <div class="gap"></div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            var entry = timetable_entries.Where(x => x.EMP_ID == teacher.ID && x.WEEKDAY.NAME == weekday.NAME && x.CLASS_TIMING.NAME == ct.NAME).FirstOrDefault();
+                                            if (entry != null)
+                                            {
+                                                if (entry.SUBJECT != null)
+                                                {
+                                                    <div class="sub_name">
+                                                        @string.Concat(entry.SUBJECT.CODE, "\n")
+                                                    </div>
+                                                }
+                                                if (entry.BATCH != null)
+                                                {
+                                                    <div class="batch_code">
+                                                        @entry.BATCH.COURSE.CODE-@entry.BATCH.NAME
+                                                    </div>
+                                                }
+                                            }
+                                            <a class="themed_text add_sym">+</a>
+                                        }
+                                        else
+                                        {
+                                            var entry = timetable_entries.Where(x => x.EMP_ID == teacher.ID && x.WEEKDAY.NAME == weekday.NAME && x.CLASS_TIMING.NAME == ct.NAME).FirstOrDefault();
+                                            if (entry != null)
+                                            {
+                                                if (entry.SUBJECT != null)
+                                                {
+                                                    <div class="sub_name">
+                                                        @string.Concat(entry.SUBJECT.CODE,"\n")
+                                                    </div>
+                                                }
+                                                if (entry.BATCH != null)
+                                                {
+                                                    <div class="batch_code">
+                                                        @entry.BATCH.COURSE.CODE-@entry.BATCH.NAME
+                                                    </div>
+                                                }
+                                            }
+
+                                        }
+
+                                    </td>
+                                }
+                            }
+
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div id="timetable-container">No timetable entries found</div>
+}

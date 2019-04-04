@@ -25,8 +25,10 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Batches
-        public ActionResult ManageBatches()
+        public ActionResult ManageBatches(string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             List<SelectListItem> options = new SelectList(db.COURSEs.OrderBy(x => x.ID), "ID", "CRS_NAME").ToList();
             //add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
@@ -56,10 +58,12 @@ namespace SFSAcademy.Controllers
             ViewBag.CurrentFilter = searchString;
 
             var CourseBatchS = (from cs in db.COURSEs
-                                join bt in db.BATCHes on cs.ID equals bt.CRS_ID 
+                                join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                join emp in db.EMPLOYEEs on bt.EMP_ID equals emp.ID into gemp
+                                from subgemp in gemp.DefaultIfEmpty()
                                 where cs.IS_DEL == false && bt.IS_DEL == false
                                 orderby cs.CODE
-                                select new Models.CoursesBatch { CourseData = cs, BatchData = bt}).Distinct();
+                                select new Models.CoursesBatch { CourseData = cs, BatchData = bt, EmployeeData = (subgemp == null ? null : subgemp) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("ALL"))
             {
@@ -86,26 +90,24 @@ namespace SFSAcademy.Controllers
             return View(CourseBatchS.ToPagedList(pageNumber, pageSize));
         }
 
-        // GET: BATCH/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BATCH bATCH = db.BATCHes.Find(id);
-            if (bATCH == null)
-            {
-                return HttpNotFound();
-            }
-            return View(bATCH);
-        }
-
         // GET: BATCH/Create
         public ActionResult Create()
         {
             ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME");
-            ViewBag.EMP_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM");
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in db.EMPLOYEEs.Where(x=>x.STAT == true).ToList())
+            {
+                string EmpFullName = string.Concat(item.FIRST_NAME, " ", item.MID_NAME, " ", item.LAST_NAME, " (", item.EMP_NUM, ")");
+                var result = new SelectListItem();
+                result.Text = EmpFullName;
+                result.Value = item.ID.ToString();
+                //result.Selected = item.ID == bATCH.EMP_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee" });
+            ViewBag.EMP_ID = options;
             return View();
         }
 
@@ -119,10 +121,10 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 bATCH.IS_DEL = false;
-                bATCH.EMP_ID = Convert.ToInt32(this.Session["UserId"]);
                 db.BATCHes.Add(bATCH);
                 db.SaveChanges();
-                return RedirectToAction("ManageBatches");
+                ViewBag.Notice = "New Batch created successfully.";
+                return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice});
             }
 
             ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", bATCH.CRS_ID);
@@ -136,12 +138,26 @@ namespace SFSAcademy.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BATCH bATCH = db.BATCHes.Find(id);
+            BATCH bATCH = db.BATCHes.Include(x=>x.COURSE).Where(x=>x.ID == id).FirstOrDefault();
             if (bATCH == null)
             {
                 return HttpNotFound();
             }
             ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", bATCH.CRS_ID);
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in db.EMPLOYEEs.Where(x => x.STAT == true).ToList())
+            {
+                string EmpFullName = string.Concat(item.FIRST_NAME, " ", item.MID_NAME, " ", item.LAST_NAME, " (", item.EMP_NUM, ")");
+                var result = new SelectListItem();
+                result.Text = EmpFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == bATCH.EMP_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee" });
+            ViewBag.EMP_ID = options;
+
             return View(bATCH);
         }
 
@@ -155,10 +171,32 @@ namespace SFSAcademy.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(bATCH).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("ManageBatches");
+                try
+                {
+                    db.SaveChanges();
+                    ViewBag.Notice = string.Concat(ViewBag.Notice, "Batch updated successfully.");
+                    return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "Error Occured. ", e.InnerException.InnerException.Message);
+                    return RedirectToAction("ManageBatches", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
             }
+            ViewBag.Notice = "There seems to be some issue with Model State";
             ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", bATCH.CRS_ID);
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in db.EMPLOYEEs.Where(x => x.STAT == true).ToList())
+            {
+                string EmpFullName = string.Concat(item.FIRST_NAME, " ", item.MID_NAME, " ", item.LAST_NAME, " (", item.EMP_NUM, ")");
+                var result = new SelectListItem();
+                result.Text = EmpFullName;
+                result.Value = item.ID.ToString();
+                result.Selected = item.ID == bATCH.EMP_ID ? true : false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee" });
             return View(bATCH);
         }
 
@@ -184,8 +222,17 @@ namespace SFSAcademy.Controllers
         {
             BATCH bATCH = db.BATCHes.Find(id);
             db.BATCHes.Remove(bATCH);
-            db.SaveChanges();
-            return RedirectToAction("ManageBatches");
+            try
+            {
+                db.SaveChanges();
+                ViewBag.Notice = string.Concat(ViewBag.Notice, "Batch is deleted successfully");
+                return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "Error Occured. ", e.InnerException.InnerException.Message);
+                return RedirectToAction("ManageBatches", new { ErrorMessage = ViewBag.ErrorMessage });
+            }
         }
 
         protected override void Dispose(bool disposing)

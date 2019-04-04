@@ -68,12 +68,12 @@
                 @foreach (var ct in class_timing)
                 {
                     <td class="td">
-                        <div class="drop">
-                            <div class="tt-subject">
-                                @{ var timetable_inner = timetable.Where(x => x.WK_DAY_ID == d.ID && x.CLS_TMNG_ID == ct.ID).ToList(); }
-                                @if (timetable_inner != null && timetable_inner.Count() != 0)
-                                {
-                                    if (timetable_inner.FirstOrDefault().SUBJECT != null)
+                        @{ var timetable_inner = timetable.Where(x => x.WK_DAY_ID == d.ID && x.CLS_TMNG_ID == ct.ID).ToList(); }
+                        @if (timetable_inner != null && timetable_inner.Count() != 0)
+                        {
+                            <div class="drop">
+                                <div class="tt-subject">
+                                    @if (timetable_inner.FirstOrDefault().SUBJECT != null)
                                     {
                                         if (timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
                                         {
@@ -117,14 +117,16 @@
                                             </div>
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    <div class="subject"> </div>
-                                    <div class="employee"></div>
-                                }
+                                    else
+                                    {
+                                        <div class="subject"> </div>
+                                        <div class="employee"></div>
+                                    }
+                                </div>
                             </div>
-                        </div>
+
+                        }
+
                     </td><!--timetable_td -->
                 }
             </tr><!--timetable_tr -->

@@ -18,6 +18,9 @@
                 <th>
                     End Date
                 </th>
+                <th>
+                    Class Teacher
+                </th>
                 <th>Select</th>
             </tr>
             @{int i = 1; }
@@ -40,6 +43,16 @@
                     <td>
                         @item.BatchData.END_DATE.Value.ToShortDateString()
                     </td>
+                    @if (item.EmployeeData != null)
+                    {
+                        <td>
+                            @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME
+                        </td>
+                    }
+                    else
+                    {
+                        <td> </td>
+                    }
                     <td>
                         @Html.ActionLink("Edit", "Edit", new { id = item.BatchData.ID }, new { style = "text-decoration:underline" }) |
                         @Html.ActionLink("Delete", "Delete", new { id = item.BatchData.ID }, new { style = "text-decoration:underline" })
