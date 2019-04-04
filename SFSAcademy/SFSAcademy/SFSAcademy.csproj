@@ -2284,7 +2284,6 @@
     <Content Include="Views\Student\_CategoriesDelete.cshtml" />
     <Content Include="Views\Courses\Create.cshtml" />
     <Content Include="Views\Courses\Delete.cshtml" />
-    <Content Include="Views\Courses\Details.cshtml" />
     <Content Include="Views\Courses\Edit.cshtml" />
     <Content Include="Views\Courses\Index.cshtml" />
     <Content Include="Views\Courses\ManageCourse.cshtml" />
@@ -2646,6 +2645,10 @@
     <Content Include="Views\Timetable_Entries\_Timetable_Box.cshtml" />
     <Content Include="Views\Timetable\ViewTimetable.cshtml" />
     <Content Include="Views\Timetable\_View_Timetable.cshtml" />
+    <Content Include="Views\Timetable\Teachers_Timetable.cshtml" />
+    <Content Include="Views\Timetable\_Teacher_Timetable.cshtml" />
+    <Content Include="Views\Employee\Change_Reporting_Manager.cshtml" />
+    <Content Include="Views\Employee\_Select_Reporting_Manager.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

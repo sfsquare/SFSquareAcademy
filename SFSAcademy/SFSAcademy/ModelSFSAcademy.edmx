@@ -442,7 +442,7 @@
           <Property Name="ATNDENCE_DATE" Type="datetime" />
           <Property Name="EMP_ID" Type="int" />
           <Property Name="EMP_LEAVE_TYPE_ID" Type="int" />
-          <Property Name="RSN" Type="varchar" MaxLength="20" />
+          <Property Name="RSN" Type="varchar" MaxLength="2000" />
           <Property Name="IS_HALF_DAY" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="EMPLOYEE_BANK_DETAIL">
@@ -4161,7 +4161,6 @@
           <EntitySet Name="EMPLOYEEs" EntityType="SFSAcademyModel.EMPLOYEE" />
           <EntitySet Name="EMPLOYEE_ADDITIONAL_DETAIL" EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_DETAIL" />
           <EntitySet Name="EMPLOYEE_ADDITIONAL_FIELD" EntityType="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD" />
-          <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" />
           <EntitySet Name="EMPLOYEE_BANK_DETAIL" EntityType="SFSAcademyModel.EMPLOYEE_BANK_DETAIL" />
           <EntitySet Name="EMPLOYEE_CATEGORY" EntityType="SFSAcademyModel.EMPLOYEE_CATEGORY" />
           <EntitySet Name="EMPLOYEE_DEPARTMENT" EntityType="SFSAcademyModel.EMPLOYEE_DEPARTMENT" />
@@ -4329,10 +4328,6 @@
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="EMP_I_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
-          </AssociationSet>
           <AssociationSet Name="EMP_I_EMPL_EMPL_NI3" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
             <End Role="EMPLOYEE_BANK_DETAIL" EntitySet="EMPLOYEE_BANK_DETAIL" />
@@ -4380,10 +4375,6 @@
           <AssociationSet Name="ADDL__STUD_EMPL_NI" Association="SFSAcademyModel.ADDL__STUD_EMPL_NI">
             <End Role="EMPLOYEE_ADDITIONAL_FIELD" EntitySet="EMPLOYEE_ADDITIONAL_FIELD" />
             <End Role="EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="EMPLOYEE_ADDITIONAL_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_L_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI">
-            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
-            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
           </AssociationSet>
           <AssociationSet Name="EMP_C_EMPL_POS_NI" Association="SFSAcademyModel.EMP_C_EMPL_POS_NI">
             <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
@@ -4897,6 +4888,15 @@
             <End Role="CLASS_TIMING" EntitySet="CLASS_TIMING" />
             <End Role="TIMETABLE_ENTRY" EntitySet="TIMETABLE_ENTRY" />
           </AssociationSet>
+          <EntitySet Name="EMPLOYEE_ATTENDENCES" EntityType="SFSAcademyModel.EMPLOYEE_ATTENDENCES" />
+          <AssociationSet Name="EMP_I_EMPL_EMPL_NI2" Association="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2">
+            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
+            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_L_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="APPLY_LEAVE">
           <Key>
@@ -5157,7 +5157,6 @@
           <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="SFSAcademyModel.EMP_D_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
           <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="SFSAcademyModel.EMP_G_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
           <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
-          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
           <NavigationProperty Name="EMPLOYEE_BANK_DETAIL" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI3" FromRole="EMPLOYEE" ToRole="EMPLOYEE_BANK_DETAIL" />
           <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI4" FromRole="EMPLOYEE" ToRole="EMPLOYEE_LEAVE" />
           <NavigationProperty Name="EMPLOYEE_SALARY_STRUCTURE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI5" FromRole="EMPLOYEE" ToRole="EMPLOYEE_SALARY_STRUCTURE" />
@@ -5173,6 +5172,7 @@
           <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.RPTG_EMPL_ARCH_EMPL_NI" FromRole="EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_EMPL_NI" FromRole="EMPLOYEE" ToRole="USER" />
           <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="EMPLOYEE" ToRole="STORE_PURCHAGE_ORDER" />
+          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
         </EntityType>
         <EntityType Name="EMPLOYEE_ADDITIONAL_DETAIL">
           <Key>
@@ -5194,19 +5194,6 @@
           <Property Name="STAT" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.ADDL__STUD_EMPL_NI" FromRole="EMPLOYEE_ADDITIONAL_FIELD" ToRole="EMPLOYEE_ADDITIONAL_DETAIL" />
           <NavigationProperty Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.ADDL_ARCH_EMPL_NI" FromRole="EMPLOYEE_ADDITIONAL_FIELD" ToRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
-        </EntityType>
-        <EntityType Name="EMPLOYEE_ATTENDENCES">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ATNDENCE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="EMP_ID" Type="Int32" />
-          <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
-          <Property Name="RSN" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="IS_HALF_DAY" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
         </EntityType>
         <EntityType Name="EMPLOYEE_BANK_DETAIL">
           <Key>
@@ -5296,8 +5283,8 @@
           <Property Name="MAX_LEAVE_CNT" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="CARR_FRWD" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="APPLY_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_APPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="APPLY_LEAVE" />
-          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
           <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_LEAVE" />
+          <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
         </EntityType>
         <EntityType Name="EMPLOYEE_POSITION">
           <Key>
@@ -6340,18 +6327,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="EMP_I_EMPL_EMPL_NI2">
-          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ATTENDENCES">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="EMP_I_EMPL_EMPL_NI3">
           <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.EMPLOYEE_BANK_DETAIL" Role="EMPLOYEE_BANK_DETAIL" Multiplicity="*" />
@@ -6493,18 +6468,6 @@
             </Principal>
             <Dependent Role="EMPLOYEE_ADDITIONAL_DETAIL">
               <PropertyRef Name="ADDL_FLD_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_L_EMPL_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_LEAVE_TYPE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="EMPLOYEE_ATTENDENCES">
-              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -8605,6 +8568,43 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EMPLOYEE_ATTENDENCES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ATNDENCE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
+          <Property Name="RSN" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="IS_HALF_DAY" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
+        </EntityType>
+        <Association Name="EMP_I_EMPL_EMPL_NI2">
+          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_L_EMPL_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.EMPLOYEE_ATTENDENCES" Role="EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8848,18 +8848,6 @@
               <MappingFragment StoreEntitySet="EMPLOYEE_ADDITIONAL_FIELD">
                 <ScalarProperty Name="STAT" ColumnName="STAT" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EMPLOYEE_ATTENDENCES">
-            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ATTENDENCES">
-              <MappingFragment StoreEntitySet="EMPLOYEE_ATTENDENCES">
-                <ScalarProperty Name="IS_HALF_DAY" ColumnName="IS_HALF_DAY" />
-                <ScalarProperty Name="RSN" ColumnName="RSN" />
-                <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
-                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
-                <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -10132,6 +10120,18 @@
                 <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="BTCH_ID" ColumnName="BTCH_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EMPLOYEE_ATTENDENCES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.EMPLOYEE_ATTENDENCES">
+              <MappingFragment StoreEntitySet="EMPLOYEE_ATTENDENCES">
+                <ScalarProperty Name="IS_HALF_DAY" ColumnName="IS_HALF_DAY" />
+                <ScalarProperty Name="RSN" ColumnName="RSN" />
+                <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

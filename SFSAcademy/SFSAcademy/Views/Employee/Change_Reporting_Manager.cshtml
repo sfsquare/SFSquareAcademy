@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SFSAcademy.Models.Employee>
+@using SFSAcademy.Models
+@{
+    IEnumerable<EMPLOYEE> Reporting_Manager = (IEnumerable<EMPLOYEE>)ViewData["Reporting_Manager"];
+    EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
+}
+@{
+    ViewBag.Title = "Admission4";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
+    <h1>Reporting Manager</h1>
+    <h3>Change</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
+</div>
+<div id="page-yield">
+    <div id="form-content">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div id="current-changed-manager">
+                Reporting Manager For: @Html.Label(string.Concat(Employee.FIRST_NAME, " ", Employee.MID_NAME, " ", Employee.LAST_NAME), htmlAttributes: new { @class = "control-label col-md-2" })
+                @{
+                    for (int i = 0; i < Reporting_Manager.Count(); i++)
+                    {
+                        <div class="label-field-pair label">
+                            <div id="changed-manager-outer">
+                                @if (Reporting_Manager.FirstOrDefault().LAST_NAME != null)
+                                {
+                                    <div id="changed-manager-name"> @Html.Label("Manager Name:") @Html.Label(Reporting_Manager.FirstOrDefault().FIRST_NAME) @Html.Label(Reporting_Manager.FirstOrDefault().LAST_NAME)</div>
+                                }
+                                else
+                                {
+                                    <div id="changed-manager-name">@Html.Label("Manager Name:") @Html.Label(Reporting_Manager.FirstOrDefault().FIRST_NAME)</div>
+                                }
+                                <div id="changed-manager-name">@Html.Label("Manager Employee Numer:")  @Html.Label(Reporting_Manager.FirstOrDefault().EMP_NUM)</div>
+                                <div class="extender"></div>
+                                <br />
+                            </div>
+                            <div class="text-input-bg">
+                                @Html.Hidden("[" + i + "].Employee_Id", Employee.ID)
+                                @Html.Hidden("[" + i + "].Reporting_Manager_Id", Reporting_Manager.ElementAt(i).ID)
+
+                            </div>
+                        </div>
+                    }
+                }
+                <div id="update-button"><input type="submit" value="► Save And Proceed" class="submit_button" /></div>
+            </div>
+        }
+        <div class="extender"></div>
+        <br />
+        <div id="search-options">
+            @Html.Partial("~/Views/Employee/_Select_Reporting_Manager.cshtml")
+        </div>
+    </div>
+
+    <div id="information"></div>
+</div>

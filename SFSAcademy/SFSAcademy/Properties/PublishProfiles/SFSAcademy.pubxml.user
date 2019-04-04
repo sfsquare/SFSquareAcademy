@@ -151,10 +151,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>03/09/2019 13:14:41</publishTime>
+      <publishTime>04/04/2019 17:01:01</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>03/09/2019 13:14:41</publishTime>
+      <publishTime>04/04/2019 17:01:01</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>01/28/2015 04:02:42</publishTime>
@@ -6163,7 +6163,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Content/stylesheets/timetable/teachers_timetable.css">
-      <publishTime>12/05/2018 17:27:02</publishTime>
+      <publishTime>03/29/2019 20:01:15</publishTime>
     </File>
     <File Include="Content/stylesheets/timetable/timetable.css">
       <publishTime>12/05/2018 17:27:02</publishTime>
@@ -6304,7 +6304,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="ModelSFSAcademy.edmx.diagram">
-      <publishTime>03/05/2019 14:56:55</publishTime>
+      <publishTime>04/04/2019 16:56:06</publishTime>
     </File>
     <File Include="packages.config">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -6382,7 +6382,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/BATCH/Create.cshtml">
-      <publishTime>12/05/2018 17:27:02</publishTime>
+      <publishTime>04/03/2019 14:56:24</publishTime>
     </File>
     <File Include="Views/BATCH/Delete.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
@@ -6391,16 +6391,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/BATCH/Edit.cshtml">
-      <publishTime>12/05/2018 17:27:02</publishTime>
+      <publishTime>04/03/2019 14:59:03</publishTime>
     </File>
     <File Include="Views/BATCH/Index.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/BATCH/ManageBatches.cshtml">
-      <publishTime>12/05/2018 17:27:02</publishTime>
+      <publishTime>04/03/2019 14:56:35</publishTime>
     </File>
     <File Include="Views/BATCH/_Update_Batch.cshtml">
-      <publishTime>12/05/2018 17:27:02</publishTime>
+      <publishTime>04/03/2019 15:11:03</publishTime>
     </File>
     <File Include="Views/Class_Timings/Class_TimingSet_New.cshtml">
       <publishTime>02/21/2019 19:01:56</publishTime>
@@ -6494,6 +6494,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Employee/Advanced_Search.cshtml">
       <publishTime>02/14/2019 15:21:34</publishTime>
+    </File>
+    <File Include="Views/Employee/Change_Reporting_Manager.cshtml">
+      <publishTime>04/02/2019 18:13:06</publishTime>
     </File>
     <File Include="Views/Employee/Change_To_Former.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
@@ -6649,7 +6652,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/Employee/_General.cshtml">
-      <publishTime>02/14/2019 16:48:32</publishTime>
+      <publishTime>04/03/2019 12:44:50</publishTime>
     </File>
     <File Include="Views/Employee/_Grade.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
@@ -6701,6 +6704,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Employee/_Select_Department.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
+    </File>
+    <File Include="Views/Employee/_Select_Reporting_Manager.cshtml">
+      <publishTime>04/02/2019 18:13:49</publishTime>
     </File>
     <File Include="Views/Employee/_Subjects.cshtml">
       <publishTime>12/05/2018 17:27:02</publishTime>
@@ -7479,17 +7485,23 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Timetable/New_Timetable.cshtml">
       <publishTime>02/26/2019 14:16:09</publishTime>
     </File>
+    <File Include="Views/Timetable/Teachers_Timetable.cshtml">
+      <publishTime>03/29/2019 19:50:54</publishTime>
+    </File>
     <File Include="Views/Timetable/Update_Timetable.cshtml">
       <publishTime>03/08/2019 14:55:54</publishTime>
     </File>
     <File Include="Views/Timetable/ViewTimetable.cshtml">
-      <publishTime>03/08/2019 18:38:39</publishTime>
+      <publishTime>03/29/2019 19:50:10</publishTime>
     </File>
     <File Include="Views/Timetable/Work_Allotment.cshtml">
       <publishTime>02/19/2019 12:15:31</publishTime>
     </File>
+    <File Include="Views/Timetable/_Teacher_Timetable.cshtml">
+      <publishTime>03/29/2019 19:59:49</publishTime>
+    </File>
     <File Include="Views/Timetable/_View_Timetable.cshtml">
-      <publishTime>03/08/2019 18:56:34</publishTime>
+      <publishTime>03/29/2019 20:20:02</publishTime>
     </File>
     <File Include="Views/Timetable_Entries/Create.cshtml">
       <publishTime>12/05/2018 17:27:03</publishTime>
@@ -7594,7 +7606,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>02/04/2019 19:41:10</publishTime>
+      <publishTime>04/04/2019 17:01:04</publishTime>
     </File>
   </ItemGroup>
 </Project>

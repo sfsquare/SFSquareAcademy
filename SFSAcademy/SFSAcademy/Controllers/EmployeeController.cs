@@ -3918,7 +3918,113 @@ namespace SFSAcademy.Controllers
 
             return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
-        
+
+        /*public ActionResult Change_Reporting_Manager(int? id)
+        {
+            var departments = db.EMPLOYEE_DEPARTMENT.ToList();
+            ViewData["departments"] = departments;
+            var categories = db.EMPLOYEE_CATEGORY.ToList();
+            ViewData["categories"] = categories;
+            var positions = db.EMPLOYEE_POSITION.ToList();
+            ViewData["positions"] = positions;
+            var grades = db.EMPLOYEE_GRADE.ToList();
+            ViewData["grades"] = grades;
+            EMPLOYEE emp = db.EMPLOYEEs.Find(id);
+            if(emp.RPTG_MGR_ID != null)
+            {
+                string reporting_manager = db.EMPLOYEEs.Find(emp.RPTG_MGR_ID).FIRST_NAME;
+                ViewBag.reporting_manager = reporting_manager;
+            }
+            return View();
+        }*/
+
+        public ActionResult Change_Reporting_Manager(int Emp_id, int? Reporting_Mn_Id)
+        {
+            EMPLOYEE Employee = db.EMPLOYEEs.Find(Emp_id);
+            ViewData["Employee"] = Employee;
+
+            var EmployeeDetail = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true) on emp.EMP_CAT_ID equals ec.ID into gec
+                                  from subgec in gec.DefaultIfEmpty()
+                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true) on emp.EMP_POS_ID equals ep.ID into gep
+                                  from subgep in gep.DefaultIfEmpty()
+                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
+                                  from subgeg in geg.DefaultIfEmpty()
+                                  where emp.STAT == true
+                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = Emp_id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+
+            if (Reporting_Mn_Id != null)
+            {
+                var Reporting_Manager = (from rm in db.EMPLOYEEs
+                                         where rm.ID == Reporting_Mn_Id
+                                         select rm).Distinct().ToList();
+                ViewData["Reporting_Manager"] = Reporting_Manager;
+            }
+            else
+            {
+                var Reporting_Manager = (from rm in db.EMPLOYEEs
+                                         join emp in db.EMPLOYEEs on rm.ID equals emp.RPTG_MGR_ID
+                                         where emp.ID == Emp_id
+                                         select rm).Distinct().ToList();
+                ViewData["Reporting_Manager"] = Reporting_Manager;
+            }
+
+            return View(EmployeeDetail);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Change_Reporting_Manager(IEnumerable<SFSAcademy.Models.Employee> EmpRepManager)
+        {
+            int EmpId = EmpRepManager.FirstOrDefault().Employee_Id;
+            int RpMgr_Id = EmpRepManager.FirstOrDefault().Reporting_Manager_Id;
+            var EmployeeDetail = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  join ec in db.EMPLOYEE_CATEGORY.Where(x => x.STAT == true) on emp.EMP_CAT_ID equals ec.ID into gec
+                                  from subgec in gec.DefaultIfEmpty()
+                                  join ep in db.EMPLOYEE_POSITION.Where(x => x.IS_ACT == true) on emp.EMP_POS_ID equals ep.ID into gep
+                                  from subgep in gep.DefaultIfEmpty()
+                                  join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
+                                  from subgeg in geg.DefaultIfEmpty()
+                                  where emp.STAT == true
+                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = EmpId, Reporting_Manager_Id = RpMgr_Id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+
+            var Reporting_Manager = (from rm in db.EMPLOYEEs
+                                     where rm.ID == RpMgr_Id
+                                     select rm).Distinct().ToList();
+            ViewData["Reporting_Manager"] = Reporting_Manager;
+
+            if (ModelState.IsValid)
+            {
+                EMPLOYEE EmpToUpdate = db.EMPLOYEEs.Find(EmpRepManager.FirstOrDefault().Employee_Id);
+                EmpToUpdate.UPDATED_AT = System.DateTime.Now;
+                EmpToUpdate.RPTG_MGR_ID = EmpRepManager.FirstOrDefault().Reporting_Manager_Id;
+                db.Entry(EmpToUpdate).State = EntityState.Modified;
+                try { db.SaveChanges(); ViewBag.Notice = string.Concat("Reporting Manager changed for ", EmpToUpdate.FIRST_NAME, " ", EmpToUpdate.LAST_NAME); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return View(EmployeeDetail);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(EmployeeDetail);
+                }                
+                return RedirectToAction("Profiles", new { id = EmpToUpdate.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+            }
+            return View(EmployeeDetail);
+        }
+
         // GET: Employee/Delete/5
         public ActionResult Delete(int? id)
         {

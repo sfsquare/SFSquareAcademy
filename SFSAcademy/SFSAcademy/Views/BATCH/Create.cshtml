@@ -36,22 +36,16 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="page-yield">
-    <div class="bread_crumb">
-        <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
-        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
-        <a href="@Url.Action("ManageCourse", "Courses")">Manage Course</a> &raquo;
-        New
-    </div>
-
-    @if (ViewBag.Message != null)
+    @if (ViewBag.Notice != null)
     {
-        <p class="flash-msg"> @ViewBag.Message </p>
+        <p class="flash-msg"> @ViewBag.Notice </p>
     }
 
     <div id="grading-levels-form">
         <div class="bread_crumb">
-            <a href="@Url.Action("Index", "Courses")">Manage Course/Batch</a> &raquo;
-            <a href="@Url.Action("ManageBatches", "BATCH")">Batches</a> &raquo;
+            <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+            <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+            <a href="@Url.Action("ManageBatches", "BATCH")">Manage Batch</a> &raquo;
             New Batch
         </div>
         @using (Html.BeginForm())
@@ -59,7 +53,7 @@
             @Html.AntiForgeryToken()
 
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.NAME, "Course Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.NAME, "Batch Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="input-container">
                     @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
@@ -90,14 +84,14 @@
                 </div>
             </div>
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.EMP_ID, "Batch Teacher", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.EMP_ID, "Class Teacher", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("EMP_ID", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.EMP_ID, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div id="submit_area">
-                <input type="submit" value="► Save" class="submit_button" />
+                <input type="submit" value="► Save" class="user_button" />
             </div>
             <div class="extender"></div>
         }
