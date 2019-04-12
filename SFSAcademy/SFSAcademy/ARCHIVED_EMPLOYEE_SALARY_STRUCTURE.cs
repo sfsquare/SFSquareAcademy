@@ -19,7 +19,7 @@ namespace SFSAcademy
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<int> PYRL_CAT_ID { get; set; }
     
-        public virtual ARCHIVED_EMPLOYEE ARCHIVED_EMPLOYEE { get; set; }
         public virtual PAYROLL_CATEGORY PAYROLL_CATEGORY { get; set; }
+        public virtual ARCHIVED_EMPLOYEE ARCHIVED_EMPLOYEE { get; set; }
     }
 }

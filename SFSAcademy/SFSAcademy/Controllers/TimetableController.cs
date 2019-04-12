@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -27,15 +28,17 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Timetable/Create
-        public ActionResult Work_Allotment()
+        public ActionResult Work_Allotment(string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             var admin = db.EMPLOYEE_CATEGORY.Where(x => !x.PRFX.Contains("admin")).ToList();
             ViewData["admin"] = admin;
 
-            var employees = (from emp in db.EMPLOYEEs.Include(x=>x.EMPLOYEE_GRADE).Include(x=>x.EMPLOYEES_SUBJECT)
+            var employees = (from emp in db.EMPLOYEEs.Include(x=>x.EMPLOYEE_GRADE).Include(x=>x.EMPLOYEES_SUBJECT).Include(x=>x.EMPLOYEE_DEPARTMENT)
                              join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
                              where !empcat.PRFX.Contains("admin")
-                              select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS}).ToList();
+                              select new EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS}).ToList();
             ViewData["employees"] = employees;
 
             DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
@@ -48,27 +51,227 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Work_Allotment(IEnumerable<SFSAcademy.Models.CoursesBatch> batches, IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment> employees)
+        public ActionResult Manage_Allotment(int? batch_id, int? sub_id, string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where cs.IS_DEL == false && bt.END_DATE >= StartDate
+                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
+                        .OrderBy(x => x.BatchData.ID).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatch)
+            {
+                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result = new SelectListItem();
+                result.Text = BatchFullName;
+                result.Value = item.BatchData.ID.ToString();
+                result.Selected = item.BatchData.ID == batch_id? true: false;
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Batch" });
+            ViewBag.BTCH_ID = options;
+            BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
+            ViewData["batch"] = batch;
+
+            List<SelectListItem> options2 = new SelectList(db.SUBJECTs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false).OrderBy(c => c.NAME), "ID", "NAME", sub_id).ToList();
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Subject" });
+            ViewBag.SUB_ID = options2;
+
+            SUBJECT subject = db.SUBJECTs.Find(sub_id);
+            ViewData["subject"] = subject;
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == sub_id).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).ToList();
+            ViewData["departments"] = departments;
+            var Employee = db.EMPLOYEEs.ToList();
+            ViewData["Employee"] = Employee;
+            List<SelectListItem> options3 = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(c => c.NAMES), "ID", "NAMES").ToList();
+            // add the 'ALL' option
+            options3.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Department" });
+            ViewBag.DEPT_ID = options3;
+
+            return View();
+        }
+
+        public ActionResult Subject_Select(int? batch_id)
+        {
+            BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
+            ViewData["batch"] = batch;
+            List<SelectListItem> options = new SelectList(db.SUBJECTs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false).OrderBy(c => c.NAME), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Subject" });
+            ViewBag.SUB_ID = options;
+
+            return PartialView("_Subject_Select");
+        }
+
+        public ActionResult Department_Select(int? subject_id, int? batch_id)
+        {
+            SUBJECT subject = db.SUBJECTs.Find(subject_id);
+            ViewData["subject"] = subject;
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject_id).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).ToList();
+            ViewData["departments"] = departments;
+            var Employee = db.EMPLOYEEs.ToList();
+            ViewData["Employee"] = Employee;
+            BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
+            ViewData["batch"] = batch;
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(c => c.NAMES), "ID", "NAMES").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select a Department" });
+            ViewBag.DEPT_ID = options;
+
+            return PartialView("_Department_Select");
+        }
+
+        public ActionResult Update_Employees(int? department_id, int? subject_id, int? batch_id)
+        {
+            SUBJECT subject = db.SUBJECTs.Find(subject_id);
+            ViewData["subject"] = subject;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == department_id && x.STAT == true).ToList();
+            ViewData["employees"] = employees;
+            var EmployeesSubject = db.EMPLOYEES_SUBJECT.ToList();
+            ViewData["EmployeesSubject"] = EmployeesSubject;
+            BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
+            ViewData["batch"] = batch;
+            return PartialView("_Employee_List");
+        }
+
+        public ActionResult Assign_Employee(int? id, int? id1, int? batch_id)
+        {
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).ToList();
+            ViewData["departments"] = departments;
+            SUBJECT subject = db.SUBJECTs.Find(id1);
+            ViewData["subject"] = subject;
+            var employee_department_id = db.EMPLOYEEs.Find(id).EMP_DEPT_ID;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == employee_department_id && x.STAT == true).ToList();
+            ViewData["employees"] = employees;
+            EMPLOYEES_SUBJECT EmployeesSubject = new EMPLOYEES_SUBJECT { EMP_ID = id, SUBJ_ID = id1 };
+            db.EMPLOYEES_SUBJECT.Add(EmployeesSubject);
+            db.SaveChanges();
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+            ViewBag.Notice = "Employee Successfully assigned.";
+            return RedirectToAction("Manage_Allotment", new { batch_id = batch_id, sub_id = id1, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Remove_Employee(int? id, int? id1, int? batch_id)
+        {
+            var departments = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).ToList();
+            ViewData["departments"] = departments;
+            SUBJECT subject = db.SUBJECTs.Find(id1);
+            ViewData["subject"] = subject;
+            var employee_department_id = db.EMPLOYEEs.Find(id).EMP_DEPT_ID;
+            var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == employee_department_id && x.STAT == true).ToList();
+            ViewData["employees"] = employees;
+            var TimetableEntry = db.TIMETABLE_ENTRY.Where(x => x.SUBJ_ID == subject.ID && x.EMP_ID == id).ToList();
+            if (TimetableEntry == null || TimetableEntry.Count() == 0)
+            {
+                EMPLOYEES_SUBJECT EmployeesSubject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == id && x.SUBJ_ID == id1).FirstOrDefault();
+                db.EMPLOYEES_SUBJECT.Remove(EmployeesSubject);
+                db.SaveChanges();
+                ViewBag.Notice = "Employee sucessfully removed.";
+            }
+            else
+            {
+                ViewBag.Notice = "<p>The employee is currently assigned to same subject in timetable</p> <p>Please assign another employee in timetable inorder to remove this association</p>";
+            }
+
+            var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
+            ViewData["assigned_employee"] = assigned_employee;
+
+            return RedirectToAction("Manage_Allotment", new { batch_id = batch_id, sub_id = id1, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Allocate_Work(int? batch_id, int? sub_id, int? emp_id)
         {
             var admin = db.EMPLOYEE_CATEGORY.Where(x => !x.PRFX.Contains("admin")).ToList();
             ViewData["admin"] = admin;
 
             var employees_Inner = (from emp in db.EMPLOYEEs.Include(x => x.EMPLOYEE_GRADE).Include(x => x.EMPLOYEES_SUBJECT)
-                             join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
-                             where !empcat.PRFX.Contains("admin")
-                             select new SFSAcademy.Models.EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS }).ToList();
+                                   join empcat in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals empcat.ID
+                                   where !empcat.PRFX.Contains("admin")
+                                   select new EmployeeWorkAllotment { EmployeeData = emp, Total_Time = emp.EMPLOYEE_GRADE.MAX_WKILY_HRS }).ToList();
             ViewData["employees"] = employees_Inner;
 
             DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
             var batches_Inner = (from cs in db.COURSEs
-                           join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
-                           where bt.END_DATE >= StartDate
+                                 join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
+                                 where bt.END_DATE >= StartDate
                                  select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches_Inner;
 
-            return View();
+            var employee_subject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == emp_id && x.SUBJ_ID == sub_id).ToList();
+            if(employee_subject == null || employee_subject.Count() == 0)
+            {
+                var employee_sub = new EMPLOYEES_SUBJECT() { EMP_ID = emp_id, SUBJ_ID = sub_id };
+                db.EMPLOYEES_SUBJECT.Add(employee_sub);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    return RedirectToAction("Work_Allotment", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return RedirectToAction("Work_Allotment", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+
+                for (int i = 0; i < batches_Inner.Count(); i++)
+                {
+                    for (int j = 0; j < batches_Inner.ElementAt(i).BatchData.SUBJECTs.Count(); j++)
+                    {
+                        for (int k = 0; k < batches_Inner.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.Count(); k++)
+                        {
+                            var ep = employees_Inner.Where(x => x.EmployeeData.ID == batches_Inner.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.ElementAt(k).EMP_ID).FirstOrDefault();
+                            if (ep != null && ep.EmployeeData.ID != 0)
+                            {
+                                ep.Total_Time = ep.Total_Time - batches_Inner.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).MAX_WKILY_CLSES;
+                                batches_Inner.ElementAt(i).Total_Time = batches_Inner.ElementAt(i).Total_Time - batches_Inner.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).MAX_WKILY_CLSES;
+                            }
+                        }
+
+                    }
+
+                }
+                var Employee = employees_Inner.Where(x => x.EmployeeData.ID == emp_id).FirstOrDefault();
+                string Message = "";
+                if (Employee.Total_Time < 0)
+                {
+                    Message = string.Concat("Employee has a deficit time of ", Convert.ToInt32(Employee.Total_Time), " Hours. Please revisit your allocation.") ;
+                }
+                else if (Employee.Total_Time == 0)
+                {
+                    Message = string.Concat("Employee is OK to be allocated and has finiashed all hours.");
+                }
+                else
+                {
+                    Message = string.Concat("Employee is OK to be allocated and has ", Employee.Total_Time, " hours remaining");
+                }
+                ViewBag.Notice = Message;
+                return RedirectToAction("Work_Allotment", new { Notice = ViewBag.Notice });
+            }
+            else
+            {
+                ViewBag.Notice = "Employee already assigned to this subject.";
+                return RedirectToAction("Work_Allotment", new { Notice = ViewBag.Notice });
+            }
+
         }
 
 
@@ -193,11 +396,11 @@ namespace SFSAcademy.Controllers
             TIMETABLE timetable = db.TIMETABLEs.Find(id);
             bool current = false;
             bool removable = false;
-            if (timetable.START_DATE <= System.DateTime.Today && timetable.END_DATE >= System.DateTime.Today)
+            if (timetable.START_DATE.Value.Date <= DateTime.Today && timetable.END_DATE.Value.Date >= DateTime.Today)
             {
                 current = true;
             }
-            if (timetable.START_DATE > System.DateTime.Today && timetable.END_DATE > System.DateTime.Today)
+            if (timetable.START_DATE.Value.Date > DateTime.Today && timetable.END_DATE.Value.Date > DateTime.Today)
             {
                 removable = true;
             }
@@ -256,13 +459,13 @@ namespace SFSAcademy.Controllers
                 error = true;
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "End date is lower than today's date. ");
             }
-            var end_conflicts = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.START_DATE,new_end) <= 0 && DateTime.Compare((DateTime)x.END_DATE, new_start) >= 0  && x.ID != tt.ID).ToList();
+            var end_conflicts = db.TIMETABLEs.Where(x => DbFunctions.TruncateTime(x.START_DATE) <= new_end && DbFunctions.TruncateTime(x.END_DATE) >= new_start  && x.ID != tt.ID).ToList();
             if(end_conflicts != null && end_conflicts.Count() != 0)
             {
                 error = true;
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "End time is within the range of another timetable. ");
             }
-            var fully_overlapping = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.END_DATE , (DateTime)timetable.END_DATE) <= 0 && DateTime.Compare((DateTime)x.START_DATE , (DateTime)timetable.START_DATE) >= 0 && x.ID != timetable.ID).ToList();
+            var fully_overlapping = db.TIMETABLEs.Where(x => DbFunctions.TruncateTime(x.END_DATE) <= DbFunctions.TruncateTime(timetable.END_DATE) && DbFunctions.TruncateTime(x.START_DATE) >= DbFunctions.TruncateTime(timetable.START_DATE) && x.ID != timetable.ID).ToList();
             if (fully_overlapping != null && fully_overlapping.Count() != 0)
             {
                 error = true;
@@ -388,8 +591,8 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
 
             var timetables = db.TIMETABLEs.ToList();
-            TIMETABLE current = timetables.Where(x => DateTime.Compare((DateTime)x.START_DATE, DateTime.Now) <= 0 && DateTime.Compare((DateTime)x.END_DATE, DateTime.Now) >= 0).FirstOrDefault();
-            int? current_id = current != null ? current.ID : timetables.FirstOrDefault().ID;
+            var current = db.TIMETABLEs.Where(x => DbFunctions.TruncateTime(x.START_DATE) <= DateTime.Today && DbFunctions.TruncateTime(x.END_DATE) >= DateTime.Today);
+            int? current_id = current != null ? current.FirstOrDefault().ID : timetables.FirstOrDefault().ID;
             List <SelectListItem> options2 = new List<SelectListItem>();
             foreach (var item in timetables)
             {
@@ -477,7 +680,7 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
 
             var timetables = db.TIMETABLEs.ToList();
-            TIMETABLE current = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.START_DATE, DateTime.Now) <= 0 && DateTime.Compare((DateTime)x.END_DATE, DateTime.Now) >= 0).FirstOrDefault();
+            TIMETABLE current = db.TIMETABLEs.Where(x => DbFunctions.TruncateTime(x.START_DATE) <= DateTime.Today && DbFunctions.TruncateTime(x.END_DATE) >= DateTime.Today).FirstOrDefault();
             ViewData["current"] = current;
             int? current_id = current != null ? current.ID : timetables.FirstOrDefault().ID;
             List<SelectListItem> options2 = new List<SelectListItem>();
@@ -544,7 +747,7 @@ namespace SFSAcademy.Controllers
             TIMETABLE current = db.TIMETABLEs.Where(x => x.ID == -1).FirstOrDefault();
             if(timetable_id == null)
             {
-                current = db.TIMETABLEs.Where(x => DateTime.Compare((DateTime)x.START_DATE, DateTime.Now) <= 0 && DateTime.Compare((DateTime)x.END_DATE, DateTime.Now) >= 0).FirstOrDefault();
+                current = db.TIMETABLEs.Where(x => DbFunctions.TruncateTime(x.START_DATE) <= DateTime.Today && DbFunctions.TruncateTime(x.END_DATE) >= DateTime.Today).FirstOrDefault();
             }
             else
             {
@@ -605,6 +808,35 @@ namespace SFSAcademy.Controllers
             ViewData["timetable_entries"] = timetable_entries;
 
             return PartialView("_Teacher_Timetable");
+        }
+
+
+        public ActionResult Timetable(string Notice, string ErrorMessage, DateTime? next)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+
+            var config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "AvailableModules").ToList();
+            ViewData["config"] = config;
+            var batches = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_ACT == true).ToList();
+            ViewData["batches"] = batches;
+            var Weekday = db.WEEKDAYs.Where(x => x.IS_DEL == false).ToList();
+            ViewData["Weekday"] = Weekday;
+            var Timetable = db.TIMETABLEs.ToList();
+            ViewData["Timetable"] = Timetable;
+            var TimetableEntry = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.EMPLOYEE).ToList();
+            ViewData["TimetableEntry"] = TimetableEntry;
+            var ClassTiming = db.CLASS_TIMING.ToList();
+            ViewData["ClassTiming"] = ClassTiming;
+            DateTime? today = DateTime.Today;
+            ViewBag.today = today;
+            if (next != null)
+            {
+                today = Convert.ToDateTime(next);
+                ViewBag.today = today;
+                return PartialView("_Table");
+            }
+            return View();
         }
 
         protected override void Dispose(bool disposing)

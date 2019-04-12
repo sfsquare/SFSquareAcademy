@@ -51,7 +51,7 @@
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
-
+            @Html.HiddenFor(model => model.ID)
             <div class="label-field-pair">
                 @Html.LabelFor(model => model.NAME, "Batch Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="input-container">

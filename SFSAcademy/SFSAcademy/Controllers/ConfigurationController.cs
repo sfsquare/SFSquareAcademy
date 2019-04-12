@@ -103,7 +103,20 @@ namespace SFSAcademy.Controllers
                     }
                 }
             }
-            foreach(var item in config)
+            foreach (var item in config)
+            {
+                if (item.CONFIG_KEY == "FinancialYearStartDate" && item.CONFIG_VAL != null)
+                {
+                    string Day_Month = string.Concat(Convert.ToDateTime(item.CONFIG_VAL).Day, "_", Convert.ToDateTime(item.CONFIG_VAL).Month);
+                    item.CONFIG_VAL = Day_Month;
+                }
+                if (item.CONFIG_KEY == "FinancialYearEndDate" && item.CONFIG_VAL != null)
+                {
+                    string Day_Month = string.Concat(Convert.ToDateTime(item.CONFIG_VAL).Day, "_", Convert.ToDateTime(item.CONFIG_VAL).Month);
+                    item.CONFIG_VAL = Day_Month;
+                }
+            }
+            foreach (var item in config)
             {
                 CONFIGURATION NewConfig = db.CONFIGURATIONs.Find(item.ID);
                 NewConfig.CONFIG_VAL = item.CONFIG_VAL;

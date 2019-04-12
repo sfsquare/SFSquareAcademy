@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Timetable";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Institutional Timetable</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Timetable")"> Timetable</a> &raquo;
+    Institutional Timetable
+</div>
+@if (ViewBag.Notice != null)
+{
+   <p class="flash-msg"> @ViewBag.Notice </p>
+}
+<div id="page-yield">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div id="timetable">
+        @Html.Partial("_Table")
+    </div>
+</div>
+

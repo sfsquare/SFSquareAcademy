@@ -1,0 +1,121 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> EmployeeLeaveType = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["EmployeeLeaveType"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> leave_count = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["leave_count"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> EmployeeLeave = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["EmployeeLeave"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> attendance_report = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["attendance_report"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
+}
+@{ Layout = null;}
+@{
+    ViewBag.Title = "Employee_Attendance_pdf";
+}
+<link href="~/Content/stylesheets/employee_attendance/employee_attendance_pdf.css" rel="stylesheet" />
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Employee Attendance Report</h2>
+    <div class="hor_line"></div>
+
+    <div class="extender"> </div>
+    <div class="report">
+        <div id="main_info">
+            <h4> @employee.FIRST_NAME @employee.MID_NAME @employee.LAST_NAME</h4>
+            <h4> @employee.EMP_NUM</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
+                <tr class="table-header"><td class="col-pdf">Leave types</td><td class="col-pdf">Dates</td></tr>
+                @{int i = 0;}
+                @foreach (var lt in leave_types)
+                {
+                    var leave_count_inner = EmployeeLeave.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID).FirstOrDefault();
+                    string c = "even";
+                    if (i % 2 == 0)
+                    {
+                        c = "odd";
+                    }
+                    var report = EmployeeAttendance.Where(x => x.ID == -1).DefaultIfEmpty();
+                    if (leave_count_inner.RST_DATE != null)
+                    {
+                        report = EmployeeAttendance.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID && x.ATNDENCE_DATE >= leave_count_inner.RST_DATE).ToList();
+                    }
+                    else
+                    {
+                        report = EmployeeAttendance.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID).ToList();
+                    }
+                    if (report == null || report.Count() == 0)
+                    {
+                        <tr class="@c"><td class="col-pdf">@lt.NAME</td><td class="col-pdf">No Dates</td></tr>
+                    }
+                    else
+                    {
+                        int j = 1;
+                        foreach (var r in report)
+                        {
+                            string c1 = "even";
+                            if (j % 2 == 0)
+                            {
+                                c1 = "odd";
+                            }
+                            if (j == 22)
+                            {
+                                j = 0;
+                                <tr class="page-break"><td colspan="2"></td></tr>
+                            }
+                            <tr class="@c1">
+                                <td class="col-pdf">@lt.NAME</td>
+                                <td class="col-pdf">
+                                    @r.ATNDENCE_DATE.Value.ToShortDateString()
+                                    @if (r.IS_HALF_DAY == true)
+                                    {
+                                        <span>Half Day</span>
+                                    }
+                                </td>
+                            </tr>
+                            j += 1;
+                        }
+                    }
+                    i += 1;
+                }
+                @if (leave_types != null && leave_types.Count() != 0)
+                {
+                    decimal? total_leave = 0; int j = 0;
+                    foreach (var e in leave_count)
+                    {
+                        var leave_type = EmployeeLeaveType.Where(x => x.ID == e.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                        string c = "even";
+                        decimal? Leave_Taken = e.LEAVE_TAKE == null ? (decimal)0.00 : e.LEAVE_TAKE;
+                        if (j % 2 == 0)
+                        {
+                            c = "odd";
+                        }
+                        <tr class="@c">
+                            <td class="col-bold">Total @leave_type.NAME</td>
+                            <td class="col-bold">@Leave_Taken/@e.LEAVE_CNT</td>
+                        </tr>
+                        if (e.LEAVE_TAKE != null)
+                        {
+                            total_leave += e.LEAVE_TAKE;
+                        }
+                        j += 1;
+                    }
+                    <tr class="even">
+                        <td class="col-bold">Net total leaves</td>
+                        <td class="col-bold">@total_leave</td>
+                    </tr>
+
+                }
+                else
+                {
+                    <tr class="even">
+                        <td class="col-bold"> </td>
+                        <td class="col-bold">Sorry! No Leave type registered for Employee</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+

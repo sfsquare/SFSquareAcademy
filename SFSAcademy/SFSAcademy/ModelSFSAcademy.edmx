@@ -89,6 +89,18 @@
           <Property Name="ADDL_FLD_ID" Type="int" />
           <Property Name="ADDL_INFO" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="ARCHIVED_EMPLOYEE_ATTENDENCES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FRMR_ID" Type="int" />
+          <Property Name="ATNDENCE_DATE" Type="datetime" />
+          <Property Name="EMP_ID" Type="int" />
+          <Property Name="EMP_LEAVE_TYPE_ID" Type="int" />
+          <Property Name="RSN" Type="varchar" MaxLength="2000" />
+          <Property Name="IS_HALF_DAY" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="ARCHIVED_EMPLOYEE_BANK_DETAIL">
           <Key>
             <PropertyRef Name="ID" />
@@ -999,6 +1011,18 @@
           <Property Name="PRIVILEGE_ID" Type="int" />
           <Property Name="USERS_ACCESS_ID" Type="int" />
         </EntityType>
+        <EntityType Name="PRIVILEGE_TAG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME_TAG" Type="varchar" MaxLength="50" />
+          <Property Name="DESCRIPTION" Type="varchar" MaxLength="2000" />
+          <Property Name="PRIR" Type="int" />
+          <Property Name="CREATED_AT" Type="datetime" />
+          <Property Name="UPDATED_AT" Type="datetime" />
+          <Property Name="IS_ACT" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="PRIVILEGES">
           <Key>
             <PropertyRef Name="ID" />
@@ -1006,10 +1030,11 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NAME" Type="varchar" MaxLength="50" />
           <Property Name="DESCRIPTION" Type="varchar" MaxLength="2000" />
-          <Property Name="PRIVILEGE_TAG" Type="varchar" MaxLength="50" />
+          <Property Name="PRIVILEGE_TAG_ID" Type="int" />
           <Property Name="CREATED_AT" Type="datetime" />
           <Property Name="UPDATED_AT" Type="datetime" />
           <Property Name="IS_ACT" Type="bit" Nullable="false" />
+          <Property Name="PRIR" Type="int" />
         </EntityType>
         <EntityType Name="PRIVILEGES_USERS">
           <Key>
@@ -2054,6 +2079,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="EMP_L_ARCH_EMPL_NI">
+          <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Role="ARCHIVED_EMPLOYEE_ATTENDENCES" Type="Self.ARCHIVED_EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="EMP_L_EMPL_APPL_NI">
           <End Role="EMPLOYEE_LEAVE_TYPE" Type="Self.EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
           <End Role="APPLY_LEAVE" Type="Self.APPLY_LEAVE" Multiplicity="*" />
@@ -2522,6 +2559,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="PRV_PRV_TAG_NI">
+          <End Role="PRIVILEGE_TAG" Type="Self.PRIVILEGE_TAG" Multiplicity="0..1" />
+          <End Role="PRIVILEGES" Type="Self.PRIVILEGES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE_TAG">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGES">
+              <PropertyRef Name="PRIVILEGE_TAG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="PYRL__PAYR_EMPL_NI">
           <End Role="PAYROLL_CATEGORY" Type="Self.PAYROLL_CATEGORY" Multiplicity="0..1" />
           <End Role="EMPLOYEE_SALARY_STRUCTURE" Type="Self.EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
@@ -2578,18 +2627,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="EMPLOYEE1">
-              <PropertyRef Name="RPTG_MGR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RPTG_EMPL_ARCH_EMPL_NI">
-          <End Role="EMPLOYEE" Type="Self.EMPLOYEE" Multiplicity="0..1" />
-          <End Role="ARCHIVED_EMPLOYEE" Type="Self.ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
               <PropertyRef Name="RPTG_MGR_ID" />
             </Dependent>
           </ReferentialConstraint>
@@ -3390,6 +3427,7 @@
           <EntitySet Name="APPLY_LEAVE" EntityType="Self.APPLY_LEAVE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARCHIVED_EMPLOYEE" EntityType="Self.ARCHIVED_EMPLOYEE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" EntityType="Self.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ARCHIVED_EMPLOYEE_ATTENDENCES" EntityType="Self.ARCHIVED_EMPLOYEE_ATTENDENCES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_BANK_DETAIL" EntityType="Self.ARCHIVED_EMPLOYEE_BANK_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" EntityType="Self.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARCHIVED_EXAM_SCORE" EntityType="Self.ARCHIVED_EXAM_SCORE" Schema="dbo" store:Type="Tables" />
@@ -3457,6 +3495,7 @@
           <EntitySet Name="PERIOD_ENTRIES" EntityType="Self.PERIOD_ENTRIES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PHOTO_MASTER" EntityType="Self.PHOTO_MASTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRIVILEGE_ACCESS" EntityType="Self.PRIVILEGE_ACCESS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PRIVILEGE_TAG" EntityType="Self.PRIVILEGE_TAG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRIVILEGES" EntityType="Self.PRIVILEGES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRIVILEGES_USERS" EntityType="Self.PRIVILEGES_USERS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RANKING_LEVEL" EntityType="Self.RANKING_LEVEL" Schema="dbo" store:Type="Tables" />
@@ -3695,6 +3734,10 @@
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
             <End Role="PERIOD_ENTRIES" EntitySet="PERIOD_ENTRIES" />
           </AssociationSet>
+          <AssociationSet Name="EMP_L_ARCH_EMPL_NI" Association="Self.EMP_L_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="ARCHIVED_EMPLOYEE_ATTENDENCES" EntitySet="ARCHIVED_EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
           <AssociationSet Name="EMP_L_EMPL_APPL_NI" Association="Self.EMP_L_EMPL_APPL_NI">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
             <End Role="APPLY_LEAVE" EntitySet="APPLY_LEAVE" />
@@ -3851,6 +3894,10 @@
             <End Role="PRIVILEGES" EntitySet="PRIVILEGES" />
             <End Role="PRIVILEGES_USERS" EntitySet="PRIVILEGES_USERS" />
           </AssociationSet>
+          <AssociationSet Name="PRV_PRV_TAG_NI" Association="Self.PRV_PRV_TAG_NI">
+            <End Role="PRIVILEGE_TAG" EntitySet="PRIVILEGE_TAG" />
+            <End Role="PRIVILEGES" EntitySet="PRIVILEGES" />
+          </AssociationSet>
           <AssociationSet Name="PYRL__PAYR_EMPL_NI" Association="Self.PYRL__PAYR_EMPL_NI">
             <End Role="PAYROLL_CATEGORY" EntitySet="PAYROLL_CATEGORY" />
             <End Role="EMPLOYEE_SALARY_STRUCTURE" EntitySet="EMPLOYEE_SALARY_STRUCTURE" />
@@ -3870,10 +3917,6 @@
           <AssociationSet Name="RPTG__EMPL_EMPL_NI" Association="Self.RPTG__EMPL_EMPL_NI">
             <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
             <End Role="EMPLOYEE1" EntitySet="EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="RPTG_EMPL_ARCH_EMPL_NI" Association="Self.RPTG_EMPL_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEE" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
           </AssociationSet>
           <AssociationSet Name="SMS_M_SMS__SMS__NI" Association="Self.SMS_M_SMS__SMS__NI">
             <End Role="SMS_MESSAGE" EntitySet="SMS_MESSAGE" />
@@ -4495,56 +4538,11 @@
             <End Role="USERS_ACCESS" EntitySet="USERS_ACCESS" />
             <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
           </AssociationSet>
-          <EntitySet Name="ARCHIVED_EMPLOYEE" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_BANK_DETAIL" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_BANK_DETAIL" />
           <EntitySet Name="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" />
           <EntitySet Name="ARCHIVED_EXAM_SCORE" EntityType="SFSAcademyModel.ARCHIVED_EXAM_SCORE" />
           <EntitySet Name="ARCHIVED_GUARDIAN" EntityType="SFSAcademyModel.ARCHIVED_GUARDIAN" />
-          <AssociationSet Name="EMP_C_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_C_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_D_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_D_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_G_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_G_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE_GRADE" EntitySet="EMPLOYEE_GRADE" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_I_ARCH_EMPL_EMPL_NI5" Association="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5">
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-            <End Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" EntitySet="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_I_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_I_ARCH_EMPL_NI">
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-            <End Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_I_BD_ARCH_EMPL_NI3" Association="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3">
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-            <End Role="ARCHIVED_EMPLOYEE_BANK_DETAIL" EntitySet="ARCHIVED_EMPLOYEE_BANK_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="EMP_P_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_P_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="HOME_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="NTLTY_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="OFF_C_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI">
-            <End Role="COUNTRY" EntitySet="COUNTRies" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
-          <AssociationSet Name="RPTG_EMPL_ARCH_EMPL_NI" Association="SFSAcademyModel.RPTG_EMPL_ARCH_EMPL_NI">
-            <End Role="EMPLOYEE" EntitySet="EMPLOYEEs" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
           <AssociationSet Name="ADDL_ARCH_EMPL_NI" Association="SFSAcademyModel.ADDL_ARCH_EMPL_NI">
             <End Role="EMPLOYEE_ADDITIONAL_FIELD" EntitySet="EMPLOYEE_ADDITIONAL_FIELD" />
             <End Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
@@ -4566,10 +4564,6 @@
             <End Role="ARCHIVED_EXAM_SCORE" EntitySet="ARCHIVED_EXAM_SCORE" />
           </AssociationSet>
           <EntitySet Name="USERS" EntityType="SFSAcademyModel.USER" />
-          <AssociationSet Name="USRID_USER_ARCH_EMPL_NI" Association="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI">
-            <End Role="USER" EntitySet="USERS" />
-            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
-          </AssociationSet>
           <AssociationSet Name="USRID_USER_ARCH_GUAR_NI" Association="SFSAcademyModel.USRID_USER_ARCH_GUAR_NI">
             <End Role="USER" EntitySet="USERS" />
             <End Role="ARCHIVED_GUARDIAN" EntitySet="ARCHIVED_GUARDIAN" />
@@ -4596,15 +4590,6 @@
           </AssociationSet>
           <EntitySet Name="FEE_FINE" EntityType="SFSAcademyModel.FEE_FINE" />
           <EntitySet Name="FEE_DISCOUNT" EntityType="SFSAcademyModel.FEE_DISCOUNT" />
-          <EntitySet Name="PRIVILEGES" EntityType="SFSAcademyModel.PRIVILEGE" />
-          <AssociationSet Name="PRI_AC_PRI_USER_NI" Association="SFSAcademyModel.PRI_AC_PRI_USER_NI">
-            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
-            <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
-          </AssociationSet>
-          <AssociationSet Name="PRI_PRI_USER_NI" Association="SFSAcademyModel.PRI_PRI_USER_NI">
-            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
-            <End Role="PRIVILEGES_USERS" EntitySet="PRIVILEGES_USERS" />
-          </AssociationSet>
           <EntitySet Name="STORE_BRAND" EntityType="SFSAcademyModel.STORE_BRAND" />
           <EntitySet Name="STORE_PRODUCTS" EntityType="SFSAcademyModel.STORE_PRODUCTS" />
           <AssociationSet Name="STBRD_STPROD_ASSE_NI" Association="SFSAcademyModel.STBRD_STPROD_ASSE_NI">
@@ -4814,7 +4799,6 @@
             <End Role="STUDENT_CATGEORY" EntitySet="STUDENT_CATGEORY" />
             <End Role="ARCHIVED_STUDENT" EntitySet="ARCHIVED_STUDENT" />
           </AssociationSet>
-          <EntitySet Name="IMAGE_DOCUMENTS" EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" />
           <EntitySet Name="SUBJECTs" EntityType="SFSAcademyModel.SUBJECT" />
           <AssociationSet Name="BTCH__BATC_SUBJ_NI" Association="SFSAcademyModel.BTCH__BATC_SUBJ_NI">
             <End Role="BATCH" EntitySet="BATCHes" />
@@ -4896,6 +4880,71 @@
           <AssociationSet Name="EMP_L_EMPL_EMPL_NI" Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI">
             <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
             <End Role="EMPLOYEE_ATTENDENCES" EntitySet="EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <EntitySet Name="ARCHIVED_EMPLOYEE" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE" />
+          <AssociationSet Name="EMP_C_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_C_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_CATEGORY" EntitySet="EMPLOYEE_CATEGORY" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_D_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_D_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_DEPARTMENT" EntitySet="EMPLOYEE_DEPARTMENT" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_G_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_G_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_GRADE" EntitySet="EMPLOYEE_GRADE" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_ARCH_EMPL_EMPL_NI5" Association="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5">
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+            <End Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" EntitySet="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_I_ARCH_EMPL_NI">
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+            <End Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" EntitySet="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_I_BD_ARCH_EMPL_NI3" Association="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3">
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+            <End Role="ARCHIVED_EMPLOYEE_BANK_DETAIL" EntitySet="ARCHIVED_EMPLOYEE_BANK_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="EMP_P_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_P_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_POSITION" EntitySet="EMPLOYEE_POSITION" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="HOME_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="NTLTY_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="OFF_C_COUN_ARCH_EMPL_NI" Association="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI">
+            <End Role="COUNTRY" EntitySet="COUNTRies" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <AssociationSet Name="USRID_USER_ARCH_EMPL_NI" Association="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI">
+            <End Role="USER" EntitySet="USERS" />
+            <End Role="ARCHIVED_EMPLOYEE" EntitySet="ARCHIVED_EMPLOYEE" />
+          </AssociationSet>
+          <EntitySet Name="ARCHIVED_EMPLOYEE_ATTENDENCES" EntityType="SFSAcademyModel.ARCHIVED_EMPLOYEE_ATTENDENCES" />
+          <AssociationSet Name="EMP_L_ARCH_EMPL_NI" Association="SFSAcademyModel.EMP_L_ARCH_EMPL_NI">
+            <End Role="EMPLOYEE_LEAVE_TYPE" EntitySet="EMPLOYEE_LEAVE_TYPE" />
+            <End Role="ARCHIVED_EMPLOYEE_ATTENDENCES" EntitySet="ARCHIVED_EMPLOYEE_ATTENDENCES" />
+          </AssociationSet>
+          <EntitySet Name="IMAGE_DOCUMENTS" EntityType="SFSAcademyModel.IMAGE_DOCUMENTS" />
+          <EntitySet Name="PRIVILEGE_TAG" EntityType="SFSAcademyModel.PRIVILEGE_TAG" />
+          <EntitySet Name="PRIVILEGES" EntityType="SFSAcademyModel.PRIVILEGE" />
+          <AssociationSet Name="PRI_AC_PRI_USER_NI" Association="SFSAcademyModel.PRI_AC_PRI_USER_NI">
+            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
+            <End Role="PRIVILEGE_ACCESS" EntitySet="PRIVILEGE_ACCESS" />
+          </AssociationSet>
+          <AssociationSet Name="PRV_PRV_TAG_NI" Association="SFSAcademyModel.PRV_PRV_TAG_NI">
+            <End Role="PRIVILEGE_TAG" EntitySet="PRIVILEGE_TAG" />
+            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
+          </AssociationSet>
+          <AssociationSet Name="PRI_PRI_USER_NI" Association="SFSAcademyModel.PRI_PRI_USER_NI">
+            <End Role="PRIVILEGE" EntitySet="PRIVILEGES" />
+            <End Role="PRIVILEGES_USERS" EntitySet="PRIVILEGES_USERS" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="APPLY_LEAVE">
@@ -5034,11 +5083,11 @@
           <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.HOME__COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEEs1" Relationship="SFSAcademyModel.NTLTY_COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEEs2" Relationship="SFSAcademyModel.OFF_C_COUN_EMPL_NI" FromRole="COUNTRY" ToRole="EMPLOYEE" />
+          <NavigationProperty Name="STUDENTs" Relationship="SFSAcademyModel.NTLTY_COUN_STUD_NI" FromRole="COUNTRY" ToRole="STUDENT" />
+          <NavigationProperty Name="ARCHIVED_STUDENT" Relationship="SFSAcademyModel.NTLTY_COUN_ARCH_NI" FromRole="COUNTRY" ToRole="ARCHIVED_STUDENT" />
           <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI" FromRole="COUNTRY" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="ARCHIVED_EMPLOYEE1" Relationship="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI" FromRole="COUNTRY" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="ARCHIVED_EMPLOYEE2" Relationship="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI" FromRole="COUNTRY" ToRole="ARCHIVED_EMPLOYEE" />
-          <NavigationProperty Name="STUDENTs" Relationship="SFSAcademyModel.NTLTY_COUN_STUD_NI" FromRole="COUNTRY" ToRole="STUDENT" />
-          <NavigationProperty Name="ARCHIVED_STUDENT" Relationship="SFSAcademyModel.NTLTY_COUN_ARCH_NI" FromRole="COUNTRY" ToRole="ARCHIVED_STUDENT" />
         </EntityType>
         <EntityType Name="COURSE">
           <Key>
@@ -5169,7 +5218,6 @@
           <NavigationProperty Name="EMPLOYEE1" Relationship="SFSAcademyModel.RPTG__EMPL_EMPL_NI" FromRole="EMPLOYEE" ToRole="EMPLOYEE1" />
           <NavigationProperty Name="EMPLOYEE2" Relationship="SFSAcademyModel.RPTG__EMPL_EMPL_NI" FromRole="EMPLOYEE1" ToRole="EMPLOYEE" />
           <NavigationProperty Name="TIMETABLE_ENTRY" Relationship="SFSAcademyModel.TIME_T_EMPL_NI" FromRole="EMPLOYEE" ToRole="TIMETABLE_ENTRY" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.RPTG_EMPL_ARCH_EMPL_NI" FromRole="EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_EMPL_NI" FromRole="EMPLOYEE" ToRole="USER" />
           <NavigationProperty Name="STORE_PURCHAGE_ORDER" Relationship="SFSAcademyModel.STPURPO_EMP_ASSE_NI" FromRole="EMPLOYEE" ToRole="STORE_PURCHAGE_ORDER" />
           <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_I_EMPL_EMPL_NI2" FromRole="EMPLOYEE" ToRole="EMPLOYEE_ATTENDENCES" />
@@ -5285,6 +5333,7 @@
           <NavigationProperty Name="APPLY_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_APPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="APPLY_LEAVE" />
           <NavigationProperty Name="EMPLOYEE_LEAVE" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_LEAVE" />
           <NavigationProperty Name="EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="EMPLOYEE_ATTENDENCES" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE_ATTENDENCES" Relationship="SFSAcademyModel.EMP_L_ARCH_EMPL_NI" FromRole="EMPLOYEE_LEAVE_TYPE" ToRole="ARCHIVED_EMPLOYEE_ATTENDENCES" />
         </EntityType>
         <EntityType Name="EMPLOYEE_POSITION">
           <Key>
@@ -6852,78 +6901,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ARCHIVED_EMPLOYEE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RPTG_MGR_ID" Type="Int32" />
-          <Property Name="EMP_CAT_ID" Type="Int32" />
-          <Property Name="EMP_NUM" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="JOINING_DATE" Type="DateTime" Precision="3" />
-          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MID_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="GNDR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="JOB_TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EMP_POS_ID" Type="Int32" />
-          <Property Name="EMP_DEPT_ID" Type="Int32" />
-          <Property Name="EMP_GRADE_ID" Type="Int32" />
-          <Property Name="QUAL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="EXPNC_DETL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EXPNC_YEAR" Type="Int32" />
-          <Property Name="EXPNC_MONTH" Type="Int32" />
-          <Property Name="STAT" Type="Boolean" />
-          <Property Name="STAT_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DOB" Type="DateTime" Precision="3" />
-          <Property Name="MARITAL_STAT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="CHLD_CNT" Type="Int32" />
-          <Property Name="FTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HUSBND_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="BLOOD_GRP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="NTLTY_ID" Type="Int32" />
-          <Property Name="HOME_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="HOME_CTRY_ID" Type="Int32" />
-          <Property Name="HOME_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_CTRY_ID" Type="Int32" />
-          <Property Name="OFF_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="OFF_PH1" Type="Int64" />
-          <Property Name="OFF_PH2" Type="Int64" />
-          <Property Name="MOBL_PH" Type="Int64" />
-          <Property Name="HOME_PH" Type="Int64" />
-          <Property Name="EML" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="FAX" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_FILENAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_CNTNT_TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="PHTO_DATA" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="PHTO_FILE_SIZE" Type="Int32" />
-          <Property Name="USRID" Type="Int32" />
-          <Property Name="IMAGE_DOCUMENTS_ID" Type="Int32" />
-          <Property Name="LIBRARY_CARD" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="FRMR_ID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="EMPLOYEE_CATEGORY" Relationship="SFSAcademyModel.EMP_C_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_CATEGORY" />
-          <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="SFSAcademyModel.EMP_D_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
-          <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="SFSAcademyModel.EMP_G_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE_BANK_DETAIL" Relationship="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_BANK_DETAIL" />
-          <NavigationProperty Name="EMPLOYEE_POSITION" Relationship="SFSAcademyModel.EMP_P_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_POSITION" />
-          <NavigationProperty Name="COUNTRY" Relationship="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="COUNTRY1" Relationship="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="COUNTRY2" Relationship="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
-          <NavigationProperty Name="EMPLOYEE" Relationship="SFSAcademyModel.RPTG_EMPL_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE" />
-          <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="USER" />
-        </EntityType>
         <EntityType Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
           <Key>
             <PropertyRef Name="ID" />
@@ -6932,8 +6909,8 @@
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="ADDL_FLD_ID" Type="Int32" />
           <Property Name="ADDL_INFO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="EMPLOYEE_ADDITIONAL_FIELD" Relationship="SFSAcademyModel.ADDL_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" ToRole="EMPLOYEE_ADDITIONAL_FIELD" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" ToRole="ARCHIVED_EMPLOYEE" />
         </EntityType>
         <EntityType Name="ARCHIVED_EMPLOYEE_BANK_DETAIL">
           <Key>
@@ -6943,8 +6920,8 @@
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="BANK_INFO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="BANK_FLD_ID" Type="Int32" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3" FromRole="ARCHIVED_EMPLOYEE_BANK_DETAIL" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="BANK_FIELD" Relationship="SFSAcademyModel.EMP_I_ARCH_BANK_FLD_NI3" FromRole="ARCHIVED_EMPLOYEE_BANK_DETAIL" ToRole="BANK_FIELD" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3" FromRole="ARCHIVED_EMPLOYEE_BANK_DETAIL" ToRole="ARCHIVED_EMPLOYEE" />
         </EntityType>
         <EntityType Name="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE">
           <Key>
@@ -6954,8 +6931,8 @@
           <Property Name="AMT" Type="Decimal" Precision="10" Scale="2" />
           <Property Name="EMP_ID" Type="Int32" />
           <Property Name="PYRL_CAT_ID" Type="Int32" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5" FromRole="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="PAYROLL_CATEGORY" Relationship="SFSAcademyModel.PYRL_ARCH_PAYR_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" ToRole="PAYROLL_CATEGORY" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5" FromRole="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" ToRole="ARCHIVED_EMPLOYEE" />
         </EntityType>
         <EntityType Name="ARCHIVED_EXAM_SCORE">
           <Key>
@@ -7002,138 +6979,6 @@
           <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_ARCH_GUAR_NI" FromRole="ARCHIVED_GUARDIAN" ToRole="USER" />
           <NavigationProperty Name="ARCHIVED_STUDENT" Relationship="SFSAcademyModel.WARD_STUD_ARCH_GUAR_NI" FromRole="ARCHIVED_GUARDIAN" ToRole="ARCHIVED_STUDENT" />
         </EntityType>
-        <Association Name="EMP_C_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE_CATEGORY" Role="EMPLOYEE_CATEGORY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_CATEGORY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="EMP_CAT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_D_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE_DEPARTMENT" Role="EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_DEPARTMENT">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="EMP_DEPT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_G_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE_GRADE" Role="EMPLOYEE_GRADE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_GRADE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="EMP_GRADE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_I_ARCH_EMPL_EMPL_NI5">
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_I_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_I_BD_ARCH_EMPL_NI3">
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_BANK_DETAIL" Role="ARCHIVED_EMPLOYEE_BANK_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE_BANK_DETAIL">
-              <PropertyRef Name="EMP_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="EMP_P_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE_POSITION" Role="EMPLOYEE_POSITION" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE_POSITION">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="EMP_POS_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="HOME_COUN_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="HOME_CTRY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="NTLTY_COUN_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="NTLTY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="OFF_C_COUN_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="COUNTRY">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="OFF_CTRY_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="RPTG_EMPL_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.EMPLOYEE" Role="EMPLOYEE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EMPLOYEE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="RPTG_MGR_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="ADDL_ARCH_EMPL_NI">
           <End Type="SFSAcademyModel.EMPLOYEE_ADDITIONAL_FIELD" Role="EMPLOYEE_ADDITIONAL_FIELD" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
@@ -7214,7 +7059,6 @@
           <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
           <Property Name="PARNT_IND" Type="Boolean" />
           <Property Name="IS_DEL" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI" FromRole="USER" ToRole="ARCHIVED_EMPLOYEE" />
           <NavigationProperty Name="ARCHIVED_GUARDIAN" Relationship="SFSAcademyModel.USRID_USER_ARCH_GUAR_NI" FromRole="USER" ToRole="ARCHIVED_GUARDIAN" />
           <NavigationProperty Name="EMPLOYEEs" Relationship="SFSAcademyModel.USRID_USER_EMPL_NI" FromRole="USER" ToRole="EMPLOYEE" />
           <NavigationProperty Name="FINANCE_FEE_STRUCTURE_ELEMENT" Relationship="SFSAcademyModel.PARNT_USER_FINA_NI" FromRole="USER" ToRole="FINANCE_FEE_STRUCTURE_ELEMENT" />
@@ -7228,19 +7072,8 @@
           <NavigationProperty Name="STORE_PURCHAGE_BACKUP" Relationship="SFSAcademyModel.USR_STRPRBK_MRB_NI" FromRole="USER" ToRole="STORE_PURCHAGE_BACKUP" />
           <NavigationProperty Name="STORE_PURCHAGE_BACKUP1" Relationship="SFSAcademyModel.USR_STRPRBK_SOB_NI" FromRole="USER" ToRole="STORE_PURCHAGE_BACKUP" />
           <NavigationProperty Name="STUDENTs" Relationship="SFSAcademyModel.USRID_USER_STUD_NI" FromRole="USER" ToRole="STUDENT" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE" Relationship="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI" FromRole="USER" ToRole="ARCHIVED_EMPLOYEE" />
         </EntityType>
-        <Association Name="USRID_USER_ARCH_EMPL_NI">
-          <End Type="SFSAcademyModel.USER" Role="USER" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="ARCHIVED_EMPLOYEE">
-              <PropertyRef Name="USRID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="USRID_USER_ARCH_GUAR_NI">
           <End Type="SFSAcademyModel.USER" Role="USER" Multiplicity="0..1" />
           <End Type="SFSAcademyModel.ARCHIVED_GUARDIAN" Role="ARCHIVED_GUARDIAN" Multiplicity="*" />
@@ -7345,44 +7178,6 @@
           <Property Name="DISC_DATE" Type="DateTime" Precision="3" />
           <NavigationProperty Name="FINANCE_FEE_CATGEORY" Relationship="SFSAcademyModel.FIN_F_FINA_FEE__NI3" FromRole="FEE_DISCOUNT" ToRole="FINANCE_FEE_CATGEORY" />
         </EntityType>
-        <EntityType Name="PRIVILEGE">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
-          <Property Name="PRIVILEGE_TAG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACT" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="PRIVILEGE_ACCESS" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGE_ACCESS" />
-          <NavigationProperty Name="PRIVILEGES_USERS" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGES_USERS" />
-        </EntityType>
-        <Association Name="PRI_AC_PRI_USER_NI">
-          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PRIVILEGE_ACCESS" Role="PRIVILEGE_ACCESS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PRIVILEGE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PRIVILEGE_ACCESS">
-              <PropertyRef Name="PRIVILEGE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="PRI_PRI_USER_NI">
-          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
-          <End Type="SFSAcademyModel.PRIVILEGES_USERS" Role="PRIVILEGES_USERS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PRIVILEGE">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="PRIVILEGES_USERS">
-              <PropertyRef Name="PRIVILEGE_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="STORE_BRAND">
           <Key>
             <PropertyRef Name="ID" />
@@ -8266,19 +8061,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="IMAGE_DOCUMENTS">
-          <Key>
-            <PropertyRef Name="DOCUMENTID" />
-          </Key>
-          <Property Name="DOCUMENTID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NAME" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
-          <Property Name="SIZE" Type="Int64" Nullable="false" />
-          <Property Name="TYPE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FILECONTENT" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
-          <Property Name="ISDELETED" Type="Boolean" Nullable="false" />
-          <Property Name="CREATEDON" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="MODIFIEDON" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="SUBJECT">
           <Key>
             <PropertyRef Name="ID" />
@@ -8602,6 +8384,312 @@
             </Principal>
             <Dependent Role="EMPLOYEE_ATTENDENCES">
               <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ARCHIVED_EMPLOYEE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RPTG_MGR_ID" Type="Int32" />
+          <Property Name="EMP_CAT_ID" Type="Int32" />
+          <Property Name="EMP_NUM" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="JOINING_DATE" Type="DateTime" Precision="3" />
+          <Property Name="FIRST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MID_NAME" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="LAST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="GNDR" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="JOB_TIL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EMP_POS_ID" Type="Int32" />
+          <Property Name="EMP_DEPT_ID" Type="Int32" />
+          <Property Name="EMP_GRADE_ID" Type="Int32" />
+          <Property Name="QUAL" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="EXPNC_DETL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EXPNC_YEAR" Type="Int32" />
+          <Property Name="EXPNC_MONTH" Type="Int32" />
+          <Property Name="STAT" Type="Boolean" />
+          <Property Name="STAT_DESCR" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DOB" Type="DateTime" Precision="3" />
+          <Property Name="MARITAL_STAT" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="CHLD_CNT" Type="Int32" />
+          <Property Name="FTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MTHR_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HUSBND_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BLOOD_GRP" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="NTLTY_ID" Type="Int32" />
+          <Property Name="HOME_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="HOME_CTRY_ID" Type="Int32" />
+          <Property Name="HOME_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_ADDR_LINE1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_ADDR_LINE2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_CITY" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_STATE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_CTRY_ID" Type="Int32" />
+          <Property Name="OFF_PIN_CODE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="OFF_PH1" Type="Int64" />
+          <Property Name="OFF_PH2" Type="Int64" />
+          <Property Name="MOBL_PH" Type="Int64" />
+          <Property Name="HOME_PH" Type="Int64" />
+          <Property Name="EML" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FAX" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_FILENAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_CNTNT_TYPE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="PHTO_DATA" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="PHTO_FILE_SIZE" Type="Int32" />
+          <Property Name="USRID" Type="Int32" />
+          <Property Name="IMAGE_DOCUMENTS_ID" Type="Int32" />
+          <Property Name="LIBRARY_CARD" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FRMR_ID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EMPLOYEE_CATEGORY" Relationship="SFSAcademyModel.EMP_C_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_CATEGORY" />
+          <NavigationProperty Name="EMPLOYEE_DEPARTMENT" Relationship="SFSAcademyModel.EMP_D_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_DEPARTMENT" />
+          <NavigationProperty Name="EMPLOYEE_GRADE" Relationship="SFSAcademyModel.EMP_G_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_GRADE" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_EMPL_NI5" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Relationship="SFSAcademyModel.EMP_I_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" />
+          <NavigationProperty Name="ARCHIVED_EMPLOYEE_BANK_DETAIL" Relationship="SFSAcademyModel.EMP_I_BD_ARCH_EMPL_NI3" FromRole="ARCHIVED_EMPLOYEE" ToRole="ARCHIVED_EMPLOYEE_BANK_DETAIL" />
+          <NavigationProperty Name="EMPLOYEE_POSITION" Relationship="SFSAcademyModel.EMP_P_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="EMPLOYEE_POSITION" />
+          <NavigationProperty Name="COUNTRY" Relationship="SFSAcademyModel.HOME_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="COUNTRY1" Relationship="SFSAcademyModel.NTLTY_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="COUNTRY2" Relationship="SFSAcademyModel.OFF_C_COUN_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="COUNTRY" />
+          <NavigationProperty Name="USER" Relationship="SFSAcademyModel.USRID_USER_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE" ToRole="USER" />
+        </EntityType>
+        <Association Name="EMP_C_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_CATEGORY" Role="EMPLOYEE_CATEGORY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_CATEGORY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="EMP_CAT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_D_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_DEPARTMENT" Role="EMPLOYEE_DEPARTMENT" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_DEPARTMENT">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="EMP_DEPT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_G_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_GRADE" Role="EMPLOYEE_GRADE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_GRADE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="EMP_GRADE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_ARCH_EMPL_EMPL_NI5">
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE_SALARY_STRUCTURE">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_I_BD_ARCH_EMPL_NI3">
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_BANK_DETAIL" Role="ARCHIVED_EMPLOYEE_BANK_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE_BANK_DETAIL">
+              <PropertyRef Name="EMP_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EMP_P_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_POSITION" Role="EMPLOYEE_POSITION" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_POSITION">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="EMP_POS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="HOME_COUN_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="HOME_CTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="NTLTY_COUN_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="NTLTY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OFF_C_COUN_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="OFF_CTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USRID_USER_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE" Role="ARCHIVED_EMPLOYEE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE">
+              <PropertyRef Name="USRID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ARCHIVED_EMPLOYEE_ATTENDENCES">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FRMR_ID" Type="Int32" />
+          <Property Name="ATNDENCE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="EMP_ID" Type="Int32" />
+          <Property Name="EMP_LEAVE_TYPE_ID" Type="Int32" />
+          <Property Name="RSN" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="IS_HALF_DAY" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EMPLOYEE_LEAVE_TYPE" Relationship="SFSAcademyModel.EMP_L_ARCH_EMPL_NI" FromRole="ARCHIVED_EMPLOYEE_ATTENDENCES" ToRole="EMPLOYEE_LEAVE_TYPE" />
+        </EntityType>
+        <Association Name="EMP_L_ARCH_EMPL_NI">
+          <End Type="SFSAcademyModel.EMPLOYEE_LEAVE_TYPE" Role="EMPLOYEE_LEAVE_TYPE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.ARCHIVED_EMPLOYEE_ATTENDENCES" Role="ARCHIVED_EMPLOYEE_ATTENDENCES" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EMPLOYEE_LEAVE_TYPE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARCHIVED_EMPLOYEE_ATTENDENCES">
+              <PropertyRef Name="EMP_LEAVE_TYPE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="IMAGE_DOCUMENTS">
+          <Key>
+            <PropertyRef Name="DOCUMENTID" />
+          </Key>
+          <Property Name="DOCUMENTID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="SIZE" Type="Int64" Nullable="false" />
+          <Property Name="TYPE" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FILECONTENT" Type="Binary" Nullable="false" MaxLength="Max" FixedLength="false" />
+          <Property Name="ISDELETED" Type="Boolean" Nullable="false" />
+          <Property Name="CREATEDON" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIEDON" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PRIVILEGE_TAG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME_TAG" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="PRIR" Type="Int32" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACT" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="PRIVILEGES" Relationship="SFSAcademyModel.PRV_PRV_TAG_NI" FromRole="PRIVILEGE_TAG" ToRole="PRIVILEGE" />
+        </EntityType>
+        <EntityType Name="PRIVILEGE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DESCRIPTION" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="PRIVILEGE_TAG_ID" Type="Int32" />
+          <Property Name="CREATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="UPDATED_AT" Type="DateTime" Precision="3" />
+          <Property Name="IS_ACT" Type="Boolean" Nullable="false" />
+          <Property Name="PRIR" Type="Int32" />
+          <NavigationProperty Name="PRIVILEGE_ACCESS" Relationship="SFSAcademyModel.PRI_AC_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGE_ACCESS" />
+          <NavigationProperty Name="PRIVILEGE_TAG" Relationship="SFSAcademyModel.PRV_PRV_TAG_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGE_TAG" />
+          <NavigationProperty Name="PRIVILEGES_USERS" Relationship="SFSAcademyModel.PRI_PRI_USER_NI" FromRole="PRIVILEGE" ToRole="PRIVILEGES_USERS" />
+        </EntityType>
+        <Association Name="PRI_AC_PRI_USER_NI">
+          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PRIVILEGE_ACCESS" Role="PRIVILEGE_ACCESS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGE_ACCESS">
+              <PropertyRef Name="PRIVILEGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRV_PRV_TAG_NI">
+          <End Type="SFSAcademyModel.PRIVILEGE_TAG" Role="PRIVILEGE_TAG" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE_TAG">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGE">
+              <PropertyRef Name="PRIVILEGE_TAG_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PRI_PRI_USER_NI">
+          <End Type="SFSAcademyModel.PRIVILEGE" Role="PRIVILEGE" Multiplicity="0..1" />
+          <End Type="SFSAcademyModel.PRIVILEGES_USERS" Role="PRIVILEGES_USERS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PRIVILEGE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PRIVILEGES_USERS">
+              <PropertyRef Name="PRIVILEGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9607,67 +9695,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ARCHIVED_EMPLOYEE">
-            <EntityTypeMapping TypeName="SFSAcademyModel.ARCHIVED_EMPLOYEE">
-              <MappingFragment StoreEntitySet="ARCHIVED_EMPLOYEE">
-                <ScalarProperty Name="FRMR_ID" ColumnName="FRMR_ID" />
-                <ScalarProperty Name="LIBRARY_CARD" ColumnName="LIBRARY_CARD" />
-                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
-                <ScalarProperty Name="USRID" ColumnName="USRID" />
-                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
-                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
-                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
-                <ScalarProperty Name="FAX" ColumnName="FAX" />
-                <ScalarProperty Name="EML" ColumnName="EML" />
-                <ScalarProperty Name="HOME_PH" ColumnName="HOME_PH" />
-                <ScalarProperty Name="MOBL_PH" ColumnName="MOBL_PH" />
-                <ScalarProperty Name="OFF_PH2" ColumnName="OFF_PH2" />
-                <ScalarProperty Name="OFF_PH1" ColumnName="OFF_PH1" />
-                <ScalarProperty Name="OFF_PIN_CODE" ColumnName="OFF_PIN_CODE" />
-                <ScalarProperty Name="OFF_CTRY_ID" ColumnName="OFF_CTRY_ID" />
-                <ScalarProperty Name="OFF_STATE" ColumnName="OFF_STATE" />
-                <ScalarProperty Name="OFF_CITY" ColumnName="OFF_CITY" />
-                <ScalarProperty Name="OFF_ADDR_LINE2" ColumnName="OFF_ADDR_LINE2" />
-                <ScalarProperty Name="OFF_ADDR_LINE1" ColumnName="OFF_ADDR_LINE1" />
-                <ScalarProperty Name="HOME_PIN_CODE" ColumnName="HOME_PIN_CODE" />
-                <ScalarProperty Name="HOME_CTRY_ID" ColumnName="HOME_CTRY_ID" />
-                <ScalarProperty Name="HOME_STATE" ColumnName="HOME_STATE" />
-                <ScalarProperty Name="HOME_CITY" ColumnName="HOME_CITY" />
-                <ScalarProperty Name="HOME_ADDR_LINE2" ColumnName="HOME_ADDR_LINE2" />
-                <ScalarProperty Name="HOME_ADDR_LINE1" ColumnName="HOME_ADDR_LINE1" />
-                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
-                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
-                <ScalarProperty Name="HUSBND_NAME" ColumnName="HUSBND_NAME" />
-                <ScalarProperty Name="MTHR_NAME" ColumnName="MTHR_NAME" />
-                <ScalarProperty Name="FTHR_NAME" ColumnName="FTHR_NAME" />
-                <ScalarProperty Name="CHLD_CNT" ColumnName="CHLD_CNT" />
-                <ScalarProperty Name="MARITAL_STAT" ColumnName="MARITAL_STAT" />
-                <ScalarProperty Name="DOB" ColumnName="DOB" />
-                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
-                <ScalarProperty Name="STAT" ColumnName="STAT" />
-                <ScalarProperty Name="EXPNC_MONTH" ColumnName="EXPNC_MONTH" />
-                <ScalarProperty Name="EXPNC_YEAR" ColumnName="EXPNC_YEAR" />
-                <ScalarProperty Name="EXPNC_DETL" ColumnName="EXPNC_DETL" />
-                <ScalarProperty Name="QUAL" ColumnName="QUAL" />
-                <ScalarProperty Name="EMP_GRADE_ID" ColumnName="EMP_GRADE_ID" />
-                <ScalarProperty Name="EMP_DEPT_ID" ColumnName="EMP_DEPT_ID" />
-                <ScalarProperty Name="EMP_POS_ID" ColumnName="EMP_POS_ID" />
-                <ScalarProperty Name="JOB_TIL" ColumnName="JOB_TIL" />
-                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
-                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
-                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
-                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
-                <ScalarProperty Name="JOINING_DATE" ColumnName="JOINING_DATE" />
-                <ScalarProperty Name="EMP_NUM" ColumnName="EMP_NUM" />
-                <ScalarProperty Name="EMP_CAT_ID" ColumnName="EMP_CAT_ID" />
-                <ScalarProperty Name="RPTG_MGR_ID" ColumnName="RPTG_MGR_ID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
             <EntityTypeMapping TypeName="SFSAcademyModel.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
               <MappingFragment StoreEntitySet="ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL">
@@ -9790,19 +9817,6 @@
                 <ScalarProperty Name="RCVR_ID" ColumnName="RCVR_ID" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PRIVILEGES">
-            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE">
-              <MappingFragment StoreEntitySet="PRIVILEGES">
-                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
-                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
-                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
-                <ScalarProperty Name="PRIVILEGE_TAG" ColumnName="PRIVILEGE_TAG" />
-                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -10039,20 +10053,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="IMAGE_DOCUMENTS">
-            <EntityTypeMapping TypeName="SFSAcademyModel.IMAGE_DOCUMENTS">
-              <MappingFragment StoreEntitySet="IMAGE_DOCUMENTS">
-                <ScalarProperty Name="MODIFIEDON" ColumnName="MODIFIEDON" />
-                <ScalarProperty Name="CREATEDON" ColumnName="CREATEDON" />
-                <ScalarProperty Name="ISDELETED" ColumnName="ISDELETED" />
-                <ScalarProperty Name="FILECONTENT" ColumnName="FILECONTENT" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="SIZE" ColumnName="SIZE" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="DOCUMENTID" ColumnName="DOCUMENTID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="SUBJECTs">
             <EntityTypeMapping TypeName="SFSAcademyModel.SUBJECT">
               <MappingFragment StoreEntitySet="SUBJECT">
@@ -10132,6 +10132,121 @@
                 <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
                 <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
                 <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ARCHIVED_EMPLOYEE">
+            <EntityTypeMapping TypeName="SFSAcademyModel.ARCHIVED_EMPLOYEE">
+              <MappingFragment StoreEntitySet="ARCHIVED_EMPLOYEE">
+                <ScalarProperty Name="FRMR_ID" ColumnName="FRMR_ID" />
+                <ScalarProperty Name="LIBRARY_CARD" ColumnName="LIBRARY_CARD" />
+                <ScalarProperty Name="IMAGE_DOCUMENTS_ID" ColumnName="IMAGE_DOCUMENTS_ID" />
+                <ScalarProperty Name="USRID" ColumnName="USRID" />
+                <ScalarProperty Name="PHTO_FILE_SIZE" ColumnName="PHTO_FILE_SIZE" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PHTO_DATA" ColumnName="PHTO_DATA" />
+                <ScalarProperty Name="PHTO_CNTNT_TYPE" ColumnName="PHTO_CNTNT_TYPE" />
+                <ScalarProperty Name="PHTO_FILENAME" ColumnName="PHTO_FILENAME" />
+                <ScalarProperty Name="FAX" ColumnName="FAX" />
+                <ScalarProperty Name="EML" ColumnName="EML" />
+                <ScalarProperty Name="HOME_PH" ColumnName="HOME_PH" />
+                <ScalarProperty Name="MOBL_PH" ColumnName="MOBL_PH" />
+                <ScalarProperty Name="OFF_PH2" ColumnName="OFF_PH2" />
+                <ScalarProperty Name="OFF_PH1" ColumnName="OFF_PH1" />
+                <ScalarProperty Name="OFF_PIN_CODE" ColumnName="OFF_PIN_CODE" />
+                <ScalarProperty Name="OFF_CTRY_ID" ColumnName="OFF_CTRY_ID" />
+                <ScalarProperty Name="OFF_STATE" ColumnName="OFF_STATE" />
+                <ScalarProperty Name="OFF_CITY" ColumnName="OFF_CITY" />
+                <ScalarProperty Name="OFF_ADDR_LINE2" ColumnName="OFF_ADDR_LINE2" />
+                <ScalarProperty Name="OFF_ADDR_LINE1" ColumnName="OFF_ADDR_LINE1" />
+                <ScalarProperty Name="HOME_PIN_CODE" ColumnName="HOME_PIN_CODE" />
+                <ScalarProperty Name="HOME_CTRY_ID" ColumnName="HOME_CTRY_ID" />
+                <ScalarProperty Name="HOME_STATE" ColumnName="HOME_STATE" />
+                <ScalarProperty Name="HOME_CITY" ColumnName="HOME_CITY" />
+                <ScalarProperty Name="HOME_ADDR_LINE2" ColumnName="HOME_ADDR_LINE2" />
+                <ScalarProperty Name="HOME_ADDR_LINE1" ColumnName="HOME_ADDR_LINE1" />
+                <ScalarProperty Name="NTLTY_ID" ColumnName="NTLTY_ID" />
+                <ScalarProperty Name="BLOOD_GRP" ColumnName="BLOOD_GRP" />
+                <ScalarProperty Name="HUSBND_NAME" ColumnName="HUSBND_NAME" />
+                <ScalarProperty Name="MTHR_NAME" ColumnName="MTHR_NAME" />
+                <ScalarProperty Name="FTHR_NAME" ColumnName="FTHR_NAME" />
+                <ScalarProperty Name="CHLD_CNT" ColumnName="CHLD_CNT" />
+                <ScalarProperty Name="MARITAL_STAT" ColumnName="MARITAL_STAT" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="STAT_DESCR" ColumnName="STAT_DESCR" />
+                <ScalarProperty Name="STAT" ColumnName="STAT" />
+                <ScalarProperty Name="EXPNC_MONTH" ColumnName="EXPNC_MONTH" />
+                <ScalarProperty Name="EXPNC_YEAR" ColumnName="EXPNC_YEAR" />
+                <ScalarProperty Name="EXPNC_DETL" ColumnName="EXPNC_DETL" />
+                <ScalarProperty Name="QUAL" ColumnName="QUAL" />
+                <ScalarProperty Name="EMP_GRADE_ID" ColumnName="EMP_GRADE_ID" />
+                <ScalarProperty Name="EMP_DEPT_ID" ColumnName="EMP_DEPT_ID" />
+                <ScalarProperty Name="EMP_POS_ID" ColumnName="EMP_POS_ID" />
+                <ScalarProperty Name="JOB_TIL" ColumnName="JOB_TIL" />
+                <ScalarProperty Name="GNDR" ColumnName="GNDR" />
+                <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
+                <ScalarProperty Name="MID_NAME" ColumnName="MID_NAME" />
+                <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
+                <ScalarProperty Name="JOINING_DATE" ColumnName="JOINING_DATE" />
+                <ScalarProperty Name="EMP_NUM" ColumnName="EMP_NUM" />
+                <ScalarProperty Name="EMP_CAT_ID" ColumnName="EMP_CAT_ID" />
+                <ScalarProperty Name="RPTG_MGR_ID" ColumnName="RPTG_MGR_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ARCHIVED_EMPLOYEE_ATTENDENCES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.ARCHIVED_EMPLOYEE_ATTENDENCES">
+              <MappingFragment StoreEntitySet="ARCHIVED_EMPLOYEE_ATTENDENCES">
+                <ScalarProperty Name="IS_HALF_DAY" ColumnName="IS_HALF_DAY" />
+                <ScalarProperty Name="RSN" ColumnName="RSN" />
+                <ScalarProperty Name="EMP_LEAVE_TYPE_ID" ColumnName="EMP_LEAVE_TYPE_ID" />
+                <ScalarProperty Name="EMP_ID" ColumnName="EMP_ID" />
+                <ScalarProperty Name="ATNDENCE_DATE" ColumnName="ATNDENCE_DATE" />
+                <ScalarProperty Name="FRMR_ID" ColumnName="FRMR_ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IMAGE_DOCUMENTS">
+            <EntityTypeMapping TypeName="SFSAcademyModel.IMAGE_DOCUMENTS">
+              <MappingFragment StoreEntitySet="IMAGE_DOCUMENTS">
+                <ScalarProperty Name="MODIFIEDON" ColumnName="MODIFIEDON" />
+                <ScalarProperty Name="CREATEDON" ColumnName="CREATEDON" />
+                <ScalarProperty Name="ISDELETED" ColumnName="ISDELETED" />
+                <ScalarProperty Name="FILECONTENT" ColumnName="FILECONTENT" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="SIZE" ColumnName="SIZE" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="DOCUMENTID" ColumnName="DOCUMENTID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRIVILEGE_TAG">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE_TAG">
+              <MappingFragment StoreEntitySet="PRIVILEGE_TAG">
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PRIR" ColumnName="PRIR" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="NAME_TAG" ColumnName="NAME_TAG" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PRIVILEGES">
+            <EntityTypeMapping TypeName="SFSAcademyModel.PRIVILEGE">
+              <MappingFragment StoreEntitySet="PRIVILEGES">
+                <ScalarProperty Name="PRIR" ColumnName="PRIR" />
+                <ScalarProperty Name="IS_ACT" ColumnName="IS_ACT" />
+                <ScalarProperty Name="UPDATED_AT" ColumnName="UPDATED_AT" />
+                <ScalarProperty Name="CREATED_AT" ColumnName="CREATED_AT" />
+                <ScalarProperty Name="PRIVILEGE_TAG_ID" ColumnName="PRIVILEGE_TAG_ID" />
+                <ScalarProperty Name="DESCRIPTION" ColumnName="DESCRIPTION" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

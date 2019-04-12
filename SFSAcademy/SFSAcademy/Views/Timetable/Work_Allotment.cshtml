@@ -2,12 +2,29 @@
 @{
     IEnumerable<SFSAcademy.EMPLOYEE_CATEGORY> admin = (IEnumerable<SFSAcademy.EMPLOYEE_CATEGORY>)ViewData["admin"];
     IEnumerable<SFSAcademy.Models.CoursesBatch> batches = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batches"];
-    IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment> employees = (IEnumerable<SFSAcademy.Models.EmployeeWorkAllotment>)ViewData["employees"];
+    IEnumerable<SFSAcademy.EmployeeWorkAllotment> employees = (IEnumerable<SFSAcademy.EmployeeWorkAllotment>)ViewData["employees"];
 }
 @{
     ViewBag.Title = "Work_Allotment";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript">
+
+    function AllocateEmployee(item, BatchId, SubjectId) {
+        var selectedEmpID = item.value;
+        var url = "/Timetable/Allocate_Work?batch_id=" + BatchId + "&sub_id=" + SubjectId + "&emp_id=" + selectedEmpID;
+        window.location.href = url;
+    }
+</script>
 <div id="content-header">
     <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
     <h1>Timetable</h1>
@@ -18,18 +35,17 @@
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
-<div id="inner-tab-menu">
-    <ul>
-        <li><a href="@Url.Action("Subject_Assignment", "Employee")">Assign Multiple Teachers</a></li>
-    </ul>
-</div>
 <div class="bread_crumb">
     @Html.ActionLink("Timetable", "Index") &raquo;
     Work Allotment
 </div>
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div id="page-yield">
     @if (ViewBag.Notice != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
     @using (Html.BeginForm())
@@ -50,7 +66,6 @@
                         selectedRow = "listodd";
                     }
                     //var EmployeeSub = EmployeeSubject.Where(x => x.SUBJ_ID == item2.ID).OrderBy(x => x.EMP_ID).ToList();
-                    List<SelectListItem> options = new List<SelectListItem>();
                     for (int k = 0; k < batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.Count(); k++)
                     {
                         var ep = employees.Where(x => x.EmployeeData.ID == batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).EMPLOYEES_SUBJECT.ElementAt(k).EMP_ID).FirstOrDefault();
@@ -60,32 +75,44 @@
                             batches.ElementAt(i).Total_Time = batches.ElementAt(i).Total_Time - batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).MAX_WKILY_CLSES;
                         }
                         string EmployeeFullName = string.Concat(ep.EmployeeData.FIRST_NAME, " ", ep.EmployeeData.MID_NAME, " ", ep.EmployeeData.LAST_NAME);
+                        if (FirstRow == 0)
+                        {
+                            EmployeeList = EmployeeFullName;
+                        }
+                        else
+                        {
+                            EmployeeList = string.Concat(EmployeeList, ",", EmployeeFullName);
+                        }
+                        FirstRow += 1;
+                    }
+                    List<SelectListItem> options = new List<SelectListItem>();
+                    foreach (var ep in employees)
+                    {
+                        string EmployeeFullName = string.Concat(ep.EmployeeData.FIRST_NAME, " ", ep.EmployeeData.MID_NAME, " ", ep.EmployeeData.LAST_NAME, " (", ep.EmployeeData.EMPLOYEE_DEPARTMENT.CODE, ")");
                         var result = new SelectListItem();
                         result.Text = EmployeeFullName;
                         result.Value = ep.EmployeeData.ID.ToString();
-                        result.Selected = FirstRow == 0 ? true : false;
                         options.Add(result);
-                        FirstRow += 1;
-                        EmployeeList = string.Concat(EmployeeList, EmployeeFullName, ",");
                     }
                     // add the 'ALL' option
-                    options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Employee" });
+                    options.Insert(0, new SelectListItem() { Value = "-1", Text = "Allot Employee.." });
                     ViewBag.EMP_ID = options;
+                    string OnChangeString = string.Concat("AllocateEmployee(this,", batches.ElementAt(i).BatchData.ID, ",", batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).ID, ");");
+                    string TagIDString = string.Concat("drop_", batches.ElementAt(i).BatchData.ID, "-", batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).ID);
                     <li class="@selectedRow">
                         <div class="category-subject-name">
-                            @Html.Label("[" + i + "].BatchData.SUBJECTs."+ "[" + j + "].NAME", batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                            @Html.Label("[" + i + "].BatchData.SUBJECTs." + "[" + j + "].NAME", batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).NAME, htmlAttributes: new { @class = "control-label col-md-2" })
                         </div>
                         <div class="category-employee-options">
-                            @Html.DropDownList("EMP_ID", null, htmlAttributes: new { @class = "form-control", @id = "EmployeeDropDown" })
+                            @Html.DropDownList("EMP_ID", null, htmlAttributes: new { @class = "form-control", id = TagIDString, onchange = OnChangeString })
                         </div>
                         <div class="category-employee-names">@EmployeeList</div>
+                        <div class="category-employee-names" style="float:right">@Html.ActionLink("Manage Allotment", "Manage_Allotment", new { batch_id = batches.ElementAt(i).BatchData.ID, sub_id = batches.ElementAt(i).BatchData.SUBJECTs.ElementAt(j).ID }) <span> </span></div>
                     </li>
                     i1 += 1;
                 }
             </ul>
-         }
-
-          <input type="submit" value="► Update" class="submit_button" />
+        }
     }
     <ul id="teacher_status" class="category-list">
         @foreach (var item in employees)

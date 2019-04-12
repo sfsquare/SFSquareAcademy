@@ -1,0 +1,123 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> EmployeeLeaveType = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["EmployeeLeaveType"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> leave_count = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["leave_count"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE> EmployeeLeave = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE>)ViewData["EmployeeLeave"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> attendance_report = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["attendance_report"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
+}
+@{
+    ViewBag.Title = "Emp_Attendance";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
+    <h1>Employee_Attendance</h1>
+    <h3>Detailed Report</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("Leave History", "Leave_History", new { id = employee.ID }) </li>
+    </ul>
+</div>
+<div class="bread_crumb">
+    <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+    <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+    <a href="@Url.Action("Report", "Employee_Attendance")">Reports</a> &raquo;
+    Employee Attendence
+</div>
+<div id="page-yield">
+    <div class="box">
+
+        <div id="attendance-report">
+            @{int i = 0;}
+            @foreach (var lt in leave_types)
+            {
+                var leave_count_inner = EmployeeLeave.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID).FirstOrDefault();
+                string code = "type_name-even";
+                if (i % 2 == 0)
+                {
+                    code = "type_name-odd";
+                }
+                <div class="@code">@lt.NAME:</div>
+                var report = EmployeeAttendance.Where(x => x.ID == -1).DefaultIfEmpty();
+                if (leave_count_inner.RST_DATE != null)
+                {
+                    report = EmployeeAttendance.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID && x.ATNDENCE_DATE >= leave_count_inner.RST_DATE).ToList();
+                }
+                else
+                {
+                    report = EmployeeAttendance.Where(x => x.EMP_ID == employee.ID && x.EMP_LEAVE_TYPE_ID == lt.ID).ToList();
+                }
+                if (report == null || report.Count() == 0)
+                {
+                    <div class="date-even">
+                        <span>No leaves taken</span>
+                    </div>
+                }
+                else
+                {
+                    int j = 1;
+                    foreach (var r in report)
+                    {
+                        string date = "date-even";
+                        if (j % 2 == 0)
+                        {
+                            date = "date-odd";
+                        }
+                        <div class="@date">
+                            @r.ATNDENCE_DATE.Value.ToShortDateString()
+                            @if (r.IS_HALF_DAY == true)
+                            {
+                                <span>Half Day</span>
+                            }
+                        </div>
+                        j += 1;
+                    }
+                }
+                i += 1;
+            }
+            <div class="attendance-stats">
+                @if (leave_types != null && leave_types.Count() != 0)
+                {
+                    decimal? total_leave = 0; int j = 0;
+                    foreach (var e in leave_count)
+                    {
+                        var leave_type = EmployeeLeaveType.Where(x => x.ID == e.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                        string code = "type_name-even";
+                        decimal? Leave_Taken = e.LEAVE_TAKE == null ? (decimal)0.00 : e.LEAVE_TAKE;
+                        if (j % 2 == 0)
+                        {
+                            code = "type_name-odd";
+                        }
+                        <div class="@code">
+                            <div class="total">Total @leave_type.NAME:</div><div class="count">@Leave_Taken/@e.LEAVE_CNT</div>
+                        </div>
+                        if (e.LEAVE_TAKE != null)
+                        {
+                            total_leave += e.LEAVE_TAKE;
+                        }
+                        j += 1;
+                    }
+                    <div class="type_nameeven"><div class="total">Total leaves taken:</div><div class="count">@total_leave</div></div>
+
+                }
+                else
+                {
+                    <br />
+                    <p class="flash-msg">Sorry! No Leave type registered for Employee</p>
+                }
+            </div>
+        </div>
+        <div class="user_button">
+            @Html.ActionLink("pdf Report", "Employee_Attendance_pdf", new { id = employee.ID }, new { @target = "_blank" })
+        </div>
+    </div>
+</div>
+
