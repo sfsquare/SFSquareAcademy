@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "Manage_Allotment";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#BatchDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox").show();
+            $.get('/Timetable/Subject_Select?batch_id=' + selectedID, function (data) {
+                $('#subjects_select').html(data);
+                $('#subjects_select').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_timetable.png" alt="Timetable Logo">
+    <h1>Timetable</h1>
+    <h3>Manage Allotment</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li><a href="@Url.Action("Work_Allotment", "Timetable")">Work Allotment</a></li>
+    </ul>
+</div>
+@if (ViewBag.Notice != null)
+{
+    <div id="errorExplanation" class="errorExplanation">@ViewBag.Notice </div>
+}
+<div id="page-yield">
+    <div class="form-content">
+        <div class="label-field-pair label">
+            <div class="label-container label">@Html.Label("BTCH_ID", "Select A Batch :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="text-input-bg">
+                @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                @Html.ValidationMessage("BTCH_ID", "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div id="subjects_select">@Html.Partial("_Subject_Select")</div>
+    </div>
+    <div id="department-select">@Html.Partial("_Department_Select")</div>
+</div>
+

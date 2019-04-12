@@ -1,0 +1,174 @@
+﻿@using SFSAcademy.Models
+@{
+    IEnumerable<CONFIGURATION> config = (IEnumerable<CONFIGURATION>)ViewData["config"];
+    IEnumerable<BATCH> batches = (IEnumerable<BATCH>)ViewData["batches"];
+    IEnumerable<WEEKDAY> Weekday = (IEnumerable<WEEKDAY>)ViewData["Weekday"];
+    IEnumerable<TIMETABLE> Timetable = (IEnumerable<TIMETABLE>)ViewData["Timetable"];
+    IEnumerable<TIMETABLE_ENTRY> TimetableEntry = (IEnumerable<TIMETABLE_ENTRY>)ViewData["TimetableEntry"];
+    IEnumerable<CLASS_TIMING> ClassTiming = (IEnumerable<CLASS_TIMING>)ViewData["ClassTiming"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    function LoadPartialPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#timetable').html(data);
+            $('#timetable').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+<div id="register">
+    <div class="header">
+        <div class="prev">
+            <a href="@Url.Action("Timetable", "Timetable", new { next = ViewBag.today.AddDays(-1)})" onclick='LoadPartialPage(this.href); return false;'>◄</a>
+        </div>
+        <div class="month">
+            @ViewBag.today.ToShortDateString()
+        </div>
+        <div class="next">
+            <a href="@Url.Action("Timetable", "Timetable", new { next = ViewBag.today.AddDays(1)})" onclick='LoadPartialPage(this.href); return false;'>►</a>
+        </div>
+        <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        <div class="extender"></div>
+    </div>
+</div>
+<div class="table">
+    @foreach (var b in batches)
+    {
+        var weekday = Weekday.Where(x => x.ID == -1).DefaultIfEmpty();
+        bool has_own_weekday = Weekday.Where(x => x.BTCH_ID == b.ID).ToList().Count() == 0 ? false : true;
+        int? TodayWkDay = (int)ViewBag.today.DayOfWeek;
+        if (has_own_weekday)
+        {
+            weekday = Weekday.Where(x => x.BTCH_ID == b.ID && x.WKDAY == TodayWkDay.ToString()).ToList();
+        }
+        else
+        {
+            weekday = Weekday.Where(x => x.BTCH_ID == null && x.WKDAY == TodayWkDay.ToString()).ToList();
+        }
+        var timetable = TimetableEntry.Where(x => x.ID == -1).ToList().DefaultIfEmpty();
+        if (weekday == null || weekday.Count() == 0)
+        {
+            timetable = Timetable.FirstOrDefault().tte_for_the_day(b, ViewBag.today);
+        }
+        else
+        {
+            timetable = TimetableEntry.Where(x => x.BTCH_ID == b.ID && x.WK_DAY_ID == weekday.FirstOrDefault().ID).ToList();
+        }
+        if (timetable != null && timetable.Count() != 0)
+        {
+            <table border="0" align="center" style="width:100%" id="timing" cellspacing="0">
+                <tr>
+                    <td class="head">
+                        <div class="top">
+                            Time
+                        </div>
+                        <div class="bottom">
+                            <div class="course themed_text">
+                                @b.COURSE.CODE - @b.NAME
+                            </div>
+                        </div>
+                    </td>
+                    <td class="td-blank"> </td>
+                    @foreach (var t in timetable)
+                    {
+                        var timing = ClassTiming.Where(x => x.ID == t.CLS_TMNG_ID).FirstOrDefault();
+                        <td>
+                            <div class="top">
+                                @if (timing.START_TIME != null && timing.END_TIME != null)
+                                {
+                                    if (timing.IS_BRK == true)
+                                    {
+                                        <div class="top">@timing.NAME</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="top">@timing.START_TIME.Value.Hours:@timing.START_TIME.Value.Minutes - @timing.END_TIME.Value.Hours:@timing.END_TIME.Value.Minutes</div>
+                                    }
+                                }
+                                else if (timing.START_TIME != null)
+                                {
+                                    if (timing.IS_BRK == true)
+                                    {
+                                        <div class="top">@timing.NAME</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="top">@timing.START_TIME.Value.Hours:@timing.START_TIME.Value.Minutes - ET Not Defined</div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="top">ST Not Defined - ET Not Defined</div>
+                                }
+                            </div>
+                            <div class="bottom">
+                                <div class="subject">
+                                    @if (t.SUBJECT != null)
+                                    {
+                                        if (t.SUBJECT.ELECTIVE_GROUP != null)
+                                        {
+                                            <span>@t.SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@t.SUBJECT.CODE</span>
+                                        }
+                                    }
+                                </div>
+
+                                @{int i = 0; bool contains = false; }
+                                @foreach (var item in config)
+                                {
+                                    if (item.CONFIG_VAL == "HR")
+                                    {
+                                        contains = true;
+                                        i += 1;
+                                        break;
+                                    }
+                                }
+                                @if (contains)
+                                {
+                                    if (t.EMPLOYEE != null)
+                                    {
+                                        <div class="employee">
+                                            @if (t != null)
+                                            {
+                                                if (t.SUBJECT != null)
+                                                {
+                                                    if (t.SUBJECT.ELECTIVE_GROUP != null)
+                                                    {
+                                                        <span>Elective</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (t.EMPLOYEE != null)
+                                                        {
+                                                            <span>@t.EMPLOYEE.FIRST_NAME @t.EMPLOYEE.LAST_NAME</span>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    }
+                </tr>
+            </table>
+        }
+        else
+        {
+            <div class="no-tt-entry">No Timetable entry for Batch : @b.COURSE.CODE - @b.NAME </div>
+        }
+    }
+
+</div>
+

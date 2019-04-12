@@ -1,0 +1,30 @@
+﻿@using SFSAcademy.Models
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+<script type="text/javascript" language="javascript">
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SubjectDropDown').change(function () {
+            var selectedID = $(this).val();
+            var SelectedBatch = $('#batch_id').val();
+            $(".LoaderBox").show();
+            $.get('/Timetable/Department_Select?subject_id=' + selectedID + "&batch_id=" + SelectedBatch, function (data) {
+                $('#department-select').html(data);
+                $('#department-select').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+</script>
+<div class="label-field-pair label">
+    <div class="label-container label">@Html.Label("SUB_ID", "Select A Subject :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+    <div class="text-input-bg">
+        @Html.DropDownList("SUB_ID", null, htmlAttributes: new { @class = "form-control", @id = "SubjectDropDown" })
+        @Html.ValidationMessage("SUB_ID", "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />

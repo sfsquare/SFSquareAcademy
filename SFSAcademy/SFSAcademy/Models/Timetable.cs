@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Mvc;
+using SFSAcademy;
 
-namespace SFSAcademy.Models
+namespace SFSAcademy
 {
     public class WeekdaysSelect
     {
@@ -38,6 +44,7 @@ namespace SFSAcademy.Models
     public class EmployeeWorkAllotment
     {
         public EMPLOYEE EmployeeData { get; set; }
+        public EMPLOYEE_DEPARTMENT DepartmentData { get; set; }
         public decimal? Total_Time { get; set; }
     }
 
@@ -61,6 +68,22 @@ namespace SFSAcademy.Models
         public DateTime? END_TIME { get { return (EndTimeVal.HasValue) ? (DateTime?)DateTime.Today.Add(EndTimeVal.Value) : null; } }
 
         public bool IS_BRK { get; set; }
+    }
+
+    public partial class TIMETABLE
+    {
+        private SFSAcademyEntities db = new SFSAcademyEntities();
+
+        public IEnumerable<TIMETABLE_ENTRY> tte_for_the_day(BATCH batch, DateTime? date)
+        {
+            var entries = db.TIMETABLE_ENTRY.Include(x => x.TIMETABLE).Include(x => x.CLASS_TIMING).Include(x => x.WEEKDAY).Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.EMPLOYEE).Where(x => x.TIMETABLE.START_DATE <= date && x.TIMETABLE.END_DATE >= date && x.BTCH_ID == batch.ID).OrderBy(x => x.CLASS_TIMING.START_TIME).ToList();
+            var today = db.TIMETABLE_ENTRY.Where(x => x.ID == -1).ToList().DefaultIfEmpty();
+            if(entries != null || entries.Count() != 0)
+            {
+                today = entries.Where(x => x.WEEKDAY.DAY_OF_WK.ToString() == date.Value.DayOfWeek.ToString()).ToList();
+            }
+            return (IEnumerable<TIMETABLE_ENTRY>)today;
+        }
     }
 
 }

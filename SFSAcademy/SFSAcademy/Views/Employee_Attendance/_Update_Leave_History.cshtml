@@ -1,0 +1,45 @@
+﻿@using SFSAcademy.Models
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE> leave_types = (IEnumerable<SFSAcademy.EMPLOYEE_LEAVE_TYPE>)ViewData["leave_types"];
+    IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES> employee_attendances = (IEnumerable<SFSAcademy.EMPLOYEE_ATTENDENCES>)ViewData["employee_attendances"];
+}
+
+@{int i = 0; }
+@foreach (var leave_type in leave_types)
+{
+    var employee_attendances_inner = employee_attendances.Where(x => x.EMP_LEAVE_TYPE_ID == leave_type.ID).ToList();
+    string code = "type_name-even"; 
+    if (i % 2 == 0)
+    {
+        code = "type_name-odd";
+    }
+    <div class="@code">@leave_type.NAME:</div>
+    if (employee_attendances_inner == null || employee_attendances_inner.Count() == 0)
+    {
+        <div class="date-even">
+            No leaves taken
+        </div>
+    }
+    else
+    {
+        int j = 1;
+        foreach (var leave in employee_attendances_inner)
+        {
+            string date = "date-even";
+            if (j % 2 == 0)
+            {
+                date = "date-odd";
+            }
+            <div class="@date">
+                @leave.ATNDENCE_DATE.Value.ToShortDateString()
+                @if (leave.IS_HALF_DAY == true)
+                {
+                    <span>Half Day</span>
+                }
+            </div>
+            j += 1;
+        }
+    }
+    i += 1;
+}

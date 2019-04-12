@@ -116,11 +116,12 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,EMP_ID")] BATCH bATCH)
+        public ActionResult Create([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,IS_ACT,EMP_ID")] BATCH bATCH)
         {
             if (ModelState.IsValid)
             {
                 bATCH.IS_DEL = false;
+                bATCH.IS_ACT = true;
                 db.BATCHes.Add(bATCH);
                 db.SaveChanges();
                 ViewBag.Notice = "New Batch created successfully.";
@@ -170,7 +171,13 @@ namespace SFSAcademy.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(bATCH).State = EntityState.Modified;
+                BATCH BatchToUpdate = db.BATCHes.Find(bATCH.ID);
+                BatchToUpdate.NAME = bATCH.NAME;
+                BatchToUpdate.CRS_ID = bATCH.CRS_ID;
+                BatchToUpdate.START_DATE = bATCH.START_DATE;
+                BatchToUpdate.END_DATE = bATCH.END_DATE;
+                BatchToUpdate.EMP_ID = bATCH.EMP_ID;
+                db.Entry(BatchToUpdate).State = EntityState.Modified;
                 try
                 {
                     db.SaveChanges();
@@ -221,7 +228,10 @@ namespace SFSAcademy.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             BATCH bATCH = db.BATCHes.Find(id);
-            db.BATCHes.Remove(bATCH);
+            //db.BATCHes.Remove(bATCH);
+            bATCH.IS_DEL = true;
+            bATCH.IS_ACT = false;
+            db.Entry(bATCH).State = EntityState.Modified;
             try
             {
                 db.SaveChanges();

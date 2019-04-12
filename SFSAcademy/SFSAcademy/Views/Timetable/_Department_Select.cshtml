@@ -1,0 +1,70 @@
+﻿@using SFSAcademy.Models
+@{
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> assigned_employee = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["assigned_employee"];
+    IEnumerable<SFSAcademy.EMPLOYEE_DEPARTMENT> departments = (IEnumerable<SFSAcademy.EMPLOYEE_DEPARTMENT>)ViewData["departments"];
+    IEnumerable<SFSAcademy.EMPLOYEE> Employee = (IEnumerable<SFSAcademy.EMPLOYEE>)ViewData["Employee"];
+}
+<script type="text/javascript" language="javascript">
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#DepartmentDropDown').change(function () {
+            var selectedID = $(this).val();
+            var SelectedSub = $('#subject_id').val();
+            var SelectedBatch = $('#batch_id').val();
+            $(".LoaderBox").show();
+            $.get('/Timetable/Update_Employees?department_id=' + selectedID + "&subject_id=" + SelectedSub + "&batch_id=" + SelectedBatch, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#employee-list').html(data);
+                /* little fade in effect */
+                $('#employee-list').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+</script>
+<ul id="department-list">
+    @if (assigned_employee != null && assigned_employee.Count() != 0)
+    {
+        <li class="heading">Currently Assigned: </li>
+        int i = 0;
+        foreach (var item in assigned_employee)
+        {
+            var employee = Employee.Where(x => x.ID == item.EMP_ID).FirstOrDefault();
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="department-name">
+                    @employee.FIRST_NAME @employee.LAST_NAME ( DEPT: @departments.Where(x => x.ID == employee.EMP_DEPT_ID).FirstOrDefault().NAMES )
+                </div>
+                <div class="remove">
+                    <a href="@Url.Action("Remove_Employee", "Timetable",new {id=item.EMP_ID, id1 =item.SUBJ_ID, batch_id = batch.ID })">Delete</a>
+                </div>
+            </li>
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Employee Assigned</p>
+    }
+</ul>
+<div class="label-field-pair label">
+    <div class="label-container label">@Html.Label("DEPT_ID", "Select A Department :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+    <div class="text-input-bg">
+        @Html.DropDownList("DEPT_ID", null, htmlAttributes: new { @class = "form-control", @id = "DepartmentDropDown" })        
+        @Html.ValidationMessage("DEPT_ID", "", new { @class = "text-danger" })
+    </div>
+</div>
+<div id="employee-list" style="display:none;"></div>
+<div class="extender"></div>
+<input type="hidden" value="@subject.ID" id="subject_id" name="subject_id" />
+<input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+
+

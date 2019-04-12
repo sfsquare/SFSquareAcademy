@@ -5,6 +5,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
+using System.Net;
+using System.Web.Mvc;
+using PagedList;
+using SFSAcademy.Models;
+using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using System.Text;
+using System.Data.Entity.Validation;
+using SFSAcademy.Helpers;
 
 namespace SFSAcademy.Models
 {
@@ -150,17 +162,18 @@ namespace SFSAcademy.Models
                 }
                 else if (CurrentUser.EMP_IND.Equals(true))
                 {
-                    var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
+                    var CurrentPrivilege = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Include(x => x.PRIVILEGES_USERS).Where(x => x.ID == UserId).ToList();
+                    /*var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
                                             join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
                                             where prusr.USER_ID == UserId
-                                            select pr).ToList();
+                                            select pr).ToList();*/
                     foreach (var item in CurrentPrivilege)
                     {
                         if (item.NAME.Contains("HR"))
                         {
                             return "HR";
                         }
-                        else if (item.PRIVILEGE_TAG.Contains("Finance"))
+                        else if (item.PRIVILEGE_TAG.DESCRIPTION.Contains("Finance"))
                         {
                             return "Finance";
                         }
@@ -202,17 +215,19 @@ namespace SFSAcademy.Models
             }
             else if (CurrentUser.EMP_IND.Equals(true))
             {
-                var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
+                var CurrentPrivilege = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Include(x => x.PRIVILEGES_USERS).Where(x => x.ID == UserId).ToList();
+                /*var CurrentPrivilege = (from prusr in db.PRIVILEGES_USERS
                                         join pr in db.PRIVILEGES on prusr.PRIVILEGE_ID equals pr.ID
+                                        join pt in db.PRIVILEGE_TAG on pr.PRIVILEGE_TAG_ID equals pt.ID
                                         where prusr.USER_ID == UserId
-                                        select pr).ToList();
+                                        select pr).ToList();*/
                 foreach (var item in CurrentPrivilege)
                 {
                     if (item.NAME.Contains("HR"))
                     {
                         return "HR";
                     }
-                    else if (item.PRIVILEGE_TAG.Contains("Finance"))
+                    else if (item.PRIVILEGE_TAG.DESCRIPTION.Contains("Finance"))
                     {
                         return "Finance";
                     }

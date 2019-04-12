@@ -27,19 +27,17 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-
-
+<div class="bread_crumb">
+    <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+    <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+    <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset_Leave</a> &raquo;
+    Leave reset settings
+</div>
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
 <div id="page-yield">
-    @if (ViewBag.Notice != null)
-            {
-        <p class="flash-msg"> @ViewBag.Notice </p>
-    }
-    <div class="bread_crumb">
-        <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
-        <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
-        <a href="@Url.Action("Manual_Reset", "Employee_Attendance")">Reset_Leave</a> &raquo;
-        Leave reset settings
-    </div>
     <div class="box">
         @using (Html.BeginForm())
         {
@@ -59,7 +57,7 @@
             <div class="label-field-pair label">
                 <label for="configuration_currency_type">Leave Reset Period</label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.leave_reset_period, new { htmlAttributes = new { @value = ViewBag.reset_period } })
+                    @Html.EditorFor(model => model.leave_reset_period, new { htmlAttributes = new { @Value = ViewBag.reset_period } })
                     @Html.ValidationMessageFor(model => model.leave_reset_period, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -75,7 +73,7 @@
                 </div>
             </div>
             <div id="submit-button">
-                <input type="submit" value="► Update"/>
+                <input type="submit" value="► Update" />
             </div>
         }
 

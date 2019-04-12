@@ -91,7 +91,6 @@ namespace SFSAcademy
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual COUNTRY COUNTRY1 { get; set; }
         public virtual COUNTRY COUNTRY2 { get; set; }
-        public virtual EMPLOYEE EMPLOYEE { get; set; }
         public virtual USER USER { get; set; }
     }
 }
