@@ -46,7 +46,7 @@
                 {
                     if (leave_count.RST_DATE != null)
                     {
-                        report = report.Where(x => x.ATNDENCE_DATE >= leave_count.RST_DATE);
+                        report = report.Where(x => x.ATNDENCE_DATE.Value.Date >= leave_count.RST_DATE.Value.Date);
                     }
                 }
 

@@ -10,128 +10,137 @@
     IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
 }
 
-<div id="box">
-    <table border="0" align="center" width="100%" id="table" cellspacing="0">
-        <tr>
-            <td class="loader">
-                <img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none; display:none; align-items:center">
-                &nbsp;
-            </td>
-            <td class="td-blank"></td>
-            @foreach (var item in class_timing)
-            {
-                <td class="td">
-                    <div class="top themed_text">
-                        @if (item.START_TIME != null && item.END_TIME != null)
-                        {
-                            if (item.IS_BRK == true)
-                            {
-                                <div class="top">@item.NAME</div>
-                            }
-                            else
-                            {
-                                <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - @item.END_TIME.Value.Hours:@item.END_TIME.Value.Minutes</div>
-                            }
-                        }
-                        else if (item.START_TIME != null)
-                        {
-                            if (item.IS_BRK == true)
-                            {
-                                <div class="top">@item.NAME</div>
-                            }
-                            else
-                            {
-                                <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - ET Not Defined</div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="top">ST Not Defined - ET Not Defined</div>
-                        }
-                    </div>
-                </td>
-            }
-        </tr>
-        <tr class="blank">
-            <td></td>
-            <td></td>
-            @foreach (var item in class_timing)
-            {
-                <td></td>
-            }
-        </tr>
-        @foreach (var d in day)
-        {
+@if (class_timing == null || class_timing.Count() == 0 || timetable == null || timetable.Count() == 0)
+{
+    <p class="flash-msg"> No class timing set for this Batch. Please set this before prioceeding. </p>
+}
+else
+{
+    <div id="box">
+        <table border="0" align="center" width="100%" id="table" cellspacing="0">
             <tr>
-                <td class="td"><div class="name themed_text">Date::@d.NAME</div></td>
+                <td class="loader">
+                    <img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none; display:none; align-items:center">
+                    &nbsp;
+                </td>
                 <td class="td-blank"></td>
-                @foreach (var ct in class_timing)
+                @foreach (var item in class_timing)
                 {
                     <td class="td">
-                        @{ var timetable_inner = timetable.Where(x => x.WK_DAY_ID == d.ID && x.CLS_TMNG_ID == ct.ID).ToList(); }
-                        @if (timetable_inner != null && timetable_inner.Count() != 0)
-                        {
-                            <div class="drop">
-                                <div class="tt-subject">
-                                    @if (timetable_inner.FirstOrDefault().SUBJECT != null)
-                                    {
-                                        if (timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                        <div class="top themed_text">
+                            @if (item.START_TIME != null && item.END_TIME != null)
+                            {
+                                if (item.IS_BRK == true)
+                                {
+                                    <div class="top">@item.NAME</div>
+                                }
+                                else
+                                {
+                                    <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - @item.END_TIME.Value.Hours:@item.END_TIME.Value.Minutes</div>
+                                }
+                            }
+                            else if (item.START_TIME != null)
+                            {
+                                if (item.IS_BRK == true)
+                                {
+                                    <div class="top">@item.NAME</div>
+                                }
+                                else
+                                {
+                                    <div class="top">@item.START_TIME.Value.Hours:@item.START_TIME.Value.Minutes - ET Not Defined</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="top">ST Not Defined - ET Not Defined</div>
+                            }
+                        </div>
+                    </td>
+                }
+            </tr>
+            <tr class="blank">
+                <td></td>
+                <td></td>
+                @foreach (var item in class_timing)
+                {
+                    <td></td>
+                }
+            </tr>
+            @foreach (var d in day)
+            {
+                <tr>
+                    <td class="td"><div class="name themed_text">Date::@d.NAME</div></td>
+                    <td class="td-blank"></td>
+                    @foreach (var ct in class_timing)
+                    {
+                        <td class="td">
+                            @{ var timetable_inner = timetable.Where(x => x.WK_DAY_ID == d.ID && x.CLS_TMNG_ID == ct.ID).ToList(); }
+                            @if (timetable_inner != null && timetable_inner.Count() != 0)
+                            {
+                                <div class="drop">
+                                    <div class="tt-subject">
+                                        @if (timetable_inner.FirstOrDefault().SUBJECT != null)
                                         {
-                                            var ElectiveGroupSubjects = Subject.Where(x => x.ELECTIVE_GRP_ID == timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID).ToList();
-                                            <div class="subject themed_text">
-                                                @timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME
-                                                <span class="themed_text">
-                                                    @foreach (var s in ElectiveGroupSubjects)
-                                                    {
-                                                        if (s.NAME != null)
+                                            if (timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                                            {
+                                                var ElectiveGroupSubjects = Subject.Where(x => x.ELECTIVE_GRP_ID == timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID).ToList();
+                                                <div class="subject themed_text">
+                                                    @timetable_inner.FirstOrDefault().SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME
+                                                    <span class="themed_text">
+                                                        @foreach (var s in ElectiveGroupSubjects)
                                                         {
-                                                            @s.NAME
+                                                            if (s.NAME != null)
+                                                            {
+                                                                @s.NAME
+                                                            }
+                                                            var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == s.ID).Select(m => m.EMPLOYEE).ToList();
+                                                            foreach (var e in sub_emp)
+                                                            {
+                                                                <div class="emp-name">
+                                                                    @e.FIRST_NAME @e.MID_NAME @e.LAST_NAME
+                                                                </div>
+                                                            }
                                                         }
-                                                        var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == s.ID).Select(m => m.EMPLOYEE).ToList();
-                                                        foreach (var e in sub_emp)
-                                                        {
-                                                            <div class="emp-name">
-                                                                @e.FIRST_NAME @e.MID_NAME @e.LAST_NAME
-                                                            </div>
-                                                        }
-                                                    }
-                                                </span>
-                                            </div>
-                                            <div class="employee">
-                                                <p>Elective</p>
-                                            </div>
+                                                    </span>
+                                                </div>
+                                                <div class="employee">
+                                                    <p>Elective</p>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="subject themed_text">
+                                                    @timetable_inner.FirstOrDefault().SUBJECT.CODE
+                                                    <span class="themed_text">
+                                                        @timetable_inner.FirstOrDefault().SUBJECT.NAME
+                                                        <div class="emp-name">
+                                                            @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.LAST_NAME
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                                <div class="employee">
+                                                    @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME
+                                                </div>
+                                            }
                                         }
                                         else
                                         {
-                                            <div class="subject themed_text">
-                                                @timetable_inner.FirstOrDefault().SUBJECT.CODE
-                                                <span class="themed_text">
-                                                    @timetable_inner.FirstOrDefault().SUBJECT.NAME
-                                                    <div class="emp-name">
-                                                        @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.LAST_NAME
-                                                    </div>
-                                                </span>
-                                            </div>
-                                            <div class="employee">
-                                                @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME
-                                            </div>
+                                            <div class="subject"> </div>
+                                            <div class="employee"></div>
                                         }
-                                    }
-                                    else
-                                    {
-                                        <div class="subject"> </div>
-                                        <div class="employee"></div>
-                                    }
+                                    </div>
                                 </div>
-                            </div>
 
-                        }
+                            }
 
-                    </td><!--timetable_td -->
-                }
-            </tr><!--timetable_tr -->
-        }
-    </table>
-</div>
-@Html.ActionLink("PDF Report", "Timetable_pdf", new { course_id = batch.ID, timetable_id = tt.ID }, new { @class = "user_button", @target = "_blank" })
+                        </td><!--timetable_td -->
+                    }
+                </tr><!--timetable_tr -->
+            }
+        </table>
+    </div>
+    @Html.ActionLink("PDF Report", "Timetable_pdf", new { course_id = batch.ID, timetable_id = tt.ID }, new { @class = "user_button", @target = "_blank" })
+
+}
+
 

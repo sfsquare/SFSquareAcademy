@@ -1,0 +1,41 @@
+﻿@using SFSAcademy.Models
+@{
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<SFSAcademy.EMPLOYEE> employees = (IEnumerable<SFSAcademy.EMPLOYEE>)ViewData["employees"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> EmployeesSubject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["EmployeesSubject"];
+}
+
+<ul id="department-list">
+    @if (employees != null && employees.Count() != 0)
+    {
+        <li class="heading">Assign New: </li>
+        int i = 0;
+        foreach (var item in employees)
+        {
+            string selectedRow = "listeven";
+            if (i % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <li class="@selectedRow">
+                <div class="department-name">@item.FIRST_NAME @item.MID_NAME @item.LAST_NAME</div>
+                @{var emp_sub_assoc = EmployeesSubject.Where(x => x.EMP_ID == item.ID && x.SUBJ_ID == subject.ID).FirstOrDefault();}
+                @if (emp_sub_assoc == null || emp_sub_assoc.ID == 0)
+                {
+                    <div class="remove"><a href="@Url.Action("Assign_Employee", "Timetable",new {id=item.ID, id1 = subject.ID, batch_id = batch.ID })">Assign</a></div>
+                }
+                else
+                {
+                    <div class="remove"><a href="@Url.Action("Remove_Employee", "Timetable",new {id=item.ID, id1 = subject.ID, batch_id = batch.ID })">Delete</a></div>
+                }
+            </li>
+        }
+    }
+    else
+    {
+        <p class="flash-msg">No Employee Found</p>
+    }
+</ul>
+
+

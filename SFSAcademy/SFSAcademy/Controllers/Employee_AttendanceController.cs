@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SFSAcademy;
 using System.Data.Entity.Validation;
 
+
 namespace SFSAcademy.Controllers
 {
     public class Employee_AttendanceController : Controller
@@ -204,6 +205,78 @@ namespace SFSAcademy.Controllers
             ViewData["EmployeeAttendance"] = EmployeeAttendance;
             return PartialView("_Attendance_Report");
         }
+
+        public ActionResult Emp_Attendance(int? id)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            ViewData["employee"] = employee;
+            var attendance_report = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == employee.ID).ToList();
+            ViewData["attendance_report"] = attendance_report;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
+            ViewData["leave_types"] = leave_types;
+            var leave_count = db.EMPLOYEE_LEAVE.Include(x => x.EMPLOYEE_LEAVE_TYPE).Where(x => x.EMPLOYEE_LEAVE_TYPE.STAT == true && x.EMP_ID == employee.ID).ToList();
+            ViewData["leave_count"] = leave_count;
+            var EmployeeLeave = db.EMPLOYEE_LEAVE.ToList();
+            ViewData["EmployeeLeave"] = EmployeeLeave;
+            var EmployeeAttendance = db.EMPLOYEE_ATTENDENCES.ToList();
+            ViewData["EmployeeAttendance"] = EmployeeAttendance;
+            var EmployeeLeaveType = db.EMPLOYEE_LEAVE_TYPE.ToList();
+            ViewData["EmployeeLeaveType"] = EmployeeLeaveType;
+            decimal? total_leaves = 0;
+            foreach(var item in leave_types)
+            {
+                decimal? leave_count_inner = leave_count.Where(x => x.EMP_LEAVE_TYPE_ID == item.ID && x.EMP_ID == employee.ID).FirstOrDefault().LEAVE_CNT;
+                total_leaves += leave_count_inner;
+            }
+            ViewBag.total_leaves = total_leaves;
+            return View();
+        }
+
+        public ActionResult Employee_Attendance_pdf(int? id)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            ViewData["employee"] = employee;
+            var attendance_report = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == employee.ID).ToList();
+            ViewData["attendance_report"] = attendance_report;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
+            ViewData["leave_types"] = leave_types;
+            var leave_count = db.EMPLOYEE_LEAVE.Include(x => x.EMPLOYEE_LEAVE_TYPE).Where(x => x.EMPLOYEE_LEAVE_TYPE.STAT == true && x.EMP_ID == employee.ID).ToList();
+            ViewData["leave_count"] = leave_count;
+            var EmployeeLeave = db.EMPLOYEE_LEAVE.ToList();
+            ViewData["EmployeeLeave"] = EmployeeLeave;
+            var EmployeeAttendance = db.EMPLOYEE_ATTENDENCES.ToList();
+            ViewData["EmployeeAttendance"] = EmployeeAttendance;
+            var EmployeeLeaveType = db.EMPLOYEE_LEAVE_TYPE.ToList();
+            ViewData["EmployeeLeaveType"] = EmployeeLeaveType;
+            decimal? total_leaves = 0;
+            foreach (var item in leave_types)
+            {
+                decimal? leave_count_inner = leave_count.Where(x => x.EMP_LEAVE_TYPE_ID == item.ID && x.EMP_ID == employee.ID).FirstOrDefault().LEAVE_CNT;
+                total_leaves += leave_count_inner;
+            }
+            ViewBag.total_leaves = total_leaves;
+            return View();
+        }
+
+        public ActionResult Leave_History(int? id)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            return View(employee);
+        }
+
+        public ActionResult Update_Leave_History(int? id, DateTime? START_DATE, DateTime? END_DATE)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            ViewData["employee"] = employee;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
+            ViewData["leave_types"] = leave_types;
+            var employee_attendances = db.EMPLOYEE_ATTENDENCES.Include(x=>x.EMPLOYEE_LEAVE_TYPE).Where(x => x.EMP_ID == employee.ID && x.EMPLOYEE_LEAVE_TYPE.STAT == true && x.ATNDENCE_DATE >= START_DATE && x.ATNDENCE_DATE <= END_DATE).ToList();
+            ViewData["employee_attendances"] = employee_attendances;
+
+            return PartialView("_Update_Leave_History");
+        }
+
+
         public ActionResult Manual_Reset()
         {
             return View();
@@ -214,7 +287,8 @@ namespace SFSAcademy.Controllers
             ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
             ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
             ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
-            ViewBag.fin_start_date = Config.find_by_config_key("FinancialYearStartDate");
+            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[1]), Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[0]));
+            ViewBag.fin_start_date = FinYearStartDate;
             return View();
         }
 
@@ -244,6 +318,14 @@ namespace SFSAcademy.Controllers
                 return View();
             }
             ViewBag.Notice = "Settings has been saved";
+
+            var Config = new Models.Configuration();
+            ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
+            ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
+            ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
+            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[1]), Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[0]));
+            ViewBag.fin_start_date = FinYearStartDate;
+
             return View();
         }
 
@@ -275,6 +357,10 @@ namespace SFSAcademy.Controllers
                             balance_leave = available_leave - leave_taken;
                             available_leave = balance_leave;
                             available_leave += default_leave_count;
+                            if(available_leave > default_leave_count * 2)
+                            {
+                                available_leave = default_leave_count * 2;
+                            }
                             leave_taken = 0;
                             item.LEAVE_TAKE = leave_taken;
                             item.LEAVE_CNT = available_leave;

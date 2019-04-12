@@ -1,0 +1,94 @@
+﻿@model SFSAcademy.EMPLOYEE
+@{
+    ViewBag.Title = "Leave_History";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script>
+    $(document.forms[0]).ready(function () {
+        $(".LoaderBox").hide();
+        $('#submit_button').click(function () {
+            var SelectedEmployeeId = $('#employee_id').val();
+            var SelectedStartDate = $('#datepicker').val();
+            var SelectedEndDate = $('#datepicker2').val();
+            $(".LoaderBox").show();
+            $.get('/Employee_Attendance/Update_Leave_History?id=' + SelectedEmployeeId + "&START_DATE=" + SelectedStartDate + "&END_DATE=" + SelectedEndDate, function (data) {
+                $('#attendance-report').html(data);
+                $('#attendance-report').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+
+        });
+    });
+
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
+    <h1>Employee_Attendance</h1>
+    <h3>Leave History</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (Html.Permitted_To("Emp_Attendance", "Employee_Attendance") || Html.CurrentUser_UserType().Equals("Admin"))
+        {
+            <li>@Html.ActionLink("Mini Report", "Emp_Attendance", new { id = Model.ID })</li>
+        }
+    </ul>
+</div>
+<div class="bread_crumb">
+    <a href="@Url.Action("HR", "Employee")">HR</a> &raquo;
+    <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
+    <a href="@Url.Action("Report", "Employee_Attendance")">Reports</a> &raquo;
+    Leave History
+</div>
+<div id="page-yield">
+    <div class="box">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="label-field-pair label">
+                <label for="reason"> Start Date </label>
+                <div class="text-input-bg">
+                    @Html.Editor("START_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker" } })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                <label for="reason"> End Date </label>
+                <div class="text-input-bg">
+                    @Html.Editor("END_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2" } })
+                </div>
+            </div>
+            <input type="button" value="► Go" id="submit_button" class="user_button" />
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        }
+    </div>
+</div>
+<div id="attendance-report" style="display:none;">
+
+</div>
+<input type="hidden" value="@Model.ID" id="employee_id" name="employee_id" />
+

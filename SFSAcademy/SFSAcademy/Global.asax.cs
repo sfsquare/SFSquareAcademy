@@ -1,5 +1,7 @@
 ﻿using SFSAcademy.App_Start;
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -13,6 +15,7 @@ namespace SFSAcademy
         {
             FilterConfig.Configure(GlobalFilters.Filters);
             RouteConfig.Configure(RouteTable.Routes);
+            TypeDescriptor.AddProviderTransparent( new AssociatedMetadataTypeTypeDescriptionProvider(typeof(BATCH), typeof(IBATCHMetaData)), typeof(BATCH));
         }
 
         protected void Session_Start(object sender, EventArgs e)

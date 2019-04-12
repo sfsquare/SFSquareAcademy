@@ -140,46 +140,57 @@ namespace SFSAcademy.Controllers
                 var weekday = Convert.ToInt32(tte_ids_list.Split('_')[0]);
                 var class_timing = Convert.ToInt32(tte_ids_list.Split('_')[1]);
                 TIMETABLE_ENTRY tte = db.TIMETABLE_ENTRY.Where(x => x.WK_DAY_ID == weekday && x.CLS_TMNG_ID == class_timing && x.BTCH_ID == batch_id && x.TIMT_ID == timetable_id).FirstOrDefault();
-                var row = validation_problems.NewRow();
-                row["sub_id"] = employees_subject.SUBJ_ID;
-                row["emp_id"] = employees_subject.EMP_ID;
-                row["weekday_id"] = weekday;
-                row["class_timing_id"] = class_timing;
                 string Message = "";
                 if(subject.MAX_WKILY_CLSES != null)
                 {
                     if(subject.MAX_WKILY_CLSES <= db.TIMETABLE_ENTRY.Where(x => x.SUBJ_ID == subject.ID && x.TIMT_ID == timetable_id).ToList().Count())
                     {
-                        Message = string.Concat(Message,"Weekly subject limit reached.");
+                        Message = "Weekly subject limit reached.";
+                        var row = validation_problems.NewRow();
+                        row["sub_id"] = employees_subject.SUBJ_ID;
+                        row["emp_id"] = employees_subject.EMP_ID;
+                        row["weekday_id"] = weekday;
+                        row["class_timing_id"] = class_timing;
+                        if (tte != null)
+                        {
+                            row["tte_id"] = string.Concat(weekday, "_", class_timing);
+                        }
+                        row["messages"] = Message;
+                        validation_problems.Rows.Add(row);
                     }
                 }
 
                 CLASS_TIMING ct_for_tte = db.CLASS_TIMING.Find(class_timing);
                 WEEKDAY wd_for_tte = db.WEEKDAYs.Find(weekday);
-                var ClassTimingOverlap = db.CLASS_TIMING.Where(x => x.START_TIME == ct_for_tte.START_TIME && x.END_TIME == ct_for_tte.END_TIME && x.IS_DEL == false).ToList();
-                foreach(var item in ClassTimingOverlap)
+                //var ClassTimingOverlap = db.CLASS_TIMING.Where(x => x.START_TIME == ct_for_tte.START_TIME && x.END_TIME == ct_for_tte.END_TIME && x.IS_DEL == false).ToList();
+                var overlap = (from timete in db.TIMETABLE_ENTRY.Include(x => x.BATCH).Include(x => x.BATCH.COURSE).Include(x => x.CLASS_TIMING).Include(x => x.WEEKDAY)
+                               join sub in db.SUBJECTs on timete.SUBJ_ID equals sub.ID
+                               join bt in db.BATCHes on sub.BTCH_ID equals bt.ID
+                               where timete.TIMT_ID == timetable.ID && timete.WK_DAY_ID != wd_for_tte.ID && timete.WEEKDAY.NAME == wd_for_tte.NAME && timete.CLS_TMNG_ID != ct_for_tte.ID && timete.CLASS_TIMING.NAME == ct_for_tte.NAME && timete.EMP_ID == employee.ID && bt.IS_ACT == true && bt.IS_DEL == false
+                               select new Models.Timetable_Entries { TimetableEntryData = timete, BatchData = bt}).ToList();
+                if (overlap != null && overlap.Count() != 0)
                 {
-                    var overlap = (from timete in db.TIMETABLE_ENTRY.Include(x => x.BATCH).Include(x => x.BATCH.COURSE)
-                                   join sub in db.SUBJECTs on timete.SUBJ_ID equals sub.ID
-                                   join bt in db.BATCHes on timete.BTCH_ID equals bt.ID
-                                   join cs in db.COURSEs on bt.CRS_ID equals cs.ID
-                                   join wd in db.WEEKDAYs on timete.WK_DAY_ID equals wd.ID
-                                   where timete.TIMT_ID == timetable.ID && wd.NAME == wd_for_tte.NAME && timete.CLS_TMNG_ID == item.ID && timete.EMP_ID == employee.ID && bt.IS_ACT == true && bt.IS_DEL == false
-                                   select new Models.Timetable_Entries { TimetableEntryData = timete, BatchData = bt, CourseData = cs, WeekdayData = wd }).ToList();
-                    if (overlap != null && overlap.Count() != 0)
+                    ViewData["overlap"] = overlap;
+                    var row = validation_problems.NewRow();
+                    row["sub_id"] = employees_subject.SUBJ_ID;
+                    row["emp_id"] = employees_subject.EMP_ID;
+                    row["weekday_id"] = weekday;
+                    row["class_timing_id"] = class_timing;
+                    if (tte != null)
                     {
-                        ViewData["overlap"] = overlap;
-                        row["weekday_id"] = overlap.FirstOrDefault().WeekdayData.ID;
-                        row["class_timing_id"] = overlap.FirstOrDefault().TimetableEntryData.CLS_TMNG_ID;
-                        foreach(var item2 in overlap)
-                        {
-                            Message = string.Concat(Message, "Class overlap occured with Batch :", item2.CourseData.CODE, "-", item2.BatchData.NAME);
-                        }                        
-                        break;
+                        row["tte_id"] = string.Concat(weekday, "_", class_timing);
                     }
+                    row["weekday_id"] = overlap.FirstOrDefault().TimetableEntryData.WK_DAY_ID;
+                    row["class_timing_id"] = overlap.FirstOrDefault().TimetableEntryData.CLS_TMNG_ID;
+                    foreach (var item2 in overlap)
+                    {
+                        Message = string.Concat("Class overlap occured with Batch :", item2.TimetableEntryData.BATCH.COURSE.CODE, "-", item2.TimetableEntryData.BATCH.NAME);
+                    }
+                    row["messages"] = Message;
+                    validation_problems.Rows.Add(row);
                 }
-                
-                if(subject.ELECTIVE_GRP_ID != null)
+
+                if (subject.ELECTIVE_GRP_ID != null)
                 {
                     Models.subject subject_dy_gr = new Models.subject();
                     employee = subject_dy_gr.Lower_Day_Grade(subject);
@@ -194,7 +205,18 @@ namespace SFSAcademy.Controllers
 
                     if (employee.EMPLOYEE_GRADE.MAX_DILY_HRS <= tte_count)
                     {
-                        Message = string.Concat(Message, "Max hours per day exceeded"); 
+                        Message = "Max hours per day exceeded";
+                        var row = validation_problems.NewRow();
+                        row["sub_id"] = employees_subject.SUBJ_ID;
+                        row["emp_id"] = employees_subject.EMP_ID;
+                        row["weekday_id"] = weekday;
+                        row["class_timing_id"] = class_timing;
+                        if (tte != null)
+                        {
+                            row["tte_id"] = string.Concat(weekday, "_", class_timing);
+                        }
+                        row["messages"] = Message;
+                        validation_problems.Rows.Add(row);
                     }
                 }
 
@@ -213,7 +235,18 @@ namespace SFSAcademy.Controllers
 
                     if (employee.EMPLOYEE_GRADE.MAX_WKILY_HRS <= tte_count)
                     {
-                        Message = string.Concat(Message, "Max hours per week exceeded");
+                        Message = "Max hours per week exceeded";
+                        var row = validation_problems.NewRow();
+                        row["sub_id"] = employees_subject.SUBJ_ID;
+                        row["emp_id"] = employees_subject.EMP_ID;
+                        row["weekday_id"] = weekday;
+                        row["class_timing_id"] = class_timing;
+                        if (tte != null)
+                        {
+                            row["tte_id"] = string.Concat(weekday, "_", class_timing);
+                        }
+                        row["messages"] = Message;
+                        validation_problems.Rows.Add(row);
                     }
                 }
 
@@ -236,15 +269,6 @@ namespace SFSAcademy.Controllers
                     try { db.SaveChanges(); }
                     catch (DbEntityValidationException e){foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }return PartialView("_New_Entry");}
                     catch (Exception e){ ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);return PartialView("_New_Entry");}
-                }
-                else
-                {
-                    if (tte != null)
-                    {
-                        row["tte_id"] = string.Concat(weekday, "_", class_timing);
-                    }
-                    row["messages"] = Message;
-                    validation_problems.Rows.Add(row);
                 }
             }
             ViewBag.validation_problems = validation_problems.AsEnumerable();

@@ -3049,7 +3049,7 @@ namespace SFSAcademy.Controllers
                                     FINE_AMT = total_fine_val,
                                     FINE_INCLD = total_fine_val != 0 ? true : false,
                                     FIN_FE_ID = FinanceFee_id,
-                                    MSTRTRAN_ID = null,
+                                    MSTRTRAN_ID = -1,
                                     RCPT_NO = ReceiptNo,
                                     TRAN_DATE = PDate,
                                     CRETAED_AT = System.DateTime.Now,
@@ -3077,28 +3077,6 @@ namespace SFSAcademy.Controllers
                                     }
                                     return PartialView("_Student_Fees_Submission");
                                 }
-
-
-                                if (financefeeVal.FirstOrDefault().TRAN_ID == null)
-                                {
-                                    //transaction.MSTRTRAN_ID = transaction.ID;
-                                    transaction.MSTRTRAN_ID = -1;
-                                }
-                                else
-                                {
-                                    int? MasterTransId = 0;
-                                    foreach (var item in paid_fees_val)
-                                    {
-                                        if (item.FinanceTransactionData.MSTRTRAN_ID == -1)
-                                        {
-                                            MasterTransId = item.FinanceTransactionData.ID;
-                                            break;
-                                        }
-
-                                    }
-                                    transaction.MSTRTRAN_ID = MasterTransId;
-                                }
-                                db.Entry(transaction).State = EntityState.Modified;
 
                                 string tid = null;
                                 if (financefeeVal.FirstOrDefault().TRAN_ID != null)

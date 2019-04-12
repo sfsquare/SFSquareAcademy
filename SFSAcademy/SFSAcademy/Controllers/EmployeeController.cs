@@ -2577,9 +2577,10 @@ namespace SFSAcademy.Controllers
         {
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var finance_manager = (from pv in db.PRIVILEGES
+            var finance_manager = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Where(x => x.PRIVILEGE_TAG.DESCRIPTION == "Finance Control").ToList();
+            /*var finance_manager = (from pv in db.PRIVILEGES
                                    where pv.PRIVILEGE_TAG == "Finance Control"
-                                   select pv).ToList();
+                                   select pv).ToList();*/
             var Config = new Models.Configuration();
             string finance = Config.find_by_config_value("Finance");
             DateTime SALARY_DATE2 = Convert.ToDateTime(SALARY_DATE);
@@ -2589,11 +2590,11 @@ namespace SFSAcademy.Controllers
             var employees = db.EMPLOYEEs.Where(x => x.STAT == true).ToList();
             if(finance_manager != null && finance_manager.Count() != 0 && finance != null)
             {
-                var finance_manager_ids = (from pr in db.PRIVILEGES
+                var finance_manager_ids = (from pr in db.PRIVILEGES.Include(X=>X.PRIVILEGE_TAG)
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                            join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                           where pr.PRIVILEGE_TAG == "Finance Control"
+                                           where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
                                            select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
                 var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
                 db.EVENTs.Add(PG_eVENT);
@@ -2878,11 +2879,11 @@ namespace SFSAcademy.Controllers
                     }
                     ViewBag.Notice = string.Concat(employee.FIRST_NAME, "'s salary slip  already generated for: ", salary_date.ToShortDateString());
                 }
-                var finance_manager_ids = (from pr in db.PRIVILEGES
+                var finance_manager_ids = (from pr in db.PRIVILEGES.Include(x=>x.PRIVILEGE_TAG)
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                            join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                           where pr.PRIVILEGE_TAG == "Finance Control"
+                                           where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
                                            select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
                 var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
                 db.EVENTs.Add(PG_eVENT);
@@ -3271,11 +3272,11 @@ namespace SFSAcademy.Controllers
                 db.Entry(individual_payslip_category_upd).State = EntityState.Modified;
             }
             ViewBag.Notice = string.Concat(employee.FIRST_NAME, "'s salary slip generated for: ", salary_date.ToShortDateString());
-            var finance_manager_ids = (from pr in db.PRIVILEGES
+            var finance_manager_ids = (from pr in db.PRIVILEGES.Include(x=>x.PRIVILEGE_TAG)
                                        join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                        join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                        join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                       where pr.PRIVILEGE_TAG == "Finance Control"
+                                       where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
                                        select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
             var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
             db.EVENTs.Add(PG_eVENT);
@@ -3845,6 +3846,8 @@ namespace SFSAcademy.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             EMPLOYEE Emp = db.EMPLOYEEs.Include(x=>x.EMPLOYEE_DEPARTMENT).Where(x=>x.ID == id).FirstOrDefault();
+            ViewBag.Department = db.EMPLOYEE_DEPARTMENT.Find(Emp.EMP_DEPT_ID).NAMES;
+
             //var dependency = null //This part has to be beuild when dependencies in Employee is defined in system.
             return View(Emp);
         }
@@ -3877,20 +3880,30 @@ namespace SFSAcademy.Controllers
             var employee_salary_structures = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             var employee_bank_details = db.EMPLOYEE_BANK_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             var employee_additional_details = db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_atterndences = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             foreach (var item in employee_salary_structures)
             {
                 var aRCHIVEDsSalStr = new ARCHIVED_EMPLOYEE_SALARY_STRUCTURE() { AMT = item.AMT, EMP_ID = aRCHIVEDsTD.ID, PYRL_CAT_ID = item.PYRL_CAT_ID };
                 db.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE.Add(aRCHIVEDsSalStr);
+                db.EMPLOYEE_SALARY_STRUCTURE.Remove(item);
             }
             foreach (var item in employee_bank_details)
             {
                 var aRCHIVEDsBankDetl = new ARCHIVED_EMPLOYEE_BANK_DETAIL() { BANK_INFO = item.BANK_INFO, EMP_ID = aRCHIVEDsTD.ID, BANK_FLD_ID = item.BANK_FLD_ID };
                 db.ARCHIVED_EMPLOYEE_BANK_DETAIL.Add(aRCHIVEDsBankDetl);
+                db.EMPLOYEE_BANK_DETAIL.Remove(item);
             }
             foreach (var item in employee_additional_details)
             {
                 var aRCHIVEDsEmpAdDetl = new ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL() { ADDL_FLD_ID = item.ADDL_FLD_ID, EMP_ID = aRCHIVEDsTD.ID, ADDL_INFO = item.ADDL_INFO };
                 db.ARCHIVED_EMPLOYEE_ADDITIONAL_DETAIL.Add(aRCHIVEDsEmpAdDetl);
+                db.EMPLOYEE_ADDITIONAL_DETAIL.Remove(item);
+            }
+            foreach (var item in employee_atterndences)
+            {
+                var aRCHIVEDsEmpAttend = new ARCHIVED_EMPLOYEE_ATTENDENCES() { FRMR_ID = item.ID, ATNDENCE_DATE = item.ATNDENCE_DATE, EMP_ID = aRCHIVEDsTD.ID, EMP_LEAVE_TYPE_ID = item.EMP_LEAVE_TYPE_ID, RSN = item.RSN, IS_HALF_DAY= item.IS_HALF_DAY };
+                db.ARCHIVED_EMPLOYEE_ATTENDENCES.Add(aRCHIVEDsEmpAttend);
+                db.EMPLOYEE_ATTENDENCES.Remove(item);
             }
             if (eMPLOYEE.USRID != null )
             {
@@ -3918,25 +3931,6 @@ namespace SFSAcademy.Controllers
 
             return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
-
-        /*public ActionResult Change_Reporting_Manager(int? id)
-        {
-            var departments = db.EMPLOYEE_DEPARTMENT.ToList();
-            ViewData["departments"] = departments;
-            var categories = db.EMPLOYEE_CATEGORY.ToList();
-            ViewData["categories"] = categories;
-            var positions = db.EMPLOYEE_POSITION.ToList();
-            ViewData["positions"] = positions;
-            var grades = db.EMPLOYEE_GRADE.ToList();
-            ViewData["grades"] = grades;
-            EMPLOYEE emp = db.EMPLOYEEs.Find(id);
-            if(emp.RPTG_MGR_ID != null)
-            {
-                string reporting_manager = db.EMPLOYEEs.Find(emp.RPTG_MGR_ID).FIRST_NAME;
-                ViewBag.reporting_manager = reporting_manager;
-            }
-            return View();
-        }*/
 
         public ActionResult Change_Reporting_Manager(int Emp_id, int? Reporting_Mn_Id)
         {
@@ -4045,6 +4039,8 @@ namespace SFSAcademy.Controllers
             var employee_salary_structures = db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             var employee_bank_details = db.EMPLOYEE_BANK_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             var employee_additional_details = db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_leave = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            var employee_attendence = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
             foreach (var item in employee_salary_structures)
             {
                 db.EMPLOYEE_SALARY_STRUCTURE.Remove(item);
@@ -4057,6 +4053,14 @@ namespace SFSAcademy.Controllers
             {
                 db.EMPLOYEE_ADDITIONAL_DETAIL.Remove(item);
             }
+            foreach (var item in employee_leave)
+            {
+                db.EMPLOYEE_LEAVE.Remove(item);
+            }
+            foreach (var item in employee_attendence)
+            {
+                db.EMPLOYEE_ATTENDENCES.Remove(item);
+            }
             if (eMPLOYEE.USRID != null)
             {
                 USER user = db.USERS.Find(eMPLOYEE.USRID);
@@ -4065,7 +4069,9 @@ namespace SFSAcademy.Controllers
                 {
                     db.PRIVILEGES_USERS.Remove(item);
                 }
-                db.USERS.Remove(user);
+                user.IS_DEL = true;
+                db.Entry(user).State = EntityState.Modified;
+                //db.USERS.Remove(user);
             }
             db.EMPLOYEEs.Remove(eMPLOYEE);
             try { db.SaveChanges(); ViewBag.Notice = "Employee deleted successfully."; }

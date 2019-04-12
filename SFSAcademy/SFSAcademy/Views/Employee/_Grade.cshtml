@@ -17,10 +17,11 @@
                 selectedRow = "listodd";
             }
             <li class="@selectedRow">
-                <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.PRIR)</div>
+                <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.DESCR)</div>
                 <div class="grade-edit">@Html.ActionLink("Edit", "Edit_Grade", new { id = item.GradeData.ID })</div>
                 <div class="grade-edit">@Html.ActionLink("Delete", "Delete_Grade", new { id = item.GradeData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
             </li>
+            i += 1;
         }
 
         if (inactive_grades != null && inactive_grades.Count() != 0)
@@ -35,10 +36,11 @@
                     selectedRow = "listodd";
                 }
                 <li class="@selectedRow">
-                    <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.PRIR)</div>
+                    <div class="grade-name">@item.GradeData.GRADE_NAME (@item.GradeData.DESCR)</div>
                     <div class="grade-edit">@Html.ActionLink("Edit", "Edit_Grade", new { id = item.GradeData.ID })</div>
                     <div class="grade-edit">@Html.ActionLink("Delete", "Delete_Grade", new { id = item.GradeData.ID }, new { @onclick = "return confirm('are you sure?')" })</div>
                 </li>
+                i2 += 1;
             }
 
         }

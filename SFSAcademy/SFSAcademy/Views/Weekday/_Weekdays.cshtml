@@ -1,4 +1,4 @@
-﻿@model SFSAcademy.Models.Weekdays
+﻿@model SFSAcademy.Weekdays
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -53,15 +53,15 @@
 @using (Html.BeginForm("Create", "Weekday", FormMethod.Post, new { @encType = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    <table id="class-timings-list" style="width:100%">
+    <table id="class-timings-list">
         <tr class="tr-head">
-            <td>Weekday</td>
-            <td>Class timing set</td>
+            <td class="col-1" style="text-align:center">Weekday</td>
+            <td class="col-2" style="text-align:center">Class timing set</td>
         </tr>
         @{int i = 1;}
         @for (int j = 0; j < Model.WeekdayIds.Count(); j++)
         {
-            string code = "tr-even";
+            string code = "tr-read-even";
             string CheckBoxId = string.Concat("CheckBox", i);
             string TextBoxId = string.Concat("TextBox", i);
             string UncheckedHide1Id = string.Concat("UncheckedHide1", i);
@@ -73,30 +73,22 @@
             string OnDropdownChangeString = string.Concat("SetTimingSet(", i, ", this.options[this.selectedIndex].text);");
             if (i % 2 == 0)
             {
-                code = "tr-odd";
+                code = "tr-read-odd";
             }
             <tr class="@code">
-                <td class="col-2">
+                <td class="col-1">
                     @Html.CheckBox("WeekdayIds[" + j + "].Select", Model.WeekdayIds.ElementAt(j).Select, new { id = @CheckBoxId, onclick = @OnClickString }) @Model.WeekdayIds.ElementAt(j).Day
                 </td>
-                <td class="col-2" id="@UncheckedHide1Id" style="width: 200px;">
+                <td class="col-2" id="@UncheckedHide1Id" style="float:left">
                     @Html.Hidden("WeekdayIds[" + j + "].Day", Model.WeekdayIds.ElementAt(j).Day)
                     @Html.Hidden("WeekdayIds[" + j + "].Id", Model.WeekdayIds.ElementAt(j).Id)
-                    <div class="label-field-pair">
-                        <div class="text-input-bg">
-                            <div id=@NoDropdownId>
-                                <span style="display: inline-block;">
-                                    @Html.TextBox("WeekdayIds[" + j + "].ClassTimingSet", Model.WeekdayIds.ElementAt(j).ClassTimingSet, new { id = TextBoxId })
-                                    <a href="#" id="Change" onclick=@OnClickChangeString>Change</a>
-                                </span>
-                            </div>
-                            <div id=@DropdownId class="Dropdown">
-                                <span style="display: inline-block;">
-                                    @Html.DropDownList("ClassTimingSet", null, htmlAttributes: new { @class = "form-control", @value = Model.WeekdayIds.ElementAt(j).ClassTimingSet, onchange = @OnDropdownChangeString })
-                                    <a href="#" id="Cancel" onclick=@OnClickCancelString>Cancel</a>
-                                </span>
-                            </div>
-                        </div>
+                    <div id=@NoDropdownId>
+                        @Html.TextBox("WeekdayIds[" + j + "].ClassTimingSet", Model.WeekdayIds.ElementAt(j).ClassTimingSet, new { @class = "form-control", id = TextBoxId })
+                        <a href="#" id="Change" onclick=@OnClickChangeString>Change</a>
+                    </div>
+                    <div id=@DropdownId class="Dropdown">
+                        @Html.DropDownList("ClassTimingSet", null, htmlAttributes: new { @class = "form-control", @value = Model.WeekdayIds.ElementAt(j).ClassTimingSet, onchange = @OnDropdownChangeString })
+                        <a href="#" id="Cancel" onclick=@OnClickCancelString>Cancel</a>
                     </div>
                 </td>
             </tr>

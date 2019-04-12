@@ -278,13 +278,13 @@ namespace SFSAcademy.Controllers
             if ((!string.IsNullOrEmpty(BatchId)))
             {
                 int BatchIdVal = Convert.ToInt32(BatchId);
-                var NewBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == BatchIdVal);
-                var OldBatch = db.BATCHes.Include(x => x.COURSE).Distinct();
+                BATCH NewBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == BatchIdVal).FirstOrDefault();
+                BATCH OldBatch = db.BATCHes.Where(x=>x.ID == -1).FirstOrDefault();
 
                 if ((!string.IsNullOrEmpty(AdmissionNumber)))
                 {
                     var sTUDENTfROM = db.STUDENTs.Where(x => x.ADMSN_NO == AdmissionNumber && x.IS_DEL == false && x.IS_ACT == true).ToList().FirstOrDefault();
-                    OldBatch = OldBatch.Where(x => x.ID == sTUDENTfROM.BTCH_ID);
+                    OldBatch = db.BATCHes.Include(x => x.COURSE).Where(x=>x.ID == sTUDENTfROM.BTCH_ID).FirstOrDefault();
 
                     STUDENT sTUDENTfROMuPD = db.STUDENTs.Find(sTUDENTfROM.ID);
                     var paid_fees_val = (from ff in db.FINANCE_FEE
@@ -368,7 +368,7 @@ namespace SFSAcademy.Controllers
                             var FF_fEE = new FINANCE_FEE() { STDNT_ID = item2.StudentData.ID, FEE_CLCT_ID = item2.FeeCollectionData.ID, IS_PD = false };
                             db.FINANCE_FEE.Add(FF_fEE);
                         }
-                        try { db.SaveChanges(); ViewBag.BatchTransferMessage = string.Concat("Student with Admission Number ", AdmissionNumber, " is transfered from ", OldBatch.FirstOrDefault().COURSE.CODE, "-", OldBatch.FirstOrDefault().NAME, " to ", NewBatch.FirstOrDefault().COURSE.CODE, " -", NewBatch.FirstOrDefault().NAME); }
+                        try { db.SaveChanges(); ViewBag.BatchTransferMessage = string.Concat("Student with Admission Number ", AdmissionNumber, " is transfered from ", OldBatch.COURSE.CODE, "-", OldBatch.NAME, " to ", NewBatch.COURSE.CODE, " -", NewBatch.NAME); }
                         catch (Exception e) { Console.WriteLine(e); ViewBag.BatchTransferMessage = e.InnerException.InnerException.Message; }
                     }
                     
