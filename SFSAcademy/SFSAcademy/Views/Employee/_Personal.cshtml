@@ -1,6 +1,6 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
-    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Employee> Employee = (IEnumerable<SFSAcademy.Employee>)ViewData["Employee"];
 }
 <table width="700">
     <tr class="odd left"><td>Date of Birth</td><td class="right">@Employee.FirstOrDefault().EmployeeData.DOB.Value.ToShortDateString()</td></tr>

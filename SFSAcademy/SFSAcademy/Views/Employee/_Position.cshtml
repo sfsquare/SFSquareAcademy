@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeePosition> positions = (IList<SFSAcademy.Models.EmployeePosition>)ViewData["positions"];
-    IList<SFSAcademy.Models.EmployeePosition> inactive_positions = (IList<SFSAcademy.Models.EmployeePosition>)ViewData["inactive_positions"];
+    IList<SFSAcademy.EmployeePosition> positions = (IList<SFSAcademy.EmployeePosition>)ViewData["positions"];
+    IList<SFSAcademy.EmployeePosition> inactive_positions = (IList<SFSAcademy.EmployeePosition>)ViewData["inactive_positions"];
 }
 <ul id="position-list">
     @if (positions != null && positions.Count() != 0)

@@ -6,8 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy;
-using SFSAcademy.Models;
 using System.Data.Entity.Validation;
 using System.Web.UI.WebControls;
 using System.IO;
@@ -172,7 +170,7 @@ namespace SFSAcademy.Controllers
 
             if (ModelState.IsValid)
             {
-                Models.User Emp_User = new Models.User();
+                User Emp_User = new User();
                 string User_Type = Emp_User.UserType(eMPLOYEE.USRID);
 
                 if (eMPLOYEE.USRID == null || !User_Type.Equals("Admin"))
@@ -412,7 +410,7 @@ namespace SFSAcademy.Controllers
                                          join ebd in db.EMPLOYEE_BANK_DETAIL.Where(x=>x.EMP_ID == id) on bf.ID equals ebd.BANK_FLD_ID into gebd
                                          from subgebd in gebd.DefaultIfEmpty()
                                          where bf.STAT == true
-                                         select new Models.EmployeeBankDetail { BankFieldData = bf, BankDetailData = (subgebd == null ? null : subgebd) }).OrderBy(x => x.BankFieldData.NAME).ToList();
+                                         select new EmployeeBankDetail { BankFieldData = bf, BankDetailData = (subgebd == null ? null : subgebd) }).OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["employee_bank_details"] = employee_bank_details;
 
             if (employee_bank_details == null)
@@ -428,7 +426,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit3(IEnumerable<SFSAcademy.Models.EmployeeBankDetail> EmpDet)
+        public ActionResult Edit3(IEnumerable<SFSAcademy.EmployeeBankDetail> EmpDet)
         {
             if (ModelState.IsValid)
             {
@@ -593,7 +591,7 @@ namespace SFSAcademy.Controllers
             var EmployeeData = (from emp in db.EMPLOYEEs
                                 join ec in db.EMPLOYEE_CATEGORY on emp.EMP_CAT_ID equals ec.ID
                                 where emp.USRID == UserId
-                                select new Models.Employee { EmployeeData = emp, CategoryData = ec}).Distinct();
+                                select new Employee { EmployeeData = emp, CategoryData = ec}).Distinct();
 
             return View(EmployeeData.FirstOrDefault());
         }
@@ -610,13 +608,13 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var categories = (from ec in db.EMPLOYEE_CATEGORY
                              where ec.STAT == true
-                             select new Models.EmployeeCategory { CategoryData = ec })
+                             select new EmployeeCategory { CategoryData = ec })
                             .OrderBy(x => x.CategoryData.NAME).ToList();
             ViewData["categories"] = categories;
 
             var inactive_categories = (from ec in db.EMPLOYEE_CATEGORY
                               where ec.STAT == false
-                              select new Models.EmployeeCategory { CategoryData = ec })
+                              select new EmployeeCategory { CategoryData = ec })
                             .OrderBy(x => x.CategoryData.NAME).ToList();
             ViewData["inactive_categories"] = inactive_categories;
 
@@ -632,13 +630,13 @@ namespace SFSAcademy.Controllers
             {
                 var categories = (from ec in db.EMPLOYEE_CATEGORY
                                   where ec.STAT == true
-                                  select new Models.EmployeeCategory { CategoryData = ec })
+                                  select new EmployeeCategory { CategoryData = ec })
                            .OrderBy(x => x.CategoryData.NAME).ToList();
                 ViewData["categories"] = categories;
 
                 var inactive_categories = (from ec in db.EMPLOYEE_CATEGORY
                                            where ec.STAT == false
-                                           select new Models.EmployeeCategory { CategoryData = ec })
+                                           select new EmployeeCategory { CategoryData = ec })
                                 .OrderBy(x => x.CategoryData.NAME).ToList();
                 ViewData["inactive_categories"] = inactive_categories;
 
@@ -785,14 +783,14 @@ namespace SFSAcademy.Controllers
             var positions = (from ep in db.EMPLOYEE_POSITION
                              join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                               where ep.IS_ACT == true
-                              select new Models.EmployeePosition { PositionData = ep, CategoryData = ecat })
+                              select new EmployeePosition { PositionData = ep, CategoryData = ecat })
                             .OrderBy(x => x.PositionData.POS_NAME).ToList();
             ViewData["positions"] = positions;
 
             var inactive_positions = (from ep in db.EMPLOYEE_POSITION
                                       join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                                       where ep.IS_ACT == false
-                                       select new Models.EmployeePosition { PositionData = ep, CategoryData = ecat })
+                                       select new EmployeePosition { PositionData = ep, CategoryData = ecat })
                             .OrderBy(x => x.PositionData.POS_NAME).ToList();
             ViewData["inactive_positions"] = inactive_positions;
 
@@ -837,14 +835,14 @@ namespace SFSAcademy.Controllers
                 var positions = (from ep in db.EMPLOYEE_POSITION
                                  join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                                  where ep.IS_ACT == true
-                                 select new Models.EmployeePosition { PositionData = ep, CategoryData = ecat })
+                                 select new EmployeePosition { PositionData = ep, CategoryData = ecat })
                                 .OrderBy(x => x.PositionData.POS_NAME).ToList();
                 ViewData["positions"] = positions;
 
                 var inactive_positions = (from ep in db.EMPLOYEE_POSITION
                                           join ecat in db.EMPLOYEE_CATEGORY on ep.EMP_CAT_ID equals ecat.ID
                                           where ep.IS_ACT == false
-                                          select new Models.EmployeePosition { PositionData = ep, CategoryData = ecat })
+                                          select new EmployeePosition { PositionData = ep, CategoryData = ecat })
                                 .OrderBy(x => x.PositionData.POS_NAME).ToList();
                 ViewData["inactive_positions"] = inactive_positions;
 
@@ -987,13 +985,13 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var departments = (from dp in db.EMPLOYEE_DEPARTMENT
                              where dp.STAT == true
-                             select new Models.EmployeeDepartment { DepartmentData = dp})
+                             select new EmployeeDepartment { DepartmentData = dp})
                             .OrderBy(x => x.DepartmentData.NAMES).ToList();
             ViewData["departments"] = departments;
 
             var inactive_departments = (from dp in db.EMPLOYEE_DEPARTMENT
                                         where dp.STAT == false
-                                      select new Models.EmployeeDepartment { DepartmentData = dp})
+                                      select new EmployeeDepartment { DepartmentData = dp})
                             .OrderBy(x => x.DepartmentData.NAMES).ToList();
             ViewData["inactive_departments"] = inactive_departments;
 
@@ -1009,13 +1007,13 @@ namespace SFSAcademy.Controllers
             {
                 var departments = (from dp in db.EMPLOYEE_DEPARTMENT
                                    where dp.STAT == true
-                                   select new Models.EmployeeDepartment { DepartmentData = dp })
+                                   select new EmployeeDepartment { DepartmentData = dp })
                             .OrderBy(x => x.DepartmentData.NAMES).ToList();
                 ViewData["departments"] = departments;
 
                 var inactive_departments = (from dp in db.EMPLOYEE_DEPARTMENT
                                             where dp.STAT == false
-                                            select new Models.EmployeeDepartment { DepartmentData = dp })
+                                            select new EmployeeDepartment { DepartmentData = dp })
                                 .OrderBy(x => x.DepartmentData.NAMES).ToList();
                 ViewData["inactive_departments"] = inactive_departments;
 
@@ -1144,13 +1142,13 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var grades = (from gr in db.EMPLOYEE_GRADE
                                where gr.IS_ACT == true
-                               select new Models.EmployeeGrade { GradeData = gr })
+                               select new EmployeeGrade { GradeData = gr })
                             .OrderBy(x => x.GradeData.GRADE_NAME).ToList();
             ViewData["grades"] = grades;
 
             var inactive_grades = (from gr in db.EMPLOYEE_GRADE
                                    where gr.IS_ACT == false
-                                   select new Models.EmployeeGrade { GradeData = gr })
+                                   select new EmployeeGrade { GradeData = gr })
                             .OrderBy(x => x.GradeData.GRADE_NAME).ToList();
             ViewData["inactive_grades"] = inactive_grades;
 
@@ -1166,13 +1164,13 @@ namespace SFSAcademy.Controllers
             {
                 var grades = (from gr in db.EMPLOYEE_GRADE
                               where gr.IS_ACT == true
-                              select new Models.EmployeeGrade { GradeData = gr })
+                              select new EmployeeGrade { GradeData = gr })
                   .OrderBy(x => x.GradeData.GRADE_NAME).ToList();
                 ViewData["grades"] = grades;
 
                 var inactive_grades = (from gr in db.EMPLOYEE_GRADE
                                        where gr.IS_ACT == false
-                                       select new Models.EmployeeGrade { GradeData = gr })
+                                       select new EmployeeGrade { GradeData = gr })
                                 .OrderBy(x => x.GradeData.GRADE_NAME).ToList();
                 ViewData["inactive_grades"] = inactive_grades;
 
@@ -1300,13 +1298,13 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var bank_details = (from bf in db.BANK_FIELD
                           where bf.STAT == true
-                          select new Models.EmployeeBankDetail { BankFieldData = bf })
+                          select new EmployeeBankDetail { BankFieldData = bf })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
 
             var inactive_bank_details = (from bf in db.BANK_FIELD
                                          where bf.STAT == false
-                                         select new Models.EmployeeBankDetail { BankFieldData = bf })
+                                         select new EmployeeBankDetail { BankFieldData = bf })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["inactive_bank_details"] = inactive_bank_details;
 
@@ -1322,13 +1320,13 @@ namespace SFSAcademy.Controllers
             {
                 var bank_details = (from bf in db.BANK_FIELD
                                     where bf.STAT == true
-                                    select new Models.EmployeeBankDetail { BankFieldData = bf })
+                                    select new EmployeeBankDetail { BankFieldData = bf })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
                 ViewData["bank_details"] = bank_details;
 
                 var inactive_bank_details = (from bf in db.BANK_FIELD
                                              where bf.STAT == false
-                                             select new Models.EmployeeBankDetail { BankFieldData = bf })
+                                             select new EmployeeBankDetail { BankFieldData = bf })
                                 .OrderBy(x => x.BankFieldData.NAME).ToList();
                 ViewData["inactive_bank_details"] = inactive_bank_details;
 
@@ -1441,13 +1439,13 @@ namespace SFSAcademy.Controllers
             ViewBag.ErrorMessage = ErrorMessage;
             var additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                 where af.STAT == true
-                                select new Models.EmployeeAdditionalDetail { AdditionalFieldData = af })
+                                select new EmployeeAdditionalDetail { AdditionalFieldData = af })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["additional_details"] = additional_details;
 
             var inactive_additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                                where af.STAT == false
-                                               select new Models.EmployeeAdditionalDetail { AdditionalFieldData = af })
+                                               select new EmployeeAdditionalDetail { AdditionalFieldData = af })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["inactive_additional_details"] = inactive_additional_details;
 
@@ -1463,13 +1461,13 @@ namespace SFSAcademy.Controllers
             {
                 var additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                           where af.STAT == true
-                                          select new Models.EmployeeAdditionalDetail { AdditionalFieldData = af })
+                                          select new EmployeeAdditionalDetail { AdditionalFieldData = af })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
                 ViewData["additional_details"] = additional_details;
 
                 var inactive_additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                                    where af.STAT == false
-                                                   select new Models.EmployeeAdditionalDetail { AdditionalFieldData = af })
+                                                   select new EmployeeAdditionalDetail { AdditionalFieldData = af })
                                 .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
                 ViewData["inactive_additional_details"] = inactive_additional_details;
 
@@ -1684,9 +1682,9 @@ namespace SFSAcademy.Controllers
                 }
 
                 //string FullName = string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.LAST_NAME);
-                string FullName = Regex.Replace(string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.LAST_NAME), @"\s", "");
-                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = eMPLOYEE.FIRST_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, EML = eMPLOYEE.EML, ADMIN_IND = false, STDNT_IND = false, EMP_IND = true, PARNT_IND = false, HASHED_PSWRD = string.Concat(FullName, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
-                db.USERS.Add(StdUser);
+                string FullName = Regex.Replace(string.Concat(eMPLOYEE.FIRST_NAME, eMPLOYEE.LAST_NAME, Random_String(5)), @"\s", "");
+                var EmpUser = new USER() { USRNAME = FullName, FIRST_NAME = eMPLOYEE.FIRST_NAME, LAST_NAME = eMPLOYEE.LAST_NAME, EML = eMPLOYEE.EML, ROLE = "Employee" };
+                db.USERS.Add(EmpUser);
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
                 {
@@ -1700,7 +1698,7 @@ namespace SFSAcademy.Controllers
                 }
 
                 EMPLOYEE EmpResult =  db.EMPLOYEEs.Find(eMPLOYEE.ID) ;
-                EmpResult.USRID = StdUser.ID;
+                EmpResult.USRID = EmpUser.ID;
                 var leave_type = db.EMPLOYEE_LEAVE_TYPE.ToList();
                 foreach(var item in leave_type)
                 {
@@ -1719,7 +1717,7 @@ namespace SFSAcademy.Controllers
                     return View(eMPLOYEE);
                 }
                 // some code 
-                TempData["alertMessage"] = string.Concat("Employee Admission Done. Website User ID :", FullName, "     Password :", string.Concat(FullName, 123), ". Please change passord after login.");
+                TempData["alertMessage"] = string.Concat("Employee Admission Done. Website User ID :", EmpUser.USRNAME, "     Password :", EmpUser.HASHED_PSWRD, ". Please change passord after login.");
                 return RedirectToAction("Admission2", "Employee", new { Emp_id = eMPLOYEE.ID });
             }
             return View(eMPLOYEE);
@@ -1796,7 +1794,7 @@ namespace SFSAcademy.Controllers
 
             var bank_fields = (from bf in db.BANK_FIELD
                                where bf.STAT == true
-                               select new Models.EmployeeBankFieldValue { BankFieldData = bf, EMPLOYEE_ID = Emp_id,BANK_FIELD_ID= bf.ID, FIELD_VALUE = "" })
+                               select new EmployeeBankFieldValue { BankFieldData = bf, EMPLOYEE_ID = Emp_id,BANK_FIELD_ID= bf.ID, FIELD_VALUE = "" })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_fields"] = bank_fields;
 
@@ -1810,7 +1808,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Admission3(IEnumerable<SFSAcademy.Models.EmployeeBankFieldValue> EmpDet)
+        public ActionResult Admission3(IEnumerable<SFSAcademy.EmployeeBankFieldValue> EmpDet)
         {
             if (ModelState.IsValid)
             {
@@ -1848,7 +1846,7 @@ namespace SFSAcademy.Controllers
 
             var employee_additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                where af.STAT == true
-                               select new Models.EmployeeAdditionalDetailValue { AdditionalFieldData = af, EMPLOYEE_ID = Emp_id, ADDITIONAL_DETAIL_ID = af.ID, ADDITIONAL_DETAIL_VALUE = "" })
+                               select new EmployeeAdditionalDetailValue { AdditionalFieldData = af, EMPLOYEE_ID = Emp_id, ADDITIONAL_DETAIL_ID = af.ID, ADDITIONAL_DETAIL_VALUE = "" })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["employee_additional_details"] = employee_additional_details;
 
@@ -1863,7 +1861,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Admission3_1(IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetailValue> EmpAddDet, string edit_request)
+        public ActionResult Admission3_1(IEnumerable<SFSAcademy.EmployeeAdditionalDetailValue> EmpAddDet, string edit_request)
         {
             if (ModelState.IsValid)
             {
@@ -1904,8 +1902,10 @@ namespace SFSAcademy.Controllers
             return View(EmpAddDet);
         }
 
-        public ActionResult Admission4(int Emp_id, int? Reporting_Mn_Id)
+        public ActionResult Admission4(int Emp_id, int? Reporting_Mn_Id, string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             EMPLOYEE Employee = db.EMPLOYEEs.Find(Emp_id);
             ViewData["Employee"] = Employee;
 
@@ -1919,7 +1919,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id= Emp_id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id= Emp_id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             if(Reporting_Mn_Id != null)
             {
@@ -1942,7 +1942,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Admission4(IEnumerable<SFSAcademy.Models.Employee> EmpRepManager)
+        public ActionResult Admission4(IEnumerable<SFSAcademy.Employee> EmpRepManager)
         {
             int EmpId = EmpRepManager.FirstOrDefault().Employee_Id;
             int RpMgr_Id = EmpRepManager.FirstOrDefault().Reporting_Manager_Id;
@@ -1956,7 +1956,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = EmpId, Reporting_Manager_Id = RpMgr_Id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = EmpId, Reporting_Manager_Id = RpMgr_Id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             var Reporting_Manager = (from rm in db.EMPLOYEEs
                                      where rm.ID == RpMgr_Id
@@ -2056,7 +2056,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             return View(EmployeeDetail);
         }
@@ -2079,7 +2079,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             ViewData["Employee"] = EmployeeDetail;
             int new_reminder_count = 0;
@@ -2138,7 +2138,7 @@ namespace SFSAcademy.Controllers
                                   join nlty in db.COUNTRies on emp.NTLTY_ID equals nlty.ID into gnlty
                                   from subgnlty in gnlty.DefaultIfEmpty()
                                   where emp.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg),NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg),NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             ViewData["Employee"] = EmployeeDetail;
             return PartialView("_Personal");
@@ -2158,7 +2158,7 @@ namespace SFSAcademy.Controllers
                                   join nlty in db.COUNTRies on emp.NTLTY_ID equals nlty.ID into gnlty
                                   from subgnlty in gnlty.DefaultIfEmpty()
                                   where emp.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             ViewData["Employee"] = EmployeeDetail;
             COUNTRY home_country = db.COUNTRies.Find(EmployeeDetail.FirstOrDefault().EmployeeData.HOME_CTRY_ID);
@@ -2182,7 +2182,7 @@ namespace SFSAcademy.Controllers
             var bank_details = (from bf in db.BANK_FIELD
                                 join ebd in db.EMPLOYEE_BANK_DETAIL.Where(x=>x.EMP_ID == id) on bf.ID equals ebd.BANK_FLD_ID into gebd
                                 from subgebd in gebd.DefaultIfEmpty()
-                               select new SFSAcademy.Models.EmployeeBankDetail { BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = bf })
+                               select new SFSAcademy.EmployeeBankDetail { BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = bf })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
             return PartialView("_Bank_Details");
@@ -2195,7 +2195,7 @@ namespace SFSAcademy.Controllers
             var additional_details = (from af in db.EMPLOYEE_ADDITIONAL_FIELD
                                       join ead in db.EMPLOYEE_ADDITIONAL_DETAIL.Where(x=>x.EMP_ID == id) on af.ID equals ead.ADDL_FLD_ID into gead
                                       from subgead in gead.DefaultIfEmpty()
-                                select new SFSAcademy.Models.EmployeeAdditionalDetail {AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = af })
+                                select new SFSAcademy.EmployeeAdditionalDetail {AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = af })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["additional_details"] = additional_details;
             return PartialView("_Additional_Details");
@@ -2211,7 +2211,7 @@ namespace SFSAcademy.Controllers
                                       join pc in db.PAYROLL_CATEGORY on subgest.PYRL_CAT_ID equals pc.ID into gpc
                                       from subgpc in gpc.DefaultIfEmpty()
                                       where emp.ID == id
-                                      select new SFSAcademy.Models.EmployeePayroll { EmployeeData = emp, PayrollCatData = (subgpc == null ? null : subgpc), SalaryStructureData = (subgest == null ? null : subgest) })
+                                      select new SFSAcademy.EmployeePayroll { EmployeeData = emp, PayrollCatData = (subgpc == null ? null : subgpc), SalaryStructureData = (subgest == null ? null : subgest) })
                             .OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["payroll_details"] = payroll_details;
             return PartialView("_Payroll_Details");
@@ -2272,7 +2272,7 @@ namespace SFSAcademy.Controllers
                                   join nlty in db.COUNTRies on emp.NTLTY_ID equals nlty.ID into gnlty
                                   from subgnlty in gnlty.DefaultIfEmpty()
                                   where emp.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             ViewData["Employee"] = EmployeeDetail;
             int new_reminder_count = 0;
@@ -2323,7 +2323,7 @@ namespace SFSAcademy.Controllers
                                 join bf in db.BANK_FIELD on subgebd.BANK_FLD_ID equals bf.ID into gbf
                                 from subgbf in gbf.DefaultIfEmpty()
                                 where emp.ID == id
-                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
+                                select new SFSAcademy.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
             var additional_details = (from emp in db.EMPLOYEEs
@@ -2332,7 +2332,7 @@ namespace SFSAcademy.Controllers
                                       join af in db.EMPLOYEE_ADDITIONAL_FIELD on subgead.ADDL_FLD_ID equals af.ID into gaf
                                       from subgaf in gaf.DefaultIfEmpty()
                                       where emp.ID == id
-                                      select new SFSAcademy.Models.EmployeeAdditionalDetail { EmployeeData = emp, AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = (subgaf == null ? null : subgaf) })
+                                      select new SFSAcademy.EmployeeAdditionalDetail { EmployeeData = emp, AdditionalDetailData = (subgead == null ? null : subgead), AdditionalFieldData = (subgaf == null ? null : subgaf) })
                             .OrderBy(x => x.AdditionalFieldData.NAME).ToList();
             ViewData["additional_details"] = additional_details;
 
@@ -2363,7 +2363,7 @@ namespace SFSAcademy.Controllers
                                   join nlty in db.COUNTRies on emp.NTLTY_ID equals nlty.ID into gnlty
                                   from subgnlty in gnlty.DefaultIfEmpty()
                                   where subged.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             ViewData["employees"] = EmployeeDetail;
             return PartialView("_employee_view_all_list");
@@ -2448,7 +2448,7 @@ namespace SFSAcademy.Controllers
                                   join nlty in db.COUNTRies on emp.NTLTY_ID equals nlty.ID into gnlty
                                   from subgnlty in gnlty.DefaultIfEmpty()
                                   orderby emp.FIRST_NAME, emp.LAST_NAME, subged.NAMES
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).Distinct();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), NationalityData = (subgnlty == null ? null : subgnlty) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -2577,11 +2577,11 @@ namespace SFSAcademy.Controllers
         {
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var finance_manager = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Where(x => x.PRIVILEGE_TAG.DESCRIPTION == "Finance Control").ToList();
+            var finance_manager = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Where(x => x.PRIVILEGE_TAG == "Finance Control").ToList();
             /*var finance_manager = (from pv in db.PRIVILEGES
                                    where pv.PRIVILEGE_TAG == "Finance Control"
                                    select pv).ToList();*/
-            var Config = new Models.Configuration();
+            var Config = new Configuration();
             string finance = Config.find_by_config_value("Finance");
             DateTime SALARY_DATE2 = Convert.ToDateTime(SALARY_DATE);
             ViewBag.SALARY_DATE = SALARY_DATE2.ToShortDateString();
@@ -2594,8 +2594,8 @@ namespace SFSAcademy.Controllers
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                            join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                           where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
-                                           select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
+                                           where pr.PRIVILEGE_TAG == "Finance Control"
+                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
                 var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
                 db.EVENTs.Add(PG_eVENT);
                 db.SaveChanges();
@@ -2743,7 +2743,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.EMP_DEPT_ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
             ViewData["employees"] = EmployeeDetail;
 
             return PartialView("_Employee_Select_List");
@@ -2756,12 +2756,12 @@ namespace SFSAcademy.Controllers
             ViewData["employee"] = employee;
             var independent_categories = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
             var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["employee_additional_categories"] = employee_additional_categories;
@@ -2780,7 +2780,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create_Monthly_Payslip(IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories, DateTime SAL_DATE)
+        public ActionResult Create_Monthly_Payslip(IEnumerable<SFSAcademy.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories, DateTime SAL_DATE)
         {
             EMPLOYEE employee = db.EMPLOYEEs.Find(independent_categories.Where(X=>X.PayrollCategoryId != 0).FirstOrDefault().EmployeeId);
             ViewData["employee"] = employee;
@@ -2788,12 +2788,12 @@ namespace SFSAcademy.Controllers
             ViewBag.salary_date = salary_date;
             var independent_categories_val = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories_val;
             var dependent_categories_val = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories_val;
             var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["employee_additional_categories"] = employee_additional_categories;
@@ -2883,8 +2883,8 @@ namespace SFSAcademy.Controllers
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                            join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                           where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
-                                           select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
+                                           where pr.PRIVILEGE_TAG == "Finance Control"
+                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
                 var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
                 db.EVENTs.Add(PG_eVENT);
                 foreach (var item in finance_manager_ids)
@@ -3047,7 +3047,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.EMP_DEPT_ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Salary_date = psl.Salary_date }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Salary_date = psl.Salary_date }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
             ViewData["employees"] = EmployeeDetail;
 
             return PartialView("_Rejected_Employee_Select_List");
@@ -3086,7 +3086,7 @@ namespace SFSAcademy.Controllers
             ViewBag.salary_date = SAL_DATE;
             var employee = db.EMPLOYEEs.Find(emp_id);
             ViewData["employee"] = employee;
-            var Config = new Models.Configuration();
+            var Config = new Configuration();
             ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
             if(salary_date == null)
             {
@@ -3160,12 +3160,12 @@ namespace SFSAcademy.Controllers
             ViewData["individual"] = individual;
             var independent_categories = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
             var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["employee_additional_categories"] = employee_additional_categories;
@@ -3183,7 +3183,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Rejected_Payslip(IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories, DateTime SAL_DATE)
+        public ActionResult Edit_Rejected_Payslip(IEnumerable<SFSAcademy.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories, DateTime SAL_DATE)
         {
             EMPLOYEE employee = db.EMPLOYEEs.Find(independent_categories.Where(X => X.PayrollCategoryId != 0).FirstOrDefault().EmployeeId);
             ViewData["employee"] = employee;
@@ -3195,12 +3195,12 @@ namespace SFSAcademy.Controllers
             ViewData["individual"] = individual;
             var independent_categories_val = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories_val = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
             var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["employee_additional_categories"] = employee_additional_categories;
@@ -3276,8 +3276,8 @@ namespace SFSAcademy.Controllers
                                        join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                        join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
                                        join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
-                                       where pr.PRIVILEGE_TAG.DESCRIPTION == "Finance Control"
-                                       select new SFSAcademy.Models.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
+                                       where pr.PRIVILEGE_TAG == "Finance Control"
+                                       select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
             var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
             db.EVENTs.Add(PG_eVENT);
             foreach (var item in finance_manager_ids)
@@ -3367,7 +3367,7 @@ namespace SFSAcademy.Controllers
                     var monthly_payslips = (from ps in db.MONTHLY_PAYSLIP
                                              join pc in db.PAYROLL_CATEGORY on ps.PYRL_CAT_ID equals pc.ID
                                              where ps.SAL_DATE == Salary_Date
-                                             select new Models.MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
+                                             select new MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
 
                     var grouped_monthly_payslips = from mps in monthly_payslips
                                       group mps by mps.MonthlyPayslipData.EMP_ID into g
@@ -3404,7 +3404,7 @@ namespace SFSAcademy.Controllers
                                     join gipc in grouped_individual_payslip_categories on emp.ID equals gipc.Employee_ID into ggipc
                                     from subgipc in ggipc.DefaultIfEmpty()
                                     where emp.EMP_DEPT_ID == departments
-                                    select new SFSAcademy.Models.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount) }).Distinct();
+                                    select new SFSAcademy.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount) }).Distinct();
                     ViewData["payslips"] = payslips.ToList();
 
                     return View();
@@ -3423,13 +3423,13 @@ namespace SFSAcademy.Controllers
             ViewBag.Salary_Date = salary_date;
             ViewBag.Selected_Salary_Date = salary_date.Value.ToShortDateString();
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
-            var Config = new Models.Configuration();
+            var Config = new Configuration();
             ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
                                     where mp.SAL_DATE == salary_date &&  emp.ID == id
-                                    select new Models.MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
+                                    select new MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
             ViewData["monthly_payslips"] = monthly_payslips;
             ViewBag.Status = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : null);
             var individual_payslips = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == salary_date).ToList();
@@ -3438,7 +3438,7 @@ namespace SFSAcademy.Controllers
             var monthly_payslips_val = (from ps in db.MONTHLY_PAYSLIP
                                     join pc in db.PAYROLL_CATEGORY on ps.PYRL_CAT_ID equals pc.ID
                                     where ps.SAL_DATE == salary_date
-                                        select new Models.MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
+                                        select new MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
 
             var grouped_monthly_payslips = from mps in monthly_payslips_val
                                            group mps by mps.MonthlyPayslipData.EMP_ID into g
@@ -3479,7 +3479,7 @@ namespace SFSAcademy.Controllers
                             join gipc in grouped_individual_payslip_categories on emp.ID equals gipc.Employee_ID into ggipc
                             from subgipc in ggipc.DefaultIfEmpty()
                             where emp.ID == id
-                            select new SFSAcademy.Models.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount), Net_Non_Deductionable_Amount = (subgipc == null ? gmp.Non_Deductionable_Amount : gmp.Non_Deductionable_Amount + subgipc.Non_Deductionable_Amount), Net_Deductionable_Amount = (subgipc == null ? gmp.Deductionable_Amount : gmp.Deductionable_Amount + subgipc.Deductionable_Amount) }).Distinct();
+                            select new SFSAcademy.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount), Net_Non_Deductionable_Amount = (subgipc == null ? gmp.Non_Deductionable_Amount : gmp.Non_Deductionable_Amount + subgipc.Non_Deductionable_Amount), Net_Deductionable_Amount = (subgipc == null ? gmp.Deductionable_Amount : gmp.Deductionable_Amount + subgipc.Deductionable_Amount) }).Distinct();
 
             ViewData["salary"] = payslips;
             
@@ -3499,14 +3499,14 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.ID == id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).FirstOrDefault();
-            var Config = new Models.Configuration();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).FirstOrDefault();
+            var Config = new Configuration();
             ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
                                     where mp.SAL_DATE == salary_date && emp.ID == id
-                                    select new Models.MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
+                                    select new MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
             ViewData["monthly_payslips"] = monthly_payslips;
             ViewBag.Status = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : null);
             var individual_payslips = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == salary_date).ToList();
@@ -3515,7 +3515,7 @@ namespace SFSAcademy.Controllers
             var monthly_payslips_val = (from ps in db.MONTHLY_PAYSLIP
                                         join pc in db.PAYROLL_CATEGORY on ps.PYRL_CAT_ID equals pc.ID
                                         where ps.SAL_DATE == salary_date
-                                        select new Models.MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
+                                        select new MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
 
             var grouped_monthly_payslips = from mps in monthly_payslips_val
                                            group mps by mps.MonthlyPayslipData.EMP_ID into g
@@ -3556,7 +3556,7 @@ namespace SFSAcademy.Controllers
                             join gipc in grouped_individual_payslip_categories on emp.ID equals gipc.Employee_ID into ggipc
                             from subgipc in ggipc.DefaultIfEmpty()
                             where emp.ID == id
-                            select new SFSAcademy.Models.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount), Net_Non_Deductionable_Amount = (subgipc == null ? gmp.Non_Deductionable_Amount : gmp.Non_Deductionable_Amount + subgipc.Non_Deductionable_Amount), Net_Deductionable_Amount = (subgipc == null ? gmp.Deductionable_Amount : gmp.Deductionable_Amount + subgipc.Deductionable_Amount) }).Distinct();
+                            select new SFSAcademy.Payslip { EmployeeData = emp, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount), Net_Non_Deductionable_Amount = (subgipc == null ? gmp.Non_Deductionable_Amount : gmp.Non_Deductionable_Amount + subgipc.Non_Deductionable_Amount), Net_Deductionable_Amount = (subgipc == null ? gmp.Deductionable_Amount : gmp.Deductionable_Amount + subgipc.Deductionable_Amount) }).Distinct();
 
             ViewData["salary"] = payslips;
             var bank_details = (from emp in db.EMPLOYEEs
@@ -3565,7 +3565,7 @@ namespace SFSAcademy.Controllers
                                 join bf in db.BANK_FIELD on subgebd.BANK_FLD_ID equals bf.ID into gbf
                                 from subgbf in gbf.DefaultIfEmpty()
                                 where emp.ID == id
-                                select new SFSAcademy.Models.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
+                                select new SFSAcademy.EmployeeBankDetail { EmployeeData = emp, BankDetailData = (subgebd == null ? null : subgebd), BankFieldData = (subgbf == null ? null : subgbf) })
                             .OrderBy(x => x.BankFieldData.NAME).ToList();
             ViewData["bank_details"] = bank_details;
 
@@ -3604,7 +3604,7 @@ namespace SFSAcademy.Controllers
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
                                     where mp.SAL_DATE == salary_date_val && mp.IS_APPR == false
-                                    select new Models.MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
+                                    select new MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
             ViewData["dates"] = monthly_payslips;
 
             return PartialView("_One_Click_Approve");
@@ -3654,7 +3654,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.END_DATE >= StartDate
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
+                                    select new CoursesBatch { CourseData = cs, BatchData = bt})
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -3792,7 +3792,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true 
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             if (New_Mgr_Id != null)
             {
@@ -3947,7 +3947,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = Emp_id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = Emp_id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             if (Reporting_Mn_Id != null)
             {
@@ -3970,7 +3970,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Change_Reporting_Manager(IEnumerable<SFSAcademy.Models.Employee> EmpRepManager)
+        public ActionResult Change_Reporting_Manager(IEnumerable<SFSAcademy.Employee> EmpRepManager)
         {
             int EmpId = EmpRepManager.FirstOrDefault().Employee_Id;
             int RpMgr_Id = EmpRepManager.FirstOrDefault().Reporting_Manager_Id;
@@ -3984,7 +3984,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = EmpId, Reporting_Manager_Id = RpMgr_Id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg), Employee_Id = EmpId, Reporting_Manager_Id = RpMgr_Id }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             var Reporting_Manager = (from rm in db.EMPLOYEEs
                                      where rm.ID == RpMgr_Id
@@ -4164,6 +4164,24 @@ namespace SFSAcademy.Controllers
             return PhotoId;
         }
 
+        private string Random_String(int SALTLength)
+        {
+            string allowedChars = "";
+            allowedChars = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,";
+            allowedChars += "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,";
+            allowedChars += "1,2,3,4,5,6,7,8,9,0,!,@,#,$,%,&,?";
+            char[] sep = { ',' };
+            string[] arr = allowedChars.Split(sep);
+            string SALT = "";
+            string temp = "";
+            Random rand = new Random();
+            for (int i = 0; i < SALTLength; i++)
+            {
+                temp = arr[rand.Next(0, arr.Length)];
+                SALT += temp;
+            }
+            return SALT;
+        }
         private byte[] LoadImage(int id, out string type)
         {
             byte[] fileBytes = null;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using SFSAcademy.Helpers;
 using System.Web.Mvc;
 
-namespace SFSAcademy.Models
+namespace SFSAcademy
 {
     //public class NewsMaster
     //{

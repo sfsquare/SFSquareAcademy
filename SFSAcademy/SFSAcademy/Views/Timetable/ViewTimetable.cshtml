@@ -14,7 +14,6 @@
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".LoaderBox").hide();
         var selectedBatchID = $('#BatchDropDown').val();
         var SelectedTTId = $('#TiemtableDropDown').val();
         $.get('/Timetable/Update_Timetable_View?course_id=' + selectedBatchID + "&timetable_id=" + SelectedTTId, function (data) {

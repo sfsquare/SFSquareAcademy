@@ -1,4 +1,4 @@
-﻿@model SFSAcademy.Models.User
+﻿@model SFSAcademy.USER
 
 @{
     ViewBag.Title = "Login";
@@ -14,32 +14,29 @@
         @using (Html.BeginForm())
         {
             <div id="login_area">
-                <label for="username">@Html.LabelFor(u => u.UserName)</label>
+                <label for="username">@Html.LabelFor(u => u.USRNAME, "User Name")</label>
                 <div id="username_textbox_bg">
-                    @Html.TextBoxFor(u => u.UserName)
-                    @Html.ValidationMessageFor(u => u.UserName)
+                    @Html.TextBoxFor(u => u.USRNAME)
+                    @Html.ValidationMessageFor(u => u.USRNAME)
                 </div>
-                <label for="password">@Html.LabelFor(u => u.Password)</label>
+                <label for="password">@Html.LabelFor(u => u.HASHED_PSWRD, "Password")</label>
                 <div id="password_textbox_bg">
-                    @Html.PasswordFor(u => u.Password)
-                    @Html.ValidationMessageFor(u => u.Password)
+                    @Html.PasswordFor(u => u.HASHED_PSWRD)
+                    @Html.ValidationMessageFor(u => u.HASHED_PSWRD)
                 </div>
-                <div id="notice-box">
-                    @if (ViewBag.ErrorMessage != null)
-                    {
-                        <div id="notice">
-                            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-                        </div>                     
-                    }                   
-                </div>
+
                 <div id="submit_area">
                     <input type="submit" value="Log In" />
                 </div>
                 @if (ViewBag.ErrorMessage != null)
                 {
                     <label for="forgot_password" class="forgot_password_link">
+                        @ViewBag.ErrorMessage
+                    </label>
+                    <label for="forgot_password" class="forgot_password_link">
                         Contact Admin If you forgot Password.
                     </label>
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                 }
             </div>
         }

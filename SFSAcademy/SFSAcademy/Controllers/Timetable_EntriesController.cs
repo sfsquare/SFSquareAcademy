@@ -8,9 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy;
 using SFSAcademy.Helpers;
-using SFSAcademy.Models;
 
 
 namespace SFSAcademy.Controllers
@@ -36,7 +34,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.END_DATE >= StartDate
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -167,7 +165,7 @@ namespace SFSAcademy.Controllers
                                join sub in db.SUBJECTs on timete.SUBJ_ID equals sub.ID
                                join bt in db.BATCHes on sub.BTCH_ID equals bt.ID
                                where timete.TIMT_ID == timetable.ID && timete.WK_DAY_ID != wd_for_tte.ID && timete.WEEKDAY.NAME == wd_for_tte.NAME && timete.CLS_TMNG_ID != ct_for_tte.ID && timete.CLASS_TIMING.NAME == ct_for_tte.NAME && timete.EMP_ID == employee.ID && bt.IS_ACT == true && bt.IS_DEL == false
-                               select new Models.Timetable_Entries { TimetableEntryData = timete, BatchData = bt}).ToList();
+                               select new Timetable_Entries { TimetableEntryData = timete, BatchData = bt}).ToList();
                 if (overlap != null && overlap.Count() != 0)
                 {
                     ViewData["overlap"] = overlap;
@@ -192,7 +190,7 @@ namespace SFSAcademy.Controllers
 
                 if (subject.ELECTIVE_GRP_ID != null)
                 {
-                    Models.subject subject_dy_gr = new Models.subject();
+                    subject subject_dy_gr = new subject();
                     employee = subject_dy_gr.Lower_Day_Grade(subject);
                 }
                 if(employee.EMPLOYEE_GRADE.MAX_DILY_HRS != null)
@@ -222,7 +220,7 @@ namespace SFSAcademy.Controllers
 
                 if (subject.ELECTIVE_GRP_ID != null)
                 {
-                    Models.subject subject_wk_gr = new Models.subject();
+                    subject subject_wk_gr = new subject();
                     employee = subject_wk_gr.Lower_Week_Grade(subject);
                 }
                 if (employee.EMPLOYEE_GRADE.MAX_WKILY_HRS != null)

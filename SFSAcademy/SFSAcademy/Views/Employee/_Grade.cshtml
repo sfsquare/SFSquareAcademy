@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeeGrade> grades = (IList<SFSAcademy.Models.EmployeeGrade>)ViewData["grades"];
-    IList<SFSAcademy.Models.EmployeeGrade> inactive_grades = (IList<SFSAcademy.Models.EmployeeGrade>)ViewData["inactive_grades"];
+    IList<SFSAcademy.EmployeeGrade> grades = (IList<SFSAcademy.EmployeeGrade>)ViewData["grades"];
+    IList<SFSAcademy.EmployeeGrade> inactive_grades = (IList<SFSAcademy.EmployeeGrade>)ViewData["inactive_grades"];
 }
 <ul id="grade-list">
     @if (grades != null && grades.Count() != 0)

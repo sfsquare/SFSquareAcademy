@@ -23,7 +23,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL== false && bt.END_DATE >= StartDate
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -50,7 +50,7 @@ namespace SFSAcademy.Controllers
                                     join sub in db.SUBJECTs.Where(x=>x.ELECTIVE_GRP_ID != null && x.IS_DEL == false) on bt.ID equals sub.BTCH_ID into gsub
                                     from subgsub in gsub.DefaultIfEmpty()
                                     where cs.IS_DEL == false && bt.ID == id
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt, Elective_Batch_Subject = (subgsub == null ? null : subgsub) })
+                                    select new CoursesBatch { CourseData = cs, BatchData = bt, Elective_Batch_Subject = (subgsub == null ? null : subgsub) })
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
             var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == id && x.ELECTIVE_GRP_ID == null && x.IS_DEL ==false).OrderBy(x=>x.NAME).ToList();
@@ -58,7 +58,7 @@ namespace SFSAcademy.Controllers
             var elective_groups = (from eg in db.ELECTIVE_GROUP
                                    join sub in db.SUBJECTs.Where(x=>x.IS_DEL == false) on eg.ID equals sub.ELECTIVE_GRP_ID
                                    where sub.BTCH_ID == id
-                                   select new SFSAcademy.Models.ElectiveGroups { ElectiveGroupData = eg}).Distinct().OrderBy(x => x.ElectiveGroupData.ELECTIVE_GRP_NAME).ToList();
+                                   select new SFSAcademy.ElectiveGroups { ElectiveGroupData = eg}).Distinct().OrderBy(x => x.ElectiveGroupData.ELECTIVE_GRP_NAME).ToList();
             ViewData["elective_groups"] = elective_groups;
             //var subject = db.SUBJECTs.Find(sub_id);
             ViewData["subject"] = null;
@@ -67,7 +67,7 @@ namespace SFSAcademy.Controllers
             var TimetableEntry = (from tte in db.TIMETABLE_ENTRY
                                   join ssub in db.STUDENT_SUBJECT on tte.BTCH_ID equals ssub.BTCH_ID
                                   join sub in db.SUBJECTs.Where(x => x.IS_DEL == false) on ssub.SUBJ_ID equals sub.ID
-                                  select new SFSAcademy.Models.TimetableEntry { TimeTableEntryData = tte, StudentSubjectData = ssub, SubjectData = sub }).ToList();
+                                  select new SFSAcademy.TimetableEntry { TimeTableEntryData = tte, StudentSubjectData = ssub, SubjectData = sub }).ToList();
             ViewData["TimetableEntry"] = TimetableEntry;
             return PartialView("_Subjects");
         }
@@ -79,7 +79,7 @@ namespace SFSAcademy.Controllers
             var batch = (from bt in db.BATCHes
                          join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                          where bt.ID == id
-                         select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
+                         select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
             if(id2 != null)
             {
@@ -135,7 +135,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.ID == subject.BTCH_ID
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
+                                    select new CoursesBatch { CourseData = cs, BatchData = bt })
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
             if(id2 != null)

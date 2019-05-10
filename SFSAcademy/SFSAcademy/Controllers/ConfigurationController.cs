@@ -6,8 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy;
-using SFSAcademy.Models;
 using System.IO;
 
 namespace SFSAcademy.Controllers
@@ -54,7 +52,7 @@ namespace SFSAcademy.Controllers
             //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
             var grading_types = (from cs in db.COURSEs
                                  where cs.IS_DEL == false
-                                 select new SFSAcademy.Models.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
+                                 select new SFSAcademy.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
             ViewData["grading_types"] = grading_types;
             var search2 = new string[] { "GPA", "CWA","CCE" };
             var enabled_grading_types_val = db.CONFIGURATIONs.Where(a => search2.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();
@@ -68,7 +66,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Settings(IEnumerable<SFSAcademy.CONFIGURATION> config , IEnumerable<SFSAcademy.Models.GradingTypesSelect> grading_types)
+        public ActionResult Settings(IEnumerable<SFSAcademy.CONFIGURATION> config , IEnumerable<SFSAcademy.GradingTypesSelect> grading_types)
         {
             /////Picture Upload Code
             string FileName = null;
@@ -131,7 +129,7 @@ namespace SFSAcademy.Controllers
             //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
             var grading_types_Inner = (from cs in db.COURSEs
                                  where cs.IS_DEL == false
-                                 select new SFSAcademy.Models.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
+                                 select new SFSAcademy.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
             ViewData["grading_types"] = grading_types_Inner;
             var search2 = new string[] { "GPA", "CWA", "CCE" };
             var enabled_grading_types_val = db.CONFIGURATIONs.Where(a => search2.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();

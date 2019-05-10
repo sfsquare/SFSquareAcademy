@@ -6,9 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy;
 using PagedList;
-using SFSAcademy.Models;
 using System.Web.UI;
 
 namespace SFSAcademy.Controllers
@@ -29,14 +27,13 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            List<SelectListItem> options = new SelectList(db.COURSEs.OrderBy(x => x.ID), "ID", "CRS_NAME").ToList();
+            //List<SelectListItem> options = new SelectList(db.COURSEs.OrderBy(x => x.ID), "ID", "CRS_NAME").ToList();
             //add the 'ALL' option
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
-            ViewBag.searchString = options;
+            //options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
+            //ViewBag.CurrentFilter = "Active";
             return View();
         }
 
-        // GET: Fee Index
         public ActionResult _Update_Batch(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -47,8 +44,8 @@ namespace SFSAcademy.Controllers
             {
                 page = 1;
                 ///As Drop down list sends Id, we will ahve to convert this to text which is different from text box
-                int searchStringId = Convert.ToInt32(searchString);
-                searchString = db.COURSEs.Find(searchStringId).CODE.ToString();
+                //int searchStringId = Convert.ToInt32(searchString);
+                //searchString = db.COURSEs.Find(searchStringId).CODE.ToString();
             }
             else
             {
@@ -63,11 +60,18 @@ namespace SFSAcademy.Controllers
                                 from subgemp in gemp.DefaultIfEmpty()
                                 where cs.IS_DEL == false && bt.IS_DEL == false
                                 orderby cs.CODE
-                                select new Models.CoursesBatch { CourseData = cs, BatchData = bt, EmployeeData = (subgemp == null ? null : subgemp) }).Distinct();
+                                select new CoursesBatch { CourseData = cs, BatchData = bt, EmployeeData = (subgemp == null ? null : subgemp) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("ALL"))
             {
-                CourseBatchS = CourseBatchS.Where(s => s.CourseData.CODE.Contains(searchString));
+                if(searchString == "Active")
+                {
+                    CourseBatchS = CourseBatchS.Where(s => s.BatchData.IS_ACT == true);
+                }
+                else if (searchString == "Inactive")
+                {
+                    CourseBatchS = CourseBatchS.Where(s => s.BatchData.IS_ACT == false);
+                }
             }
             switch (sortOrder)
             {
@@ -219,15 +223,6 @@ namespace SFSAcademy.Controllers
             {
                 return HttpNotFound();
             }
-            return View(bATCH);
-        }
-
-        // POST: BATCH/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            BATCH bATCH = db.BATCHes.Find(id);
             //db.BATCHes.Remove(bATCH);
             bATCH.IS_DEL = true;
             bATCH.IS_ACT = false;
@@ -236,6 +231,58 @@ namespace SFSAcademy.Controllers
             {
                 db.SaveChanges();
                 ViewBag.Notice = string.Concat(ViewBag.Notice, "Batch is deleted successfully");
+                return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "Error Occured. ", e.InnerException.InnerException.Message);
+                return RedirectToAction("ManageBatches", new { ErrorMessage = ViewBag.ErrorMessage });
+            }
+        }
+
+        public ActionResult Activate(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            BATCH bATCH = db.BATCHes.Find(id);
+            if (bATCH == null)
+            {
+                return HttpNotFound();
+            }
+            bATCH.IS_ACT = true;
+            db.Entry(bATCH).State = EntityState.Modified;
+            try
+            {
+                db.SaveChanges();
+                ViewBag.Notice = string.Concat(ViewBag.Notice, "Batch is activated successfully");
+                return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "Error Occured. ", e.InnerException.InnerException.Message);
+                return RedirectToAction("ManageBatches", new { ErrorMessage = ViewBag.ErrorMessage });
+            }
+        }
+
+        public ActionResult Deactivate(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            BATCH bATCH = db.BATCHes.Find(id);
+            if (bATCH == null)
+            {
+                return HttpNotFound();
+            }
+            bATCH.IS_ACT = false;
+            db.Entry(bATCH).State = EntityState.Modified;
+            try
+            {
+                db.SaveChanges();
+                ViewBag.Notice = string.Concat(ViewBag.Notice, "Batch is Deactivated successfully");
                 return RedirectToAction("ManageBatches", new { Notice = ViewBag.Notice });
             }
             catch (Exception e)

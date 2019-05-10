@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IList<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
-    IList<SFSAcademy.Models.EmployeeBankDetail> inactive_bank_details = (IList<SFSAcademy.Models.EmployeeBankDetail>)ViewData["inactive_bank_details"];
+    IList<SFSAcademy.EmployeeBankDetail> bank_details = (IList<SFSAcademy.EmployeeBankDetail>)ViewData["bank_details"];
+    IList<SFSAcademy.EmployeeBankDetail> inactive_bank_details = (IList<SFSAcademy.EmployeeBankDetail>)ViewData["inactive_bank_details"];
 }
 <ul id="category-list">
     @if ((bank_details != null && bank_details.Count() != 0) || (inactive_bank_details != null && inactive_bank_details.Count() != 0))

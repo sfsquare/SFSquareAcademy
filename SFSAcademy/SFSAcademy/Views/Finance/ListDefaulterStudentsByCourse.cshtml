@@ -1,20 +1,20 @@
-﻿@model PagedList.IPagedList<SFSAcademy.Models.Student>
+﻿@model PagedList.IPagedList<SFSAcademy.Student>
 @using PagedList.Mvc;
-@using SFSAcademy.Models
+
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 @{ Layout = null;}
 
 @{
-    IEnumerable<SFSAcademy.Models.StundentFee> defaulters = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["defaulters"];
-    IEnumerable<SFSAcademy.Models.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.Models.FeeParticular>)ViewData["fee_particulars"];
-    IEnumerable<SFSAcademy.Models.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.Models.FeeTransaction>)ViewData["paid_fees"];
+    IEnumerable<SFSAcademy.StundentFee> defaulters = (IEnumerable<SFSAcademy.StundentFee>)ViewData["defaulters"];
+    IEnumerable<SFSAcademy.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.FeeParticular>)ViewData["fee_particulars"];
+    IEnumerable<SFSAcademy.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.FeeTransaction>)ViewData["paid_fees"];
     IEnumerable<FEE_DISCOUNT> batch_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["batch_discounts"];
     IEnumerable<FEE_DISCOUNT> student_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["student_discounts"];
     IEnumerable<FEE_DISCOUNT> category_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["category_discounts"];
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
-    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
+    IEnumerable<SFSAcademy.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.StudentsGuardians>)ViewData["guardians"];
 }
 
 @if (defaulters != null && defaulters.Count() != 0)

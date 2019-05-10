@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using PagedList;
 using System.Web.UI.WebControls;
 using System;
-using SFSAcademy.Models;
+using SFSAcademy;
 using SFSAcademy.HtmlHelpers;
 using System.Collections.Generic;
 using System.Data;
@@ -27,7 +27,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
             return View(StudentS.ToList());
         }
@@ -38,7 +38,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -97,7 +97,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("-1"))
             {
@@ -136,7 +136,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.RadioCourseBatch { CourseData = cs, BatchData = bt})
+                                    select new RadioCourseBatch { CourseData = cs, BatchData = bt})
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -175,7 +175,7 @@ namespace SFSAcademy.Controllers
                                              join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                              join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                              where ff.STDNT_ID == sTUDENTfROMuPD.ID && ff.IS_PD == false
-                                             select new Models.StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                             select new StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                        // ViewData["paid_fees"] = paid_fees_val;
 
                         if (paid_fees_val != null && paid_fees_val.Count() != 0)
@@ -234,7 +234,7 @@ namespace SFSAcademy.Controllers
                                                     join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                                     join st in db.STUDENTs on b.ID equals st.BTCH_ID
                                                     join fcol in db.FINANCE_FEE_COLLECTION on new { A = ffc.ID.ToString(), B = b.ID.ToString() } equals new { A = fcol.FEE_CAT_ID.ToString(), B = fcol.BTCH_ID.ToString() }
-                                                    where st.ID == sTUDENTfROMuPD.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && fcol.START_DATE <= System.DateTime.Now && fcol.END_DATE >= System.DateTime.Now
+                                                    where st.ID == sTUDENTfROMuPD.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && fcol.START_DATE <= System.DateTime.Now && fcol.END_DATE >= System.DateTime.Now && !ffc.NAME.Contains("Admission")
                                                     select new { FinanceFeeCategoryData = ffc, BatchData = b, StudentData = st, FeeCollectionData = fcol }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
                             foreach (var item2 in FeeCollectionSet)
                             {
@@ -268,7 +268,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.RadioCourseBatch { CourseData = cs, BatchData = bt })
+                                    select new RadioCourseBatch { CourseData = cs, BatchData = bt })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
             if (!string.IsNullOrEmpty(AdmissionNumber))
@@ -291,7 +291,7 @@ namespace SFSAcademy.Controllers
                                          join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                          join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                          where ff.STDNT_ID == sTUDENTfROMuPD.ID && ff.IS_PD == false
-                                         select new Models.StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                         select new StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                     // ViewData["paid_fees"] = paid_fees_val;
 
                     if (paid_fees_val != null && paid_fees_val.Count() != 0)
@@ -358,7 +358,7 @@ namespace SFSAcademy.Controllers
                                                 join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                                 join st in db.STUDENTs on b.ID equals st.BTCH_ID
                                                 join fcol in db.FINANCE_FEE_COLLECTION on new { A = ffc.ID.ToString(), B = b.ID.ToString() } equals new { A = fcol.FEE_CAT_ID.ToString(), B = fcol.BTCH_ID.ToString() }
-                                                where st.ID == sTUDENTfROMuPD.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && fcol.START_DATE <= System.DateTime.Now && fcol.END_DATE >= System.DateTime.Now
+                                                where st.ID == sTUDENTfROMuPD.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && fcol.START_DATE <= System.DateTime.Now && fcol.END_DATE >= System.DateTime.Now && !ffc.NAME.Contains("Admission")
                                                 select new { FinanceFeeCategoryData = ffc, BatchData = b, StudentData = st, FeeCollectionData = fcol }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
                         foreach (var item2 in FeeCollectionSet)
                         {
@@ -404,7 +404,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("-1"))
             {
@@ -459,7 +459,7 @@ namespace SFSAcademy.Controllers
                             from subimg in gn.DefaultIfEmpty()
                             where st.ID == id
                             orderby st.LAST_NAME, subb.NAME
-                            select new Models.Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
 
             if (StudentS == null)
             {
@@ -491,7 +491,7 @@ namespace SFSAcademy.Controllers
                             from subimg in gn.DefaultIfEmpty()
                             where st.ID == id
                             orderby st.LAST_NAME, subb.NAME
-                            select new Models.Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
 
             return View(StudentS.FirstOrDefault());
 
@@ -572,11 +572,11 @@ namespace SFSAcademy.Controllers
                             join grl in db.GRADING_LEVEL on subesc.GRADING_LVL_ID equals grl.ID into go
                             from subgrl in go.DefaultIfEmpty()
                             orderby st.LAST_NAME, subb.NAME
-                            select new Models.Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl) }).Distinct();
             var StudentGuardians = (from st in db.STUDENTs
                                     join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                     where st.IS_DEL == false
-                                    select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                                    select new StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
             ViewData["guardians"] = StudentGuardians;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -701,7 +701,7 @@ namespace SFSAcademy.Controllers
             }
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -760,7 +760,7 @@ namespace SFSAcademy.Controllers
                             join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
                             from subgrd in gd.DefaultIfEmpty()
                             orderby st.LAST_NAME, subb.NAME
-                            select new Models.Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -885,7 +885,7 @@ namespace SFSAcademy.Controllers
             ///Code to get the Batch along weith Course
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.IS_DEL == false
+                                    where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
                                     select new { CourseData = cs, BatchData = bt })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -921,6 +921,42 @@ namespace SFSAcademy.Controllers
         {
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             sTUDENT.USRID = UserId;
+            ViewBag.NewAdmissionNumber = sTUDENT.ADMSN_NO;
+            DateTime PDate = Convert.ToDateTime(sTUDENT.ADMSN_DATE);
+            ViewBag.ReturnDate = PDate.ToShortDateString();
+            ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENT.CTRY_ID);
+            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies.Where(o => o.NTLTY != " ").ToList(), "ID", "NTLTY", sTUDENT.NTLTY_ID);
+            ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENT.STDNT_CAT_ID);
+
+            ///Code to get the Batch along weith Course
+            var queryCourceBatch = (from cs in db.COURSEs
+                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
+                                    where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
+                                    select new { CourseData = cs, BatchData = bt })
+                                    .OrderBy(x => x.BatchData.ID).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in queryCourceBatch)
+            {
+                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
+                var result1 = new SelectListItem();
+                result1.Text = BatchFullName;
+                result1.Value = item.BatchData.ID.ToString();
+                result1.Selected = item.BatchData.ID == sTUDENT.BTCH_ID ? true : false;
+                options.Add(result1);
+            }
+
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Course and Batch" });
+            ViewBag.BTCH_ID = options;
+            //End of Code to get batch and Course
+
+            var configValue = (from C in db.CONFIGURATIONs
+                               where C.CONFIG_KEY == "AdmissionNumberAutoIncrement"
+                               select new { CONFIG_VALUE = C.CONFIG_VAL }).FirstOrDefault();
+            int NewAdmissionNumberNum = Convert.ToInt32(configValue.CONFIG_VALUE.ToString()) + 1;
+            ViewBag.NewAdmissionNumber = NewAdmissionNumberNum.ToString();
+
             if (ModelState.IsValid)
             {
                 /////Picture Upload Code
@@ -948,89 +984,17 @@ namespace SFSAcademy.Controllers
                 db.STUDENTs.Add(sTUDENT);
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
-                {
-                    ViewBag.NewAdmissionNumber = sTUDENT.ADMSN_NO;
-                    DateTime PDate = Convert.ToDateTime(sTUDENT.ADMSN_DATE);
-                    ViewBag.ReturnDate = PDate.ToShortDateString();
-                    ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENT.CTRY_ID);
-                    ViewBag.NTLTY_ID = new SelectList(db.COUNTRies.Where(o => o.NTLTY != " ").ToList(), "ID", "NTLTY", sTUDENT.NTLTY_ID);
-                    ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENT.STDNT_CAT_ID);
-                    ///Code to get the Batch along weith Course
-                    var queryCourceBatch = (from cs in db.COURSEs
-                                            join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                            where cs.IS_DEL == false && bt.IS_DEL == false
-                                            select new { CourseData = cs, BatchData = bt })
-                                            .OrderBy(x => x.BatchData.ID).ToList();
-
-
-                    List<SelectListItem> options = new List<SelectListItem>();
-                    foreach (var item in queryCourceBatch)
-                    {
-                        string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
-                        var result1 = new SelectListItem();
-                        result1.Text = BatchFullName;
-                        result1.Value = item.BatchData.ID.ToString();
-                        result1.Selected = item.BatchData.ID == sTUDENT.BTCH_ID ? true : false;
-                        options.Add(result1);
-                    }
-
-                    options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Course and Batch" });
-                    ViewBag.BTCH_ID = options;
-                    //End of Code to get batch and Course
-
-                    var configValue = (from C in db.CONFIGURATIONs
-                                       where C.CONFIG_KEY == "AdmissionNumberAutoIncrement"
-                                       select new { CONFIG_VALUE = C.CONFIG_VAL }).FirstOrDefault();
-                    int NewAdmissionNumberNum = Convert.ToInt32(configValue.CONFIG_VALUE.ToString()) + 1;
-                    ViewBag.NewAdmissionNumber = NewAdmissionNumberNum.ToString();
+                {                
                     foreach (var eve in e.EntityValidationErrors)
                     {
-                        //Console.WriteLine("Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
-                         //   eve.Entry.Entity.GetType().Name, eve.Entry.State);
                         foreach (var ve in eve.ValidationErrors)
                         {
-                            //Console.WriteLine("- Property: \"{0}\", Error: \"{1}\"",
-                            //    ve.PropertyName, ve.ErrorMessage);
                             ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
                         }
                     }
                     return View(sTUDENT);
                 }
-                catch (Exception e) {
-                    ViewBag.NewAdmissionNumber = sTUDENT.ADMSN_NO;
-                    DateTime PDate = Convert.ToDateTime(sTUDENT.ADMSN_DATE);
-                    ViewBag.ReturnDate = PDate.ToShortDateString();
-                    ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENT.CTRY_ID);
-                    ViewBag.NTLTY_ID = new SelectList(db.COUNTRies.Where(o => o.NTLTY != " ").ToList(), "ID", "NTLTY", sTUDENT.NTLTY_ID);
-                    ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENT.STDNT_CAT_ID);
-                    ///Code to get the Batch along weith Course
-                    var queryCourceBatch = (from cs in db.COURSEs
-                                            join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                            where cs.IS_DEL == false && bt.IS_DEL == false
-                                            select new { CourseData = cs, BatchData = bt })
-                                            .OrderBy(x => x.BatchData.ID).ToList();
-
-
-                    List<SelectListItem> options = new List<SelectListItem>();
-                    foreach (var item in queryCourceBatch)
-                    {
-                        string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
-                        var result1 = new SelectListItem();
-                        result1.Text = BatchFullName;
-                        result1.Value = item.BatchData.ID.ToString();
-                        result1.Selected = item.BatchData.ID == sTUDENT.BTCH_ID ? true : false;
-                        options.Add(result1);
-                    }
-
-                    options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Course and Batch" });
-                    ViewBag.BTCH_ID = options;
-                    //End of Code to get batch and Course
-
-                    var configValue = (from C in db.CONFIGURATIONs
-                                       where C.CONFIG_KEY == "AdmissionNumberAutoIncrement"
-                                       select new { CONFIG_VALUE = C.CONFIG_VAL }).FirstOrDefault();
-                    int NewAdmissionNumberNum = Convert.ToInt32(configValue.CONFIG_VALUE.ToString()) + 1;
-                    ViewBag.NewAdmissionNumber = NewAdmissionNumberNum.ToString();
+                catch (Exception e) {                   
                     ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
                     return View(sTUDENT);
                 }
@@ -1044,8 +1008,8 @@ namespace SFSAcademy.Controllers
                     db.SaveChanges();
                 }
 
-                string FullName = Regex.Replace(string.Concat(sTUDENT.FIRST_NAME, sTUDENT.LAST_NAME), @"\s", "");
-                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = sTUDENT.FIRST_NAME, LAST_NAME = sTUDENT.LAST_NAME, EML = sTUDENT.EML, ADMIN_IND = false, STDNT_IND = true, EMP_IND = false, HASHED_PSWRD = string.Concat(FullName, 123), SALT = "N", RST_PSWRD_CODE = null, RST_PSWRD_CODE_UNTL = null, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, PARNT_IND = false };
+                string FullName = Regex.Replace(string.Concat(sTUDENT.FIRST_NAME, sTUDENT.LAST_NAME, Random_String(5)), @"\s", "");
+                var StdUser = new USER() { USRNAME = FullName, FIRST_NAME = sTUDENT.FIRST_NAME, LAST_NAME = sTUDENT.LAST_NAME, EML = sTUDENT.EML, ROLE = "Student" };
                 db.USERS.Add(StdUser);
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
@@ -1090,14 +1054,10 @@ namespace SFSAcademy.Controllers
                     return View(sTUDENT);
                 }
                 // some code 
-                TempData["alertMessage"] = string.Concat("Student Admission Done. Website User ID :", FullName, "     Password :", string.Concat(sTUDENT.ADMSN_NO, 123));
+                TempData["alertMessage"] = string.Concat("Student Admission Done. Website User ID :", StdUser.USRNAME, "     Password :", StdUser.HASHED_PSWRD);
                 return RedirectToAction("Admission2", "Student", new { Std_id = sTUDENT.ID });
             }
-            ViewBag.ReturnDate = System.DateTime.Now;
-            ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME");
-            ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENT.NTLTY_ID);
-            ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENT.STDNT_CAT_ID);
-            ViewBag.NewAdmissionNumber = sTUDENT.ADMSN_NO;
+
             return View(sTUDENT);
         }
 
@@ -1212,7 +1172,7 @@ namespace SFSAcademy.Controllers
 
             var GuardianVal = (from C in db.GUARDIANs
                                where C.WARD_ID == Std_id
-                               select new Models.SelectGuardian { GuardianList = C }).ToList();
+                               select new SelectGuardian { GuardianList = C }).ToList();
             if (GuardianVal.Count().Equals(0))
             {
                 ViewBag.ErrorMessage = "Any guardian must be added to proceed forward.";
@@ -1299,7 +1259,7 @@ namespace SFSAcademy.Controllers
             ///Code to get the Batch along weith Course
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.IS_DEL == false
+                                    where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
                                     select new { CourseData = cs, BatchData = bt })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -1387,7 +1347,7 @@ namespace SFSAcademy.Controllers
                 ///Code to get the Batch along weith Course
                 var queryCourceBatch = (from cs in db.COURSEs
                                         join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                        where cs.IS_DEL == false && bt.IS_DEL == false
+                                        where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
                                         select new { CourseData = cs, BatchData = bt })
                                         .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -1428,7 +1388,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where bt.ID == sTUDENT.BTCH_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
             ViewBag.BTCH_ID = string.Concat(queryCourceBatch.FirstOrDefault().CourseData.CODE, "-", queryCourceBatch.FirstOrDefault().BatchData.NAME);
             return View(sTUDENT);
@@ -1448,7 +1408,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where bt.ID == sTUDENT.BTCH_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
             ViewBag.BTCH_ID = string.Concat(queryCourceBatch.FirstOrDefault().CourseData.CODE, "-", queryCourceBatch.FirstOrDefault().BatchData.NAME);
 
@@ -1456,7 +1416,7 @@ namespace SFSAcademy.Controllers
                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                  join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                  where ff.STDNT_ID== sTUDENT.ID && ff.IS_PD == false
-                                 select new Models.StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                 select new StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["paid_fees"] = paid_fees_val;
             Session["STD_ID_FOR_TC"] = sTUDENT.ID;
 
@@ -1548,7 +1508,7 @@ namespace SFSAcademy.Controllers
                            from subgrd in gd.DefaultIfEmpty()
                            where st.ADMSN_NO == id
                            orderby st.LAST_NAME, subb.NAME
-                           select new Models.StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (StudentVal.FirstOrDefault().GuardianData == null)
             {
@@ -1590,7 +1550,7 @@ namespace SFSAcademy.Controllers
                            join bt in db.BATCHes on st.BTCH_ID equals bt.ID
                            join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                            where st.ID == id
-                           select new Models.Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
+                           select new Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
 
             return View(Student);
         }
@@ -1602,13 +1562,13 @@ namespace SFSAcademy.Controllers
                            join bt in db.BATCHes on st.BTCH_ID equals bt.ID
                            join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                            where st.ID == id
-                           select new Models.Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
+                           select new Student { StudentData = st, BatcheData = bt, CourseData = cs }).FirstOrDefault();
             var StudentGuardians = (from st in db.STUDENTs
                                     join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                     join bt in db.BATCHes on st.BTCH_ID equals bt.ID
                                     join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                                     where st.ID == id
-                                    select new Models.StudentsGuardians { StudentData = st, GuardianData = gd, BatchData = bt, CourseData = cs }).OrderBy(x => x.StudentData.ID).Distinct();
+                                    select new StudentsGuardians { StudentData = st, GuardianData = gd, BatchData = bt, CourseData = cs }).OrderBy(x => x.StudentData.ID).Distinct();
             ViewData["guardians"] = StudentGuardians;
 
             return View(Student);
@@ -1628,7 +1588,7 @@ namespace SFSAcademy.Controllers
             }
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
             List<SelectListItem> options = new List<SelectListItem>();
             foreach (var item in queryCourceBatch)
@@ -1654,7 +1614,7 @@ namespace SFSAcademy.Controllers
             STUDENT sTUDENT = db.STUDENTs.Find(id);
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
             List<SelectListItem> options = new List<SelectListItem>();
             foreach (var item in queryCourceBatch)
@@ -1810,7 +1770,7 @@ namespace SFSAcademy.Controllers
                             from subgrd in gd.DefaultIfEmpty()
                            where st.ID == Std_id && st.IS_DEL == false
                            orderby st.LAST_NAME, subb.NAME
-                            select new Models.StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc),  EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                            select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc),  EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (parents.FirstOrDefault().GuardianData == null)
             {
@@ -1961,8 +1921,14 @@ namespace SFSAcademy.Controllers
                 gUARDIAN.CREATED_AT = DateTime.Now;
                 gUARDIAN.UPDATED_AT = DateTime.Now;
                 db.GUARDIANs.Add(gUARDIAN);
+                string FullName = Regex.Replace(string.Concat(gUARDIAN.FIRST_NAME, gUARDIAN.LAST_NAME, Random_String(5)), @"\s", "");
+                var ParUser = new USER() { USRNAME = FullName, FIRST_NAME = gUARDIAN.FIRST_NAME, LAST_NAME = gUARDIAN.LAST_NAME, EML = gUARDIAN.EML, ROLE = "Parent" };
+                db.USERS.Add(ParUser);
                 try { db.SaveChanges(); ViewBag.GuardianAddMessage = "Guardian Added successfully."; }
                 catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianAddMessage = e.InnerException.InnerException.Message; }
+                // some code 
+                TempData["alertMessage"] = string.Concat("Student Admission Done. Website User ID :", ParUser.USRNAME, "     Password :", ParUser.HASHED_PSWRD);
+
                 ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", "99");
                 //DateTime SDate = Convert.ToDateTime(parents.DOB);
                 //ViewBag.DOB = SDate.ToShortDateString();
@@ -1981,7 +1947,7 @@ namespace SFSAcademy.Controllers
 
             var GuardianVal = (from C in db.GUARDIANs
                                where C.WARD_ID == Std_id
-                               select new Models.SelectGuardian { GuardianList = C }).ToList();
+                               select new SelectGuardian { GuardianList = C }).ToList();
             if (GuardianVal.Count().Equals(0))
             {
                 ViewBag.ErrorMessage = "Any guardian must be added to proceed forward.";
@@ -2029,7 +1995,7 @@ namespace SFSAcademy.Controllers
                            join grd in db.GUARDIANs on st.ID equals grd.WARD_ID
                            where st.IS_DEL == false
                            orderby grd.LAST_NAME, grd.FIRST_NAME
-                           select new Models.StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = grd }).Distinct();
+                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = grd }).Distinct();
 
             ViewBag.WARD_ID = Std_id;
 
@@ -2079,18 +2045,18 @@ namespace SFSAcademy.Controllers
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                         join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                         where st.ID== id && fc.IS_DEL == false
-                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                        select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["dates"] = StudentValDefaulters;
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == student.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
 
             var batches_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batches"] = batches_val;
 
@@ -2099,14 +2065,14 @@ namespace SFSAcademy.Controllers
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                  where st.ID == id && fc.IS_DEL == false
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewData["paid_fees"] = paid_fees_val;
 
             var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
                                        where ff.IS_DEL == "N" && (ff.STDNT_ID == student.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == student.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
-                                       select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                       select new FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["fee_particulars"] = fee_particulars_val;
 
             var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -2166,17 +2132,17 @@ namespace SFSAcademy.Controllers
                                             join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                             join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                             where st.ID == sTUDENT.ID && fc.IS_DEL == false
-                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                            select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["dates"] = StudentValDefaulters;
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == student.BTCH_ID
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                  .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
                 var batches_val = (from cs in db.COURSEs
                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                   select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                   select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batches"] = batches_val;
 
@@ -2185,14 +2151,14 @@ namespace SFSAcademy.Controllers
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                      where st.ID == sTUDENT.ID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
                                            where fcol.BTCH_ID == student.BTCH_ID && (fc.IS_DEL == false)
-                                           select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                           select new FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -2243,12 +2209,12 @@ namespace SFSAcademy.Controllers
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                         join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                         where st.ID == id && fc.IS_DEL == false && fc.ID==id2
-                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                        select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["dates"] = StudentValDefaulters;
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == student.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
 
@@ -2257,14 +2223,14 @@ namespace SFSAcademy.Controllers
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                  where st.ID == id && fc.ID == id2
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewData["paid_fees"] = paid_fees_val;
 
             var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ffp in db.FINANCE_FEE_PARTICULAR on fc.ID equals ffp.FIN_FEE_CAT_ID
                                        where fc.IS_DEL == false && fcol.ID == id2 && ffp.IS_DEL == "N" && (ffp.STDNT_ID == student.ID || ffp.STDNT_ID == null) && (ffp.STDNT_CAT_ID == student.STDNT_CAT_ID || ffp.STDNT_CAT_ID == null)
-                                       select new Models.FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                       select new FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             ViewData["fee_particulars"] = fee_particulars_val;
 
             var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -2381,7 +2347,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.ID == id
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt})
+                                    select new CoursesBatch { CourseData = cs, BatchData = bt})
                          .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = queryCourceBatch;
             var elective_subject = db.SUBJECTs.Find(id2);
@@ -2681,6 +2647,24 @@ namespace SFSAcademy.Controllers
             return PhotoId;
         }
 
+        private string Random_String(int SALTLength)
+        {
+            string allowedChars = "";
+            allowedChars = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,";
+            allowedChars += "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,";
+            allowedChars += "1,2,3,4,5,6,7,8,9,0,!,@,#,$,%,&,?";
+            char[] sep = { ',' };
+            string[] arr = allowedChars.Split(sep);
+            string SALT = "";
+            string temp = "";
+            Random rand = new Random();
+            for (int i = 0; i < SALTLength; i++)
+            {
+                temp = arr[rand.Next(0, arr.Length)];
+                SALT += temp;
+            }
+            return SALT;
+        }
         private byte[] LoadImage(int id, out string type)
         {
             byte[] fileBytes = null;

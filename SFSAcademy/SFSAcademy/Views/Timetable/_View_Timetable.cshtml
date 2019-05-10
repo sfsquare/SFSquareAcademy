@@ -1,4 +1,4 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     BATCH batch = (BATCH)ViewData["batch"];
     TIMETABLE tt = (TIMETABLE)ViewData["tt"];
@@ -119,7 +119,7 @@ else
                                                     </span>
                                                 </div>
                                                 <div class="employee">
-                                                    @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME
+                                                    @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME
                                                 </div>
                                             }
                                         }

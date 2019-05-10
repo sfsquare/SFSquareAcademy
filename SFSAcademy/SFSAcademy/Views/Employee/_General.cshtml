@@ -1,8 +1,7 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
-    UserDetails current_user = (UserDetails)ViewData["current_user"];
     EMPLOYEE Reporting_Manager = (EMPLOYEE)ViewData["Reporting_Manager"];
-    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Employee> Employee = (IEnumerable<SFSAcademy.Employee>)ViewData["Employee"];
 }
 
 <div class="profile_top_banner">

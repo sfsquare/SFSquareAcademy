@@ -1,7 +1,7 @@
 ﻿@model SFSAcademy.SUBJECT
-@using SFSAcademy.Models
+
 @{
-    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+    SFSAcademy.CoursesBatch batch = (SFSAcademy.CoursesBatch)ViewData["batch"];
     ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
     GRADING_LEVEL greading_level = (GRADING_LEVEL)ViewData["greading_level"];
 }

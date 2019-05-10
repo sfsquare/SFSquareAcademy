@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using PagedList;
-using SFSAcademy.Models;
+using SFSAcademy;
 using System.Net;
 using System.Data.Entity;
 
@@ -37,7 +37,7 @@ namespace SFSAcademy.Controllers
                         join us in db.USERS on nw.AUTH_ID equals us.ID into uj
                         from subus in uj.DefaultIfEmpty()
                         orderby nw.UPDATED_AT
-                        select new Models.NewsDetails
+                        select new NewsDetails
                         {
                             newsId = nw.ID,
                             CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
@@ -53,7 +53,7 @@ namespace SFSAcademy.Controllers
                                            from comus in gj.DefaultIfEmpty()
                                            where com.NEWS_ID == nw.ID
                                            orderby com.ID
-                                           select new Models.NewsComments
+                                           select new NewsComments
                                            {
                                                commentId = com.ID,
                                                newsId = com.NEWS_ID,
@@ -117,7 +117,7 @@ namespace SFSAcademy.Controllers
                                       from subus in uj.DefaultIfEmpty()
                                       where nw.ID == id
                                       orderby nw.UPDATED_AT
-                                      select new Models.NewsDetails
+                                      select new NewsDetails
                                       {
                                           newsId = nw.ID,
                                           CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
@@ -136,7 +136,7 @@ namespace SFSAcademy.Controllers
                                       from comus in gj.DefaultIfEmpty()
                                       where com.NEWS_ID == id
                                       orderby com.ID
-                                      select new Models.NewsComments
+                                      select new NewsComments
                                       {
                                           commentId = com.ID,
                                           newsId = com.NEWS_ID,
@@ -163,7 +163,7 @@ namespace SFSAcademy.Controllers
             ViewBag.current_user = UserId;
             newsDetail = GetNewsDetails(id);
             ViewBag.isModerator = (userdetails.privilage_list.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-            ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
+            ViewBag.isAdminUser = (userdetails.User.ADMIN_IND == true) ? true : false;
             return View("view", newsDetail);
         }
 
@@ -176,7 +176,7 @@ namespace SFSAcademy.Controllers
                         join us in db.USERS on nw.AUTH_ID equals us.ID into uj
                         from subus in uj.DefaultIfEmpty()
                         orderby nw.UPDATED_AT
-                        select new Models.NewsDetails
+                        select new NewsDetails
                         {
                             newsId = nw.ID,
                             CreatedByUserId = (nw.AUTH_ID == null) ? 0 : nw.AUTH_ID,
@@ -192,7 +192,7 @@ namespace SFSAcademy.Controllers
                                            from comus in gj.DefaultIfEmpty()
                                            where com.NEWS_ID == nw.ID
                                            orderby com.ID
-                                           select new Models.NewsComments
+                                           select new NewsComments
                                            {
                                                commentId = com.ID,
                                                newsId = com.NEWS_ID,
@@ -258,7 +258,7 @@ namespace SFSAcademy.Controllers
             var newsComment = db.NEWS_COMMENTS.Find(commentId);
             ViewBag.current_user = userId;
             ViewBag.isModerator = (userdetails.privilage_list.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-            ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
+            ViewBag.isAdminUser = (userdetails.User.ADMIN_IND == true) ? true : false;
             db.NEWS_COMMENTS.Remove(newsComment);
             db.SaveChanges();
             newsDetail = GetNewsDetails(newsId);
@@ -280,11 +280,11 @@ namespace SFSAcademy.Controllers
                 NEWS_COMMENTS newsComment = new NEWS_COMMENTS();
                 //newsComment.CNTNT = comments.commentContent;
                 newsComment.CNTNT = news_Comment;
-                newsComment.AUTH_ID = Convert.ToInt32(userdetails.ID);
+                newsComment.AUTH_ID = Convert.ToInt32(userdetails.User.ID);
                 newsComment.CREATED_AT = System.DateTime.Now;
                 newsComment.NEWS_ID = newsId;
                 newsComment.IS_APPR = (priv != null) ? true :
-                    (userdetails.ADMIN_IND == true) ? true : false;
+                    (userdetails.User.ADMIN_IND == true) ? true : false;
                 //var config = db.CONFIGURATIONs.Find("EnableNewsCommentModeration");
                 //var _config = config.get_config_value("EnableNewsCommentModeration");
                 db.NEWS_COMMENTS.Add(newsComment);
@@ -295,7 +295,7 @@ namespace SFSAcademy.Controllers
                 //ViewBag.isAdminUser = (newsDetail.isUserAdmin == "Y") ? true : false;
 
                 ViewBag.isModerator = (userdetails.privilage_list.Select(p => p.NAME == "ManageNews").FirstOrDefault()) ? true : false;
-                ViewBag.isAdminUser = (userdetails.ADMIN_IND == true) ? true : false;
+                ViewBag.isAdminUser = (userdetails.User.ADMIN_IND == true) ? true : false;
             }
             catch (Exception ex)
             {

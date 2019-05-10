@@ -283,7 +283,7 @@ namespace SFSAcademy.Controllers
         }
         public ActionResult Leave_Reset_Settings()
         {
-            var Config = new Models.Configuration();
+            var Config = new Configuration();
             ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
             ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
             ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
@@ -294,7 +294,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Leave_Reset_Settings([Bind(Include = "automatic_leave_reset,leave_reset_period,last_reset_date,financial_year_start_date")] SFSAcademy.Models.LeaveReset LeaveReset)
+        public ActionResult Leave_Reset_Settings([Bind(Include = "automatic_leave_reset,leave_reset_period,last_reset_date,financial_year_start_date")] SFSAcademy.LeaveReset LeaveReset)
         {
             var Config1 = db.CONFIGURATIONs.Where(x=>x.CONFIG_KEY == "AutomaticLeaveReset").FirstOrDefault();
             Config1.CONFIG_VAL = LeaveReset.automatic_leave_reset == true ? "1" : "0";
@@ -319,7 +319,7 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.Notice = "Settings has been saved";
 
-            var Config = new Models.Configuration();
+            var Config = new Configuration();
             ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
             ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
             ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
@@ -412,7 +412,7 @@ namespace SFSAcademy.Controllers
             //var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == department_id).ToList();
             var employees = (from emp in db.EMPLOYEEs
                                where emp.STAT == true
-                               select new SFSAcademy.Models.EmployeeLeaveReset { EmployeeData = emp, Selected = true }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                               select new SFSAcademy.EmployeeLeaveReset { EmployeeData = emp, Selected = true }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
             ViewData["employees"] = employees;
 
 
@@ -421,7 +421,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update_Department_Leave_Reset(IList<SFSAcademy.Models.EmployeeLeaveReset> model)
+        public ActionResult Update_Department_Leave_Reset(IList<SFSAcademy.EmployeeLeaveReset> model)
         {
             decimal default_leave_count = 0;
             decimal leave_taken = 0;
@@ -497,7 +497,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.STAT == true
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
 
             return View(EmployeeDetail);
         }

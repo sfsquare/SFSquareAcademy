@@ -1,7 +1,7 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
-    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+    IEnumerable<SFSAcademy.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.EmployeeBankDetail>)ViewData["bank_details"];
 }
 
 @if (bank_details != null && bank_details.Count() != 0)
