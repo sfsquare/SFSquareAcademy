@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using SFSAcademy.Helpers;
 
-namespace SFSAcademy.Models
+namespace SFSAcademy
 {
     public class FeeCategory
     {

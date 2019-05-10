@@ -1,0 +1,165 @@
+﻿@model IList<SelectUserAccess>
+
+@{
+    PRIVILEGE Privilege = (PRIVILEGE)ViewData["Privilege"];
+    IEnumerable<SFSAcademy.UserAccessController> controller_tag = (IEnumerable<SFSAcademy.UserAccessController>)ViewData["controller_tag"];
+}
+
+@{
+    ViewBag.Title = "Privilege_Access";
+}
+
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript">
+    function hasClass(elem, className) {
+        return new RegExp(' ' + className + ' ').test(' ' + elem.className + ' ');
+    }
+
+    function addClass(elem, className) {
+        if (!hasClass(elem, className)) {
+            elem.className += ' ' + className;
+        }
+    }
+
+    function removeClass(elem, className) {
+        var newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
+        if (hasClass(elem, className)) {
+            while (newClass.indexOf(' ' + className + ' ') >= 0) {
+                newClass = newClass.replace(' ' + className + ' ', ' ');
+            }
+            elem.className = newClass.replace(/^\s+|\s+$/g, '');
+        }
+    }
+
+
+    function controller_tag_check_all_or_none(controller_tag_id, th_is) {
+        var field_value = false;
+        th_is.checked ? field_value = true : field_value = false;
+        $('.access_check_' + controller_tag_id).each(function () {
+            var elementId = this.id;
+            this.checked = field_value;
+            var $row = $("#" + elementId).closest("tr");
+            if (this.checked) {
+                $row.addClass('active');
+            }
+            else {
+                $row.removeClass('active');
+            }
+        })
+    }
+
+    function access_check(controller_tag_id, th_is) {
+        var elementId = th_is.id;
+        var $row = $("#" + elementId).closest("tr");
+        if (!th_is.checked) {
+            var x = document.getElementsByClassName('check_all_' + controller_tag_id)[0];
+            x.checked = false;
+            $row.removeClass('active');
+        }
+        else {
+            $row.addClass('active');
+            var flag = false;
+            $('.access_check_' + controller_tag_id).each(function () {
+                if (!this.checked) {
+                    flag = true;
+                }
+            });
+            if (!flag) {
+                var x = document.getElementsByClassName('check_all_' + controller_tag_id)[0];
+                x.checked = true;
+            }
+
+        }
+    }
+
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/user_profile/user_profile_logo.jpg" alt="Profile Logo">
+    <h1>Privilege Access</h1>
+    <h3>Edit Privilege Access</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div id="page-yield">
+        <div class="privileges">
+            <div class="privilege_heading" id="application-list">
+                <div class="label_field_pair"><label>Set Access for Privilege:  @Privilege.NAME</label></div>
+                <div class="user_submit_button1">
+                    <input name="commit" type="submit" value="►Save" class="user_submit_button" />
+                </div>
+            </div>
+            <div class="all_privileges_list">
+                <table style="width:100%;" align="center" cellspacing="1" cellpadding="1" class="table_design">
+                    @for (var j = 0; j < controller_tag.Count(); j++)
+                    {
+                        var all_Access = Model.Where(x => x.AccessList.CTL == controller_tag.ElementAt(j).AccessListController).ToList();
+                        if (all_Access.Count() > 0)
+                        {
+                            int controller_tag_ID = j;
+                            string TagIdString = string.Concat("access_check_", controller_tag_ID);
+                            string TagOnChangeString = string.Concat("controller_tag_check_all_or_none('", controller_tag_ID, "',this)");
+                            string TagClassString = string.Concat("check_all_", controller_tag_ID);
+                            <tr>
+                                <td>
+                                    <table id="listing" align="center" style="width: 300px;" class="privilege_table" cellpadding="1" cellspacing="1">
+                                        <tr class="tr-head">
+                                            <td>@Html.CheckBox("[" + j + "].Selected", controller_tag.ElementAt(j).Selected, new { @class = @TagClassString, onchange = @TagOnChangeString, data_value = @TagIdString })</td>
+                                            <td>@Html.Label("[" + j + "].AccessListController", controller_tag.ElementAt(j).AccessListController, htmlAttributes: new { @class = "control-label col-md-2" })</td>
+                                        </tr>
+
+                                        <tr class="tr-blank"></tr>
+                                        @{int k = 1; }
+                                        @foreach (var item in all_Access)
+                                        {
+                                            string PrClassString = string.Concat("access_check_", controller_tag_ID);
+                                            string PrOnChangeString = string.Concat("access_check('", controller_tag_ID, "',this);");
+                                            string PrIdString = string.Concat("access_check_", item.AccessList.ID);
+                                            string selectedRow = "tr-even";
+                                            int Index = Model.IndexOf(item);
+                                            if (k % 2 == 0)
+                                            {
+                                                selectedRow = "tr-odd";
+                                            }
+                                            <tr class="@selectedRow">
+                                                <td class="col-8">@Html.CheckBox("[" + Index + "].Selected", item.Selected, new { @class = @PrClassString, onchange = @PrOnChangeString, @id = @PrIdString })</td>
+                                                <td class="col-9">@Html.Label("[" + Index + "].AccessList.ACTN", item.AccessList.ACTN, new { @class = "control-label col-md-2" })</td>
+
+                                                @Html.Hidden("[" + Index + "].AccessList.ACTN", item.AccessList.ACTN)
+                                                @Html.Hidden("[" + Index + "].AccessList.ID", item.AccessList.ID)
+                                                @Html.Hidden("[" + Index + "].PRIVILEGE_ID", item.PRIVILEGE_ID)
+                                                @Html.Hidden("[" + Index + "].USRS_ID", item.USRS_ID)
+                                            </tr>
+                                            k = k + 1;
+                                        }
+
+                                    </table>
+                                </td>
+                            </tr>
+
+                        }
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+}
+<input type="hidden" value=@ViewBag.Calling_Method id="Calling_Method" name="Calling_Method" />
+
+

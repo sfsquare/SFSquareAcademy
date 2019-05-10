@@ -1,11 +1,11 @@
 ﻿@model SFSAcademy.STUDENT
-@using SFSAcademy.Models
+
 
 @{
-    IEnumerable<SFSAcademy.Models.StundentFee> dates = (IEnumerable<SFSAcademy.Models.StundentFee>)ViewData["dates"];
-    IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
-    IEnumerable<SFSAcademy.Models.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.Models.FeeParticular>)ViewData["fee_particulars"];
-    IEnumerable<SFSAcademy.Models.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.Models.FeeTransaction>)ViewData["paid_fees"];
+    IEnumerable<SFSAcademy.StundentFee> dates = (IEnumerable<SFSAcademy.StundentFee>)ViewData["dates"];
+    IList<SFSAcademy.SelectCourseBatch> batch = (IList<SFSAcademy.SelectCourseBatch>)ViewData["batch"];
+    IEnumerable<SFSAcademy.FeeParticular> fee_particulars = (IEnumerable<SFSAcademy.FeeParticular>)ViewData["fee_particulars"];
+    IEnumerable<SFSAcademy.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.FeeTransaction>)ViewData["paid_fees"];
     IEnumerable<FEE_DISCOUNT> batch_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["batch_discounts"];
     IEnumerable<FEE_DISCOUNT> student_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["student_discounts"];
     IEnumerable<FEE_DISCOUNT> category_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["category_discounts"];

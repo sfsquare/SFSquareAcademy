@@ -41,7 +41,7 @@ namespace SFSAcademy.Controllers
                                   join eg in db.EMPLOYEE_GRADE.Where(x => x.IS_ACT == true) on emp.EMP_GRADE_ID equals eg.ID into geg
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.EMP_DEPT_ID == dept_id
-                                  select new SFSAcademy.Models.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
             ViewData["employees"] = EmployeeDetail;
             DateTime today = System.DateTime.Today;
             if (next != "null")

@@ -1,16 +1,16 @@
-﻿@model SFSAcademy.Models.SubmitFees
-@using SFSAcademy.Models
+﻿@model SFSAcademy.SubmitFees
+
 @{ Layout = null;}
 
 @{
-    IEnumerable<SFSAcademy.Models.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.Models.FeeTransaction>)ViewData["paid_fees"];
+    IEnumerable<SFSAcademy.FeeTransaction> paid_fees = (IEnumerable<SFSAcademy.FeeTransaction>)ViewData["paid_fees"];
     FINANCE_FEE_CATGEORY fee_category = (FINANCE_FEE_CATGEORY)ViewData["fee_category"];
     STUDENT student = (STUDENT)ViewData["student"];
     STUDENT prev_student = (STUDENT)ViewData["prev_student"];
     STUDENT next_student = (STUDENT)ViewData["next_student"];
     IEnumerable<FINANCE_FEE> financefee = (IEnumerable<FINANCE_FEE>)ViewData["financefee"];
     FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
-    IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
+    IList<SFSAcademy.SelectCourseBatch> batch = (IList<SFSAcademy.SelectCourseBatch>)ViewData["batch"];
     IEnumerable<FINANCE_FEE_PARTICULAR> fee_particulars = (IEnumerable<FINANCE_FEE_PARTICULAR>)ViewData["fee_particulars"];
     IEnumerable<FEE_DISCOUNT> batch_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["batch_discounts"];
     IEnumerable<FEE_DISCOUNT> student_discounts = (IEnumerable<FEE_DISCOUNT>)ViewData["student_discounts"];
@@ -18,8 +18,8 @@
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
-    SFSAcademy.Models.SubmitFeeFine FeeFineAdd = (SFSAcademy.Models.SubmitFeeFine)ViewData["FeeFineAdd"];
-    SFSAcademy.Models.SubmitFeeDiscounts FeeDiscountsAdd = (SFSAcademy.Models.SubmitFeeDiscounts)ViewData["FeeDiscountsAdd"];
+    SFSAcademy.SubmitFeeFine FeeFineAdd = (SFSAcademy.SubmitFeeFine)ViewData["FeeFineAdd"];
+    SFSAcademy.SubmitFeeDiscounts FeeDiscountsAdd = (SFSAcademy.SubmitFeeDiscounts)ViewData["FeeDiscountsAdd"];
 }
 
 

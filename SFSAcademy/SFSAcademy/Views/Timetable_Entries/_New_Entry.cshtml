@@ -1,5 +1,5 @@
 ﻿@using System.Data
-@using SFSAcademy.Models
+
 @{
     BATCH batch = (BATCH)ViewData["batch"];
     IEnumerable<SFSAcademy.CLASS_TIMING> class_timing = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["class_timing"];
@@ -9,7 +9,7 @@
     IEnumerable<SFSAcademy.SUBJECT> ele_subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["ele_subjects"];
     IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
     IEnumerable<SFSAcademy.TIMETABLE_ENTRY> TimetableEntry = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["TimetableEntry"];
-    IEnumerable<SFSAcademy.Models.Timetable_Entries> overlap = (IEnumerable<SFSAcademy.Models.Timetable_Entries>)ViewData["overlap"];
+    IEnumerable<SFSAcademy.Timetable_Entries> overlap = (IEnumerable<SFSAcademy.Timetable_Entries>)ViewData["overlap"];
     IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> EmployeesSubject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["EmployeesSubject"];
     IEnumerable<SFSAcademy.CLASS_TIMING> ClassTiming = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["ClassTiming"];
     IEnumerable<SFSAcademy.WEEKDAY> WeekdayAll = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["WeekdayAll"];

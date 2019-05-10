@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using PagedList;
-using SFSAcademy.Models;
+using SFSAcademy;
 using SFSAcademy.HtmlHelpers;
 using System.IO;
 using iTextSharp.text;
@@ -289,7 +289,7 @@ namespace SFSAcademy.Controllers
                                   join subcat in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals subcat.ID
                                   join brd in db.STORE_BRAND on prd.BRAND_ID equals brd.ID
                                   where prd.PRODUCT_ID == id
-                                  select new SFSAcademy.Models.Products { ProductData = prd, CategoryData = cat, SubCategoryData = subcat, BrandData = brd }).Distinct().FirstOrDefault();
+                                  select new SFSAcademy.Products { ProductData = prd, CategoryData = cat, SubCategoryData = subcat, BrandData = brd }).Distinct().FirstOrDefault();
             if (sTORE_PRODUCTS == null)
             {
                 return HttpNotFound();
@@ -314,7 +314,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult New_Procurement(SFSAcademy.Models.Products sTORE_PRODUCTS, int? VENDOR_ID)
+        public ActionResult New_Procurement(SFSAcademy.Products sTORE_PRODUCTS, int? VENDOR_ID)
         {          
             List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.ProductData.VENDOR_ID).ToList();
             options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
@@ -459,7 +459,7 @@ namespace SFSAcademy.Controllers
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
                             where pd.IS_DEL == false && pd.IS_ACT == true
-                            select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             if (!String.IsNullOrEmpty(CATEGORY_ID))
             {
@@ -602,7 +602,7 @@ namespace SFSAcademy.Controllers
             var sTOREsUBcATEGORY = (from subcat in db.STORE_SUB_CATEGORY
                                     join cat in db.STORE_CATEGORY on subcat.STORE_CATEGORY_ID equals cat.ID
                                     where cat.ID == Category_Id
-                                    select new Models.SubCategory { SubCategoryData = subcat, CategoryData = cat })
+                                    select new SubCategory { SubCategoryData = subcat, CategoryData = cat })
                                     .OrderBy(x => x.SubCategoryData.NAME).ToList();
 
             return View(sTOREsUBcATEGORY);
@@ -801,7 +801,7 @@ namespace SFSAcademy.Controllers
             if (IncludeBackup != null && IncludeBackup != -1) { page = 1; }
             else { IncludeBackup = currentFilter11; }
             ViewBag.CurrentFilter11 = IncludeBackup;
-            IEnumerable<SFSAcademy.Models.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Models.Purchase>();
+            IEnumerable<SFSAcademy.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Purchase>();
             if (IncludeBackup == 1)
             {
                 PurchaseS = (from pd in db.STORE_PRODUCTS
@@ -813,7 +813,7 @@ namespace SFSAcademy.Controllers
                                  from subgusr in gusr.DefaultIfEmpty()
                                  orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                  where pur.IS_DEL == false
-                                 select new Models.Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
+                                 select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
                                  .Union(from pd in db.STORE_PRODUCTS
                                         join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                                         join pur in db.STORE_PURCHAGE_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
@@ -823,7 +823,7 @@ namespace SFSAcademy.Controllers
                                         from subgusr in gusr.DefaultIfEmpty()
                                         orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                         where pur.IS_DEL == false
-                                        select new Models.Purchase { ID=pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE=pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = null, PurchaseBackupData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                        select new Purchase { ID=pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE=pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = null, PurchaseBackupData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             else
             {
@@ -836,7 +836,7 @@ namespace SFSAcademy.Controllers
                                  from subgusr in gusr.DefaultIfEmpty()
                                  orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                  where pur.IS_DEL == false
-                                 select new Models.Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                 select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             
 
@@ -978,7 +978,7 @@ namespace SFSAcademy.Controllers
             dTo = DateTime.TryParse(SoldToDate, out dtTo) ? dtTo : (DateTime?)null;
             ViewBag.CurrentFilter10 = SoldToDate;
 
-            IEnumerable<SFSAcademy.Models.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Models.Purchase>();
+            IEnumerable<SFSAcademy.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Purchase>();
             if (IncludeBackup == 1)
             {
                 PurchaseS = (from pd in db.STORE_PRODUCTS
@@ -990,7 +990,7 @@ namespace SFSAcademy.Controllers
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Models.Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
+                             select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
                                  .Union(from pd in db.STORE_PRODUCTS
                                         join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                                         join pur in db.STORE_PURCHAGE_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
@@ -1000,7 +1000,7 @@ namespace SFSAcademy.Controllers
                                         from subgusr in gusr.DefaultIfEmpty()
                                         orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                         where pur.IS_DEL == false
-                                        select new Models.Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = pur, PurchaseData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                        select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = pur, PurchaseData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             else
             {
@@ -1013,7 +1013,7 @@ namespace SFSAcademy.Controllers
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Models.Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                             select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
@@ -1273,7 +1273,7 @@ namespace SFSAcademy.Controllers
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join pct in db.STORE_PURCHAGE_CART on pd.PRODUCT_ID equals pct.PRODUCT_ID
                             orderby pd.NAME, ct.NAME
-                            select new Models.PurchaseCart { ProductData = pd, CategoryData = ct, PurchaseCartData = pct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.SOLD_PRICE, PUR_DATE = pct.CREATED_AT }).Distinct();
+                            select new PurchaseCart { ProductData = pd, CategoryData = ct, PurchaseCartData = pct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.SOLD_PRICE, PUR_DATE = pct.CREATED_AT }).Distinct();
 
 
             var queryStudent = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
@@ -1378,7 +1378,7 @@ namespace SFSAcademy.Controllers
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join pct in paymentsOrg on pd.PRODUCT_ID equals pct.ProductNo
                             orderby pd.NAME, ct.NAME
-                            select new Models.PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE, SOLD_BY_ID=pct.SOLD_BY_ID, CREATED_AT = pct.CREATED_AT, UPDATED_AT = pct.UPDATED_AT, MONEY_RECEIVED_BY_ID = pct.MONEY_RECEIVED_BY_ID}).Distinct();
+                            select new PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE, SOLD_BY_ID=pct.SOLD_BY_ID, CREATED_AT = pct.CREATED_AT, UPDATED_AT = pct.UPDATED_AT, MONEY_RECEIVED_BY_ID = pct.MONEY_RECEIVED_BY_ID}).Distinct();
 
             foreach (var PurCarList in ProductSOrg.ToList())
             {
@@ -1440,7 +1440,7 @@ namespace SFSAcademy.Controllers
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join pct in payments on pd.PRODUCT_ID equals pct.ProductNo
                             orderby pd.NAME, ct.NAME
-                            select new Models.PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
+                            select new PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
 
             try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_PURCHAGE_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage," Cart cleared now."); }
             catch (Exception e) { Console.WriteLine(e); ViewBag.StoreDeleteMessage = string.Concat(ViewBag.PaymentMessage, e.InnerException.InnerException.Message); }
@@ -1645,7 +1645,7 @@ namespace SFSAcademy.Controllers
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                             select new Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
@@ -1767,7 +1767,7 @@ namespace SFSAcademy.Controllers
                              join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Models.Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
+                             select new Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
@@ -1856,7 +1856,7 @@ namespace SFSAcademy.Controllers
                             join usr in db.USERS on po.EMPLOYEE_ID equals usr.ID
                             orderby pd.NAME, ct.NAME
                             where sps.NAME == "Pending" || sps.NAME == "Approved"
-                                  select new Models.PurchageOrder { PurchaseOrderData = po,PurchageStatusData = sps, PurchageVendorData= (subgspv == null ? null : subgspv), ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), EmployeeData = usr }).ToList();
+                                  select new PurchageOrder { PurchaseOrderData = po,PurchageStatusData = sps, PurchageVendorData= (subgspv == null ? null : subgspv), ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), EmployeeData = usr }).ToList();
 
             //var pURCHAGEoRDERS = db.STORE_PURCHAGE_ORDER.Where(x => x.STATUS == 1 || x.STATUS == 2).ToList();
             return View(pURCHAGEoRDERS);
@@ -2107,7 +2107,7 @@ namespace SFSAcademy.Controllers
                             from subgbrd in gbrd.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
                             where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
-                            select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), BrandData = (subgbrd == null ? null : subgbrd) }).Distinct();
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), BrandData = (subgbrd == null ? null : subgbrd) }).Distinct();
 
             return View(ProductS.ToList());
         }

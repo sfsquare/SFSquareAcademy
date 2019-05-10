@@ -1,10 +1,10 @@
-﻿@model SFSAcademy.Models.Employee
-@using SFSAcademy.Models
+﻿@model SFSAcademy.Employee
+
 @{
-    IEnumerable<SFSAcademy.Models.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.Models.MonthyPayslip>)ViewData["monthly_payslips"];
+    IEnumerable<SFSAcademy.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.MonthyPayslip>)ViewData["monthly_payslips"];
     IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual_payslips = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual_payslips"];
-    IEnumerable<SFSAcademy.Models.Payslip> salary = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["salary"];
-    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
+    IEnumerable<SFSAcademy.Payslip> salary = (IEnumerable<SFSAcademy.Payslip>)ViewData["salary"];
+    IEnumerable<SFSAcademy.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.EmployeeBankDetail>)ViewData["bank_details"];
 }
 @{
     ViewBag.Title = "Employee_Individual_Payslip_pdf";

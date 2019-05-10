@@ -1,8 +1,18 @@
-﻿@model SFSAcademy.USER
+﻿@model SFSAcademy.User
 
 @{
     ViewBag.Title = "Create";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <div id="content-header">
     <img src="~/Content/images/user_profile/user_profile_logo.jpg" alt="Profile Logo">
     <h1>Create User</h1>
@@ -13,77 +23,70 @@
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <div id="page-yield">
-        @if (Html.ValidationSummary() != null)
+<div id="page-yield">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
         {
-            <p class="flash-msg"> @Html.ValidationSummary() </p>
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
         }
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <div id="create_user_form">
-            <div id="necessary-field-notification">Legend <span class="necessary-field">*</span> Indicate that respective field is mandatory.</div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
+
+            <div id="necessary-field-notification">Fields marked with <span class="necessary-field">*</span> must be filled.  (Only Admin User can be created)</div>
+
+            <div class="label-field-pair">
+                <label for="user_username">Username<span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.FIRST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.LAST_NAME, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <br />
+            <div class="label-field-pair">
+                <label for="user_first_name">First Name<span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.LAST_NAME, new { htmlAttributes = new { @class = "form-control"} })
-                    @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger", @style = "color:red; font-size:small"})
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.ADMIN_IND, "Admin Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
+            <br />
+            <div class="label-field-pair">
+                <label for="user_last_name">Last Name</label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.ADMIN_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.ADMIN_IND, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.STDNT_IND, "Student Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
+            <br />
+            <div class="label-field-pair">
+                <label for="user_password">Password<span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.STDNT_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.STDNT_IND, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.EMP_IND, "Employee Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
+            <br />
+            <div class="label-field-pair">
+                <label for="user_email">Email <span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.EMP_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.EMP_IND, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.PARNT_IND, "Parent Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.PARNT_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.PARNT_IND, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.SALT, "SALT", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.SALT, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SALT, "", new { @class = "text-danger" })
-                </div>
-            </div>
+            <br />
+            @Html.Hidden("Role", "Admin" )
             <div class="extender"></div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="►Create" class="user_submit_button" />
-                </div>
-            </div>
+            <input type="submit" value="►Create" class="user_submit_button" />
 
         </div>
 
-    </div>
+    }
 
-}
-
-
+</div>

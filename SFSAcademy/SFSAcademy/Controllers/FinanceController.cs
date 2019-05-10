@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using PagedList;
-using SFSAcademy.Models;
+using SFSAcademy;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -27,13 +27,11 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        // GET: Fee Index
         public ActionResult Fees_Index()
         {
             return View();
         }
 
-        // GET: Fee Index
         public ActionResult Master_Fees()
         {
             List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
@@ -43,7 +41,6 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        // GET: Fee Index
         public ActionResult _Master_Fee_List(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -67,7 +64,7 @@ namespace SFSAcademy.Controllers
             var FeeCategoryS = (from ffc in db.FINANCE_FEE_CATGEORY
                                 where ffc.IS_DEL.Equals(false) && ffc.IS_MSTR == true
                                 orderby ffc.NAME
-                                select new Models.FeeCategory { FinanceFeeCategoryData = ffc }).Distinct();
+                                select new FeeCategory { FinanceFeeCategoryData = ffc }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("ALL"))
             {
@@ -107,7 +104,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -179,7 +176,7 @@ namespace SFSAcademy.Controllers
 
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -205,12 +202,11 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Master_Category_Create");
         }
 
-        // GET: Fee Index
         public ActionResult Fee_Category_View()
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -229,7 +225,6 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        // GET: Fee Index
         public ActionResult _Fee_Category_List(string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -257,7 +252,7 @@ namespace SFSAcademy.Controllers
                                 join cs in db.COURSEs on b.CRS_ID equals cs.ID
                                 where ffc.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false)
                                 orderby ffc.NAME
-                                select new Models.FeeMasterCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs }).Distinct();
+                                select new FeeMasterCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs }).Distinct();
 
 
 
@@ -287,7 +282,6 @@ namespace SFSAcademy.Controllers
         }
 
 
-        // GET: Fee Index
         public ActionResult Master_Category_Particulars(int? id, string sortOrder, string currentFilter, string searchString, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -318,7 +312,7 @@ namespace SFSAcademy.Controllers
                                   join st in db.STUDENTs on fp.STDNT_ID equals st.ID into gst
                                   from subgst in gst.DefaultIfEmpty()
                                   where fp.IS_DEL == "N" && fp.FIN_FEE_CAT_ID == id
-                                  select new Models.FeeParticular { FeeParticularData = fp, FeeCategoryData = fc, StudentCategoryData = (subgsc == null ? null : subgsc), StudentData = (subgst == null ? null : subgst) })
+                                  select new FeeParticular { FeeParticularData = fp, FeeCategoryData = fc, StudentCategoryData = (subgsc == null ? null : subgsc), StudentData = (subgst == null ? null : subgst) })
                              .OrderBy(x => x.FeeCategoryData.ID).Distinct();
 
 
@@ -402,7 +396,7 @@ namespace SFSAcademy.Controllers
 
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -459,7 +453,7 @@ namespace SFSAcademy.Controllers
 
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                     .OrderBy(x => x.BatchData.ID).ToList();
             List<SelectListItem> options = new List<SelectListItem>();
             foreach (var item in queryCourceBatch)
@@ -499,8 +493,8 @@ namespace SFSAcademy.Controllers
             var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
                                       join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                       join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id
-                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id && b.IS_ACT == true
+                                      select new SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
 
             return PartialView("_Select_Batch_Particular", fEEcATEGORYaACCESS);
         }
@@ -722,7 +716,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.IS_DEL == false
+                                    where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
                                     select new { CourseData = cs, BatchData = bt })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -742,7 +736,7 @@ namespace SFSAcademy.Controllers
 
             var queryFeeCategoryBatch = (from fc in db.FINANCE_FEE_CATGEORY
                                          join bt in db.BATCHes.Include(x => x.COURSE) on fc.BTCH_ID equals bt.ID
-                                         where fc.IS_DEL == false && bt.IS_DEL == false && fc.IS_MSTR == false
+                                         where fc.IS_DEL == false && bt.IS_DEL == false && fc.IS_MSTR == false && bt.IS_ACT == true
                                          select new { FeeCategoryData = fc, BatchData = bt })
                                     .OrderBy(x => x.FeeCategoryData.NAME).ToList();
 
@@ -809,7 +803,7 @@ namespace SFSAcademy.Controllers
                                      join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl 
                                      from subcat in gl.DefaultIfEmpty()
                                      orderby fd.NAME
-                                     select new Models.FeeDiscount { FeeDiscountData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgffcol == null ? null : subgffcol) }).Distinct();
+                                     select new FeeDiscount { FeeDiscountData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgffcol == null ? null : subgffcol) }).Distinct();
 
             if (!String.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
             {
@@ -850,7 +844,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatchFee = (from cs in db.COURSEs
                                        join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                        join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                       where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false
+                                       where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false && bt.IS_ACT == true
                                        select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
                                     .OrderBy(x => x.FeeCategoryData.ID).ToList();
 
@@ -896,7 +890,7 @@ namespace SFSAcademy.Controllers
                 var queryCourceBatchFee = (from cs in db.COURSEs
                                            join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                            join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                           where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false
+                                           where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false && bt.IS_ACT == true
                                            select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
                                     .OrderBy(x => x.FeeCategoryData.ID).ToList();
 
@@ -1138,7 +1132,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL == false && bt.IS_DEL == false
+                                    where cs.IS_DEL == false && bt.IS_DEL == false && bt.IS_ACT == true
                                     select new { CourseData = cs, BatchData = bt })
                                     .OrderBy(x => x.BatchData.ID).ToList();
 
@@ -1158,7 +1152,7 @@ namespace SFSAcademy.Controllers
 
             var queryFeeCategoryBatch = (from fc in db.FINANCE_FEE_CATGEORY
                                     join bt in db.BATCHes.Include(x=>x.COURSE) on fc.BTCH_ID equals bt.ID
-                                    where fc.IS_DEL == false && bt.IS_DEL == false &&  fc.IS_MSTR == false
+                                    where fc.IS_DEL == false && bt.IS_DEL == false &&  fc.IS_MSTR == false && bt.IS_ACT == true
                                     select new { FeeCategoryData = fc, BatchData = bt })
                                     .OrderBy(x => x.FeeCategoryData.NAME).ToList();
 
@@ -1225,7 +1219,7 @@ namespace SFSAcademy.Controllers
                                      join cat in db.STUDENT_CATGEORY on subgmsc.RCVR_ID equals cat.ID into gl
                                      from subcat in gl.DefaultIfEmpty()
                                      orderby fd.NAME
-                                     select new Models.FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgfcol == null ? null : subgfcol) }).OrderBy(x=>x.BatchData.ID).ThenBy(x=>x.FeeFineData.FINE_DATE).Distinct();
+                                     select new FeeFine { FeeFineData = fd, FinanceFeeCategoryData = ffc, BatchData = bt, CourseData = cs, StudentData = (substd == null ? null : substd), StudentCategoryData = (subcat == null ? null : subcat), FeeCollectionData = (subgfcol == null ? null : subgfcol) }).OrderBy(x=>x.BatchData.ID).ThenBy(x=>x.FeeFineData.FINE_DATE).Distinct();
 
 
             if (!String.IsNullOrEmpty(BTCH_ID) && !BTCH_ID.Equals("-1"))
@@ -1267,7 +1261,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatchFee = (from cs in db.COURSEs
                                        join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                        join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                       where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false
+                                       where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false && bt.IS_ACT == true
                                        select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
                                     .OrderBy(x => x.FeeCategoryData.ID).ToList();
 
@@ -1302,7 +1296,7 @@ namespace SFSAcademy.Controllers
                 var queryCourceBatchFee = (from cs in db.COURSEs
                                            join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                            join fcc in db.FINANCE_FEE_CATGEORY on bt.ID equals fcc.BTCH_ID
-                                           where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false
+                                           where cs.IS_DEL == false && bt.IS_DEL == false && fcc.IS_DEL == false && bt.IS_ACT == true
                                            select new { CourseData = cs, BatchData = bt, FeeCategoryData = fcc })
                                     .OrderBy(x => x.FeeCategoryData.ID).ToList();
 
@@ -1565,8 +1559,8 @@ namespace SFSAcademy.Controllers
                                       join ffp in db.FINANCE_FEE_PARTICULAR on ffc.ID equals ffp.FIN_FEE_CAT_ID
                                       join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                       join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id
-                                      select new Models.SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).Distinct().OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id 
+                                      select new SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).Distinct().OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
 
             if (fEEcATEGORYaACCESS == null || fEEcATEGORYaACCESS.Count() == 0)
             {
@@ -1613,7 +1607,7 @@ namespace SFSAcademy.Controllers
                                          join b in db.BATCHes on ffc.BTCH_ID equals b.ID
                                          join st in db.STUDENTs on b.ID equals st.BTCH_ID
                                          join fcol in db.FINANCE_FEE_COLLECTION on new { A = ffc.ID.ToString(), B = b.ID.ToString() } equals new { A = fcol.FEE_CAT_ID.ToString(), B = fcol.BTCH_ID.ToString() }
-                                         where fcol.ID == FFeeColl.ID && ffc.ID == item.FinanceFeeCategoryData.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false
+                                         where fcol.ID == FFeeColl.ID && ffc.ID == item.FinanceFeeCategoryData.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && b.IS_ACT == true
                                          select new { FinanceFeeCategoryData = ffc, BatchData = b, StudentData = st, FeeCollectionData = fcol }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
                         foreach (var item2 in StdResult)
                         {
@@ -1651,7 +1645,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -1695,7 +1689,7 @@ namespace SFSAcademy.Controllers
                                   join cs in db.COURSEs on b.CRS_ID equals cs.ID
                                   where fc.IS_DEL == false
                                   orderby fc.NAME
-                                  select new Models.FeeCollection { FinanceFeeCollectionData = fc, BatchData = b, CourseData = cs }).Distinct();
+                                  select new FeeCollection { FinanceFeeCollectionData = fc, BatchData = b, CourseData = cs }).Distinct();
 
 
             if (!String.IsNullOrEmpty(searchString) && !searchString.Equals("-1"))
@@ -1740,7 +1734,7 @@ namespace SFSAcademy.Controllers
             ViewBag.FEE_CAT_ID = new SelectList(db.FINANCE_FEE_CATGEORY, "ID", "NAME", fINANCE_FEE_cOLLECTION.FEE_CAT_ID);
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -1785,7 +1779,7 @@ namespace SFSAcademy.Controllers
             ViewBag.FEE_CAT_ID = new SelectList(db.FINANCE_FEE_CATGEORY, "ID", "NAME", fINANCE_FEE_cOLLECTION.FEE_CAT_ID);
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -1885,8 +1879,8 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    where cs.IS_DEL ==false
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    where cs.IS_DEL ==false && bt.IS_DEL == false
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -1960,7 +1954,7 @@ namespace SFSAcademy.Controllers
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == date.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
             var fee = (from ff in db.FINANCE_FEE
@@ -2048,7 +2042,7 @@ namespace SFSAcademy.Controllers
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == id && st.ID == StudentVal.FirstOrDefault().Student_data.ID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(date.FEE_CAT_ID);
@@ -2160,13 +2154,13 @@ namespace SFSAcademy.Controllers
                 //TempData.Remove(key);
             //}
 
-            SFSAcademy.Models.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.Models.SubmitFeeDiscounts();
+            SFSAcademy.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.SubmitFeeDiscounts();
             ViewData["FeeDiscountsAdd"] = vModelDiscount;
 
-            SFSAcademy.Models.SubmitFeeFine vModelFine = new SFSAcademy.Models.SubmitFeeFine();
+            SFSAcademy.SubmitFeeFine vModelFine = new SFSAcademy.SubmitFeeFine();
             ViewData["FeeFineAdd"] = vModelFine;
 
-            SFSAcademy.Models.SubmitFees vModel = new SFSAcademy.Models.SubmitFees();
+            SFSAcademy.SubmitFees vModel = new SFSAcademy.SubmitFees();
             this.PreventResubmit(vModel);// << Fill TempData & ViewModel PreventResubmit Property
 
 
@@ -2176,7 +2170,7 @@ namespace SFSAcademy.Controllers
         [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update_Fine_Ajax(SFSAcademy.Models.SubmitFeeFine vModelFine)
+        public ActionResult Update_Fine_Ajax(SFSAcademy.SubmitFeeFine vModelFine)
         {
             int? studentID = vModelFine.StudentID;
             int? batch_id = vModelFine.Batch_id;
@@ -2190,7 +2184,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == batch_id
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
                 FINANCE_FEE_COLLECTION date_val = db.FINANCE_FEE_COLLECTION.Find(date);
@@ -2200,7 +2194,7 @@ namespace SFSAcademy.Controllers
                 var feeVal = (from ff in db.FINANCE_FEE
                               join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                               where ff.FEE_CLCT_ID == fee_collection.ID
-                              select new Models.StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
+                              select new StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
 
                 if (studentID != null)
                 {
@@ -2263,7 +2257,7 @@ namespace SFSAcademy.Controllers
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == studentID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -2477,13 +2471,13 @@ namespace SFSAcademy.Controllers
                 /* End of New code added to handle message and fee paid status*/
             }
 
-            SFSAcademy.Models.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.Models.SubmitFeeDiscounts();
+            SFSAcademy.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.SubmitFeeDiscounts();
             ViewData["FeeDiscountsAdd"] = vModelDiscount;
 
-            SFSAcademy.Models.SubmitFeeFine vModelFine2 = new SFSAcademy.Models.SubmitFeeFine();
+            SFSAcademy.SubmitFeeFine vModelFine2 = new SFSAcademy.SubmitFeeFine();
             ViewData["FeeFineAdd"] = vModelFine2;
 
-            SFSAcademy.Models.SubmitFees vModel = new SFSAcademy.Models.SubmitFees();
+            SFSAcademy.SubmitFees vModel = new SFSAcademy.SubmitFees();
             this.PreventResubmit(vModel);// << Fill TempData & ViewModel PreventResubmit Property
 
             return PartialView("_Student_Fees_Submission", vModel);
@@ -2492,7 +2486,7 @@ namespace SFSAcademy.Controllers
         [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update_Discount_Ajax(SFSAcademy.Models.SubmitFeeDiscounts vModelDiscount)
+        public ActionResult Update_Discount_Ajax(SFSAcademy.SubmitFeeDiscounts vModelDiscount)
         {
             int? studentID = vModelDiscount.StudentID;
             int? batch_id = vModelDiscount.Batch_id;
@@ -2506,7 +2500,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == batch_id
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
                 FINANCE_FEE_COLLECTION date_val = db.FINANCE_FEE_COLLECTION.Find(date);
@@ -2516,7 +2510,7 @@ namespace SFSAcademy.Controllers
                 var feeVal = (from ff in db.FINANCE_FEE
                               join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                               where ff.FEE_CLCT_ID == fee_collection.ID
-                              select new Models.StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
+                              select new StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
 
                 if (studentID != null)
                 {
@@ -2579,7 +2573,7 @@ namespace SFSAcademy.Controllers
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == studentID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -2804,13 +2798,13 @@ namespace SFSAcademy.Controllers
                 /* End of New code added to handle message and fee paid status*/
             }
 
-            SFSAcademy.Models.SubmitFeeDiscounts vModelDiscount2 = new SFSAcademy.Models.SubmitFeeDiscounts();
+            SFSAcademy.SubmitFeeDiscounts vModelDiscount2 = new SFSAcademy.SubmitFeeDiscounts();
             ViewData["FeeDiscountsAdd"] = vModelDiscount2;
 
-            SFSAcademy.Models.SubmitFeeFine vModelFine = new SFSAcademy.Models.SubmitFeeFine();
+            SFSAcademy.SubmitFeeFine vModelFine = new SFSAcademy.SubmitFeeFine();
             ViewData["FeeFineAdd"] = vModelFine;
 
-            SFSAcademy.Models.SubmitFees vModel = new SFSAcademy.Models.SubmitFees();
+            SFSAcademy.SubmitFees vModel = new SFSAcademy.SubmitFees();
             this.PreventResubmit(vModel);// << Fill TempData & ViewModel PreventResubmit Property
 
             return PartialView("_Student_Fees_Submission", vModel);
@@ -2819,7 +2813,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult update_ajax( SFSAcademy.Models.SubmitFees vModel)
+        public virtual ActionResult update_ajax( SFSAcademy.SubmitFees vModel)
         {
             int? student = vModel.StudentID;
             int? batch_id = vModel.Batch_id;
@@ -2836,7 +2830,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == batch_id
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
                 FINANCE_FEE_COLLECTION date_val = db.FINANCE_FEE_COLLECTION.Find(date);
@@ -2846,7 +2840,7 @@ namespace SFSAcademy.Controllers
                 var feeVal = (from ff in db.FINANCE_FEE
                               join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                               where ff.FEE_CLCT_ID == fee_collection.ID
-                              select new Models.StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
+                              select new StundentFee { FinanceFeeData = ff, StudentData = st }).OrderBy(x => x.StudentData.ID).Distinct();
 
                 if (student != null)
                 {
@@ -2909,7 +2903,7 @@ namespace SFSAcademy.Controllers
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == student
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -3112,7 +3106,7 @@ namespace SFSAcademy.Controllers
                                                       join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                                       join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                                       where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == student
-                                                      select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                                      select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                                 ViewData["paid_fees"] = paid_fees_val2;
                                 var student_fine_val2 = (from ff in db.FEE_FINE
                                                          where ff.FIN_FEE_CAT_ID == date_val.FEE_CAT_ID && ff.TYPE == "Student" && ff.RCVR_ID == StudentVal.FirstOrDefault().Student_data.ID && (ff.FEE_CLCT_ID == date_val.ID || (ff.FEE_CLCT_ID == null && ff.FINE_DATE <= date_val.DUE_DATE))
@@ -3146,10 +3140,10 @@ namespace SFSAcademy.Controllers
                 
             }
 
-            SFSAcademy.Models.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.Models.SubmitFeeDiscounts();
+            SFSAcademy.SubmitFeeDiscounts vModelDiscount = new SFSAcademy.SubmitFeeDiscounts();
             ViewData["FeeDiscountsAdd"] = vModelDiscount;
 
-            SFSAcademy.Models.SubmitFeeFine vModelFine = new SFSAcademy.Models.SubmitFeeFine();
+            SFSAcademy.SubmitFeeFine vModelFine = new SFSAcademy.SubmitFeeFine();
             ViewData["FeeFineAdd"] = vModelFine;
 
             this.PreventResubmit(vModel);// << Fill TempData & ViewModel PreventResubmit Property
@@ -3176,7 +3170,7 @@ namespace SFSAcademy.Controllers
                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == StudentVal.ID
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewData["paid_fees"] = paid_fees_val;
 
             FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -3360,7 +3354,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == student.BTCH_ID
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
 
@@ -3401,7 +3395,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == MinBatchId
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                  .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
                 List<SelectListItem> options2 = new List<SelectListItem>();
@@ -3747,7 +3741,7 @@ namespace SFSAcademy.Controllers
         {
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
              .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -3804,7 +3798,7 @@ namespace SFSAcademy.Controllers
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == date.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
 
@@ -3823,7 +3817,7 @@ namespace SFSAcademy.Controllers
                                             join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                             join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                             where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false && ff.IS_PD == false && fc.ID == date.ID && fc.BTCH_ID == date.BTCH_ID
-                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                            select new StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 if (student != null)
                 {
                     StudentValDefaulters = StudentValDefaulters.Where(x => x.StudentData.ID == student.ID);
@@ -3833,7 +3827,7 @@ namespace SFSAcademy.Controllers
                 var StudentGuardians = (from st in db.STUDENTs
                                             join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                             where st.BTCH_ID == date.BTCH_ID && st.IS_DEL == false
-                                            select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                                            select new StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
                 if (student != null)
                 {
                     StudentGuardians = StudentGuardians.Where(x => x.StudentData.ID == student.ID);
@@ -3844,14 +3838,14 @@ namespace SFSAcademy.Controllers
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
                                            where fcol.ID == id && fc.IS_DEL == false && ff.IS_DEL == "N"
-                                           select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                           select new FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var paid_fees_val = (from ff in db.FINANCE_FEE
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == id
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -3901,7 +3895,7 @@ namespace SFSAcademy.Controllers
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == batch_id
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
 
@@ -3912,27 +3906,27 @@ namespace SFSAcademy.Controllers
                                             join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                             join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                             where st.BTCH_ID == batch_id && ff.IS_PD ==false && fc.ID == date
-                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                            select new StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["student"] = StudentValDefaulters;
 
                 var StudentGuardians = (from st in db.STUDENTs
                                         join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                         where st.BTCH_ID == batch_id && st.IS_DEL == false
-                                        select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                                        select new StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
                 ViewData["guardians"] = StudentGuardians;
 
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
                                            where fcol.ID == date && fc.IS_DEL == false && ff.IS_DEL == "N"
-                                           select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                           select new FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var paid_fees_val = (from ff in db.FINANCE_FEE
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == date
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -3984,7 +3978,7 @@ namespace SFSAcademy.Controllers
 
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -4020,8 +4014,8 @@ namespace SFSAcademy.Controllers
             var StudentValDefaulters = (from ff in db.FINANCE_FEE
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                         join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
-                                        where st.IS_DEL == false && ff.IS_PD == false && fc.IS_DEL == false
-                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                        where st.IS_DEL == false && ff.IS_PD == false && fc.IS_DEL == false && fc.START_DATE <= DateTime.Now 
+                                        select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
 
             if (searchString != null && searchString != -1)
             {
@@ -4034,8 +4028,8 @@ namespace SFSAcademy.Controllers
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ff in db.FINANCE_FEE on fcol.ID equals ff.FEE_CLCT_ID
                                        join ffp in db.FINANCE_FEE_PARTICULAR on fc.ID equals ffp.FIN_FEE_CAT_ID
-                                       where fc.IS_DEL == false && ffp.IS_DEL == "N" && ff.IS_PD == false && fcol.IS_DEL == false
-                                       select new Models.FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                       where fc.IS_DEL == false && ffp.IS_DEL == "N" && ff.IS_PD == false && fcol.IS_DEL == false && fcol.START_DATE <= DateTime.Now
+                                       select new FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             if (searchString != null && searchString != -1)
             {
                 fee_particulars_val = fee_particulars_val.Where(s => s.FeeCollectionData.BTCH_ID == searchString);
@@ -4045,7 +4039,7 @@ namespace SFSAcademy.Controllers
             var StudentGuardians = (from st in db.STUDENTs
                                     join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                     where st.IS_DEL == false
-                                    select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                                    select new StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
 
             if (searchString != null && searchString != -1)
             {
@@ -4057,8 +4051,8 @@ namespace SFSAcademy.Controllers
                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  join fcol in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fcol.ID
-                                 where ff.IS_PD == false
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fcol }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 where ff.IS_PD == false && fcol.START_DATE <= DateTime.Now
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fcol }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             if (searchString != null && searchString != -1)
             {
                 paid_fees_val = paid_fees_val.Where(s => s.FeeCollectionData.BTCH_ID == searchString);
@@ -4099,7 +4093,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs}).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs}).Distinct();
 
             if (searchString != null && searchString != -1)
             {
@@ -4138,8 +4132,8 @@ namespace SFSAcademy.Controllers
             var StudentValDefaulters = (from ff in db.FINANCE_FEE
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                         join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
-                                        where st.IS_DEL == false && ff.IS_PD == false && fc.IS_DEL == false
-                                        select new Models.StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                        where st.IS_DEL == false && ff.IS_PD == false && fc.IS_DEL == false && fc.START_DATE <= DateTime.Now
+                                        select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
 
             if (batch_id != null && batch_id != -1)
             {
@@ -4152,8 +4146,8 @@ namespace SFSAcademy.Controllers
                                        join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                        join ff in db.FINANCE_FEE on fcol.ID equals ff.FEE_CLCT_ID
                                        join ffp in db.FINANCE_FEE_PARTICULAR on fc.ID equals ffp.FIN_FEE_CAT_ID
-                                       where fc.IS_DEL == false && ffp.IS_DEL == "N" && ff.IS_PD == false && fcol.IS_DEL == false
-                                       select new Models.FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                       where fc.IS_DEL == false && ffp.IS_DEL == "N" && ff.IS_PD == false && fcol.IS_DEL == false && fcol.START_DATE <= DateTime.Now
+                                       select new FeeParticular { FeeParticularData = ffp, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
             if (batch_id != null && batch_id != -1)
             {
                 fee_particulars_val = fee_particulars_val.Where(s => s.FeeCollectionData.BTCH_ID == batch_id);
@@ -4163,7 +4157,7 @@ namespace SFSAcademy.Controllers
             var StudentGuardians = (from st in db.STUDENTs
                                     join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                     where st.IS_DEL == false
-                                    select new Models.StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
+                                    select new StudentsGuardians { StudentData = st, GuardianData = gd }).OrderBy(x => x.StudentData.ID).Distinct();
 
             if (batch_id != null && batch_id != -1)
             {
@@ -4175,8 +4169,8 @@ namespace SFSAcademy.Controllers
                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  join fcol in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fcol.ID
-                                 where ff.IS_PD == false
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fcol }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 where ff.IS_PD == false && fcol.START_DATE <= DateTime.Now
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fcol }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             if (batch_id != null && batch_id != -1)
             {
                 paid_fees_val = paid_fees_val.Where(s => s.FeeCollectionData.BTCH_ID == batch_id);
@@ -4217,7 +4211,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
             if (batch_id != null && batch_id != -1)
             {
@@ -4273,7 +4267,7 @@ namespace SFSAcademy.Controllers
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
 
@@ -4284,7 +4278,7 @@ namespace SFSAcademy.Controllers
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                      where st.ID == StudentVal.FirstOrDefault().Student_data.ID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff, FeeCollectionData = fc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 ViewData["student"] = StudentVal;
@@ -4293,13 +4287,13 @@ namespace SFSAcademy.Controllers
                                             join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                             join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                             where st.ID == StudentVal.FirstOrDefault().Student_data.ID && ff.IS_PD == false && fc.BTCH_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID
-                                            select new Models.StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                            select new StundentFee { StudentData = st, FeeCollectionData = fc }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["defaulters"] = StudentValDefaulters;
                 var fee_particulars_val = (from fcol in db.FINANCE_FEE_COLLECTION
                                            join fc in db.FINANCE_FEE_CATGEORY on fcol.FEE_CAT_ID equals fc.ID
                                            join ff in db.FINANCE_FEE_PARTICULAR on fc.ID equals ff.FIN_FEE_CAT_ID
                                            where fcol.BTCH_ID == StudentVal.FirstOrDefault().Student_data.BTCH_ID && fc.IS_DEL == false && ff.IS_DEL == "N"
-                                           select new Models.FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                                           select new FeeParticular { FeeParticularData = ff, FeeCategoryData = fc, FeeCollectionData = fcol }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
                 ViewData["fee_particulars"] = fee_particulars_val;
 
                 var batch_discounts_val = (from ff in db.FEE_DISCOUNT
@@ -4348,7 +4342,7 @@ namespace SFSAcademy.Controllers
                             join cs in db.COURSEs on b.CRS_ID equals cs.ID
                             where st.IS_DEL == false
                             orderby st.LAST_NAME, b.NAME
-                            select new Models.Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
+                            select new Student { StudentData = st, BatcheData = b, CourseData = cs }).Distinct();
 
             return View(StudentS.ToList());
 
@@ -4368,7 +4362,7 @@ namespace SFSAcademy.Controllers
                 var batch_val = (from cs in db.COURSEs
                                  join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                  where bt.ID == student.BTCH_ID
-                                 select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                 select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
 
@@ -4413,7 +4407,7 @@ namespace SFSAcademy.Controllers
             var batch_val = (from cs in db.COURSEs
                              join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                              where bt.ID == date.BTCH_ID
-                             select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                             select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                              .OrderBy(x => x.BatchData.ID).ToList();
             ViewData["batch"] = batch_val;
             var fee = (from ff in db.FINANCE_FEE
@@ -4486,7 +4480,7 @@ namespace SFSAcademy.Controllers
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                      join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                      where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == StudentVal.FirstOrDefault().Student_data.ID
-                                     select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                     select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
                 ViewData["paid_fees"] = paid_fees_val;
 
                 FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -4615,7 +4609,7 @@ namespace SFSAcademy.Controllers
                                  join st in db.STUDENTs on ff.STDNT_ID equals st.ID
                                  join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                  where ff.FEE_CLCT_ID == fee_collection.ID && st.ID == StudentVal.ID
-                                 select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                 select new FeeTransaction { FinanceTransactionData = ft, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewData["paid_fees"] = paid_fees_val;
 
             FINANCE_FEE_CATGEORY fee_category = db.FINANCE_FEE_CATGEORY.Find(fee_collection.FEE_CAT_ID);
@@ -4734,11 +4728,11 @@ namespace SFSAcademy.Controllers
         {
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
-                              select new Models.FinanceTransaction {FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                              select new FinanceTransaction {FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewBag.TransactionTitle = TransactionTitle;
 
-            string[] search = { "Fee", "Salary", "Donation" };
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x=>x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            string[] search = { "Fees", "Salary", "Donation" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x=>x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.CAT_ID = options;
@@ -4755,15 +4749,15 @@ namespace SFSAcademy.Controllers
         {
             if(PageName == "Expense_Create")
             {
-                string[] search = { "Fee", "Salary", "Donation" };
-                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+                string[] search = { "Fees", "Salary", "Donation" };
+                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
                 options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
                 ViewBag.CAT_ID = options;
             }
             else if (PageName == "Income_Create")
             {
-                string[] search = { "Fee", "Salary", "Donation" };
-                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == true && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+                string[] search = { "Fees", "Salary", "Donation" };
+                List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == true && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
                 options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
                 ViewBag.CAT_ID = options;
             }
@@ -4809,10 +4803,10 @@ namespace SFSAcademy.Controllers
         {
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewBag.TransactionTitle = TransactionTitle;
-            string[] search = { "Fee", "Salary", "Donation" };
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM ==true && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            string[] search = { "Fees", "Salary", "Donation" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM ==true && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.CAT_ID = options;
@@ -4837,7 +4831,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == false
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewBag.START_TRAN_DATE = START_TRAN_DATE;
             ViewBag.END_TRAN_DATE = END_TRAN_DATE;
             return View(TransactionVal.ToList());
@@ -4854,7 +4848,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
             ViewBag.START_TRAN_DATE = START_TRAN_DATE.ToShortDateString();
             ViewBag.END_TRAN_DATE = END_TRAN_DATE.ToShortDateString();
             return View(TransactionVal.ToList());
@@ -4996,7 +4990,7 @@ namespace SFSAcademy.Controllers
                                   join bt in db.BATCHes.Include(x => x.COURSE) on subgstd.BTCH_ID equals bt.ID into gbt
                                   from subgbt in gbt.DefaultIfEmpty()
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).Distinct();
             if (!string.IsNullOrEmpty(ADMSN_NO))
             {
                 TransactionVal = TransactionVal.Where(x => x.StudentData.ADMSN_NO == ADMSN_NO);
@@ -5061,7 +5055,7 @@ namespace SFSAcademy.Controllers
                                   join bt in db.BATCHes.Include(x => x.COURSE) on subgstd.BTCH_ID equals bt.ID into gbt
                                   from subgbt in gbt.DefaultIfEmpty()
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.IS_INCM == true
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).OrderBy(x => x.BatchData.ID).ThenBy(x => x.StudentData.ID).ThenBy(x => x.FinanceTransactionData.TRAN_DATE).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc, FinanceFeeData = (subgff == null ? null : subgff), StudentData = (subgstd == null ? null : subgstd), BatchData = (subgbt == null ? null : subgbt) }).OrderBy(x => x.BatchData.ID).ThenBy(x => x.StudentData.ID).ThenBy(x => x.FinanceTransactionData.TRAN_DATE).Distinct();
 
             if (!string.IsNullOrEmpty(ADMSN_NO))
             {
@@ -5091,7 +5085,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             ViewData["transactions"] = TransactionVal;
             ViewBag.START_TRAN_DATE = START_TRAN_DATE;
@@ -5120,7 +5114,7 @@ namespace SFSAcademy.Controllers
             decimal transactions_fees = 0;
             foreach (var item in TransactionVal)
             {
-                if(item.TransactionCategoryData.NAME.Contains("Fee"))
+                if(item.TransactionCategoryData.NAME.Contains("Fees"))
                 {
                     if(item.TransactionCategoryData.IS_INCM == true)
                     {
@@ -5182,13 +5176,13 @@ namespace SFSAcademy.Controllers
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
 
 
-            string[] search = { "Fee", "Salary", "Donation" };
+            string[] search = { "Fees", "Salary", "Donation" };
 
             var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
                             join tt in TotalTrans on ct.ID equals tt.membername
-                            where !search.Any(val => ct.NAME.Contains(val))
+                            where !search.Any(val => ct.NAME.Equals(val))
                             orderby ct.NAME
-                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+                            select new CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
 
             ViewData["other_transaction_categories"] = CatTrans;
 
@@ -5207,7 +5201,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             ViewData["transactions"] = TransactionVal;
             ViewBag.START_TRAN_DATE = START_TRAN_DATE;
@@ -5236,7 +5230,7 @@ namespace SFSAcademy.Controllers
             decimal transactions_fees = 0;
             foreach (var item in TransactionVal)
             {
-                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                if (item.TransactionCategoryData.NAME.Contains("Fees"))
                 {
                     if (item.TransactionCategoryData.IS_INCM == true)
                     {
@@ -5298,13 +5292,13 @@ namespace SFSAcademy.Controllers
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
 
 
-            string[] search = { "Fee", "Salary", "Donation" };
+            string[] search = { "Fees", "Salary", "Donation" };
 
             var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
                             join tt in TotalTrans on ct.ID equals tt.membername
-                            where !search.Any(val => ct.NAME.Contains(val))
+                            where !search.Any(val => ct.NAME.Equals(val))
                             orderby ct.NAME
-                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+                            select new CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
 
             ViewData["other_transaction_categories"] = CatTrans;
 
@@ -5329,7 +5323,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Donation")
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             decimal donations_income = 0; decimal donations_expenses = 0;
             foreach (var item in TransactionVal)
@@ -5368,8 +5362,8 @@ namespace SFSAcademy.Controllers
                                    join ft in db.FINANCE_TRANSACTION on ff.ID equals ft.FIN_FE_ID
                                    join tc in db.FINANCE_TRANSACTION_CATEGORY on ft.CAT_ID equals tc.ID
                                    join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
-                                   where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Fee")
-                                   select new Models.FeeTransaction { FinanceTransactionData = ft,FinanceFeeData = ff, FeeCollectionData=fc, TransactionCategoryData= tc })
+                                   where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Equals("Fees")
+                                   select new FeeTransaction { FinanceTransactionData = ft,FinanceFeeData = ff, FeeCollectionData=fc, TransactionCategoryData= tc })
                                    .GroupBy(o => o.FeeCollectionData.ID)
                                    .Select(g => new { membername = g.Key, total = g.Sum(p => p.FinanceTransactionData.AMT) });
 
@@ -5378,7 +5372,7 @@ namespace SFSAcademy.Controllers
                                    join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                                    join tt in TransactionVal on fc.ID equals tt.membername
                             orderby fc.NAME
-                            select new Models.FeeCollectionTransactions { FeeCollectionData = fc, BatchData = bt, CourseData=cs, TRANS_AMNT = tt.total }).Distinct();
+                            select new FeeCollectionTransactions { FeeCollectionData = fc, BatchData = bt, CourseData=cs, TRANS_AMNT = tt.total }).Distinct();
 
             ViewData["fee_collection"] = CollectionTrans;
 
@@ -5397,8 +5391,8 @@ namespace SFSAcademy.Controllers
                                   join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
                                   join bt in db.BATCHes on fc.BTCH_ID equals bt.ID
                                   join cs in db.COURSEs on bt.CRS_ID equals cs.ID
-                                  where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Contains("Fee") && fc.ID == id
-                                  select new Models.FeeTransaction { FinanceTransactionData = ft, StudentData = st ,FinanceFeeData = ff, FeeCollectionData = fc, TransactionCategoryData = tc, BatchData = bt, CourseData = cs }).Distinct();
+                                  where ft.TRAN_DATE >= START_TRAN_DATE && ft.TRAN_DATE <= END_TRAN_DATE && tc.NAME.Equals("Fees") && fc.ID == id
+                                  select new FeeTransaction { FinanceTransactionData = ft, StudentData = st ,FinanceFeeData = ff, FeeCollectionData = fc, TransactionCategoryData = tc, BatchData = bt, CourseData = cs }).Distinct();
 
             return View(TransactionVal.ToList());
         }
@@ -5411,7 +5405,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.ID == id
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             return View(TransactionVal.ToList());
         }
@@ -5424,7 +5418,7 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE && tc.ID == id
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             return View(TransactionVal.ToList());
         }
@@ -5468,14 +5462,14 @@ namespace SFSAcademy.Controllers
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             ViewData["transactions"] = TransactionVal;
 
             var TransactionVal2 = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE2 && tr.TRAN_DATE <= END_TRAN_DATE2
-                                  select new Models.FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
+                                  select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             ViewData["transactions"] = TransactionVal2;
 
@@ -5484,7 +5478,7 @@ namespace SFSAcademy.Controllers
             decimal transactions_fees = 0;
             foreach (var item in TransactionVal)
             {
-                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                if (item.TransactionCategoryData.NAME.Equals("Fees"))
                 {
                     if (item.TransactionCategoryData.IS_INCM == true)
                     {
@@ -5505,7 +5499,7 @@ namespace SFSAcademy.Controllers
             decimal transactions_fees2 = 0;
             foreach (var item in TransactionVal2)
             {
-                if (item.TransactionCategoryData.NAME.Contains("Fee"))
+                if (item.TransactionCategoryData.NAME.Equals("Fees"))
                 {
                     if (item.TransactionCategoryData.IS_INCM == true)
                     {
@@ -5609,13 +5603,13 @@ namespace SFSAcademy.Controllers
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
 
 
-            string[] search = { "Fee", "Salary", "Donation" };
+            string[] search = { "Fees", "Salary", "Donation" };
 
             var CatTrans = (from ct in db.FINANCE_TRANSACTION_CATEGORY
                             join tt in TotalTrans on ct.ID equals tt.membername
-                            where !search.Any(val => ct.NAME.Contains(val))
+                            where !search.Any(val => ct.NAME.Equals(val))
                             orderby ct.NAME
-                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+                            select new CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
 
             ViewData["other_transaction_categories"] = CatTrans;
 
@@ -5623,13 +5617,13 @@ namespace SFSAcademy.Controllers
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.AMT) });
 
 
-            string[] search2 = { "Fee", "Salary", "Donation" };
+            string[] search2 = { "Fees", "Salary", "Donation" };
 
             var CatTrans2 = (from ct in db.FINANCE_TRANSACTION_CATEGORY
                             join tt in TotalTrans2 on ct.ID equals tt.membername
-                            where !search2.Any(val => ct.NAME.Contains(val))
+                            where !search2.Any(val => ct.NAME.Equals(val))
                             orderby ct.NAME
-                            select new Models.CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
+                            select new CategoryTransactions { TransactionCategoryData = ct, TRANS_AMNT = tt.total }).Distinct();
 
             ViewData["other_transaction_categories2"] = CatTrans2;
 
@@ -5802,22 +5796,22 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            string[] search = { "Fee", "Salary"};
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            string[] search = { "Fees", "Salary"};
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.FIN_CAT_ID = options;
             var TansactionTrigger = (from tt in db.FINANCE_TRANSACTION_TRIGGERS
                                      join tc in db.FINANCE_TRANSACTION_CATEGORY on tt.FIN_CAT_ID equals tc.ID
-                                     select new Models.TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc}).OrderBy(x=>x.TransactionTriggerData.TIL).Distinct();
+                                     select new TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc}).OrderBy(x=>x.TransactionTriggerData.TIL).Distinct();
             return View(TansactionTrigger.ToList());
         }
 
         // GET: Finance
         public ActionResult Transaction_Trigger_Create_Form()
         {
-            string[] search = { "Fee", "Salary" };
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            string[] search = { "Fees", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.FIN_CAT_ID = options;
@@ -5831,8 +5825,8 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Transaction_Trigger_Create([Bind(Include = "ID,FIN_CAT_ID,PCT,TIL,DESCR")] FINANCE_TRANSACTION_TRIGGERS fINANCEtRANStRIGGER)
         {
-            string[] search = { "Fee", "Salary" };
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
+            string[] search = { "Fees", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.FIN_CAT_ID = options;
@@ -5869,14 +5863,14 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.ErrorMessage = ErrorMessage;
             FINANCE_TRANSACTION_TRIGGERS TansactionTrigger = db.FINANCE_TRANSACTION_TRIGGERS.Find(id);
-            string[] search = { "Fee", "Salary" };
-            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Contains(val))).OrderBy(x => x.ID), "ID", "NAME", TansactionTrigger.FIN_CAT_ID).ToList();
+            string[] search = { "Fees", "Salary" };
+            List<SelectListItem> options = new SelectList(db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.DEL == false && x.IS_INCM == false && !search.Any(val => x.NAME.Equals(val))).OrderBy(x => x.ID), "ID", "NAME", TansactionTrigger.FIN_CAT_ID).ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Transaction Category" });
             ViewBag.FIN_CAT_ID = options;
             /*var TansactionTrigger = (from tt in db.FINANCE_TRANSACTION_TRIGGERS
                                      join tc in db.FINANCE_TRANSACTION_CATEGORY on tt.FIN_CAT_ID equals tc.ID
-                                     select new Models.TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc }).OrderBy(x => x.TransactionTriggerData.TIL).Distinct();*/
+                                     select new TransactionTriggers { TransactionTriggerData = tt, TransactionCategoryData = tc }).OrderBy(x => x.TransactionTriggerData.TIL).Distinct();*/
             return View(TansactionTrigger);
         }
 

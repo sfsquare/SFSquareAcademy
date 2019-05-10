@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeeAdditionalDetail> additional_details = (IList<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["additional_details"];
-    IList<SFSAcademy.Models.EmployeeAdditionalDetail> inactive_additional_details = (IList<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["inactive_additional_details"];
+    IList<SFSAcademy.EmployeeAdditionalDetail> additional_details = (IList<SFSAcademy.EmployeeAdditionalDetail>)ViewData["additional_details"];
+    IList<SFSAcademy.EmployeeAdditionalDetail> inactive_additional_details = (IList<SFSAcademy.EmployeeAdditionalDetail>)ViewData["inactive_additional_details"];
 }
 <ul id="category-list">
     @if (additional_details != null && additional_details.Count() != 0)

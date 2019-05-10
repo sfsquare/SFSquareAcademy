@@ -1,8 +1,8 @@
-﻿@model PagedList.IPagedList<SFSAcademy.Models.Student>
+﻿@model PagedList.IPagedList<SFSAcademy.Student>
 @using PagedList.Mvc;
-@using SFSAcademy.Models
+
 @{
-    IEnumerable<SFSAcademy.Models.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.Models.StudentsGuardians>)ViewData["guardians"];
+    IEnumerable<SFSAcademy.StudentsGuardians> guardians = (IEnumerable<SFSAcademy.StudentsGuardians>)ViewData["guardians"];
 }
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 

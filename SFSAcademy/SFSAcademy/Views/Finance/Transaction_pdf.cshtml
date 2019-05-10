@@ -1,10 +1,10 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     Layout = null;
 }
 @{
-    IEnumerable<SFSAcademy.Models.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.Models.CategoryTransactions>)ViewData["other_transaction_categories"];
-    IEnumerable<SFSAcademy.Models.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.Models.FinanceTransaction>)ViewData["transactions"];
+    IEnumerable<SFSAcademy.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.CategoryTransactions>)ViewData["other_transaction_categories"];
+    IEnumerable<SFSAcademy.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions"];
 }
 <link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/transaction_pdf.css">
 <div id="page-yield">

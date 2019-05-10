@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeeCategory> categories = (IList<SFSAcademy.Models.EmployeeCategory>)ViewData["categories"];
-    IList<SFSAcademy.Models.EmployeeCategory> inactive_categories = (IList<SFSAcademy.Models.EmployeeCategory>)ViewData["inactive_categories"];
+    IList<SFSAcademy.EmployeeCategory> categories = (IList<SFSAcademy.EmployeeCategory>)ViewData["categories"];
+    IList<SFSAcademy.EmployeeCategory> inactive_categories = (IList<SFSAcademy.EmployeeCategory>)ViewData["inactive_categories"];
 }
 
 <ul id="category-list">

@@ -1,11 +1,35 @@
-﻿@model PagedList.IPagedList<SFSAcademy.USER>
-@using PagedList.Mvc;
-<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+﻿@model IEnumerable<SFSAcademy.USER>
 
 @{
     ViewBag.Title = "Index";
 }
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#user_information").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#Search").keyup(function () {
+            var searchText = $("#Search").val().toLowerCase();
+            $(".Search").each(function () {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                    $("#user_information").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#user_information").show();
+                    $(this).show();
+                }
+            });
+            if ($("#Search").val() == '') {
+                $("#user_information").hide();
+            }
+        });
+    });
 
+</script>
 <div id="content-header">
     <img src="~/Content/images/user_profile/user_profile_logo.jpg" alt="Profile Logo">
     <h1>Manage Users</h1>
@@ -15,53 +39,49 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
+
 <div id="inner-tab-menu">
     <ul>
-        <li>@Html.ActionLink("View All", "Index")</li>
+        <li>@Html.ActionLink("View All", "All")</li>
         <li>@Html.ActionLink("Add New", "Create")</li>
     </ul>
 </div>
-@if (ViewBag.ErrorMessage != null)
-{
-    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-}
+<p class="flash-msg">*Enter First Name, Last Name, User Name or Create Date to search Users.</p>
 <div id="page-yield">
     <div id="search-area">
-        @if (ViewBag.Notice != null)
-        {
-            <p class="flash-msg"> @ViewBag.Notice </p>
-        }
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
         <div id="searchbox">
-            <form name="search-form" id="search-form">
-                @using (Html.BeginForm("Index", "User", FormMethod.Get))
-                {
-                    <p>
-                        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                        <input type="submit" value="Search" />
-                    </p>
-                }
-            </form>
+            <img src="~/Content/images/search_icon.png">
+            <input type="text" id="Search" placeholder="Search" class="form-control" />
         </div>
     </div>
-    <div class="students-table">
-        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+    <br />
+    <div id="user_information">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
             <tr class="tr-head">
                 <th>
                     Sl. No.
                 </th>
                 <th>
-                    @Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-                </th>
-                <th>
-                    First Name
-                </th>
-                <th>
                     User Name
                 </th>
                 <th>
-                    @Html.ActionLink("Create Date", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
+                    Name
                 </th>
-                <th></th>
+                <th>
+                    Role
+                </th>
+                <th>
+                    User Created Date
+                </th>
+                <th>
+
+                </th>
             </tr>
             <tr class="tr-blank"></tr>
             @{int i = 1; }
@@ -72,37 +92,29 @@
                 {
                     selectedRow = "tr-odd";
                 }
-                <tr class="@selectedRow">
-                    <td class="col-1">@i</td>
+                <tr class="Search @selectedRow">
+                    <td class="col-1">
+                        @i
+                    </td>
                     <td class="col-2">
-                        @Html.DisplayFor(modelItem => item.LAST_NAME)
-                    </td>
-                    <td class="col-3">
-                        @Html.DisplayFor(modelItem => item.FIRST_NAME)
-                    </td>
-                    <td class="col-4">
                         @Html.DisplayFor(modelItem => item.USRNAME)
                     </td>
-                    <td class="col-5" nowrap>
-                        @if (!item.CREATED_AT.Equals(null))
-                        {
-                            @item.CREATED_AT.Value.ToShortDateString()
-                        }
+                    <td class="col-3" nowrap>
+                        @Html.DisplayFor(modelItem => item.FIRST_NAME) @Html.DisplayFor(modelItem => item.LAST_NAME)
                     </td>
-                    <td class="col-6" nowrap>
-                        @Html.ActionLink("Edit ", "Edit", new { id = item.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Details ", "Details", new { id = item.ID }, new { style = "text-decoration:underline" })|@Html.ActionLink(" Delete", "Delete", new { id = item.ID }, new { style = "text-decoration:underline" })
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.ROLE)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @item.CREATED_AT.Value.ToShortDateString()
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.ActionLink("Edit ", "Edit", new { id = item.ID })
                     </td>
                 </tr>
                 i = i + 1;
             }
         </table>
         <br />
-        @Html.PagedListPager(Model, page => Url.Action("Index",
-    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
     </div>
-
-    <div id="user_information"> </div>
-    <div class="extender"> </div>
 </div>
-
-

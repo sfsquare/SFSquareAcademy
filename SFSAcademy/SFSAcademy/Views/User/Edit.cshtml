@@ -1,5 +1,7 @@
-﻿@model SFSAcademy.USER
-
+﻿@model SFSAcademy.User
+@{
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+}
 @{
     ViewBag.Title = "Edit";
 }
@@ -7,6 +9,11 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(function () {
@@ -28,107 +35,86 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" width="100%"></div>
-
-@using (Html.BeginForm())
+@if (current_user.User.ADMIN_IND == true && current_user.User.ID != Model.Id)
 {
-    @Html.AntiForgeryToken()
-    <div id="page-yield">
-        @if (Html.ValidationSummary() != null)
-        {
-            <p class="flash-msg"> @Html.ValidationSummary() </p>
-        }
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div id="edit_user_form">
-            <div id="necessary-field-notification">Legend <span class="necessary-field">*</span> Indicate that respective field is mandatory.</div>
-
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.USRNAME, "User Name", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.USRNAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.USRNAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.FIRST_NAME, "First Name", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.FIRST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.LAST_NAME, "Last Name", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.LAST_NAME, new { htmlAttributes = new { @class = "form-control"} })
-                    @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.HASHED_PSWRD, "Password", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.HASHED_PSWRD, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.HASHED_PSWRD, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.ADMIN_IND, "Admin Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.ADMIN_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.ADMIN_IND, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.STDNT_IND, "Student Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.STDNT_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.STDNT_IND, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.EMP_IND, "Employee Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.EMP_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.EMP_IND, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.PARNT_IND, "Parent Indicator", htmlAttributes: new { @class = "control-label col-md-2" })<span class="necessary-field">*</span>
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.PARNT_IND, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.PARNT_IND, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.SALT, "SALT", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.SALT, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.SALT, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.RST_PSWRD_CODE, "Reset Passwrod Code", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.RST_PSWRD_CODE, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.RST_PSWRD_CODE, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.RST_PSWRD_CODE_UNTL, "Reset Password Code Valid Till", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.RST_PSWRD_CODE_UNTL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.ReturnDate } })
-                    @Html.ValidationMessageFor(model => model.RST_PSWRD_CODE_UNTL, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="extender"></div>
-            <br />
-            <input type="submit" value="Save" class="user_button" />
-            <div class="extender"></div>
-            <br />
-            @Html.ActionLink("View/Edit Privilege", "Edit_Privilege", new { id = Model.ID }, new { @class = "user_button" })
-
-        </div>
-
+    <div id="inner-tab-menu">
+        <ul>
+            <li>
+                @Html.ActionLink("Change password", "User_Change_Password", new { id = Model.UserName })
+            </li>
+        </ul>
     </div>
-
 }
+
+<div id="page-yield">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        <div id="edit_user_form">
+
+            <div id="necessary-field-notification">Fields marked with <span class="necessary-field">*</span> must be filled.</div>
+
+            <div class="label-field-pair">
+                <label for="user_username">Username<span class="necessary-field">*</span></label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="user_first_name">First Name<span class="necessary-field">*</span></label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="user_last_name">Last Name</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="user_email">Email <span class="necessary-field">*</span></label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="user_email">Password <span class="necessary-field">*</span></label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @if (Model.Role != "Student" && Model.Role != "Parent")
+            {
+                <div class="label-field-pair">
+                    <label for="user_role">Role</label>
+                    <div class="text-input-bg">
+                        @Html.DropDownList("Role", new SelectList(Enum.GetValues(typeof(Role))), "Select Role", new { @class = "form-control", @id = "Role" })
+                    </div>
+                </div>
+                <div class="submit_div">
+                    @Html.ActionLink("► Delete", "Delete", new { id = Model.Id }, new { @class = "user_button", @onclick = "return confirm('Are you sure want to delete this user?')" })
+                </div>
+            }
+        </div>
+        <div class="extender"></div>
+        <br />
+        <input type="submit" value="► Update" class="user_button" />
+        @Html.ActionLink("View/Edit Privilege", "Edit_Privilege", new { id = Model.Id }, new { @class = "user_button" })
+
+    }
+</div>

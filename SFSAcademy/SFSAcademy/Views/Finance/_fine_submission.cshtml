@@ -1,9 +1,9 @@
-﻿@model SFSAcademy.Models.SubmitFeeFine
-@using SFSAcademy.Models
+﻿@model SFSAcademy.SubmitFeeFine
+
 @{
     STUDENT student = (STUDENT)ViewData["student"];
     FINANCE_FEE_COLLECTION date = (FINANCE_FEE_COLLECTION)ViewData["date"];
-    IList<SFSAcademy.Models.SelectCourseBatch> batch = (IList<SFSAcademy.Models.SelectCourseBatch>)ViewData["batch"];
+    IList<SFSAcademy.SelectCourseBatch> batch = (IList<SFSAcademy.SelectCourseBatch>)ViewData["batch"];
 }
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */

@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using PagedList;
 using System.Web.UI.WebControls;
 using System;
-using SFSAcademy.Models;
+using SFSAcademy;
 using SFSAcademy.HtmlHelpers;
 using System.Collections.Generic;
 using System.Web;
@@ -181,7 +181,7 @@ namespace SFSAcademy.Controllers
 
             /*var GuardianVal = (from C in db.GUARDIANs
                                where C.WARD_ID == Std_id
-                               select new Models.SelectGuardian { GuardianList = C }).ToList();
+                               select new SelectGuardian { GuardianList = C }).ToList();
 
             return View(GuardianVal);*/
 

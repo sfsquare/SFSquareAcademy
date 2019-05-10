@@ -12,6 +12,13 @@ using SFSAcademy;
 
 namespace SFSAcademy
 {
+    public enum BatchStatus
+    {
+        [Display(Name = "Active")]
+        Active,
+        [Display(Name = "Inactive")]
+        Inactive
+    }
     public interface IBATCHMetaData
     {
 /*

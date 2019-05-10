@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<SFSAcademy.ELECTIVE_GROUP>
-@using SFSAcademy.Models
+
 @{
-    SFSAcademy.Models.CoursesBatch batch = (SFSAcademy.Models.CoursesBatch)ViewData["batch"];
+    SFSAcademy.CoursesBatch batch = (SFSAcademy.CoursesBatch)ViewData["batch"];
     IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
 }
 

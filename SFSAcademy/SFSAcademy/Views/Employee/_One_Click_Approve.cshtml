@@ -1,6 +1,6 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
-    IEnumerable<SFSAcademy.Models.MonthyPayslip> dates = (IEnumerable<SFSAcademy.Models.MonthyPayslip>)ViewData["dates"];
+    IEnumerable<SFSAcademy.MonthyPayslip> dates = (IEnumerable<SFSAcademy.MonthyPayslip>)ViewData["dates"];
 }
 
 @if (dates != null && dates.Count() != 0)

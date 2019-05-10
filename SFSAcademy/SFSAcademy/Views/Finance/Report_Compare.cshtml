@@ -1,12 +1,12 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     ViewBag.Title = "Report_Compare";
 }
 @{
-    IEnumerable<SFSAcademy.Models.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.Models.CategoryTransactions>)ViewData["other_transaction_categories"];
-    IEnumerable<SFSAcademy.Models.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.Models.FinanceTransaction>)ViewData["transactions"];
-    IEnumerable<SFSAcademy.Models.CategoryTransactions> other_transaction_categories2 = (IEnumerable<SFSAcademy.Models.CategoryTransactions>)ViewData["other_transaction_categories2"];
-    IEnumerable<SFSAcademy.Models.FinanceTransaction> transactions2 = (IEnumerable<SFSAcademy.Models.FinanceTransaction>)ViewData["transactions2"];
+    IEnumerable<SFSAcademy.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.CategoryTransactions>)ViewData["other_transaction_categories"];
+    IEnumerable<SFSAcademy.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions"];
+    IEnumerable<SFSAcademy.CategoryTransactions> other_transaction_categories2 = (IEnumerable<SFSAcademy.CategoryTransactions>)ViewData["other_transaction_categories2"];
+    IEnumerable<SFSAcademy.FinanceTransaction> transactions2 = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions2"];
 }
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">

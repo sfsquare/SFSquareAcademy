@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.EmployeeDepartment> departments = (IList<SFSAcademy.Models.EmployeeDepartment>)ViewData["departments"];
-    IList<SFSAcademy.Models.EmployeeDepartment> inactive_departments = (IList<SFSAcademy.Models.EmployeeDepartment>)ViewData["inactive_departments"];
+    IList<SFSAcademy.EmployeeDepartment> departments = (IList<SFSAcademy.EmployeeDepartment>)ViewData["departments"];
+    IList<SFSAcademy.EmployeeDepartment> inactive_departments = (IList<SFSAcademy.EmployeeDepartment>)ViewData["inactive_departments"];
 }
 
 <ul id="department-list">
