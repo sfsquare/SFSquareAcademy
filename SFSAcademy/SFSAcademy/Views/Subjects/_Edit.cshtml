@@ -1,8 +1,8 @@
 ﻿@model SFSAcademy.SUBJECT
-@using SFSAcademy.Models
+
 @{
     SUBJECT subject = (SUBJECT)ViewData["subject"];
-    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    IEnumerable<SFSAcademy.CoursesBatch> batch = (IEnumerable<SFSAcademy.CoursesBatch>)ViewData["batch"];
     ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
     GRADING_LEVEL greading_level = (GRADING_LEVEL)ViewData["greading_level"];
 }

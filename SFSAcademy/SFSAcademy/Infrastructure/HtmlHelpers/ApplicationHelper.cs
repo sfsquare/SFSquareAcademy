@@ -107,7 +107,7 @@ namespace SFSAcademy.HtmlHelpers
                     {
                         return "HR";
                     }
-                    else if(item.PRIVILEGE_TAG.DESCRIPTION.Contains("Finance"))
+                    else if(item.PRIVILEGE_TAG.Contains("Finance"))
                     {
                         return "Finance";
                     }
@@ -220,7 +220,7 @@ namespace SFSAcademy.HtmlHelpers
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
                             where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
-                            select new Models.Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             foreach (var entity in ProductS.ToList())
             {

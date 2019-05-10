@@ -1,5 +1,5 @@
-﻿@model IEnumerable<SFSAcademy.Models.Employee>
-@using SFSAcademy.Models
+﻿@model IEnumerable<SFSAcademy.Employee>
+
 @{
     IEnumerable<EMPLOYEE> Reporting_Manager = (IEnumerable<EMPLOYEE>)ViewData["Reporting_Manager"];
     EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
@@ -19,17 +19,25 @@
 <div>
     <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
 </div>
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
 <div id="page-yield">
     <div id="form-content">
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
+            if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
             <div id="current-changed-manager">
                 Reporting Manager For: @Html.Label(string.Concat(Employee.FIRST_NAME, " ", Employee.MID_NAME, " ", Employee.LAST_NAME), htmlAttributes: new { @class = "control-label col-md-2" })
                 @{
                     for (int i = 0; i < Reporting_Manager.Count(); i++)
                     {
-                        <div class="label-field-pair label">                           
+                        <div class="label-field-pair label">
                             <div id="changed-manager-outer">
                                 @if (Reporting_Manager.FirstOrDefault().LAST_NAME != null)
                                 {
@@ -38,7 +46,7 @@
                                 else
                                 {
                                     <div id="changed-manager-name">@Html.Label("Manager Name:") @Html.Label(Reporting_Manager.FirstOrDefault().FIRST_NAME)</div>
-                                }                                
+                                }
                                 <div id="changed-manager-name">@Html.Label("Manager Employee Numer:")  @Html.Label(Reporting_Manager.FirstOrDefault().EMP_NUM)</div>
                                 <div class="extender"></div>
                                 <br />

@@ -1,11 +1,11 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
-    IEnumerable<SFSAcademy.Models.CoursesBatch> batch = (IEnumerable<SFSAcademy.Models.CoursesBatch>)ViewData["batch"];
+    IEnumerable<SFSAcademy.CoursesBatch> batch = (IEnumerable<SFSAcademy.CoursesBatch>)ViewData["batch"];
     SFSAcademy.SUBJECT subject = (SFSAcademy.SUBJECT)ViewData["subject"];
-    IEnumerable<SFSAcademy.Models.ElectiveGroups> elective_groups = (IEnumerable<SFSAcademy.Models.ElectiveGroups>)ViewData["elective_groups"];
+    IEnumerable<SFSAcademy.ElectiveGroups> elective_groups = (IEnumerable<SFSAcademy.ElectiveGroups>)ViewData["elective_groups"];
     IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
     IEnumerable<SFSAcademy.EXAM> Exam = (IEnumerable<SFSAcademy.EXAM>)ViewData["Exam"];
-    IEnumerable<SFSAcademy.Models.TimetableEntry> TimetableEntry = (IEnumerable<SFSAcademy.Models.TimetableEntry>)ViewData["TimetableEntry"];
+    IEnumerable<SFSAcademy.TimetableEntry> TimetableEntry = (IEnumerable<SFSAcademy.TimetableEntry>)ViewData["TimetableEntry"];
 }
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>

@@ -6,8 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy;
-using SFSAcademy.Models;
 using System.Data.Entity.Validation;
 
 namespace SFSAcademy.Controllers
@@ -47,13 +45,13 @@ namespace SFSAcademy.Controllers
             ViewBag.PYRL_CAT_ID = options;
             var categories = (from prc in db.PAYROLL_CATEGORY
                           where prc.IS_DED == false
-                          select new Models.PayrollCategory { PayrollCatData = prc })
+                          select new PayrollCategory { PayrollCatData = prc })
                             .OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["categories"] = categories;
 
             var deductionable_categories = (from prc in db.PAYROLL_CATEGORY
                                    where prc.IS_DED == true
-                                   select new Models.PayrollCategory { PayrollCatData = prc })
+                                   select new PayrollCategory { PayrollCatData = prc })
                             .OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["deductionable_categories"] = deductionable_categories;
 
@@ -74,13 +72,13 @@ namespace SFSAcademy.Controllers
                 ViewBag.PYRL_CAT_ID = options;
                 var categories = (from prc in db.PAYROLL_CATEGORY
                                   where prc.IS_DED == false
-                                  select new Models.PayrollCategory { PayrollCatData = prc })
+                                  select new PayrollCategory { PayrollCatData = prc })
                             .OrderBy(x => x.PayrollCatData.NAME).ToList();
                 ViewData["categories"] = categories;
 
                 var deductionable_categories = (from prc in db.PAYROLL_CATEGORY
                                                 where prc.IS_DED == true
-                                                select new Models.PayrollCategory { PayrollCatData = prc })
+                                                select new PayrollCategory { PayrollCatData = prc })
                                 .OrderBy(x => x.PayrollCatData.NAME).ToList();
                 ViewData["deductionable_categories"] = deductionable_categories;
 
@@ -284,12 +282,12 @@ namespace SFSAcademy.Controllers
             ViewData["Employee"] = Employee;
             var independent_categories = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID}).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID}).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc,DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc,DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
 
             return View(Employee);
@@ -300,7 +298,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Manage_Payroll(IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories)
+        public ActionResult Manage_Payroll(IEnumerable<SFSAcademy.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories)
         {
             int EmpId = independent_categories == null ? dependent_categories.FirstOrDefault().DependentEmployeeId : independent_categories.FirstOrDefault().EmployeeId;
 
@@ -308,12 +306,12 @@ namespace SFSAcademy.Controllers
             ViewData["Employee"] = Employee;
             var independent_categories_inner = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories_inner;
             var dependent_categories_ineer = (from pc in db.PAYROLL_CATEGORY
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories_ineer;
 
             if (ModelState.IsValid)
@@ -399,14 +397,14 @@ namespace SFSAcademy.Controllers
                                           join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == id) on pc.ID equals est.PYRL_CAT_ID into gest
                                           from subgest in gest.DefaultIfEmpty()
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories;
             var dependent_categories = (from pc in db.PAYROLL_CATEGORY
                                         join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == id) on pc.ID equals est.PYRL_CAT_ID into gest
                                         from subgest in gest.DefaultIfEmpty()
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories;
 
             return View(Employee);
@@ -417,7 +415,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit_Payroll_Details(IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories)
+        public ActionResult Edit_Payroll_Details(IEnumerable<SFSAcademy.EmployeePayroll> independent_categories, IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories)
         {
             int EmpId = independent_categories == null ? dependent_categories.FirstOrDefault().DependentEmployeeId : independent_categories.FirstOrDefault().EmployeeId;
 
@@ -427,14 +425,14 @@ namespace SFSAcademy.Controllers
                                           join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == EmpId) on pc.ID equals est.PYRL_CAT_ID into gest
                                           from subgest in gest.DefaultIfEmpty()
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
-                                          select new SFSAcademy.Models.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                          select new SFSAcademy.EmployeePayroll { PayrollCatData = pc, EmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["independent_categories"] = independent_categories_inner;
             var dependent_categories_inner = (from pc in db.PAYROLL_CATEGORY
                                         join est in db.EMPLOYEE_SALARY_STRUCTURE.Where(x => x.EMP_ID == EmpId) on pc.ID equals est.PYRL_CAT_ID into gest
                                         from subgest in gest.DefaultIfEmpty()
                                         join dpc in db.PAYROLL_CATEGORY on pc.ID equals dpc.PYRL_CAT_ID
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
-                                        select new SFSAcademy.Models.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
+                                        select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = Employee.ID, SalaryStructureData = (subgest == null ? null : subgest) }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories_inner;
 
             if (ModelState.IsValid)

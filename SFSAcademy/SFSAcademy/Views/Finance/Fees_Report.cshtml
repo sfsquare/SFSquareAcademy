@@ -1,9 +1,9 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     ViewBag.Title = "Fees_Report";
 }
 @{
-    IEnumerable<SFSAcademy.Models.FeeCollectionTransactions> fee_collection = (IEnumerable<SFSAcademy.Models.FeeCollectionTransactions>)ViewData["fee_collection"];
+    IEnumerable<SFSAcademy.FeeCollectionTransactions> fee_collection = (IEnumerable<SFSAcademy.FeeCollectionTransactions>)ViewData["fee_collection"];
 }
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">

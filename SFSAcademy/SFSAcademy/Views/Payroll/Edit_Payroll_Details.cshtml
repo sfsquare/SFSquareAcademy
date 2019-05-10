@@ -1,8 +1,8 @@
 ﻿@model SFSAcademy.EMPLOYEE
-@using SFSAcademy.Models
+
 @{
-    IEnumerable<SFSAcademy.Models.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["independent_categories"];
-    IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.Models.EmployeeDependentPayroll>)ViewData["dependent_categories"];
+    IEnumerable<SFSAcademy.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.EmployeePayroll>)ViewData["independent_categories"];
+    IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.EmployeeDependentPayroll>)ViewData["dependent_categories"];
     EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
 }
 @{

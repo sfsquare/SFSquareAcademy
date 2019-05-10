@@ -1,12 +1,11 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
-    UserDetails current_user = (UserDetails)ViewData["current_user"];
     EMPLOYEE Reporting_Manager = (EMPLOYEE)ViewData["Reporting_Manager"];
-    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Employee> Employee = (IEnumerable<SFSAcademy.Employee>)ViewData["Employee"];
     COUNTRY home_country = (COUNTRY)ViewData["home_country"];
     COUNTRY office_country = (COUNTRY)ViewData["office_country"];
-    IEnumerable<SFSAcademy.Models.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.Models.EmployeeBankDetail>)ViewData["bank_details"];
-    IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetail> additional_details = (IEnumerable<SFSAcademy.Models.EmployeeAdditionalDetail>)ViewData["additional_details"];
+    IEnumerable<SFSAcademy.EmployeeBankDetail> bank_details = (IEnumerable<SFSAcademy.EmployeeBankDetail>)ViewData["bank_details"];
+    IEnumerable<SFSAcademy.EmployeeAdditionalDetail> additional_details = (IEnumerable<SFSAcademy.EmployeeAdditionalDetail>)ViewData["additional_details"];
 }
 @{ Layout = null;}
 @{

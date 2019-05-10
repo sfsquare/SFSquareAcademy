@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{    Layout = null;}
 @{
-    IList<SFSAcademy.Models.PayrollCategory> categories = (IList<SFSAcademy.Models.PayrollCategory>)ViewData["categories"];
-    IList<SFSAcademy.Models.PayrollCategory> deductionable_categories = (IList<SFSAcademy.Models.PayrollCategory>)ViewData["deductionable_categories"];
+    IList<SFSAcademy.PayrollCategory> categories = (IList<SFSAcademy.PayrollCategory>)ViewData["categories"];
+    IList<SFSAcademy.PayrollCategory> deductionable_categories = (IList<SFSAcademy.PayrollCategory>)ViewData["deductionable_categories"];
 }
 
 <ul class="category-list">

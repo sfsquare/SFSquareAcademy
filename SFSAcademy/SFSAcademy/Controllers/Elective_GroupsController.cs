@@ -23,7 +23,7 @@ namespace SFSAcademy.Controllers
             var batch = (from bt in db.BATCHes
                          join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                          where bt.ID == BatchId
-                         select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
+                         select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
             var Subject = db.SUBJECTs.Where(x=>x.IS_DEL == false).ToList();
             ViewData["Subject"] = Subject;
@@ -37,7 +37,7 @@ namespace SFSAcademy.Controllers
             var batch = (from bt in db.BATCHes
                          join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                          where bt.ID == BatchId
-                         select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
+                         select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
             return View();
         }
@@ -87,7 +87,7 @@ namespace SFSAcademy.Controllers
             var batch = (from bt in db.BATCHes
                          join cs in db.COURSEs on bt.CRS_ID equals cs.ID
                          where bt.ID == BatchId
-                         select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
+                         select new CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
             return View(eLECTIVE_GROUP);
         }

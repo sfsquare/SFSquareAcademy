@@ -1,0 +1,147 @@
+﻿
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    TIMETABLE tt = (TIMETABLE)ViewData["tt"];
+    IEnumerable<SFSAcademy.CLASS_TIMING> class_timing = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["class_timing"];
+    IEnumerable<SFSAcademy.WEEKDAY> day = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["day"];
+    IEnumerable<SFSAcademy.TIMETABLE_ENTRY> timetable_entries = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["timetable_entries"];
+    IEnumerable<SFSAcademy.TIMETABLE_ENTRY> timetable = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["timetable"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> EmployeesSubject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["EmployeesSubject"];
+    IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
+}
+@{ Layout = null;}
+@{
+    ViewBag.Title = "Timetable_pdf";
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/timetable/timetable_pdf.css">
+
+<div id="page-yield">
+
+    <div class="hor_line"></div>
+    <h2>Timetable</h2>
+    <div class="hor_line"></div>
+
+
+    <div class="extender"> </div>
+    <div class="report">
+
+        <div id="main_info">
+            <h4> @batch.Course_full_name</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" width="100%" cellspacing="0">
+                <tr class="table-header">
+                    <td class="col-pdf">Day</td>
+                    @foreach (var class_time in class_timing)
+                    {
+                        <td class="col-pdf">
+                            @if (class_time.START_TIME != null && class_time.END_TIME != null)
+                            {
+                                if (class_time.IS_BRK != true)
+                                {
+                                    <div class="col-pdf">@class_time.START_TIME.Value.Hours:@class_time.START_TIME.Value.Minutes - @class_time.END_TIME.Value.Hours:@class_time.END_TIME.Value.Minutes</div>
+                                }
+                            }
+                            else if (class_time.START_TIME != null)
+                            {
+                                if (class_time.IS_BRK != true)
+                                {
+                                    <div class="col-pdf">@class_time.START_TIME.Value.Hours:@class_time.START_TIME.Value.Minutes - ET Not Defined</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-pdf">ST Not Defined - ET Not Defined</div>
+                            }
+
+                        </td>
+                    }
+                </tr>
+                @{int i = 1; }
+                @foreach (var d in day)
+                {
+                    string cycle = "even";
+                    if (i % 2 == 0)
+                    {
+                        cycle = "odd";
+                    }
+                    <tr class="@cycle">
+                        <td class="col-pdf"><div class="name themed_text">@d.NAME</div></td>
+                        @foreach (var pt1 in class_timing)
+                        {
+                            var tte = timetable_entries.Where(x => x.WK_DAY_ID == d.ID && x.CLS_TMNG_ID == pt1.ID && x.BTCH_ID == batch.ID && x.TIMT_ID == tt.ID).ToList();
+                            if (tte != null && tte.Count() != 0)
+                            {
+                                string period = "";
+                                if (tte.FirstOrDefault().SUBJECT != null)
+                                {
+                                    if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
+                                    {
+                                        period = tte.FirstOrDefault().SUBJECT.ELECTIVE_GROUP.ELECTIVE_GRP_NAME;
+                                    }
+                                    else
+                                    {
+                                        period = tte.FirstOrDefault().SUBJECT.CODE;
+
+                                    }
+
+                                    if (!Html.Configuration_Key("HR").Equals(null))
+                                    {
+                                        string teacher = "";
+                                        if (tte.FirstOrDefault().EMPLOYEE != null)
+                                        {
+                                            var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == tte.FirstOrDefault().SUBJECT.ID).Select(m => m.EMPLOYEE).ToList();
+                                            foreach (var emp in sub_emp)
+                                            {
+                                                teacher = string.Concat("\n(", emp.FIRST_NAME, " ", emp.MID_NAME, ")");
+                                            }
+                                        }
+                                        <td class="col-pdf">
+                                            @period<br />
+                                            @if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID == null)
+                                            {
+                                                <span>@teacher</span>
+                                            }
+                                            else
+                                            {
+                                                <span>ELECTIVE</span>
+                                            }
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="col-pdf">@period</td>
+                                    }
+                                }
+                                else
+                                {
+                                    <td class="col-pdf"></td>
+                                }
+                            }
+                        }
+                    </tr><!--timetable_tr -->
+                    i = i + 1;
+                }
+            </table>
+        </div>
+
+        <div class="electives">
+            @foreach (var el in batch.ELECTIVE_GROUP)
+            {
+                <div class="group_names">@el.ELECTIVE_GRP_NAME</div>
+                foreach (var sub in el.SUBJECTs)
+                {
+                    string EmployeeNames = "";
+                    var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == sub.ID).Select(m => m.EMPLOYEE).ToList();
+                    foreach (var e in sub_emp)
+                    {
+                        EmployeeNames = string.Concat(EmployeeNames, e.FIRST_NAME, " ", e.MID_NAME, " ", e.LAST_NAME, " , ");
+                    }
+                    <div class="subject">@sub.NAME</div>
+                    <div class="employee">: @EmployeeNames</div>
+                }
+            }
+
+        </div>
+    </div>
+</div>

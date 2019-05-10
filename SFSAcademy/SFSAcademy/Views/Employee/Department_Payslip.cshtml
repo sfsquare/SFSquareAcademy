@@ -1,4 +1,4 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     ViewBag.Title = "Department_Payslip";
 }
@@ -44,7 +44,7 @@
     <div id="payslip">
         @if (ViewBag.IsPost == true)
         {
-            IEnumerable<SFSAcademy.Models.Payslip> payslips = (IEnumerable<SFSAcademy.Models.Payslip>)ViewData["payslips"];
+            IEnumerable<SFSAcademy.Payslip> payslips = (IEnumerable<SFSAcademy.Payslip>)ViewData["payslips"];
             if (payslips != null && payslips.Count() != 0)
             {
                 <table id="listing" style="width:100%">

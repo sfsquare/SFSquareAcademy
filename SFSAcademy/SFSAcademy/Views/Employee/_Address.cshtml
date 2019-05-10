@@ -1,8 +1,8 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     COUNTRY home_country = (COUNTRY)ViewData["home_country"];
     COUNTRY office_country = (COUNTRY)ViewData["office_country"];
-    IEnumerable<SFSAcademy.Models.Employee> Employee = (IEnumerable<SFSAcademy.Models.Employee>)ViewData["Employee"];
+    IEnumerable<SFSAcademy.Employee> Employee = (IEnumerable<SFSAcademy.Employee>)ViewData["Employee"];
 }
 <table width="700">
     <tr class="odd left"><td>Home Address</td><td class="right">@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE1 &nbsp;@Employee.FirstOrDefault().EmployeeData.HOME_ADDR_LINE2</td></tr>

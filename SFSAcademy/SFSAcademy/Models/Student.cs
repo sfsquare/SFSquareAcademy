@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SFSAcademy.Models
+namespace SFSAcademy
 {
     public class Student
     {
@@ -81,6 +81,20 @@ namespace SFSAcademy.Models
         B_Negative,
         [Display(Name = "O-")]
         O_Negative
+
+    }
+    public enum Relationship
+    {
+        [Display(Name = "Father")]
+        Father,
+        [Display(Name = "Mother")]
+        Mother,
+        [Display(Name = "Uncle")]
+        Uncle,
+        [Display(Name = "Auntie")]
+        Auntie,
+        [Display(Name = "Other")]
+        Other
 
     }
 }

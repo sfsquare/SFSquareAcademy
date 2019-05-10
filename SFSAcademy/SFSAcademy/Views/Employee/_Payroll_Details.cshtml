@@ -1,7 +1,7 @@
-﻿@using SFSAcademy.Models
+﻿
 @{
     EMPLOYEE Employee = (EMPLOYEE)ViewData["Employee"];
-    IEnumerable<SFSAcademy.Models.EmployeePayroll> payroll_details = (IEnumerable<SFSAcademy.Models.EmployeePayroll>)ViewData["payroll_details"];
+    IEnumerable<SFSAcademy.EmployeePayroll> payroll_details = (IEnumerable<SFSAcademy.EmployeePayroll>)ViewData["payroll_details"];
 }
 @if (payroll_details.FirstOrDefault().SalaryStructureData != null)
 {

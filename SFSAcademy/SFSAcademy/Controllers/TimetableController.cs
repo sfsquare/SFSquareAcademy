@@ -22,7 +22,7 @@ namespace SFSAcademy.Controllers
             ViewBag.Notice = Notice;
             var config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "AvailableModules").ToList();
             ViewData["config"] = config;
-            var Config_Val = new Models.Configuration();
+            var Config_Val = new Configuration();
             ViewBag.StudentAttendanceType = Config_Val.find_by_config_key("StudentAttendanceType");
             return View();
         }
@@ -45,7 +45,7 @@ namespace SFSAcademy.Controllers
             var batches = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
                            where bt.END_DATE >= StartDate
-                           select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                           select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches;
 
             return View();
@@ -59,7 +59,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.END_DATE >= StartDate
-                                    select new Models.CoursesBatch { CourseData = cs, BatchData = bt })
+                                    select new CoursesBatch { CourseData = cs, BatchData = bt })
                         .OrderBy(x => x.BatchData.ID).ToList();
 
 
@@ -206,7 +206,7 @@ namespace SFSAcademy.Controllers
             var batches_Inner = (from cs in db.COURSEs
                                  join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
                                  where bt.END_DATE >= StartDate
-                                 select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                                 select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches_Inner;
 
             var employee_subject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == emp_id && x.SUBJ_ID == sub_id).ToList();
@@ -385,7 +385,7 @@ namespace SFSAcademy.Controllers
             var batches = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
                            where bt.END_DATE >= StartDate
-                           select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                           select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches;
             var tIMETABLE = db.TIMETABLEs.Where(x => (x.END_DATE ?? System.DateTime.Now) >= System.DateTime.Now);
             return View(tIMETABLE);
@@ -410,7 +410,7 @@ namespace SFSAcademy.Controllers
             var batches = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
                            where bt.END_DATE >= StartDate
-                           select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                           select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches;
             return View(timetable);
         }
@@ -427,7 +427,7 @@ namespace SFSAcademy.Controllers
             var batches = (from cs in db.COURSEs
                            join bt in db.BATCHes.Include(x => x.SUBJECTs.Select(c => c.EMPLOYEES_SUBJECT)) on cs.ID equals bt.CRS_ID
                            where bt.END_DATE >= StartDate
-                           select new SFSAcademy.Models.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
+                           select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs, Total_Time = 0 }).Distinct().ToList();
             ViewData["batches"] = batches;
 
             DateTime new_start = DateTime.Now;
@@ -611,7 +611,7 @@ namespace SFSAcademy.Controllers
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.END_DATE >= StartDate
-                                    select new Models.SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
+                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
                          .OrderBy(x => x.BatchData.ID).ToList();
 
             if(course_id == null)
@@ -672,6 +672,44 @@ namespace SFSAcademy.Controllers
             ViewData["Subject"] = subject_list;
 
             return PartialView("_View_Timetable");
+        }
+
+        public ActionResult Timetable_pdf(int? course_id, int? timetable_id, string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            if (course_id == null || timetable_id == null)
+            {
+                return PartialView("_View_Timetable");
+            }
+            BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == course_id).FirstOrDefault();
+            ViewData["batch"] = batch;
+            TIMETABLE tt = db.TIMETABLEs.Find(timetable_id);
+            ViewData["tt"] = tt;
+
+            var timetable = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.SUBJECT.ELECTIVE_GROUP.SUBJECTs).Include(x => x.EMPLOYEE).Where(x => x.BTCH_ID == batch.ID && x.TIMT_ID == tt.ID).ToList();
+            ViewData["timetable"] = timetable;
+            if (timetable == null || timetable.Count() == 0)
+            {
+                return PartialView("_View_Timetable");
+            }
+
+            string[] weekday = new string[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
+            ViewBag.weekday = weekday;
+            var class_timing = db.CLASS_TIMING.Where(x => x.BTCH_ID == batch.ID).ToList().DefaultIfEmpty();
+            ViewData["class_timing"] = class_timing;
+
+            var day = db.WEEKDAYs.Where(x => x.BTCH_ID == batch.ID).ToList().DefaultIfEmpty();
+            ViewData["day"] = day;
+            var timetable_entries = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.EMPLOYEE).Where(x => x.BTCH_ID == batch.ID && x.TIMT_ID == tt.ID).ToList();
+            ViewData["timetable_entries"] = timetable_entries;
+            var employees_subject_list = db.EMPLOYEES_SUBJECT.Include(x => x.EMPLOYEE).Include(x => x.SUBJECT).ToList();
+            ViewData["EmployeesSubject"] = employees_subject_list;
+
+            var subject_list = db.SUBJECTs.Include(x => x.ELECTIVE_GROUP).ToList();
+            ViewData["Subject"] = subject_list;
+
+            return View();
         }
 
         public ActionResult Teachers_Timetable(string Notice, string ErrorMessage)

@@ -1,5 +1,5 @@
 ﻿@model SFSAcademy.EMPLOYEE
-@using SFSAcademy.Models
+
 @{
     UserDetails current_user = (UserDetails)ViewData["current_user"];
 }
@@ -54,7 +54,7 @@
                 <li><a href="@Url.Action("Profile_Additional_Details", "Employee", new { id = Model.ID })" class="Profile_Menu" id="Additional_Details" onclick='LoadUserEditPartialPage(this.href); return false;'>Additional Info</a></li>
             </ul>
         </li>
-        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        @if (current_user.User.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
         {
             <li>
                 <a href="#" class="drops" id="link_two">Salary &#9660;</a>
@@ -77,7 +77,7 @@
                 </li>
             }
         }
-        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        @if (current_user.User.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
         {
             <li>
                 <a href="#" class="drops" id="link_three">Leaves &#9660;</a>
@@ -106,7 +106,7 @@
                 <li><a href="@Url.Action("Employee_Timetable", "Timetable", new { id = Model.ID })" id="Timetable">Timetable</a></li>
             }
         }
-        @if (current_user.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
+        @if (current_user.User.USRNAME == string.Concat(Model.FIRST_NAME, Model.MID_NAME, Model.LAST_NAME))
         {
             if (@ViewBag.new_reminder_count == 0)
             {
