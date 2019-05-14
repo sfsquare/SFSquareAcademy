@@ -53,14 +53,9 @@
             weekday = Weekday.Where(x => x.BTCH_ID == null && x.WKDAY == TodayWkDay.ToString()).ToList();
         }
         var timetable = TimetableEntry.Where(x => x.ID == -1).ToList().DefaultIfEmpty();
-        if (weekday == null || weekday.Count() == 0)
-        {
-            timetable = Timetable.FirstOrDefault().tte_for_the_day(b, ViewBag.today);
-        }
-        else
-        {
-            timetable = TimetableEntry.Where(x => x.BTCH_ID == b.ID && x.WK_DAY_ID == weekday.FirstOrDefault().ID).ToList();
-        }
+        timetable = Timetable.FirstOrDefault().tte_for_the_day(b, ViewBag.today);
+        timetable = timetable.Where(x => x.BTCH_ID == b.ID && x.WK_DAY_ID == weekday.FirstOrDefault().ID).ToList();
+
         if (timetable != null && timetable.Count() != 0)
         {
             <table border="0" align="center" style="width:100%" id="timing" cellspacing="0">

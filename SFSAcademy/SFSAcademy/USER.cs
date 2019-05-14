@@ -17,20 +17,19 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public USER()
         {
+            this.ARCHIVED_EMPLOYEE = new HashSet<ARCHIVED_EMPLOYEE>();
             this.ARCHIVED_GUARDIAN = new HashSet<ARCHIVED_GUARDIAN>();
             this.EMPLOYEEs = new HashSet<EMPLOYEE>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
             this.PRIVILEGES_USERS = new HashSet<PRIVILEGES_USERS>();
-            this.USERS_ACCESS = new HashSet<USERS_ACCESS>();
-            this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
-            this.STORE_PURCHAGE_CART1 = new HashSet<STORE_PURCHAGE_CART>();
             this.STORE_PURCHAGE = new HashSet<STORE_PURCHAGE>();
             this.STORE_PURCHAGE1 = new HashSet<STORE_PURCHAGE>();
             this.STORE_PURCHAGE_BACKUP = new HashSet<STORE_PURCHAGE_BACKUP>();
             this.STORE_PURCHAGE_BACKUP1 = new HashSet<STORE_PURCHAGE_BACKUP>();
+            this.STORE_PURCHAGE_CART = new HashSet<STORE_PURCHAGE_CART>();
+            this.STORE_PURCHAGE_CART1 = new HashSet<STORE_PURCHAGE_CART>();
             this.STUDENTs = new HashSet<STUDENT>();
-            this.ARCHIVED_EMPLOYEE = new HashSet<ARCHIVED_EMPLOYEE>();
         }
     
         public int ID { get; set; }
@@ -49,7 +48,11 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<bool> PARNT_IND { get; set; }
         public bool IS_DEL { get; set; }
+        public Nullable<bool> IS_FIRST_LOGIN { get; set; }
+        public string ROLE { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_GUARDIAN> ARCHIVED_GUARDIAN { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -61,12 +64,6 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USERS_ACCESS> USERS_ACCESS { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE> STORE_PURCHAGE1 { get; set; }
@@ -75,8 +72,10 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_BACKUP> STORE_PURCHAGE_BACKUP1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STUDENT> STUDENTs { get; set; }
+        public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ARCHIVED_EMPLOYEE> ARCHIVED_EMPLOYEE { get; set; }
+        public virtual ICollection<STORE_PURCHAGE_CART> STORE_PURCHAGE_CART1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STUDENT> STUDENTs { get; set; }
     }
 }

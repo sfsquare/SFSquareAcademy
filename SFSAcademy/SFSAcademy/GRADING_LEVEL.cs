@@ -17,9 +17,9 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GRADING_LEVEL()
         {
+            this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
             this.EXAMs = new HashSet<EXAM>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
-            this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
         }
     
         public int ID { get; set; }
@@ -33,12 +33,12 @@ namespace SFSAcademy
         public Nullable<decimal> CRED_PT { get; set; }
         public string DESCR { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
         public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM> EXAMs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_SCORE> EXAM_SCORE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
     }
 }

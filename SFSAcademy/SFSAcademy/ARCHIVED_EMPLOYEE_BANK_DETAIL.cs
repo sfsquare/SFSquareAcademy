@@ -19,7 +19,7 @@ namespace SFSAcademy
         public string BANK_INFO { get; set; }
         public Nullable<int> BANK_FLD_ID { get; set; }
     
-        public virtual BANK_FIELD BANK_FIELD { get; set; }
         public virtual ARCHIVED_EMPLOYEE ARCHIVED_EMPLOYEE { get; set; }
+        public virtual BANK_FIELD BANK_FIELD { get; set; }
     }
 }

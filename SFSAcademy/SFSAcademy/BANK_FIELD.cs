@@ -17,8 +17,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public BANK_FIELD()
         {
-            this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
             this.ARCHIVED_EMPLOYEE_BANK_DETAIL = new HashSet<ARCHIVED_EMPLOYEE_BANK_DETAIL>();
+            this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
         }
     
         public int ID { get; set; }
@@ -26,8 +26,8 @@ namespace SFSAcademy
         public Nullable<bool> STAT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_EMPLOYEE_BANK_DETAIL> ARCHIVED_EMPLOYEE_BANK_DETAIL { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
     }
 }

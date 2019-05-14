@@ -20,6 +20,7 @@ namespace SFSAcademy
             this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
             this.MONTHLY_PAYSLIP = new HashSet<MONTHLY_PAYSLIP>();
             this.EMPLOYEE_ADDITIONAL_DETAIL = new HashSet<EMPLOYEE_ADDITIONAL_DETAIL>();
+            this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
             this.EMPLOYEE_BANK_DETAIL = new HashSet<EMPLOYEE_BANK_DETAIL>();
             this.EMPLOYEE_LEAVE = new HashSet<EMPLOYEE_LEAVE>();
             this.EMPLOYEE_SALARY_STRUCTURE = new HashSet<EMPLOYEE_SALARY_STRUCTURE>();
@@ -29,9 +30,8 @@ namespace SFSAcademy
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
             this.PERIOD_ENTRIES = new HashSet<PERIOD_ENTRIES>();
             this.EMPLOYEE1 = new HashSet<EMPLOYEE>();
-            this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
-            this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
+            this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
         }
     
         public int ID { get; set; }
@@ -102,6 +102,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_ADDITIONAL_DETAIL> EMPLOYEE_ADDITIONAL_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_BANK_DETAIL> EMPLOYEE_BANK_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
@@ -122,11 +124,9 @@ namespace SFSAcademy
         public virtual ICollection<EMPLOYEE> EMPLOYEE1 { get; set; }
         public virtual EMPLOYEE EMPLOYEE2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
-        public virtual USER USER { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PURCHAGE_ORDER> STORE_PURCHAGE_ORDER { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
+        public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
+        public virtual USER USER { get; set; }
     }
 }
