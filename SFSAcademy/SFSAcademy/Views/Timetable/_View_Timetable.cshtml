@@ -113,14 +113,21 @@ else
                                                     @timetable_inner.FirstOrDefault().SUBJECT.CODE
                                                     <span class="themed_text">
                                                         @timetable_inner.FirstOrDefault().SUBJECT.NAME
-                                                        <div class="emp-name">
-                                                            @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.LAST_NAME
-                                                        </div>
+                                                        @if (timetable_inner.FirstOrDefault().EMPLOYEE != null)
+                                                        {
+                                                            <div class="emp-name">
+                                                                @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.LAST_NAME
+                                                            </div>
+                                                        }
                                                     </span>
                                                 </div>
                                                 <div class="employee">
-                                                    @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME
+                                                    @if (timetable_inner.FirstOrDefault().EMPLOYEE != null)
+                                                    {
+                                                        @timetable_inner.FirstOrDefault().EMPLOYEE.FIRST_NAME @timetable_inner.FirstOrDefault().EMPLOYEE.MID_NAME
+                                                    }
                                                 </div>
+
                                             }
                                         }
                                         else

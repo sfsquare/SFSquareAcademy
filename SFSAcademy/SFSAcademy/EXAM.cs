@@ -17,9 +17,9 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EXAM()
         {
+            this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
-            this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
         }
     
         public int ID { get; set; }
@@ -36,14 +36,14 @@ namespace SFSAcademy
         public Nullable<int> SUBJ_ID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
         public virtual EVENT EVENT { get; set; }
         public virtual EXAM_GROUP EXAM_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM_SCORE> EXAM_SCORE { get; set; }
         public virtual GRADING_LEVEL GRADING_LEVEL { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
         public virtual SUBJECT SUBJECT { get; set; }
     }
 }

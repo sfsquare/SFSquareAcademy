@@ -80,7 +80,7 @@ namespace SFSAcademy
             var today = db.TIMETABLE_ENTRY.Where(x => x.ID == -1).ToList().DefaultIfEmpty();
             if(entries != null || entries.Count() != 0)
             {
-                today = entries.Where(x => x.WEEKDAY.DAY_OF_WK.ToString() == date.Value.DayOfWeek.ToString()).ToList();
+                today = entries.Where(x => x.WEEKDAY.DAY_OF_WK == (int)date.Value.DayOfWeek).ToList();
             }
             return (IEnumerable<TIMETABLE_ENTRY>)today;
         }

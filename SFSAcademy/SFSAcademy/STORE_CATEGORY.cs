@@ -17,8 +17,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public STORE_CATEGORY()
         {
-            this.STORE_SUB_CATEGORY = new HashSet<STORE_SUB_CATEGORY>();
             this.STORE_PRODUCTS = new HashSet<STORE_PRODUCTS>();
+            this.STORE_SUB_CATEGORY = new HashSet<STORE_SUB_CATEGORY>();
         }
     
         public int ID { get; set; }
@@ -29,8 +29,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STORE_SUB_CATEGORY> STORE_SUB_CATEGORY { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_PRODUCTS> STORE_PRODUCTS { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<STORE_SUB_CATEGORY> STORE_SUB_CATEGORY { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace SFSAcademy
         public Nullable<int> PRIVILEGE_ID { get; set; }
         public Nullable<int> USER_ID { get; set; }
     
-        public virtual USER USER { get; set; }
         public virtual PRIVILEGE PRIVILEGE { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

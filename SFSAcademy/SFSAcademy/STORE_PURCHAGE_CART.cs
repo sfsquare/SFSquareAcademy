@@ -30,8 +30,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
         public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
+        public virtual STUDENT STUDENT { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual STUDENT STUDENT { get; set; }
     }
 }

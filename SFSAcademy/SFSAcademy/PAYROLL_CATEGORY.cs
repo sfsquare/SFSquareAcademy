@@ -17,9 +17,9 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PAYROLL_CATEGORY()
         {
+            this.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE = new HashSet<ARCHIVED_EMPLOYEE_SALARY_STRUCTURE>();
             this.EMPLOYEE_SALARY_STRUCTURE = new HashSet<EMPLOYEE_SALARY_STRUCTURE>();
             this.MONTHLY_PAYSLIP = new HashSet<MONTHLY_PAYSLIP>();
-            this.ARCHIVED_EMPLOYEE_SALARY_STRUCTURE = new HashSet<ARCHIVED_EMPLOYEE_SALARY_STRUCTURE>();
         }
     
         public int ID { get; set; }
@@ -30,10 +30,10 @@ namespace SFSAcademy
         public Nullable<bool> STAT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_EMPLOYEE_SALARY_STRUCTURE> ARCHIVED_EMPLOYEE_SALARY_STRUCTURE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MONTHLY_PAYSLIP> MONTHLY_PAYSLIP { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ARCHIVED_EMPLOYEE_SALARY_STRUCTURE> ARCHIVED_EMPLOYEE_SALARY_STRUCTURE { get; set; }
     }
 }
