@@ -21,7 +21,7 @@ namespace SFSAcademy
         }
     
         public string USR_RIGHTS { get; set; }
-        public int USRS_ID { get; set; }
+        public Nullable<int> USRS_ID { get; set; }
         public string CTL { get; set; }
         public string ACTN { get; set; }
         public int ID { get; set; }
@@ -29,6 +29,5 @@ namespace SFSAcademy
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRIVILEGE_ACCESS> PRIVILEGE_ACCESS { get; set; }
-        public virtual USER USER { get; set; }
     }
 }

@@ -23,10 +23,10 @@ namespace SFSAcademy
         public Nullable<int> SUBJ_ID { get; set; }
     
         public virtual BATCH BATCH { get; set; }
-        public virtual EMPLOYEE EMPLOYEE { get; set; }
-        public virtual TIMETABLE TIMETABLE { get; set; }
-        public virtual SUBJECT SUBJECT { get; set; }
-        public virtual WEEKDAY WEEKDAY { get; set; }
         public virtual CLASS_TIMING CLASS_TIMING { get; set; }
+        public virtual EMPLOYEE EMPLOYEE { get; set; }
+        public virtual SUBJECT SUBJECT { get; set; }
+        public virtual TIMETABLE TIMETABLE { get; set; }
+        public virtual WEEKDAY WEEKDAY { get; set; }
     }
 }

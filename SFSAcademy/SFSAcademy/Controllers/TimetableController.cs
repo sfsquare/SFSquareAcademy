@@ -182,7 +182,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                ViewBag.Notice = "<p>The employee is currently assigned to same subject in timetable</p> <p>Please assign another employee in timetable inorder to remove this association</p>";
+                ViewBag.Notice = "The employee is currently assigned to same subject in timetable. Please assign another employee in timetable inorder to remove this association";
             }
 
             var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
@@ -867,6 +867,10 @@ namespace SFSAcademy.Controllers
             var ClassTiming = db.CLASS_TIMING.ToList();
             ViewData["ClassTiming"] = ClassTiming;
             DateTime? today = DateTime.Today;
+            if (next != null)
+            {
+                today = (DateTime)next;
+            }
             ViewBag.today = today;
             if (next != null)
             {

@@ -3751,7 +3751,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                ViewBag.Notice = "<p>The employee is currently assigned to same subject in timetable</p> <p>Please assign another employee in timetable inorder to remove this association</p>";
+                ViewBag.Notice = "The employee is currently assigned to same subject in timetable. Please assign another employee in timetable inorder to remove this association.";
             }
             
             var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
@@ -3916,7 +3916,21 @@ namespace SFSAcademy.Controllers
             {
                 db.EMPLOYEE_LEAVE.Remove(item);
             }
+            var employee_payslips = db.MONTHLY_PAYSLIP.Where(x=>x.EMP_ID == eMPLOYEE.ID).ToList();
+            foreach (var item in employee_payslips)
+            {
+                db.MONTHLY_PAYSLIP.Remove(item);
+            }
+            var employee_timetableentry = db.TIMETABLE_ENTRY.Where(x => x.EMP_ID == eMPLOYEE.ID).ToList();
+            foreach (var item in employee_timetableentry)
+            {
+                item.EMP_ID = null;
+                db.Entry(item).State = EntityState.Modified;
+            }
             db.EMPLOYEEs.Remove(eMPLOYEE);
+            //eMPLOYEE.STAT = false;
+            //eMPLOYEE.STAT_DESCR = oReMPLOYEE.STAT_DESCR;
+            //db.Entry(eMPLOYEE).State = EntityState.Modified;
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e)
             {

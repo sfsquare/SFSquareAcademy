@@ -57,7 +57,7 @@
                 <li class="heading">
                     @batches.ElementAt(i).CourseData.CODE - @batches.ElementAt(i).BatchData.NAME
                 </li>
-                @{ int i1 = 0; batches.ElementAt(i).BatchData.SUBJECTs = batches.ElementAt(i).BatchData.SUBJECTs.Where(x => x.IS_DEL == false).ToList();}
+                @{ int i1 = 0; batches.ElementAt(i).BatchData.SUBJECTs = batches.ElementAt(i).BatchData.SUBJECTs.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();}
                 @for (int j = 0; j < batches.ElementAt(i).BatchData.SUBJECTs.Count(); j++)
                 {
                     string selectedRow = "listeven"; int FirstRow = 0; string EmployeeList = "";

@@ -17,6 +17,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public STUDENT()
         {
+            this.ARCHIVED_STUDENT = new HashSet<ARCHIVED_STUDENT>();
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.ATTENDENCEs = new HashSet<ATTENDENCE>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
@@ -35,7 +36,6 @@ namespace SFSAcademy
             this.STUDENT_PREVIOUS_SUBJECT_MARK = new HashSet<STUDENT_PREVIOUS_SUBJECT_MARK>();
             this.STUDENT_SUBJECT = new HashSet<STUDENT_SUBJECT>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
-            this.ARCHIVED_STUDENT = new HashSet<ARCHIVED_STUDENT>();
         }
     
         public int ID { get; set; }
@@ -84,6 +84,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> DRESS_PUR_DT { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATTENDENCE> ATTENDENCEs { get; set; }
@@ -122,7 +124,5 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual USER USER { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ARCHIVED_STUDENT> ARCHIVED_STUDENT { get; set; }
     }
 }

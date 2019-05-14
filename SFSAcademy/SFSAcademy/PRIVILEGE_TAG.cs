@@ -14,12 +14,6 @@ namespace SFSAcademy
     
     public partial class PRIVILEGE_TAG
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PRIVILEGE_TAG()
-        {
-            this.PRIVILEGES = new HashSet<PRIVILEGE>();
-        }
-    
         public int ID { get; set; }
         public string NAME_TAG { get; set; }
         public string DESCRIPTION { get; set; }
@@ -27,8 +21,5 @@ namespace SFSAcademy
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public bool IS_ACT { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PRIVILEGE> PRIVILEGES { get; set; }
     }
 }
