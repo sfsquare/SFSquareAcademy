@@ -172,7 +172,7 @@ namespace SFSAcademy.Controllers
             var employee_department_id = db.EMPLOYEEs.Find(id).EMP_DEPT_ID;
             var employees = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == employee_department_id && x.STAT == true).ToList();
             ViewData["employees"] = employees;
-            var TimetableEntry = db.TIMETABLE_ENTRY.Where(x => x.SUBJ_ID == subject.ID && x.EMP_ID == id).ToList();
+            var TimetableEntry = db.TIMETABLE_ENTRY.Include(x=>x.TIMETABLE).Where(x => x.SUBJ_ID == subject.ID && x.EMP_ID == id && x.TIMETABLE.END_DATE >= DateTime.Now).ToList();
             if (TimetableEntry == null || TimetableEntry.Count() == 0)
             {
                 EMPLOYEES_SUBJECT EmployeesSubject = db.EMPLOYEES_SUBJECT.Where(x => x.EMP_ID == id && x.SUBJ_ID == id1).FirstOrDefault();
@@ -182,7 +182,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                ViewBag.Notice = "The employee is currently assigned to same subject in timetable. Please assign another employee in timetable inorder to remove this association";
+                ViewBag.Notice = "The employee is currently assigned to same subject in Current or Future timetable. Please assign another employee in timetable inorder to remove this association";
             }
 
             var assigned_employee = db.EMPLOYEES_SUBJECT.Where(x => x.SUBJ_ID == subject.ID).ToList();
