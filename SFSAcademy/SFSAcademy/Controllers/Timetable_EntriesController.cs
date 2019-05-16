@@ -62,30 +62,11 @@ namespace SFSAcademy.Controllers
             ViewBag.timetable_id = timetable_id;
             ViewBag.batch_id = batch_id;
             TIMETABLE timetable = db.TIMETABLEs.Find(timetable_id);
-            ViewData["timetable"] = timetable;
             BATCH batch = db.BATCHes.Include(x=>x.COURSE).Where(x=>x.ID == batch_id).FirstOrDefault();
             ViewData["batch"] = batch;
-            var Subject = db.SUBJECTs.ToList();
-            ViewData["Subject"] = Subject;
-            var EmployeesSubject = db.EMPLOYEES_SUBJECT.Include(x=>x.EMPLOYEE).ToList();
-            ViewData["EmployeesSubject"] = EmployeesSubject;
-            var TimetableEntry = db.TIMETABLE_ENTRY.ToList();
-            ViewData["TimetableEntry"] = TimetableEntry;
-            var WeekDayAll = db.WEEKDAYs.ToList();
-            ViewData["WeekdayAll"] = WeekDayAll;
-            var ClassTimingAll = db.CLASS_TIMING.ToList();
-            ViewData["ClassTiming"] = ClassTimingAll;
 
             var class_timing = db.CLASS_TIMING.Where(x => x.BTCH_ID == batch_id).ToList();
             ViewData["class_timing"] = class_timing;
-            DataTable validation_problems = new DataTable();
-            validation_problems.Columns.Add("sub_id", typeof(int));
-            validation_problems.Columns.Add("emp_id", typeof(int));
-            validation_problems.Columns.Add("tte_id", typeof(string));
-            validation_problems.Columns.Add("weekday_id", typeof(int));
-            validation_problems.Columns.Add("class_timing_id", typeof(int));
-            validation_problems.Columns.Add("messages", typeof(string));
-            ViewBag.validation_problems = validation_problems.AsEnumerable();
 
             TTE_From_Batch_And_TT(timetable.ID, batch.ID);
             return PartialView("_New_Entry");
@@ -107,23 +88,12 @@ namespace SFSAcademy.Controllers
             ViewBag.timetable_id = timetable_id;
             ViewBag.batch_id = batch_id;
             TIMETABLE timetable = db.TIMETABLEs.Find(timetable_id);
-            ViewData["timetable"] = timetable;
             BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
             ViewData["batch"] = batch;
             EMPLOYEES_SUBJECT employees_subject = db.EMPLOYEES_SUBJECT.Include(x => x.EMPLOYEE).Include(x=>x.SUBJECT).Where(x=>x.ID == emp_sub_id).FirstOrDefault();
             var employees_subject_list = db.EMPLOYEES_SUBJECT.Include(x => x.EMPLOYEE).Include(x => x.SUBJECT).Where(x => x.ID == emp_sub_id);
-            ViewData["EmployeesSubject"] = employees_subject_list;
             SUBJECT subject = db.SUBJECTs.Find(employees_subject.SUBJ_ID);
-            var subject_list = db.SUBJECTs.Where(x => x.ID == employees_subject.SUBJ_ID).ToList();
-            ViewData["Subject"] = subject_list;
             EMPLOYEE employee = db.EMPLOYEEs.Include(x=>x.EMPLOYEE_GRADE).Where(x=>x.ID == employees_subject.EMP_ID).FirstOrDefault();
-            ViewData["Employee"] = employee;
-            var TimetableEntryAll = db.TIMETABLE_ENTRY.Include(x=>x.WEEKDAY).Include(x=>x.CLASS_TIMING).ToList();
-            ViewData["TimetableEntry"] = TimetableEntryAll;
-            var WeekDayAll = db.WEEKDAYs.ToList();
-            ViewData["WeekdayAll"] = WeekDayAll;
-            var ClassTimingAll = db.CLASS_TIMING.ToList();
-            ViewData["ClassTiming"] = ClassTimingAll;
 
             DataTable validation_problems = new DataTable();
             validation_problems.Columns.Add("sub_id", typeof(int));
@@ -358,15 +328,8 @@ namespace SFSAcademy.Controllers
             ViewBag.timetable_id = tte.TIMT_ID;
             ViewBag.batch_id = tte.BTCH_ID;
             TIMETABLE timetable = db.TIMETABLEs.Find(tte.TIMT_ID);
-            ViewData["timetable"] = timetable;
             BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == tte.BTCH_ID).FirstOrDefault();
             ViewData["batch"] = batch;
-            var TimetableEntryAll = db.TIMETABLE_ENTRY.Include(x => x.WEEKDAY).Include(x => x.CLASS_TIMING).ToList();
-            ViewData["TimetableEntry"] = TimetableEntryAll;
-            var WeekDayAll = db.WEEKDAYs.ToList();
-            ViewData["WeekdayAll"] = WeekDayAll;
-            var ClassTimingAll = db.CLASS_TIMING.ToList();
-            ViewData["ClassTiming"] = ClassTimingAll;
 
             tte.SUBJ_ID = null;
             tte.EMP_ID = null;

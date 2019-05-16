@@ -1,18 +1,15 @@
 ﻿@using System.Data
-
+@using System.Linq;
+@using System.Data.Entity;
 @{
+    SFSAcademyEntities db = new SFSAcademyEntities();
     BATCH batch = (BATCH)ViewData["batch"];
     IEnumerable<SFSAcademy.CLASS_TIMING> class_timing = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["class_timing"];
     IEnumerable<SFSAcademy.WEEKDAY> weekday = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["weekday"];
     IEnumerable<SFSAcademy.TIMETABLE_ENTRY> timetable = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["timetable"];
     IEnumerable<SFSAcademy.SUBJECT> subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["subjects"];
     IEnumerable<SFSAcademy.SUBJECT> ele_subjects = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["ele_subjects"];
-    IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
-    IEnumerable<SFSAcademy.TIMETABLE_ENTRY> TimetableEntry = (IEnumerable<SFSAcademy.TIMETABLE_ENTRY>)ViewData["TimetableEntry"];
     IEnumerable<SFSAcademy.Timetable_Entries> overlap = (IEnumerable<SFSAcademy.Timetable_Entries>)ViewData["overlap"];
-    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> EmployeesSubject = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["EmployeesSubject"];
-    IEnumerable<SFSAcademy.CLASS_TIMING> ClassTiming = (IEnumerable<SFSAcademy.CLASS_TIMING>)ViewData["ClassTiming"];
-    IEnumerable<SFSAcademy.WEEKDAY> WeekdayAll = (IEnumerable<SFSAcademy.WEEKDAY>)ViewData["WeekdayAll"];
 }
 <script>
     $(document).ready(function () {
@@ -182,14 +179,14 @@
                                                         <span>
                                                             @if (tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID != null)
                                                             {
-                                                                var subj_in_elective = Subject.Where(x => x.ELECTIVE_GRP_ID == tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID && x.IS_DEL == false);
+                                                                var subj_in_elective = db.SUBJECTs.Where(x => x.ELECTIVE_GRP_ID == tte.FirstOrDefault().SUBJECT.ELECTIVE_GRP_ID && x.IS_DEL == false);
                                                                 foreach (var subItem in subj_in_elective)
                                                                 {
                                                                     if (subItem.NAME != null)
                                                                     {
                                                                         @subItem.NAME
                                                                     }
-                                                                    var sub_emp = EmployeesSubject.Where(x => x.SUBJ_ID == subItem.ID);
+                                                                    var sub_emp = db.EMPLOYEES_SUBJECT.Include(x=>x.EMPLOYEE).Where(x => x.SUBJ_ID == subItem.ID);
                                                                     if (sub_emp != null && sub_emp.Count() != 0)
                                                                     {
                                                                         <div class="emp-name">@sub_emp.FirstOrDefault().EMPLOYEE.FIRST_NAME @sub_emp.FirstOrDefault().EMPLOYEE.MID_NAME @sub_emp.FirstOrDefault().EMPLOYEE.LAST_NAME</div>
@@ -289,9 +286,10 @@
             {
                 int? weekday_inner = tte_id["weekday_id"];
                 int? class_timing_inner = tte_id["class_timing_id"];
-                var ClassTimingInner = ClassTiming.Where(x => x.ID == class_timing_inner).FirstOrDefault();
-                var WeekDayInner = WeekdayAll.Where(x => x.ID == weekday_inner).FirstOrDefault();
-                var tte = TimetableEntry.Where(x => x.WEEKDAY.NAME == WeekDayInner.NAME && x.CLASS_TIMING.START_TIME == ClassTimingInner.START_TIME && x.CLASS_TIMING.END_TIME == ClassTimingInner.END_TIME && x.BTCH_ID == batch.ID && x.TIMT_ID == ViewBag.timetable_id).FirstOrDefault();
+                var ClassTimingInner = db.CLASS_TIMING.Where(x => x.ID == class_timing_inner).FirstOrDefault();
+                var WeekDayInner = db.WEEKDAYs.Where(x => x.ID == weekday_inner).FirstOrDefault();
+                int? timetable_id = ViewBag.timetable_id;
+                var tte = db.TIMETABLE_ENTRY.Include(x => x.WEEKDAY).Include(x => x.CLASS_TIMING).Where(x => x.WEEKDAY.NAME == WeekDayInner.NAME && x.CLASS_TIMING.START_TIME == ClassTimingInner.START_TIME && x.CLASS_TIMING.END_TIME == ClassTimingInner.END_TIME && x.BTCH_ID == batch.ID && x.TIMT_ID == timetable_id).FirstOrDefault();
                 if (tte != null)
                 {
                     tte_id["tte_id"] = string.Concat(tte.WK_DAY_ID, "_", tte.CLS_TMNG_ID);
