@@ -152,6 +152,8 @@
                             <td class="td-blank"></td>
                             @foreach (var item2 in class_timing)
                             {
+                                int? TimetableId = ViewBag.timetable_id;
+                                var OLtte = db.TIMETABLE_ENTRY.Include(x => x.BATCH).Include(x => x.BATCH.COURSE).Include(x => x.EMPLOYEE).Include(x => x.WEEKDAY).Include(x => x.CLASS_TIMING).Where(x => x.TIMT_ID == TimetableId && x.WK_DAY_ID != item.ID && x.WEEKDAY.NAME == item.NAME && x.CLS_TMNG_ID != item2.ID && x.CLASS_TIMING.NAME == item2.NAME).ToList();
                                 var tte = timetable.Where(x => x.WK_DAY_ID == item.ID && x.CLS_TMNG_ID == item2.ID).ToList();
                                 string TagIDString = string.Concat("drop_", item.ID, "_", item2.ID);
                                 string TagOnClickString = string.Concat("update_selected_divs('", item.ID, "_", item2.ID, "');");
@@ -186,7 +188,7 @@
                                                                     {
                                                                         @subItem.NAME
                                                                     }
-                                                                    var sub_emp = db.EMPLOYEES_SUBJECT.Include(x=>x.EMPLOYEE).Where(x => x.SUBJ_ID == subItem.ID);
+                                                                    var sub_emp = db.EMPLOYEES_SUBJECT.Include(x => x.EMPLOYEE).Where(x => x.SUBJ_ID == subItem.ID);
                                                                     if (sub_emp != null && sub_emp.Count() != 0)
                                                                     {
                                                                         <div class="emp-name">@sub_emp.FirstOrDefault().EMPLOYEE.FIRST_NAME @sub_emp.FirstOrDefault().EMPLOYEE.MID_NAME @sub_emp.FirstOrDefault().EMPLOYEE.LAST_NAME</div>
@@ -203,6 +205,31 @@
                                                                 {
                                                                     <div class="emp-name">@tte.FirstOrDefault().EMPLOYEE.FIRST_NAME @tte.FirstOrDefault().EMPLOYEE.MID_NAME @tte.FirstOrDefault().EMPLOYEE.LAST_NAME</div>
                                                                 }
+                                                                <span>
+                                                                    Teachers in overlapping classes:
+                                                                    @foreach (var OLtteEmp in OLtte)
+                                                                    {
+                                                                        if (OLtteEmp.EMPLOYEE != null && OLtteEmp.BATCH != null)
+                                                                        {
+                                                                            <div class="emp-name">@OLtteEmp.BATCH.COURSE.CODE : @OLtteEmp.EMPLOYEE.FIRST_NAME @OLtteEmp.EMPLOYEE.MID_NAME</div>
+                                                                        }
+
+                                                                    }
+                                                                </span>
+                                                            }
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>
+                                                            Teachers in overlapping classes:
+                                                            @foreach (var OLtteEmp in OLtte)
+                                                            {
+                                                                if (OLtteEmp.EMPLOYEE != null && OLtteEmp.BATCH != null)
+                                                                {
+                                                                    <div class="emp-name">@OLtteEmp.BATCH.COURSE.CODE :@OLtteEmp.EMPLOYEE.FIRST_NAME @OLtteEmp.EMPLOYEE.MID_NAME</div>
+                                                                }
+
                                                             }
                                                         </span>
                                                     }
