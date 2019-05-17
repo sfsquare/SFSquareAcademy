@@ -255,7 +255,7 @@ namespace SFSAcademy.Controllers
             ViewBag.timetable_id = timetable_id;
             ViewBag.batch_id = batch_id;
             TIMETABLE timetable = db.TIMETABLEs.Find(timetable_id);
-            ViewData["timetable"] = timetable;
+            //ViewData["timetable"] = timetable;
             BATCH batch = db.BATCHes.Include(x => x.COURSE).Where(x => x.ID == batch_id).FirstOrDefault();
             ViewData["batch"] = batch;           
             SUBJECT subject = db.SUBJECTs.Find(sub_id);
@@ -496,7 +496,7 @@ namespace SFSAcademy.Controllers
                     catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return; }
                 }                
             }           
-            var timetable_entries = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.EMPLOYEE).Where(x => x.BTCH_ID == batch_id && x.TIMT_ID == TT).ToList();
+            var timetable_entries = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.EMPLOYEE).Include(x => x.WEEKDAY).Include(x => x.CLASS_TIMING).Where(x => x.BTCH_ID == batch_id && x.TIMT_ID == TT).ToList();
             ViewData["timetable"] = timetable_entries;
             var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == batch_id && x.ELECTIVE_GRP_ID == null && x.IS_DEL == false).ToList();
             ViewData["subjects"] = subjects;
