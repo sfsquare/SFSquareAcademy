@@ -2687,6 +2687,21 @@
       <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Content>
     <Content Include="Views\User\All.cshtml" />
+    <Content Include="Views\Student_Attendance\Index.cshtml" />
+    <Content Include="Views\Attendances\Create.cshtml" />
+    <Content Include="Views\Attendances\Index.cshtml" />
+    <Content Include="Views\Attendances\_Subjects.cshtml" />
+    <Content Include="Views\Attendances\_Register.cshtml" />
+    <Content Include="Views\Attendances\_Edit.cshtml" />
+    <Content Include="Views\Attendances\_New.cshtml" />
+    <Content Include="Views\Attendance_Reports\Index.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Subjects.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Mode.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Month.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Year.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Report.cshtml" />
+    <Content Include="Views\Attendance_Reports\_Student_Details.cshtml" />
+    <Content Include="Views\Attendance_Reports\Report_pdf.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2740,6 +2755,9 @@
     <Compile Include="BATCH.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="BATCH_EVENT.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CLASS_DESIGNATION.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
@@ -2755,6 +2773,8 @@
     <Compile Include="CONFIGURATION.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\AttendancesController.cs" />
+    <Compile Include="Controllers\Attendance_ReportsController.cs" />
     <Compile Include="Controllers\BATCHController.cs" />
     <Compile Include="Controllers\Class_TimingsController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
@@ -2769,6 +2789,7 @@
     <Compile Include="Controllers\PayrollController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\Student_AttendanceController.cs" />
     <Compile Include="Controllers\SubjectsController.cs" />
     <Compile Include="Controllers\TimetableController.cs" />
     <Compile Include="Controllers\Timetable_EntriesController.cs" />
@@ -2922,6 +2943,7 @@
     <Compile Include="LIABILITY.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\Batch.cs" />
     <Compile Include="Models\CommonModel.cs" />
     <Compile Include="Models\Configuration.cs" />
@@ -2934,9 +2956,11 @@
     <Compile Include="Models\News.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Subjects.cs" />
+    <Compile Include="Models\Subject_Leave.cs" />
     <Compile Include="Models\Timetable.cs" />
     <Compile Include="Models\Timetable_Entries.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Weekday.cs" />
     <Compile Include="MONTHLY_PAYSLIP.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
@@ -3065,6 +3089,9 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="USERS_ACCESS.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USERS_EVENT.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="WEEKDAY.cs">
