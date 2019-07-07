@@ -1,0 +1,217 @@
+﻿@{
+    List<DateTime> dates = (List<DateTime>)ViewData["dates"];
+    IEnumerable<STUDENT> Students = (IEnumerable<STUDENT>)ViewData["Students"];
+    SUBJECT sub = (SUBJECT)ViewData["sub"];
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+<script>
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+    });
+    //Very similar function as before (except this time with an argument)
+    function LoadPartialPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#register').html(data);
+            $('#register').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+    function LoadEditModelPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function LoadNewModelPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function LoadDeletePartialPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#register').html(data);
+            $('#register').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+
+<div class="header">
+    @if (ViewBag.config == "Daily")
+    {
+        <div class="prev">
+            <a href="@Url.Action("Show", "Attendances",new {batch_id = batch.ID, next = ViewBag.today_Minus_1Month })" onclick='LoadPartialPage(this.href); return false;'>◄</a>
+        </div>
+        <div class="month">
+            @ViewBag.today
+        </div>
+        <div class="next">
+            <a href="@Url.Action("Show", "Attendances",new {batch_id = batch.ID, next = ViewBag.today_Plus_1Month })" onclick='LoadPartialPage(this.href); return false;'>►</a>
+        </div>
+    }
+    else
+    {
+        <div class="prev">
+            <a href="@Url.Action("Show", "Attendances",new {batch_id = batch.ID, subject_id = sub.ID, next = ViewBag.today_Minus_1Month })" onclick='LoadPartialPage(this.href); return false;'>◄</a>
+        </div>
+        <div class="month">
+            @ViewBag.today
+        </div>
+        <div class="next">
+            <a href="@Url.Action("Show", "Attendances",new {batch_id = batch.ID, subject_id = sub.ID, next = ViewBag.today_Plus_1Month })" onclick='LoadPartialPage(this.href); return false;'>►</a>
+        </div>
+    }
+    <div class="extender"></div>
+</div>
+<div class="box-1">
+    <table class="" align="center" width="100%">
+        <tr class="tr-head">
+            <td class="head-td-name">Name</td>
+            @{ DateTime current_day = DateTime.Today;}
+            @if (ViewBag.config == "Daily")
+            {
+                foreach (var date in dates)
+                {
+                    if (current_day.ToShortDateString() == date.ToShortDateString())
+                    {
+                        <td class="head-td-date active"><div class="day">@date.Day</div> <div class="date"> @date.Month</div></td>
+                    }
+                    else
+                    {
+                        <td class="head-td-date"><div class="day">@date.Day</div> <div class="date"> @date.Month</div></td>
+                    }
+                }
+            }
+            else
+            {
+                foreach (var date in dates)
+                {
+                    if (current_day.ToShortDateString() == date.ToShortDateString())
+                    {
+                        <td class="head-td-date active"><div class="day">@date.Day</div> <div class="date"> @date.Month</div></td>
+                    }
+                    else
+                    {
+                        <td class="head-td-date"><div class="day">@date.Day</div> <div class="date"> @date.Month</div></td>
+                    }
+                }
+            }
+        </tr>
+        @{ int i = 0;}
+        @foreach (var student in Students)
+        {
+            string selectedRow = "tr-even";
+            if (i % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="td-name">
+                    @student.FIRST_NAME
+                    <div class="date">
+                        <span><div>@student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</div></span>
+                    </div>
+
+                </td>
+                @if (ViewBag.config == "Daily")
+                {
+                    foreach (var date in dates)
+                    {
+                        SFSAcademyEntities db = new SFSAcademyEntities();
+                        var absetNotNull = db.ATTENDENCEs.Where(x => x.MONTH_DATE != null).ToList();
+                        var absent = absetNotNull.Where(x => x.STDNT_ID == student.ID && x.MONTH_DATE.Value.ToShortDateString() == date.ToShortDateString()).FirstOrDefault();
+                        if (current_day.ToShortDateString() == date.ToShortDateString())
+                        {
+                            <td id="attendance-student-@student.ID -class-hour-@date.ToShortDateString()" class="td-mark active">
+                                @if (absent != null && absent.ID != 0)
+                                {
+                                    <a href="@Url.Action("Edit", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" class="absent" onclick='LoadEditModelPage(this.href); return false;'>X</a>
+                                    <a href="@Url.Action("Destroy", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("New", "Attendances",new {Month_date =date, student_id = student.ID , next = ViewBag.today})" class="present" onclick='LoadNewModelPage(this.href); return false;'>O</a>
+                                }
+                                <div class="date">
+                                    <div> <span> @date.ToShortDateString() @student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</span> </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td id="attendance-student-@student.ID -class-hour-@date.ToShortDateString()" class="td-mark">
+                                @if (absent != null && absent.ID != 0)
+                                {
+                                    <a href="@Url.Action("Edit", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" class="absent" onclick='LoadEditModelPage(this.href); return false;'>X</a>
+                                    <a href="@Url.Action("Destroy", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("New", "Attendances",new {Month_date =date, student_id = student.ID , next = ViewBag.today})" class="present" onclick='LoadNewModelPage(this.href); return false;'>O</a>
+                                }
+                                <div class="date">
+                                    <div> <span> @date.ToShortDateString() @student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</span> </div>
+                                </div>
+                            </td>
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var date in dates)
+                    {
+                        SFSAcademyEntities db = new SFSAcademyEntities();
+                        var absent = db.SUBJECT_LEAVE.Where(x => x.STDNT_ID == student.ID && x.MONTH_DATE == date && x.SUBJECT_ID == sub.ID).FirstOrDefault();
+                        if (current_day.ToShortDateString() == date.ToShortDateString())
+                        {
+                            <td id="attendance-student-@student.ID -date-@date.ToShortDateString()" class="td-mark active">
+                                @if (absent != null && absent.ID != 0)
+                                {
+                                    <a href="@Url.Action("Edit", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" class="absent" onclick='LoadEditModelPage(this.href); return false;'>X</a>
+                                    <a href="@Url.Action("Destroy", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("New", "Attendances",new {Month_date =date, student_id = student.ID, subject_id = sub.ID , next = ViewBag.today})" class="present" onclick='LoadNewModelPage(this.href); return false;'>O</a>
+                                }
+                                <div class="date">
+                                    <div> <span> @date.ToShortDateString() @student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</span> </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td id="attendance-student-@student.ID -date-@date.ToShortDateString()" class="td-mark">
+                                @if (absent != null && absent.ID != 0)
+                                {
+                                    <a href="@Url.Action("Edit", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" class="absent" onclick='LoadEditModelPage(this.href); return false;'>X</a>
+                                    <a href="@Url.Action("Destroy", "Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("New", "Attendances",new {Month_date =date, student_id = student.ID, subject_id = sub.ID, next = ViewBag.today})" class="present" onclick='LoadNewModelPage(this.href); return false;'>O</a>
+                                }
+                                <div class="date">
+                                    <div> <span> @date.ToShortDateString() @student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</span> </div>
+                                </div>
+                            </td>
+                        }
+                    }
+                }
+            </tr>
+        }
+    </table>
+</div>

@@ -1,0 +1,117 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    STUDENT student = (STUDENT)ViewData["student"];
+    IEnumerable<ATTENDENCE> reportAt = (IEnumerable<ATTENDENCE>)ViewData["reportAt"];
+    IEnumerable<SUBJECT_LEAVE> reportSL = (IEnumerable<SUBJECT_LEAVE>)ViewData["reportSL"];
+    SFSAcademyEntities db = new SFSAcademyEntities();
+}
+
+<link href="~/Content/stylesheets/modalbox.css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 700,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+
+</script>
+
+<div id="page-yield" style="width:100%">
+    <div class="label-field-pair" >
+        <label style="width:100%">Student Details @student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</label>
+    </div>
+    <table id="listing" align="center" width="80%">
+        <tr class="tr-head">
+            <td>
+                Date
+            </td>
+            <td>
+                Status
+            </td>
+            <td>
+                Reason
+            </td>
+        </tr>
+        <tr class="blank"></tr>
+        @{ int i = 0;}
+        @if (ViewBag.config == "Daily")
+        {
+            foreach (var r in reportAt)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    @{ var details = db.PERIOD_ENTRIES.Find(r.PER_TABLE_ENT_ID);}
+                    <td class="col-2">@r.MONTH_DATE.Value.ToShortDateString()</td>
+                    <td class="col-3">
+                        @if (r.FORENOON == true && r.PM == true)
+                        {
+                            <span>Full Day</span>
+                        }
+                        else if (r.PM == true)
+                        {
+                            <span>Afternoon</span>
+                        }
+                        else if (r.FORENOON == true)
+                        {
+                            <span>Forenoon</span>
+                        }
+                        else
+                        {
+                            <span>Absent</span>
+                        }
+                    </td>
+                    <td class="col-2">
+                        @r.RSN
+                    </td>
+                </tr>
+                i += 1;
+            }
+        }
+        else
+        {
+            foreach (var r in reportSL)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-2">@r.MONTH_DATE.Value.ToShortDateString()</td>
+                    <td class="col-3">
+                        <span>Absent</span>
+                    </td>
+                    <td class="col-2">
+                        @r.RSN
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+

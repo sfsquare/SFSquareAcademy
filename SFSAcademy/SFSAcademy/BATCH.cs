@@ -32,6 +32,7 @@ namespace SFSAcademy
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
             this.WEEKDAYs = new HashSet<WEEKDAY>();
             this.ELECTIVE_GROUP = new HashSet<ELECTIVE_GROUP>();
+            this.BATCH_EVENT = new HashSet<BATCH_EVENT>();
         }
     
         public int ID { get; set; }
@@ -75,5 +76,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
         public virtual COURSE COURSE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BATCH_EVENT> BATCH_EVENT { get; set; }
     }
 }

@@ -1,0 +1,120 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@model string
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<STUDENT> students = (IEnumerable<STUDENT>)ViewData["students"];
+    DataTable leaves = (DataTable)ViewData["leaves"];
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+}
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    function CloseLoader() {
+        $(".LoaderBox7").hide();
+    }
+    function OpenLoader() {
+        $(".LoaderBox7").show();
+    }
+    function LoadModelPage(sender) {
+        $(".LoaderBox7").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $('#modal-box').dialog('open');
+            $(".LoaderBox7").hide();
+        });
+    }
+</script>
+@if (Model != null && Model != "")
+{
+    if (ViewBag.academic_days > 0)
+    {
+        using (Ajax.BeginForm("Filter", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "report", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseLoader()" }, htmlAttributes: new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+            <input type="hidden" value="@ViewBag.start_date" id="start_date" name="start_date" />
+            <input type="hidden" value="@ViewBag.end_date" id="end_date" name="end_date" />
+            <input type="hidden" value="@ViewBag.report_type" id="report_type" name="report_type" />
+            <input type="hidden" value="@ViewBag.subject_id" id="subject_id" name="subject_id" />
+            <input type="submit" value="Filter" class="submit-button" />
+            <div class="label-field-pair1">
+                <label>Filter:</label>
+                <div class="text-input-bg1">@Html.DropDownList("RANGE", new SelectList(Enum.GetValues(typeof(RANGE))), "Select Range", new { @id = "RANGE" })</div>
+                <div class="text-input-bg1">@Html.Editor("value", new { htmlAttributes = new {required = "required", id = "value" } })</div>
+            </div>
+        }
+        <div class="LoaderBox7" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader7" alt="Finance Logo" style="align-self:center; border:none"></div>
+        <div class="label-field-pair">
+            <label>
+                @if (ViewBag.config == "Daily")
+                {
+                    <span>Total no. of working days = @ViewBag.academic_days</span>
+                }
+                else
+                {
+                    <span>Total no. of working hours = @ViewBag.academic_days</span>
+                }
+            </label>
+        </div>
+        <table id="listing" align="center" width="80%">
+            <tr class="tr-head">
+                <td>
+                    Name
+                </td>
+                <td>
+                    Total
+                </td>
+                <td>
+                    Percentage (%)
+                </td>
+            </tr>
+            <tr class="blank"></tr>
+            @{ int i = 0;}
+            @foreach (var student in students)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                var TotalLevaeCount = leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "total").Select(x => x.Field<int>("leave_count")).FirstOrDefault();
+                var PercentLevaeCount = leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "percent").Select(x => x.Field<int>("leave_count")).FirstOrDefault();
+                if (leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID).Count() != 0)
+                {
+                    <tr class="@selectedRow">
+                        <td class="col-2"><a href="@Url.Action("Student_Details", "Attendance_Reports", new {id = student.ID })" onclick='LoadModelPage(this.href); return false;'>@student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</a></td>
+                        <td class="col-3"> @TotalLevaeCount</td>
+                        @if (leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "percent").Count() != 0)
+                        {
+                            <td class="col-3">@PercentLevaeCount</td>
+                        }
+                        else
+                        {
+                            <td class="col-3">0</td>
+                        }
+
+                    </tr>
+                }
+            }
+
+        </table>
+        using (Html.BeginForm("Report_pdf", "Attendance_Reports", FormMethod.Get, new { target = "_blank" }))
+        {
+            @Html.AntiForgeryToken()
+            <input type="submit" value="pdf Report" class="submit_button2" />
+            <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+            <input type="hidden" value="@ViewBag.start_date" id="start_date" name="start_date" />
+            <input type="hidden" value="@ViewBag.end_date" id="end_date" name="end_date" />
+            <input type="hidden" value="@ViewBag.report_type" id="report_type" name="report_type" />
+            <input type="hidden" value="@ViewBag.subject_id" id="subject_id" name="subject_id" />
+        }
+    }
+    else
+    {
+        <div class="label-field-pair2">No Reports.</div>
+    }
+}
