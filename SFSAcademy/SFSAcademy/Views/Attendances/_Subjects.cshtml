@@ -1,0 +1,37 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox3").hide();
+        $('#SubDropDown').change(function () {
+            var selectedID = $(this).val();
+            var SelectedNext = null;
+            var batch_id = $('#batch_id').val();
+            $(".LoaderBox3").show();
+            $.get('/Attendances/Show?subject_id=' + selectedID+ "&batch_id=" + batch_id + "&next=" + SelectedNext, function (data) {
+                $('#register').html(data);
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox3").hide();
+            });
+
+        });
+    });
+</script>
+<div class="label-field-pair">
+    <label>Select Subject</label>
+    <div class="text-input-bg">
+        @Html.DropDownList("SUB_ID", null, htmlAttributes: new { @class = "form-control", @id = "SubDropDown" })
+        <div class="LoaderBox3"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    </div>
+</div>
+<input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+

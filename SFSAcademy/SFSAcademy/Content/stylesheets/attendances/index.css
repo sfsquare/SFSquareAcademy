@@ -224,3 +224,6 @@ table.table{
 a {
     cursor: pointer;
 }
+.bread_crumb {
+    margin-left: 10px;
+}

@@ -1,0 +1,165 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<STUDENT> students = (IEnumerable<STUDENT>)ViewData["students"];
+    DataTable leaves = (DataTable)ViewData["leaves"];
+}
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/attendance_reports/report_pdf.css">
+<style type="text/css">
+    @@media print {
+
+        html, body {
+            width: 100vh;
+        }
+    }
+</style>
+<script type="text/javascript" src="@Url.Content(" ~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content(" ~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content(" ~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content(" ~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content(" ~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content(" ~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content(" ~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript">
+    var body = document.body,
+        html = document.documentElement;
+    var pg_height = $(page_height).val();
+    var header = $("table-headers")
+    var page = new Element('div', { 'class': 'page1' });
+    var pageBreak = new Element('div', { 'class': 'page-break1' });
+    var insertPageBreak = function () { body.appendChild(pageBreak.cloneNode(true)) };
+    var insertPage = function () { body.appendChild(page.cloneNode(true)); };
+    var currPage = function () { return $$('.page1').last() };
+    var insertHeader = function () {
+        header1 = header.cloneNode(true);
+        header1.style.marginTop = "50px";
+        currPage().appendChild(header1.cloneNode(true));
+    };
+    var current_page_height = 0;
+    var i = 0
+    $$('.available_sections1 .section1').each(function (el) {
+        a = parseInt(el.getHeight());
+        c = current_page_height + a;
+        current_page_height = c;
+        if (c > pg_height) {
+            current_page_height = a
+            body.appendChild(new Element('div', { 'id': 'page-blank_' + i, 'class': 'page-blank' }))
+            document.getElementById('page-blank_' + i).style.height = (c - pg_height) + 'px';
+            document.getElementById('page-blank_' + i).innerHTML = "&nbsp;"/* if a div doesnt have any content it may not display.. set height will not work */
+            i += 1
+
+            //el.style.marginTop="50px"; /* for this border-top is coming, top section of each page */
+            insertPageBreak();
+            /* insertHeader(); */
+            insertPage();
+            insertHeader();
+            current_page_height = (current_page_height + header.getHeight() + 50)
+
+        }
+        currPage().appendChild(el);
+    });
+</script>
+<div id="page-yield" class="available_sections1">
+    <div class="page1"></div>
+    <div class="section1 row">
+        <center>
+            <h2>Attendance Report</h2>
+            <div class="hor_line"></div>
+
+            <div class="extender"> </div>
+        </center>
+    </div>
+
+    @if (ViewBag.academic_days > 0)
+    {
+        var working_days = ViewBag.academic_days;
+        <div class="section1 row">
+            <center>
+                <div id="main_info">
+                    <div class="info1">
+                        <div class="info-left">
+                            <h4>Course : @batch.COURSE.CRS_NAME</h4>
+                        </div>
+                        <div class="info-right">
+                            <h4 style="color:black;">@batch.Course_full_name</h4>
+                        </div>
+                        <div class="hor_line1"></div>
+                    </div>
+                    <div class="info1">
+                        <div class="info-left">
+                            <h4>
+                                @if (ViewBag.config == "Daily")
+                                {
+                                    <span>Total no. of working days = @ViewBag.academic_days</span>
+                                }
+                                else
+                                {
+                                    <span>Total no. of working hours = @ViewBag.academic_days</span>
+                                }
+
+
+                            </h4>
+
+                        </div>
+                    </div>
+                </div>
+            </center>
+        </div>
+        <div class="section1 row" id="table-headers">
+            <center>
+                <table id="pdf-table" width="100%">
+                    <tr class="odd"><td class="col-pdf1 name-td">Name</td><td class="col-pdf1 total-td">Total</td><td class="col-pdf1 total-td">Percentage</td></tr>
+                </table>
+            </center>
+        </div>
+        int i = 0;
+        foreach (var student in students)
+        {
+            string selectedRow = "even";
+            if (i % 2 == 0)
+            {
+                selectedRow = "odd";
+            }
+            var TotalLevaeCount = leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "total").Select(x => x.Field<int>("leave_count")).FirstOrDefault();
+            var PercentLevaeCount = leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "percent").Select(x => x.Field<int>("leave_count")).FirstOrDefault();
+            <div class="section1 row">
+                <center>
+                    <table id="pdf-table" width="100%">
+                        <tr class="@selectedRow">
+                            <td class="name-td">@student.FIRST_NAME @student.MID_NAME @student.LAST_NAME</td>
+                            <td class="total-td">@TotalLevaeCount</td>
+                            @if (leaves.AsEnumerable().Where(x => x.Field<int>("student_id") == student.ID && x.Field<string>("leave_type") == "percent").Count() != 0)
+                            {
+                                <td class="total-td">@PercentLevaeCount</td>
+                            }
+                            else
+                            {
+                                <td class="total-td">0</td>
+                            }
+                        </tr>
+                    </table>
+                </center>
+            </div>
+            i += 1;
+        }
+
+    }
+    else
+    {
+        <div class="section1 row">
+            <center>
+                <div class="no-data">No reports for the given period</div>
+            </center>
+        </div>
+    }
+    <div class="noprint"><input type="submit" id="submit_button" value="Print" class="user_button" onclick="window.print()" /></div>
+</div>

@@ -1,0 +1,83 @@
+﻿@model SFSAcademy.AttendanceSubLeave
+@{
+    STUDENT student = (STUDENT)ViewData["student"];
+    SUBJECT sub = (SUBJECT)ViewData["sub"];
+}
+<link href="~/Content/stylesheets/modalbox.css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+
+    function CloseAttendanceDialog() {
+        $('#modal-box').dialog("close");
+    }
+    function OpenLoader() {
+        $(".LoaderBox2").show();
+    }
+
+</script>
+
+@using (Ajax.BeginForm("Create", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "register", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseAttendanceDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    <div id="form-errors"></div>
+    <label class="head_label">Attendance for <span>@student.FIRST_NAME</span></label>
+
+    <div id="ajax-edit">
+        <br />
+        @if (ViewBag.config == "Daily")
+        {
+            <div class="label-field-pair">
+                <div class="label-container">@Html.LabelFor(model => model.Reason, "Reason", htmlAttributes: new { @class = "control-label col-md-2", required = "required" })</div>
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">@Html.TextBoxFor(model => model.Reason, null, new { @class = "form-control" })</div>
+                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+            </div>
+            <div class="label-checkbox-pair">
+                <div class="label-container"><label>@Html.CheckBoxFor(model => model.Forenoon) Forenoon</label></div>
+            </div>
+            <div class="label-checkbox-pair">
+                <div class="label-container"><label>@Html.CheckBoxFor(model => model.Afternoon) Afternoon</label></div>
+            </div>
+            <div class="extender"></div>
+        }
+        else
+        {
+            <div class="label-field-pair">
+                <div class="label-container">@Html.LabelFor(model => model.Reason, "Reason", htmlAttributes: new { @class = "control-label col-md-2", required = "required" })</div>
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">@Html.TextBoxFor(model => model.Reason, null, new { @class = "form-control" })</div>
+                @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+            </div>
+            <div class="extender"></div>
+        }
+    </div>
+    <input type="submit" value="► Add" id="submit-button" class="submit-button" />
+    <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    @Html.HiddenFor(model => model.Student_Id)
+    @Html.HiddenFor(model => model.Batch_Id)
+    @Html.HiddenFor(model => model.AttendanceDate)
+    @Html.HiddenFor(model => model.Subject_Id)
+    @Html.HiddenFor(model => model.Next)
+}

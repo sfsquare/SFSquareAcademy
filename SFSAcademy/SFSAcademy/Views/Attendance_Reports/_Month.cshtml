@@ -1,0 +1,41 @@
+﻿@model string
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    SUBJECT sub = (SUBJECT)ViewData["sub"];
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+}
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    $(document).ready(function () {
+        $(".LoaderBox5").hide();
+        $('#MonthDropDown').change(function () {
+            var selectedID = $(this).val();
+            var batch_id = $('#batch_id').val();
+            var subject_id = $('#subject_id').val();
+            var report_type = $('#report_type').val();
+            $(".LoaderBox5").show();
+            $.get('/Attendance_Reports/Year?month=' + selectedID + "&report_type=" + report_type + "&batch_id=" + batch_id + "&subject_id=" + subject_id, function (data) {
+                $('#year').html(data);
+                $('#year').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox5").hide();
+            });
+
+        });
+    });
+</script>
+@if (Model != null && Model != "")
+{
+    <div class="label-field-pair">
+        <label>Select a month & year</label>
+        <div class="text-input-bg">
+            @Html.DropDownList("MONTH", null, htmlAttributes: new { @class = "form-control", @id = "MonthDropDown" })
+            <div class="LoaderBox5"><img src="~/Content/images/loader.gif" id="loader5" alt="Finance Logo" style="align-self:center; border:none"></div>
+        </div>
+    </div>
+    <div id="year">@Html.Partial("_Year", Model)</div>
+    <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+    <input type="hidden" value="@ViewBag.subject_id" id="subject_id" name="subject_id" />
+    <input type="hidden" value="@ViewBag.report_type" id="report_type" name="report_type" />
+}
+

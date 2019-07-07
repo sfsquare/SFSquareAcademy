@@ -1,0 +1,60 @@
+﻿@model string
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    SUBJECT sub = (SUBJECT)ViewData["sub"];
+    SUBJECT subject = (SUBJECT)ViewData["subject"];
+}
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    $(document).ready(function () {
+        $(".LoaderBoxMode").hide();
+        $('#ModeDropDown').change(function () {
+            $(".LoaderBoxMode").show();
+            var selectedID = $(this).val();
+            var batch_id = $('#batch_id').val();
+            var subject_id = $('#subject_id').val();
+            $.ajax({
+                type: 'GET',
+                url: "/Attendance_Reports/Show",
+                dataType: 'json',
+                data: {
+                    mode: selectedID,
+                    batch_id: batch_id,
+                    subject_id: subject_id
+                },
+                success: function (result) {
+                    if (result != null) {
+                        $(".LoaderBoxMode").hide();
+                        $("#report").html(result.ReportPartialView);
+                        $('#report').fadeIn('fast');
+                        $("#month").html(result.MonthPartialView);
+                        $('#month').fadeIn('fast');
+                        $("#year").html(result.YearPartialView);
+                        $('#year').fadeIn('fast');
+                    } else {
+                        alert('Null data returned.');
+                        $(".LoaderBoxMode").hide();
+                    }
+                },
+                error: function () {
+                    alert('Hello! Error getting data.');
+                    $(".LoaderBoxMode").hide();
+                }
+            });
+        });
+    });
+</script>
+
+@if (Model != null && Model != "")
+{
+    <div class="label-field-pair">
+        <label>Select Mode: </label>
+
+        <div class="text-input-bg">
+            @Html.DropDownList("MODE", null, htmlAttributes: new { @class = "form-control", @id = "ModeDropDown" })
+            <div class="LoaderBoxMode"><img src="~/Content/images/loader.gif" id="loaderMode" alt="Finance Logo" style="align-self:center; border:none"></div>
+        </div>
+    </div>
+    <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+    <input type="hidden" value="@ViewBag.subject_id" id="subject_id" name="subject_id" />
+}
