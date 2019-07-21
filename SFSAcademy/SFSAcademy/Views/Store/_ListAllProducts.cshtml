@@ -1,0 +1,100 @@
+﻿@model PagedList.IPagedList<SFSAcademy.Products>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@if (Model == null || Model.Count() == 0)
+{
+    <p class="flash-msg"> No product to display. </p>
+}
+else
+{
+    <div id="students-table">
+        <table id="listing" align="center" style="width:100%" cellpadding="0" cellspacing="0">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Code
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Sub Category
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    UOM
+                </th>
+                <th>
+                    Created On
+                </th>
+                <th></th>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; int ProductRowNum = 0;}
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                ProductRowNum = i;
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-1">@i</td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.ProductData.PRODUCT_CD)
+                    </td>
+                    <td class="col-3">
+                        @Html.ActionLink(item.ProductData.NAME, "ProductDetail", new { id = item.ProductData.PRODUCT_ID })
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.ProductData.DESCR)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.ProductData.STORE_BRAND.NAME)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.ProductData.DEFAULT_UOM)
+                    </td>
+                    <td class="col-7" nowrap>
+                        @if (!item.ProductData.CREATED_AT.Equals(null))
+                        {
+                            @item.ProductData.CREATED_AT.Value.ToShortDateString()
+                        }
+                    </td>
+                    @if (Html.Permitted_To("ProductEdit", "Store"))
+                    {
+                        <td class="col-8" style="white-space: nowrap;">
+                            @Html.ActionLink("Edit ", "ProductEdit", new { id = item.ProductData.PRODUCT_ID }) |
+                            @Html.ActionLink("Delete ", "ProductDelete", new { id = item.ProductData.PRODUCT_ID }, new { onclick = "return confirm('are you sure?')" })
+                        </td>
+                    }
+
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+        @Html.PagedListPager(Model, page => Url.Action("ViewAll",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    </div>
+    @Html.ActionLink("PDF Report", "Products_pdf", new { CATEGORY_ID = ViewBag.CATEGORY_ID, SUB_CATEGORY_ID = ViewBag.SUB_CATEGORY_ID }, new { @class = "user_button", @target = "_blank" })
+    <input type="hidden" id="PRODUCTID" name="PRODUCTID" />
+}

@@ -17,9 +17,9 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EVENT()
         {
+            this.BATCH_EVENT = new HashSet<BATCH_EVENT>();
             this.EMPLOYEE_DEPARTMENT_EVENT = new HashSet<EMPLOYEE_DEPARTMENT_EVENT>();
             this.EXAMs = new HashSet<EXAM>();
-            this.BATCH_EVENT = new HashSet<BATCH_EVENT>();
             this.USERS_EVENT = new HashSet<USERS_EVENT>();
         }
     
@@ -38,11 +38,11 @@ namespace SFSAcademy
         public string ORIGIN_TYPE { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BATCH_EVENT> BATCH_EVENT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_DEPARTMENT_EVENT> EMPLOYEE_DEPARTMENT_EVENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM> EXAMs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BATCH_EVENT> BATCH_EVENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<USERS_EVENT> USERS_EVENT { get; set; }
     }

@@ -1,0 +1,120 @@
+﻿@model IEnumerable<STORE_PROCUREMENT>
+
+@{
+    ViewBag.Title = "Procurement History";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Show Store Logo">
+    <h1>Store</h1>
+    <h3>Selling History</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Procurement", "Procurement") &raquo;
+    Procurement History
+</div>
+<div id="page-yield">
+    <div class="students-table">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Sub Category
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    Vendor
+                </th>
+                <th>
+                    Unit Procured
+                </th>
+                <th>
+                    Cost/Unit
+                </th>
+                <th>
+                    Total Cost
+                </th>
+                <th>
+                    Paid By
+                </th>
+                <th>
+                    Date Procured
+                </th>
+                @if (Html.Permitted_To("ProductEdit", "Store"))
+                {
+                    <th></th>
+                }
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-1">@i</td>
+                    <td class="col-2">
+                        @Html.DisplayFor(modelItem => item.DESCR)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.STORE_PRODUCTS.STORE_CATEGORY.NAME)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.STORE_BRAND.NAME)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.STORE_PURCHAGE_VENDOR.NAME)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.UNIT_PROCURED)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.COST_PER_UNIT)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.TOTAL_COST)
+                    </td>
+                    <td class="col-4" nowrap>
+                        @Html.DisplayFor(modelItem => item.PAID_BY)
+                    </td>
+                    <td class="col-7" nowrap>
+                        @if (!item.PROCURED_ON.Equals(null))
+                        {
+                            @item.PROCURED_ON.Value.ToShortDateString()
+                        }
+                    </td>
+                    @if (Html.Permitted_To("ProductEdit", "Store"))
+                    {
+                        <td class="col-8" nowrap>
+                            @Html.ActionLink("Edit", "Edit_Procurement", new { id = item.ID })
+                        </td>
+                    }
+                </tr>
+                i = i + 1;
+            }
+        </table>
+    </div>
+    <div id="products"></div>
+</div>

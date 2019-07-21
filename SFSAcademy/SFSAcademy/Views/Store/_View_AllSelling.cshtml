@@ -1,0 +1,111 @@
+﻿@model PagedList.IPagedList<SFSAcademy.Products>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@if (Model == null || Model.Count() == 0)
+{
+    <p class="flash-msg"> No product to display. </p>
+}
+else
+{
+    <div id="students-table">
+        <table id="listing" align="center" style="width:100%" cellpadding="0" cellspacing="0">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Sub Category
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    SP
+                </th>
+                <th>
+                    UOM
+                </th>
+                <th>
+                    Unit Left
+                </th>
+                <th>
+                    Last Sold
+                </th>
+                <th>
+
+                </th>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; int ProductRowNum = 0;}
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                ProductRowNum = i;
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-1">@i</td>
+                    <td class="col-3">
+                        @Html.ActionLink(item.InventoryData.DESCR, "ProductDetail", new { id = item.InventoryData.PRODUCT_ID })
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.SubCategoryData.NAME)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.InventoryData.STORE_BRAND.NAME)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.InventoryData.SELL_PRICE_PER_UNIT)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.ProductData.DEFAULT_UOM)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.InventoryData.UNIT_LEFT)
+                    </td>
+                    <td class="col-7" nowrap>
+                        @if (!item.InventoryData.LAST_SOLD.Equals(null))
+                        {
+                            @item.InventoryData.LAST_SOLD.Value.ToShortDateString()
+                        }
+                    </td>
+                    @if (Html.Permitted_To("Purchase", "Store"))
+                    {
+                        <td class="col-3" nowrap>
+                            @Html.ActionLink("History ", "SellingHistory", new { id = item.ProductData.PRODUCT_ID }) |
+                            @if (item.InventoryData.UNIT_LEFT > 0)
+                            {
+                                <button id="@string.Concat("btnCreate",item.InventoryData.PRODUCT_ID)" value="@item.InventoryData.PRODUCT_ID" class="button-label" onclick="AddQuantity(value,'@item.ProductData.NAME');">Sell</button>
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-3" nowrap>
+                            @Html.ActionLink("History ", "SellingHistory", new { id = item.InventoryData.PRODUCT_ID })
+                        </td>
+                    }
+
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+        @Html.PagedListPager(Model, page => Url.Action("ViewAllSelling",
+        new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+    </div>
+    @Html.ActionLink("PDF Report", "Selling_pdf", new { CATEGORY_ID = ViewBag.CATEGORY_ID, SUB_CATEGORY_ID = ViewBag.SUB_CATEGORY_ID }, new { @class = "user_button", @target = "_blank" })
+    <input type="hidden" id="PRODUCTID" name="PRODUCTID" />
+}

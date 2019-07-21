@@ -1,4 +1,4 @@
-﻿@model PagedList.IPagedList<SFSAcademy.Purchase>
+﻿@model PagedList.IPagedList<SFSAcademy.Selling>
 @using PagedList.Mvc;
 ;
 @{
@@ -208,10 +208,10 @@
                     @Html.DisplayFor(modelItem => item.CategoryData.NAME)
                 </td>
                 <td class="col-4">
-                    @Html.DisplayFor(modelItem => item.PurchaseData.UNIT_SOLD)
+                    @Html.DisplayFor(modelItem => item.SelliingData.UNIT_SOLD)
                 </td>
                 <td class="col-4">
-                    @Html.DisplayFor(modelItem => item.PurchaseData.SOLD_PRICE)
+                    @Html.DisplayFor(modelItem => item.SelliingData.SOLD_PRICE)
                 </td>
                 @if (item.UserData != null)
                 {
@@ -224,7 +224,7 @@
                     <td class="col-4" nowrap></td>
                 }
                 <td class="col-5" nowrap>
-                    @Html.DisplayFor(modelItem => item.PurchaseData.IS_DEPOSITED)
+                    @Html.DisplayFor(modelItem => item.SelliingData.IS_DEPOSITED)
                 </td>
                 @if (item.StudentData != null)
                 {
@@ -237,15 +237,15 @@
                     <td class="col-6" nowrap></td>
                 }
                 <td class="col-7" nowrap>
-                    @if (!item.PurchaseData.SOLD_ON.Equals(null))
+                    @if (!item.SelliingData.SOLD_ON.Equals(null))
                     {
-                        @item.PurchaseData.SOLD_ON.Value.ToShortDateString()
+                        @item.SelliingData.SOLD_ON.Value.ToShortDateString()
                     }
                 </td>
                 @if (Html.CurrentUser_UserType().Equals("Admin"))
                 {
                     <td class="col-8" nowrap>
-                        @Html.ActionLink("Edit ", "EditSelling", new { id = item.PurchaseData.ID }, new { style = "text-decoration:underline" })
+                        @Html.ActionLink("Edit ", "EditSelling", new { id = item.SelliingData.ID })
 
                     </td>
                 }

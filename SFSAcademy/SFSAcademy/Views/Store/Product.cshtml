@@ -1,0 +1,144 @@
+﻿@model IEnumerable<STORE_PRODUCTS>
+
+@{
+    ViewBag.Title = "Products";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#PrdList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#Search").keyup(function () {
+            var searchText = $("#Search").val().toLowerCase();
+            $(".Search").each(function () {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                    $("#PrdList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#PrdList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#Search").val() == '') {
+                $("#PrdList").hide();
+            }
+        });
+    });
+
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Show Store Logo">
+    <h1>Store</h1>
+    <h3>Products</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("View All", "ViewAll")</li>
+        <li>@Html.ActionLink("Add New", "ProductCreate")</li>
+    </ul>
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Settings", "Setting") &raquo;
+    Manage Products
+</div>
+<div id="flash_box">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+</div>
+<p class="flash-msg">*Enter Product Name, Category, Sub Category or Brand for search.</p>
+<div class="container">
+    <div class="form-group">
+        <div id="flash_box">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+        </div>
+        <div class="input-group">
+            <img src="~/Content/images/search_icon.png">
+            <input type="text" id="Search" placeholder="Search" class="form-control" />
+        </div>
+    </div>
+    <br />
+    <div class="students-table" id="PrdList">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+            <tr class="tr-head">
+                <th>
+                    Code
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Sub Category
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    UOM
+                </th>
+                <th>
+
+                </th>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="Search @selectedRow">
+                    <td class="col-1">
+                        @Html.DisplayFor(modelItem => item.PRODUCT_CD)
+                    </td>
+                    <td class="col-3">
+                        @Html.ActionLink(item.NAME, "ProductDetail", new { id = item.PRODUCT_ID })
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.DESCR)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.STORE_CATEGORY.NAME) 
+                    </td>
+                    <td class="col-3" >
+                        @Html.DisplayFor(modelItem => item.STORE_SUB_CATEGORY.NAME) 
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.STORE_BRAND.NAME) 
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.DEFAULT_UOM) 
+                    </td>
+                    <td class="col-5" style="white-space: nowrap;">
+                        @Html.ActionLink("Edit ", "ProductEdit", new { id = item.PRODUCT_ID }) |
+                        @Html.ActionLink("Delete ", "ProductDelete", new { id = item.PRODUCT_ID }, new { onclick = "return confirm('are you sure you want to delete this product?')" })
+                    </td>
+                </tr>
+                i = i + 1;
+            }
+        </table>
+        <br />
+    </div>
+</div>

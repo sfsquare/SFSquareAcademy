@@ -41,25 +41,25 @@
                 }
                 <tr class="@selectedRow">
                     <td class="col-1">@i</td>
-                    <td class="col-2">
+                    <td class="col-3">
                         @Html.DisplayFor(modelItem => item.ProductData.NAME)
                     </td>
                     <td class="col-3">
                         @Html.DisplayFor(modelItem => item.PurchaseCartData.UNIT_SOLD)
                     </td>
-                    <td class="col-4">
+                    <td class="col-3">
                         @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
                     </td>
-                    <td class="col-5" nowrap>
+                    <td class="col-3">
                         @Html.DisplayFor(modelItem => item.PurchaseCartData.SOLD_PRICE)
                     </td>
-                    <td class="col-6" nowrap>
+                    <td class="col-3">
                         @item.PurchaseCartData.SOLD_ON.Value.ToShortDateString()
                     </td>
-                    <td class="col-7" nowrap>
+                    <td class="col-4">
                         @Html.DisplayFor(modelItem => item.PurchaseCartData.STUDENT_CONTACT_NO)
                     </td>
-                    <td class="col-8" nowrap>
+                    <td class="col-3">
                         @Html.ActionLink("Edit ", "EditSelling", new { id = item.ProductData.PRODUCT_ID }) 
 
                     </td>
