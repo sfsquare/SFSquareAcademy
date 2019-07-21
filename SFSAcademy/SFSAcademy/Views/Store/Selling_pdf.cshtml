@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SFSAcademy.Products>
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/income_details_pdf.css">
+
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Store Inventory Report</h2>
+    <div class="hor_line"></div>
+
+    <div class="extender"> </div>
+    <div class="report">
+        <div id="main_info">
+            @if (ViewBag.CATEGORY_ID != null && ViewBag.CATEGORY_ID != null && ViewBag.CATEGORY_ID != -1 && ViewBag.CATEGORY_ID != -1)
+            {
+                <h4> Inventory Details of Category: @ViewBag.CATEGORY_ID and Sub Category: @ViewBag.SUB_CATEGORY_ID</h4>
+            }
+            else if (ViewBag.CATEGORY_ID != null && ViewBag.CATEGORY_ID != -1)
+            {
+                <h4> Inventory Details of Category: @ViewBag.CATEGORY_ID</h4>
+            }
+            else
+            {
+                <h4> Inventory Details</h4>
+            }
+
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
+                <tr class="table-header"><td class="col-pdf">Sl. no.</td><td class="col-pdf"> Name </td><td class="col-pdf"> Brand </td><td class="col-pdf"> SP </td><td class="col-pdf">UOM</td><td class="col-pdf">Unit Left</td><td class="col-pdf"> Last Sold</td></tr>
+                @{ int index = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "even";
+                    if (index % 2 == 0)
+                    {
+                        selectedRow = "odd";
+                    }
+                    <tr class="@selectedRow">
+                        <td class="col-pdf">@index</td>
+                        <td class="col-pdf">@item.InventoryData.DESCR</td>
+                        <td class="col-pdf">@item.InventoryData.STORE_BRAND.NAME</td>
+                        <td class="col-pdf">@item.InventoryData.SELL_PRICE_PER_UNIT</td>
+                        <td class="col-pdf">@item.ProductData.DEFAULT_UOM</td>
+                        <td class="col-pdf">@item.InventoryData.UNIT_LEFT</td>
+                        <td class="col-pdf">
+                            @if (!item.InventoryData.LAST_SOLD.Equals(null))
+                            {
+                                @item.InventoryData.LAST_SOLD.Value.ToShortDateString()
+                            }
+                        </td>
+                    </tr>
+                    index += 1;
+                }
+            </table>
+        </div>
+    </div>
+</div>
+

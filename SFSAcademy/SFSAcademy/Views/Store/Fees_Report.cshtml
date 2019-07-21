@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Fees_Report";
+}
+@{
+    IEnumerable<SFSAcademy.FeeCollectionTransactions> fee_collection = (IEnumerable<SFSAcademy.FeeCollectionTransactions>)ViewData["fee_collection"];
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Finance Transactions</h1>
+    <h3>Fees Report</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("Finance", "Index") &raquo;
+        @Html.ActionLink("Transactions", "Transactions") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+        Fees Report
+    </div>
+    @{ decimal total = 0;}
+
+    <b id="fees_report_title">Fees Transaction Report</b>
+    <div id="fees-table">
+        <div class="fees-th">
+            <div class="fees-table-head-desc">Description</div>
+            <div class="fees-table-expenses1">Amount</div>
+        </div>
+        @{ int index = 0; }
+        @foreach (var item in fee_collection)
+        {
+            string selectedRow = "listeven";
+            if (index % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <div class="@selectedRow">
+                <div class="fees-table-description">@Html.ActionLink(string.Concat(@item.CourseData.CODE, "-", @item.BatchData.NAME, "-",@item.FeeCollectionData.NAME), "Batch_Fees_Report", new { id= item.FeeCollectionData.ID, START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE })</div>
+                <div class="fees-table-income"> @item.TRANS_AMNT </div>
+            </div>
+            total += (decimal)item.TRANS_AMNT;
+            index += 1;
+        }
+
+        <br />
+        <div class="fees-th">
+            <div class="fees-table-description">Total Fees</div>
+            <div class="fees-table-expenses">@total</div>
+        </div>
+    </div>
+</div>
+

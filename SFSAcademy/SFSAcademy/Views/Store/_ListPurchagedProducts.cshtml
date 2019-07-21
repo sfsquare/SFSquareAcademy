@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SFSAcademy.PurchaseCart>
+﻿@model IEnumerable<SFSAcademy.SellingCart>
 
 @{ Layout = null;}
 @{
@@ -50,8 +50,8 @@
 {
     <div id="inner-tab-menu" class="noprint">
         <ul>
-            <li>@Html.ActionLink("Cancel Transaction", "CancelTransaction")</li>
-            <li>@Html.ActionLink("Clean Cart", "CleanCart")</li>
+            <li>@Html.ActionLink("Cancel Transaction", "CancelTransaction", null, new { onclick = "return confirm('are you sure you want to cancel this transaction?')" })</li>
+            <li>@Html.ActionLink("Clean Cart", "CleanCart", null, new { onclick = "return confirm('are you sure you want to clean the cart?')" })</li>
         </ul>
     </div>
 }
@@ -83,7 +83,7 @@
 {
     <table id="listing" align="center" cellpadding="1" cellspacing="1">
         <tr class="tr-head">
-            <td>SL. No.</td>
+            <td>Sl. No.</td>
             <td>Product Name</td>
             <td>Units</td>
             <td>Price/Unit</td>
@@ -107,23 +107,23 @@
                 <td class="col-3">
                     @Html.DisplayFor(modelItem => item.UNIT_SOLD)
                 </td>
-                <td class="col-4">
-                    @Html.DisplayFor(modelItem => item.ProductData.SELL_PRICE_PER_UNIT)
+                <td class="col-3">
+                    @Html.DisplayFor(modelItem => item.ProductData.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT)
                 </td>
-                <td class="col-5" nowrap>
+                <td class="col-3" nowrap>
                     @Html.DisplayFor(modelItem => item.SOLD_AMNT)
                 </td>
 
                 @if (ViewBag.PaidPrice == null)
                 { 
-                <td class="col-6">
-                    @Html.ActionLink("Edit ", "EditSellingCart", new { id = item.PurchaseCartData.ID }, new { style = "text-decoration:underline" }) |
-                    @Html.ActionLink(" Delete", "DeleteSellingCart", new { id = item.PurchaseCartData.ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" })
+                <td class="col-3">
+                    @Html.ActionLink("Edit ", "EditSellingCart", new { id = item.SellingCartData.ID }, new { style = "text-decoration:underline" }) |
+                    @Html.ActionLink(" Delete", "DeleteSellingCart", new { id = item.SellingCartData.ID }, new { style = "text-decoration:underline", onclick = "return confirm('are you sure?')" })
                 </td>
                 }
                 else
                 {
-                    <td class="col-6"></td>
+                    <td class="col-3"></td>
                 }
             </tr>
             i = i + 1;
@@ -161,7 +161,6 @@
                 <div class="label-container">@Html.Label("STUDENT_ID", "Stundet Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="text-input-bg">
                     @Html.Partial("_student_select", student_select)
-                    @Html.ValidationMessage("STUDENT_ID", "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="label-field-pair">

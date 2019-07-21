@@ -1,0 +1,85 @@
+﻿@model IEnumerable<SFSAcademy.FinanceTransaction>
+@{
+    ViewBag.Title = "Donations_Report";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Finance Monthly Report</h1>
+    <h3>Donations</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("Finance", "Index") &raquo;
+        @Html.ActionLink("Transactions", "Transactions") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+        Donations
+    </div>
+    <table id="listing">
+        <tr class="tr-head">
+            <td>Description</td>
+            <td>Expense</td>
+            <td>Income</td>
+            <td>Receipt or Voucher No</td>
+            <td>Date</td>
+        </tr>
+        @{ int index = 0; string selectedRow = "tr-even";}
+        @foreach (var item in Model)
+        {
+            string ReceiptOrVoucher = item.FinanceTransactionData.RCPT_NO == null ? item.FinanceTransactionData.VCHR_NO : item.FinanceTransactionData.RCPT_NO;
+            if (index % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="col-3">@item.FinanceTransactionData.TIL</td>
+                @if (item.FinanceTransactionData.MSTRTRAN_ID == null)
+                {
+                    if (item.TransactionCategoryData.IS_INCM == true)
+                    {
+                        <td class="col-5"></td>
+                        <td class="col-5">@item.FinanceTransactionData.AMT</td>
+                    }
+                    else
+                    {
+                        <td class="col-5">@item.FinanceTransactionData.AMT</td>
+                        <td class="col-5"></td>
+                    }
+                }
+                else
+                {
+                    <td class="col-5">@item.FinanceTransactionData.AMT</td>
+                    <td class="col-5"></td>
+
+                }
+                <td class="col-1">@ReceiptOrVoucher</td>
+                <td class="col-5">@item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString()</td>
+            </tr>
+            index += 1;
+        }
+
+        <tr class="tr-head">
+            <td>Total</td>
+            @if (ViewBag.donations_income > ViewBag.donations_expenses)
+            {
+                <td></td>
+                <td> @ViewBag.donations_total</td>
+            }
+            else
+            {
+                <td> @ViewBag.donations_total</td>
+                <td></td>
+            }
+            <td></td>
+            <td></td>
+        </tr>
+
+    </table>
+</div>
+
+

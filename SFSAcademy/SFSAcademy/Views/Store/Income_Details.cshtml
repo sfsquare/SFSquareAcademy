@@ -1,0 +1,79 @@
+﻿@model IEnumerable<SFSAcademy.StoreIncomeDetail>
+@{
+    ViewBag.Title = "Income_Details";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Finance Logo">
+    <h1>Income</h1>
+    <h3>Income List</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("pdf Report", "Income_Details_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE, id = ViewBag.SUB_CATEGORY_ID, CATEGORY_ID = ViewBag.CATEGORY_ID }, new { @target = "_blank" })</li>
+    </ul>
+</div>
+@if (Model != null)
+{
+    <div id="page-yield">
+        <div class="bread_crumb">
+            @Html.ActionLink("Store", "Index") &raquo;
+            @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+            @Html.ActionLink("Monthly Report", "Update_Monthly_Report", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE }) &raquo;
+            @Html.ActionLink("Store Transactions View", "Update_Monthly_Report_Sub", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, id = ViewBag.CATEGORY_ID }) &raquo;
+            @Model.FirstOrDefault().Sub_Category_Name
+        </div>
+        <table id="listing" align="center" style="width:100%">
+            <tr class="tr-head">
+                <td class="name">Name</td>
+                <td class="description">Description</td>
+                <td class="amount">Amount</td>
+                <td class="amount">Unit</td>
+                <td class="transaction_date">Transaction Date</td>
+                <td class="transaction_date">Receipt No</td>
+                <td class="options"></td>
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{ int index = 0; }
+            @foreach (var item in Model)
+            {
+                decimal tran_amount = item.Is_Income == true ? (decimal)item.Amount : -1 * (decimal)item.Amount;
+                string selectedRow = "tr-even";
+                if (index % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="name">@item.Name</td>
+                    <td class="description">@item.Description</td>
+                    <td class="amount">@tran_amount</td>
+                    <td class="amount">@item.Number_Of_Unit</td>
+                    <td class="transaction_date">@item.Transactions_Date.Value.ToShortDateString()</td>
+                    <td class="receipt_no">@item.Receipt_Number</td>
+                    @if (item.Is_Income == true)
+                    {
+                        <td><small>@Html.ActionLink("Edit", "EditSelling", new { id = item.Id })</small></td>
+                    }
+                    else
+                    {
+                        <td><small>@Html.ActionLink("Edit", "Edit_Procurement", new { id = item.Id })</small></td>
+                    }
+
+                </tr>
+                index += 1;
+            }
+
+        </table>
+    </div>
+}
+else
+{
+    <br />
+    <br />
+    <p class="flash-msg">No Transaction for the given period.</p>
+}
+
+

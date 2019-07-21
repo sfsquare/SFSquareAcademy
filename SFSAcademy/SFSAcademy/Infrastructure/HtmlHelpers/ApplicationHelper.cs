@@ -215,11 +215,12 @@ namespace SFSAcademy.HtmlHelpers
             //int UserId = Convert.ToInt32(context.Session["UserId"]);
             int Count = 0;
             var ProductS = (from pd in db.STORE_PRODUCTS
+                            join inv in db.STORE_INVENTORY on pd.PRODUCT_ID equals inv.PRODUCT_ID
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
                             from subgsc in gsc.DefaultIfEmpty()
                             orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
+                            where pd.IS_DEL == false && pd.IS_ACT == true && inv.UNIT_LEFT <= 2
                             select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
 
             foreach (var entity in ProductS.ToList())

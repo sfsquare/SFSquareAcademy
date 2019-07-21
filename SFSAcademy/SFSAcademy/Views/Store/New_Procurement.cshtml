@@ -1,4 +1,4 @@
-﻿@model SFSAcademy.Products
+﻿@model STORE_PROCUREMENT
 
 @{
     ViewBag.Title = "New_Procurement";
@@ -42,8 +42,7 @@
 </div>
 <div class="bread_crumb">
     @Html.ActionLink("Store", "Index") &raquo;
-    @Html.ActionLink("Product List", "ViewAll") &raquo;
-    @Html.ActionLink("Edit Product", "Edit", new { id = Model.ProductData.PRODUCT_ID}) &raquo;
+    @Html.ActionLink("Procurement", "Procurement") &raquo;
     Add New Procurement Details
 </div>
 <div id="page-yield">
@@ -65,113 +64,92 @@
             <span class="span-sub-heading">Product Details</span>
             <hr class="sub-heading">
             <div id="autofill-area">
-                @Html.HiddenFor(model => model.ProductData.PRODUCT_ID)
-                @Html.HiddenFor(model => model.ProductData.CREATED_AT)
             </div>
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.ProductData.NAME, "Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.DESCR, "Procurement Description", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.ProductData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.ProductData.NAME, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="label-field-pair label">
-                @Html.LabelFor(model => model.CategoryData.NAME, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.BRAND_ID, "Product Brand", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.CategoryData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.CategoryData.NAME, "", new { @class = "text-danger" })
+                    @Html.DropDownList("BRAND_ID", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
                 </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.SubCategoryData.NAME, "Product Sub Category", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.SubCategoryData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.SubCategoryData.NAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="label-field-pair label">
-                @Html.LabelFor(model => model.BrandData.NAME, "Product Brand", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="text-input-bg">
-                    @Html.EditorFor(model => model.BrandData.NAME, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
-                    @Html.ValidationMessageFor(model => model.BrandData.NAME, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div id="admission1_form_vertical_block_left">
-
-                <hr class="label-underline label">
-
             </div>
 
             <div id="admission1_form_vertical_block_right">
                 <span class="span-sub-heading">Product Purchase and Payment Details</span>
                 <hr class="sub-heading">
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.TOTAL_UNIT, "Units Purchased", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.UNIT_PROCURED, "Units Purchased", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.ProductData.TOTAL_UNIT, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                        @Html.ValidationMessageFor(model => model.ProductData.TOTAL_UNIT, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.UNIT_PROCURED, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.UNIT_PROCURED, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.COST_PER_UNIT, "Cost Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.COST_PER_UNIT, "Cost Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.ProductData.COST_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.ProductData.COST_PER_UNIT, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.COST_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.COST_PER_UNIT, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.TOTAL_COST, "Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.TOTAL_COST, "Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.ProductData.TOTAL_COST, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.ProductData.TOTAL_COST, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.SELL_PRICE_PER_UNIT, "Selling Price Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="text-input-bg">
-                        @Html.EditorFor(model => model.ProductData.SELL_PRICE_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.ProductData.SELL_PRICE_PER_UNIT, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.TOTAL_COST, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TOTAL_COST, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.PURCHASED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.SELL_PRICE_PER_UNIT, "Selling Price Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.ProductData.PURCHASED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
-                        @Html.ValidationMessageFor(model => model.ProductData.PURCHASED_ON, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.SELL_PRICE_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SELL_PRICE_PER_UNIT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.PROCURED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.PROCURED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.PROCURED_ON, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.VENDOR_ID, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.VENDOR_ID, "Vendor", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         <div id="vendor-modal-box">
                             @Html.Partial("_vendor_select", product_vendor)
                         </div>
-                        @Html.ValidationMessageFor(model => model.ProductData.VENDOR_ID, "", new { @class = "text-danger", @Value = ViewBag.PURCHASED_THROUGH })
+                        @Html.ValidationMessageFor(model => model.VENDOR_ID, "", new { @class = "text-danger", @Value = ViewBag.PURCHASED_THROUGH })
                     </div>
                 </div>
 
                 <div class="label-field-pair label">
-                    @Html.LabelFor(model => model.ProductData.PAID_BY, "Mode of Payment", htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => model.PAID_BY, "Mode of Payment", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.DropDownListFor(model => model.ProductData.PAID_BY, new List<SelectListItem>
+                        @Html.DropDownListFor(model => model.PAID_BY, new List<SelectListItem>
                         { new SelectListItem{Text="Cash", Value="Cash",Selected=true},
                           new SelectListItem{Text="Check", Value="Check"},
                           new SelectListItem { Text = "Paid Through Online Transaction", Value = "Online" },
                           new SelectListItem { Text = "Paid from School Book", Value = "School" },
                           new SelectListItem{Text="Paid from Cash Reserve", Value="CashReserve"},
                           new SelectListItem{Text="Others", Value="Others"}}, "Select One")
-                        @Html.ValidationMessageFor(model => model.ProductData.PAID_BY, "", new { @class = "text-danger", @Value = ViewBag.PAID_BY })
+                        @Html.ValidationMessageFor(model => model.PAID_BY, "", new { @class = "text-danger", @Value = ViewBag.PAID_BY })
                     </div>
                 </div>
 
                 <div class="label_field_pair label">
                     <label class="label_for_student_gender" for="student_gender">Currently Being Sold</label>
                     <div class="student_gender_value">
-                        @Html.RadioButtonFor(model => model.ProductData.IS_ACT, true, false)@Html.Label("Yes")
-                        @Html.RadioButtonFor(model => model.ProductData.IS_ACT, false, false)@Html.Label("No")
+                        @Html.RadioButtonFor(model => model.IS_ACT, true, new { @checked = "checked" })@Html.Label("Yes")
+                        @Html.RadioButtonFor(model => model.IS_ACT, false)@Html.Label("No")
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -181,6 +159,7 @@
             <div class="extender"></div>
             <input type="submit" value="► Save " class="user_button" />
         </div>
+        <input type="hidden" value="@ViewBag.PRODUCT_ID" id="PRODUCT_ID" name="PRODUCT_ID" />
 
     }
 </div>

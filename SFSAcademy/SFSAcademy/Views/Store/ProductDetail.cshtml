@@ -1,0 +1,187 @@
+﻿@model SFSAcademy.STORE_PRODUCTS
+
+@{
+    ViewBag.Title = "Edit";
+}
+@{
+    IEnumerable<SFSAcademy.STORE_BRAND> product_brands = (IEnumerable<SFSAcademy.STORE_BRAND>)ViewData["product_brands"];
+    IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox1").hide();
+        $('#CategoryDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox1").show();
+            $.get('/Store/Sub_Categories_Select/' + selectedID, function (data) {
+                $('#sub_categories_select').html(data);
+                $('#sub_categories_select').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox1").hide();
+            });
+
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Student Details Logo">
+    <h1>Store</h1>
+    <h3>Update Product Details</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
+</div>
+<div id="flash_box">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Product", "Product") &raquo;
+    View Product Details
+</div>
+<div id="page-yield">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div id="flash_box">
+            @if (ViewBag.Notice != null)
+            {
+                <p class="flash-msg"> @ViewBag.Notice </p>
+            }
+        </div>
+        <div id="admission1_form">
+            <div id="necessary-field-notification">
+                Mark
+                <span class="necessary-field">*</span> Denotes Necessary Field
+            </div>
+            <span class="span-sub-heading">Product Details</span>
+            <hr class="sub-heading">
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.PRODUCT_CD, "Product Code", htmlAttributes: new { @class = "control-label col-md-2" })                
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.PRODUCT_CD, new { htmlAttributes = new { @class = "form-control"} })
+                    @Html.ValidationMessageFor(model => model.PRODUCT_CD, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.NAME, "Product Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.DESCR, "Product Description", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.CATEGORY_ID, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "CategoryDropDown" })
+                    <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+                    @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @Html.Partial("_Sub_Categories_Select")
+            <div class="label-field-pair label">
+                @Html.LabelFor(model => model.BRAND_ID, "Product Brand / Manufacturer", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.Partial("_brand_select", product_brands)
+                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div id="admission1_form_vertical_block_left">
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.BAR_CODE, "Bar Code Number", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <span class="necessary-field" style="font-size:small">* Required Field</span>
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.BAR_CODE, new { htmlAttributes = new { @class = "form-control" }, required = "required" })
+                        @Html.ValidationMessageFor(model => model.BAR_CODE, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.WARRANTY_TERMS, "Warranty Terms", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.WARRANTY_TERMS, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.WARRANTY_TERMS, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <hr class="label-underline label">
+
+            </div>
+
+            <div id="admission1_form_vertical_block_right">
+                <span class="span-sub-heading">Product Purchase and Payment Details</span>
+                <hr class="sub-heading">
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.CURRENT_PRICE, "Current Price", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.CURRENT_PRICE, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CURRENT_PRICE, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.DEFAULT_UOM, "Default Unit of Measure", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.DropDownList("DEFAULT_UOM", new SelectList(Enum.GetValues(typeof(UnitOfMeasure))), "Select Unit of Measure", new { @class = "form-control", @id = "DEFAULT_UOM" })
+                        @Html.ValidationMessageFor(model => model.DEFAULT_UOM, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="label-field-pair label">
+                    @Html.LabelFor(model => model.VENDOR_ID, "Purchased Through", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="text-input-bg">
+                        @Html.Partial("_vendor_select", product_vendor)
+                        @Html.ValidationMessageFor(model => model.VENDOR_ID, "", new { @class = "text-danger", @Value = ViewBag.PURCHASED_THROUGH })
+                    </div>
+                </div>
+
+                <div class="label_field_pair">
+                    <label class="label_for_student_gender" for="student_gender">Currently Being Sold</label>
+                    <span class="necessary-field" style="font-size:small">* Required Field</span>
+                    <div class="student_gender_value">
+                        @Html.RadioButtonFor(model => model.IS_ACT, true, false)@Html.Label("Yes")
+                        @Html.RadioButtonFor(model => model.IS_ACT, false, false)@Html.Label("No")
+                    </div>
+                </div>
+
+                <hr class="label-underline label">
+                <br />
+            </div>
+        </div>
+
+    }
+</div>
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

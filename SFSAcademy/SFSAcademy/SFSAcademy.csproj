@@ -27,7 +27,7 @@
     </NuGetPackageImportStamp>
     <Use64BitIISExpress />
     <TargetFrameworkProfile />
-    <TypeScriptToolsVersion>3.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>3.4</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -795,7 +795,21 @@
     <Content Include="Content\stylesheets\class_timings\class_timingset_view.css" />
     <Content Include="Content\stylesheets\finance\Aggregated_Fees_Due_pdf.css" />
     <Content Include="Content\stylesheets\finance\Fees_Defaulters_Index.css" />
+    <Content Include="Content\stylesheets\store\batch_fees_report.css" />
+    <Content Include="Content\stylesheets\store\compare_report.css" />
+    <Content Include="Content\stylesheets\store\donations_report.css" />
+    <Content Include="Content\stylesheets\store\fees_report.css" />
+    <Content Include="Content\stylesheets\store\income_details.css" />
+    <Content Include="Content\stylesheets\store\Selling_pdf.css" />
+    <Content Include="Content\stylesheets\store\Products_pdf.css" />
+    <Content Include="Content\stylesheets\store\income_details_pdf.css" />
+    <Content Include="Content\stylesheets\store\monthly_report.css" />
+    <Content Include="Content\stylesheets\store\product.css" />
+    <Content Include="Content\stylesheets\store\salary_department.css" />
     <Content Include="Content\stylesheets\store\setting.css" />
+    <Content Include="Content\stylesheets\store\transaction_pdf.css" />
+    <Content Include="Content\stylesheets\store\update_monthly_report_sub.css" />
+    <Content Include="Content\stylesheets\store\update_monthly_report.css" />
     <Content Include="Content\stylesheets\store\ViewAll.css" />
     <Content Include="Content\stylesheets\store\create.css" />
     <Content Include="Content\stylesheets\store\edit.css" />
@@ -804,6 +818,7 @@
     <Content Include="Content\stylesheets\store\new.css" />
     <Content Include="Content\stylesheets\store\purchase.css" />
     <Content Include="Content\stylesheets\store\show.css" />
+    <Content Include="Content\stylesheets\store\ViewAllSelling.css" />
     <Content Include="Content\stylesheets\student\BatchTransfer_Index.css" />
     <Content Include="Content\stylesheets\student\BatchTransfer.css" />
     <Content Include="Content\stylesheets\student\BatchTransfer_Student_Search.css" />
@@ -2218,13 +2233,16 @@
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="SFSAcademyModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
       <LastGenOutput>SFSAcademyModel.Context.cs</LastGenOutput>
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="SFSAcademyModel.edmx.diagram">
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Content>
     <Content Include="SFSAcademyModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
       <LastGenOutput>SFSAcademyModel.cs</LastGenOutput>
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Content>
     <Content Include="Views\Finance\_Select_Batch_Particular.cshtml" />
     <Content Include="Views\Web.config">
@@ -2337,20 +2355,18 @@
     <Content Include="Views\BATCH\Details.cshtml" />
     <Content Include="Views\BATCH\Edit.cshtml" />
     <Content Include="Views\BATCH\Index.cshtml" />
-    <Content Include="Views\Store\Create.cshtml" />
-    <Content Include="Views\Store\Details.cshtml" />
-    <Content Include="Views\Store\Edit.cshtml" />
+    <Content Include="Views\Store\ProductCreate.cshtml" />
+    <Content Include="Views\Store\ProductEdit.cshtml" />
     <Content Include="Views\Store\Index.cshtml" />
-    <Content Include="Views\Store\ListAllProducts.cshtml" />
+    <Content Include="Views\Store\_ListAllProducts.cshtml" />
     <Content Include="Views\Store\ViewAll.cshtml" />
     <Content Include="Views\Store\Categories.cshtml" />
     <Content Include="Views\Store\_product_category_create_form.cshtml" />
     <Content Include="Views\Store\_CategoriesList.cshtml" />
     <Content Include="Views\Store\_CategoriesDelete.cshtml" />
     <Content Include="Views\Store\_CategoriesEdit.cshtml" />
-    <Content Include="Views\Store\Purchase.cshtml" />
     <Content Include="Views\Store\ListAllSellings.cshtml" />
-    <Content Include="Views\Store\ViewAllSelling.cshtml" />
+    <Content Include="Views\Store\AdvancedSellingReport.cshtml" />
     <Content Include="Views\Store\EditSelling.cshtml" />
     <Content Include="Views\Store\ViewCart.cshtml" />
     <Content Include="Views\Store\_ListPurchagedProducts.cshtml" />
@@ -2679,13 +2695,6 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\User\Privilege_Access.cshtml" />
     <Content Include="Views\Timetable\Timetable_pdf.cshtml" />
-    <EntityDeploy Include="SFSAcademyModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="SFSAcademyModel.edmx.diagram">
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
-    </Content>
     <Content Include="Views\User\All.cshtml" />
     <Content Include="Views\Student_Attendance\Index.cshtml" />
     <Content Include="Views\Attendances\Create.cshtml" />
@@ -2702,6 +2711,36 @@
     <Content Include="Views\Attendance_Reports\_Report.cshtml" />
     <Content Include="Views\Attendance_Reports\_Student_Details.cshtml" />
     <Content Include="Views\Attendance_Reports\Report_pdf.cshtml" />
+    <Content Include="Views\Store\Product.cshtml" />
+    <Content Include="Views\Store\ProductDetail.cshtml" />
+    <Content Include="Views\Store\Procurement.cshtml" />
+    <Content Include="Views\Store\ProcurementHistory.cshtml" />
+    <Content Include="Views\Store\Sell.cshtml" />
+    <Content Include="Views\Store\SellingHistory.cshtml" />
+    <Content Include="tsconfig.json" />
+    <EntityDeploy Include="SFSAcademyModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Views\Store\Monthly_Report.cshtml" />
+    <Content Include="Views\Store\Update_Monthly_Report.cshtml" />
+    <Content Include="Views\Store\Transaction_pdf.cshtml" />
+    <Content Include="Views\Store\Salary_Department.cshtml" />
+    <Content Include="Views\Store\Donations_Report.cshtml" />
+    <Content Include="Views\Store\Fees_Report.cshtml" />
+    <Content Include="Views\Store\Batch_Fees_Report.cshtml" />
+    <Content Include="Views\Store\Income_Details.cshtml" />
+    <Content Include="Views\Store\Income_Details_pdf.cshtml" />
+    <Content Include="Views\Store\Compare_Report.cshtml" />
+    <Content Include="Views\Store\Report_Compare.cshtml" />
+    <Content Include="Views\Store\Update_Monthly_Report_Sub.cshtml" />
+    <Content Include="Views\Store\Edit_Procurement.cshtml" />
+    <Content Include="Views\Store\ViewAllSelling.cshtml" />
+    <Content Include="Views\Store\_View_AllSelling.cshtml" />
+    <Content Include="Views\Store\_Sell_Sub_Categories_Select.cshtml" />
+    <Content Include="Views\Store\Products_pdf.cshtml" />
+    <Content Include="Views\Store\Selling_pdf.cshtml" />
+    <Content Include="Views\Store\_Prod_Sub_Categories_Select.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2950,7 +2989,7 @@
     <Compile Include="Models\Courses.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Payroll.cs" />
-    <Compile Include="Models\Products.cs" />
+    <Compile Include="Models\Store.cs" />
     <Compile Include="Models\PictureUpload.cs" />
     <Compile Include="Models\Finance.cs" />
     <Compile Include="Models\News.cs" />
@@ -2999,18 +3038,18 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SFSAcademyModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>SFSAcademyModel.Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="SFSAcademyModel.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SFSAcademyModel.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="SMS_LOG.cs">
@@ -3028,16 +3067,13 @@
     <Compile Include="STORE_CATEGORY.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="STORE_INVENTORY.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STORE_PROCUREMENT.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="STORE_PRODUCTS.cs">
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="STORE_PURCHAGE.cs">
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="STORE_PURCHAGE_BACKUP.cs">
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="STORE_PURCHAGE_CART.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="STORE_PURCHAGE_ORDER.cs">
@@ -3047,6 +3083,15 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="STORE_PURCHAGE_VENDOR.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STORE_SELLING.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STORE_SELLING_BACKUP.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="STORE_SELLING_CART.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="STORE_SUB_CATEGORY.cs">

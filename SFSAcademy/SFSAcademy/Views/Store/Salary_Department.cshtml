@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewBag.Title = "Salary_Department";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Department Wise Salary Report</h1>
+    <h3>Finance Transactions</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    @Html.ActionLink("Finance", "Index") &raquo;
+    @Html.ActionLink("Transactions", "Transactions") &raquo;
+    @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+    @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+    Salary Account
+</div>
+<div id="page-yield">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+</div>
+

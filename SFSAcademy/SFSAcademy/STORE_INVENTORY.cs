@@ -12,27 +12,24 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class STORE_PURCHAGE
+    public partial class STORE_INVENTORY
     {
         public int ID { get; set; }
+        public string TITL { get; set; }
+        public string DESCR { get; set; }
         public int PRODUCT_ID { get; set; }
-        public Nullable<int> UNIT_SOLD { get; set; }
-        public Nullable<decimal> SOLD_PRICE { get; set; }
-        public Nullable<int> SOLD_BY_ID { get; set; }
-        public Nullable<System.DateTime> SOLD_ON { get; set; }
-        public Nullable<int> STUDENT_ID { get; set; }
-        public Nullable<long> STUDENT_CONTACT_NO { get; set; }
-        public Nullable<int> MONEY_RECEIVED_BY_ID { get; set; }
-        public bool IS_DEPOSITED { get; set; }
+        public Nullable<int> BRAND_ID { get; set; }
+        public Nullable<int> STORE_ID { get; set; }
+        public Nullable<int> UNIT_LEFT { get; set; }
+        public Nullable<decimal> COST_PER_UNIT { get; set; }
+        public Nullable<decimal> SELL_PRICE_PER_UNIT { get; set; }
+        public Nullable<System.DateTime> LAST_SOLD { get; set; }
         public bool IS_ACT { get; set; }
         public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string PAYMENT_MODE { get; set; }
     
+        public virtual STORE_BRAND STORE_BRAND { get; set; }
         public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
-        public virtual STUDENT STUDENT { get; set; }
-        public virtual USER USER { get; set; }
-        public virtual USER USER1 { get; set; }
     }
 }
