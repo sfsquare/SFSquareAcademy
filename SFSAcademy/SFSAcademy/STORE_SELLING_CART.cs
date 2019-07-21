@@ -12,7 +12,7 @@ namespace SFSAcademy
     using System;
     using System.Collections.Generic;
     
-    public partial class STORE_PURCHAGE_BACKUP
+    public partial class STORE_SELLING_CART
     {
         public int ID { get; set; }
         public int PRODUCT_ID { get; set; }
@@ -28,7 +28,6 @@ namespace SFSAcademy
         public bool IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string PAYMENT_MODE { get; set; }
     
         public virtual STORE_PRODUCTS STORE_PRODUCTS { get; set; }
         public virtual STUDENT STUDENT { get; set; }

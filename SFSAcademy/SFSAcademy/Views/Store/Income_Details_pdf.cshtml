@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SFSAcademy.StoreIncomeDetail>
+@{
+    Layout = null;
+}
+<link rel="stylesheet" id="stylesheet" type="text/css" href="~/Content/stylesheets/finance/income_details_pdf.css">
+
+<div id="page-yield">
+    <div class="hor_line"></div>
+    <h2>Finance Income Report</h2>
+    <div class="hor_line"></div>
+
+    <div class="extender"> </div>
+    <div class="report">
+        @{ DateTime FromDate = @Convert.ToDateTime(ViewBag.START_TRAN_DATE); DateTime ToDate = @Convert.ToDateTime(ViewBag.END_TRAN_DATE);}
+        <div id="main_info">
+            <h4> From @FromDate.ToShortDateString() to @ToDate.ToShortDateString()</h4>
+        </div>
+        <div id="pdf-info">
+            <table id="pdf-table" style="width:100%" cellspacing="0">
+                <tr class="table-header"><td class="col-pdf">Sl. no.</td><td class="col-pdf"> Name </td><td class="col-pdf"> Description </td><td class="col-pdf"> Receipt No </td><td class="col-pdf">Amount</td><td class="col-pdf">No. of Unit</td><td class="col-pdf"> Transaction Date</td></tr>
+                @{ int index = 1; decimal total = 0;  decimal income_total = 0; decimal expense_total = 0;}
+                @foreach (var item in Model)
+                {
+                    decimal tran_amount = item.Is_Income == true ? (decimal)item.Amount : -1 * (decimal)item.Amount;
+                    if (item.Is_Income == true)
+                    {
+                        income_total += (decimal)item.Amount;
+                    }
+                    else { expense_total += (decimal)item.Amount; }
+                    string selectedRow = "even";
+                    if (index % 2 == 0)
+                    {
+                        selectedRow = "odd";
+                    }
+                    <tr class="@selectedRow">
+                        <td class="col-pdf">@index</td>
+                        <td class="col-pdf">@item.Name</td>
+                        <td class="col-pdf">@item.Description</td>
+                        <td class="col-pdf">@item.Id</td>
+                        <td class="col-pdf">@tran_amount</td>
+                        <td class="col-pdf">@item.Number_Of_Unit</td>
+                        <td class="col-pdf">@item.Transactions_Date.Value.ToShortDateString()</td>
+                    </tr>
+                    index += 1;
+                }
+                @{ total = income_total - expense_total; string selectedRow2 = "even";}
+                @if (index % 2 == 0)
+                {
+                selectedRow2 = "odd";
+                }
+                <tr class="@selectedRow2">
+                    <td class="col-pdf"></td>
+                    <td class="col-pdf" colspan="3">Grand Total</td>
+                    <td class="col-pdf" colspan="3">@total</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+

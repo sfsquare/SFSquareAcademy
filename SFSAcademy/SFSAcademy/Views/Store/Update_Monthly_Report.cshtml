@@ -1,0 +1,127 @@
+﻿
+@{
+    ViewBag.Title = "Update_Monthly_Report";
+}
+@{
+    IEnumerable<SFSAcademy.ConsolidatedSelling> ConsolidateTransactions = (IEnumerable<SFSAcademy.ConsolidatedSelling>)ViewData["ConsolidateTransactions"];
+}
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Finance Logo">
+    <h1>Transactions</h1>
+    <h3>Finance Transactions View</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE }, new { @target = "_blank" })</li>
+    </ul>
+</div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("Store", "Index") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        Store Transactions View
+    </div>
+    <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>Sl. No.</td>
+            <td>Particulars</td>
+            <td>Expenses</td>
+            <td>Income</td>
+        </tr>
+        <tr class="tr-blank"></tr>
+        @{int index = 0; string selectedRow = ""; decimal income_total = 0; decimal expenses_total = 0;}
+
+        @if (ViewBag.hr != null)
+        {
+            index += 1;
+            <tr class="tr-odd">
+                <td class="col-1">@index</td>
+                @if (ViewBag.salary != 0)
+                {
+                    <td class="col-2">@Html.ActionLink("Salary Account", "Salary_Department", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE })</td>
+                }
+                else
+                {
+                    <td class="col-2">Salary Account</td>
+                }
+                <td class="col-3" align="right">@ViewBag.salary</td>
+                <td> </td>
+            </tr>
+        }
+        @{index += 1;}
+        @foreach (var item in ConsolidateTransactions)
+        {
+            selectedRow = "tr-even";
+            decimal income = 0; decimal expense = 0;
+            if (item.transactions_income != 0) { income = (decimal)item.transactions_income; }
+            if (item.transactions_expense != 0) { expense = (decimal)item.transactions_expense; }
+            if (index % 2 == 0)
+            {
+                selectedRow = "tr-odd";
+            }
+            <tr class="@selectedRow">
+                <td class="col-1">@index</td>
+                <td class="col-2">@Html.ActionLink(item.CATEGORY_NAME, "Update_Monthly_Report_Sub", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, id = item.CATEGORY_ID })</td>
+                @if (expense != 0)
+                {
+                    <td class="col-3" align="right">@expense</td>
+                }
+                else
+                {
+                    <td class="col-3" align="right"></td>
+                }
+                @if (income != 0)
+                {
+                    <td class="col-3" align="right">@income</td>
+                }
+                else
+                {
+                    <td class="col-3" align="right"> </td>
+                }
+            </tr>
+            income_total += income;
+            expenses_total += expense;
+            index += 1;
+        }
+        <tr class="tr-blank"></tr>
+        <tr class="tr-even">
+            <td class="col-1"> </td>
+            <td class="col-2">Total</td>
+            <td class="col-3" align="right">@expenses_total</td>
+            <td class="col-3" align="right">@income_total</td>
+
+        </tr>
+        @{ decimal grand_total = income_total - expenses_total;}
+        @{ decimal grand_total_positive = grand_total * -1; }
+        <tr class="tr-blank"></tr>
+        <tr class="tr-odd">
+            <td class="col-1"> </td>
+            <td class="col-2">Grand Total</td>
+            @if (grand_total >= 0)
+            {
+                <td></td>
+                <td class="col-3" align="right">@grand_total.ToString("0.00")</td>
+            }
+            else
+            {
+                <td class="col-3" align="right">@grand_total_positive.ToString("0.00")</td>
+                <td></td>
+            }
+
+        </tr>
+    </table>
+    <br />
+    <br />
+    @if (ViewBag.salary != 0 ||  ViewBag.other_transactions != null)
+    {
+        <script type="text/javascript" src="/javascripts/swfobject.js"></script>
+        @ViewBag.graph
+    }
+
+</div>
+
+

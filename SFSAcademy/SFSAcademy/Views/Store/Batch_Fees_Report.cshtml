@@ -1,0 +1,56 @@
+﻿@model IEnumerable<SFSAcademy.FeeTransaction>
+@{
+    ViewBag.Title = "Batch_Fees_Report";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Finance Transactions</h1>
+    <h3>@Model.FirstOrDefault().CourseData.CODE-@Model.FirstOrDefault().BatchData.NAME Fees Report</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("Finance", "Index") &raquo;
+        @Html.ActionLink("Transactions", "Transactions") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+        @Html.ActionLink("Fees Report", "Fees_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
+        Batch : @Model.FirstOrDefault().CourseData.CODE-@Model.FirstOrDefault().BatchData.NAME
+    </div>
+    @{decimal total = 0;}
+
+    <b id="transaction-report-title">@Model.FirstOrDefault().CourseData.CODE-@Model.FirstOrDefault().BatchData.NAME-@Model.FirstOrDefault().FeeCollectionData.NAME Transaction Report </b>
+    <div id="fees-table">
+        <div class="fees-th">
+            <div class="fees-table-description"><p> Student Name </p></div>
+            <div class="fees-table-income"> Amount </div>
+            <div class="fees-table-receipt-no"> Receipt No. </div>
+            <div class="fees-table-date"> Date </div>
+        </div>
+        @{ int index = 0; }
+        @foreach (var item in Model)
+        {
+            string selectedRow = "listeven";
+            if (index % 2 == 0)
+            {
+                selectedRow = "listodd";
+            }
+            <div class="@selectedRow">
+                <div class="fees-table-description">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</div>
+                <div class="fees-table-income"> @item.FinanceTransactionData.AMT </div>
+                <div class="fees-table-receipt-no"> @item.FinanceTransactionData.RCPT_NO </div>
+                <div class="fees-table-date"> @item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString() </div>
+            </div>
+            total += (decimal)item.FinanceTransactionData.AMT;
+        }
+        <div class="fees-th">
+            <div class="fees-table-description">Total Fees</div>
+            <div class="fees-table-expenses">@total</div>
+        </div>
+    </div>
+</div>
+
+

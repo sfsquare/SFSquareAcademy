@@ -13,6 +13,10 @@ using System.IO;
 using iTextSharp.text;
 using System.Data.Entity.Validation;
 using System.Globalization;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -27,23 +31,17 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        // GET: Store/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Product(string ErrorMessage, string Notice)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
-            if (sTORE_PRODUCTS == null)
-            {
-                return HttpNotFound();
-            }
-            return View(sTORE_PRODUCTS);
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
+            var ProductS = db.STORE_PRODUCTS.Include(x=>x.STORE_CATEGORY).Include(x=>x.STORE_SUB_CATEGORY).Include(x=>x.STORE_BRAND).Where(x=>x.IS_ACT == true && x.IS_DEL == false).ToList();
+
+            return View(ProductS);
         }
 
         // GET: Store/Create
-        public ActionResult Create(string ErrorMessage, string Notice)
+        public ActionResult ProductCreate()
         {
             List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
             // add the 'ALL' option
@@ -68,13 +66,372 @@ namespace SFSAcademy.Controllers
             var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
             ViewData["product_vendor"] = product_vendor;
 
-            //ViewBag.Brand_Id_Sel = Brand_Id_Sel;
-            //ViewBag.Vendor_Id_Sel = Vendor_Id_Sel;
-
             DateTime PDate = Convert.ToDateTime(System.DateTime.Now);
             ViewBag.ReturnDate = PDate.ToShortDateString();
 
             return View();
+        }
+
+
+        // POST: Store/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProductCreate([Bind(Include = "PRODUCT_ID,NAME,CATEGORY_ID,SUB_CATEGORY_ID,BRAND_ID,VENDOR_ID,BAR_CODE,CURRENT_PRICE,PRODUCT_CD,DESCR,DEFAULT_UOM, AVERAGE_COST,WARRANTY_TERMS,IS_ACT")] STORE_PRODUCTS sTORE_PRODUCTS)
+        {
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
+            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
+            ViewBag.BRAND_ID = options3;
+
+            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_brands"] = product_brands;
+
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+
+            if (ModelState.IsValid)
+            {
+                sTORE_PRODUCTS.IS_DEL = false;
+                sTORE_PRODUCTS.CREATED_AT = DateTime.Now;
+                sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
+                db.STORE_PRODUCTS.Add(sTORE_PRODUCTS);
+                try { db.SaveChanges(); ViewBag.Notice = "New product added in system successfully."; }
+                catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
+                    return View();
+                }
+                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View();
+                }
+                return RedirectToAction("Product", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State not valid. Please try again.";
+            return View(sTORE_PRODUCTS);
+        }
+
+        // GET: Store/Edit/5
+        public ActionResult ProductEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
+            if (sTORE_PRODUCTS == null)
+            {
+                return HttpNotFound();
+            }
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
+            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
+            ViewBag.BRAND_ID = options3;
+
+            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_brands"] = product_brands;
+
+
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            return View(sTORE_PRODUCTS);
+        }
+
+        // POST: Store/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ProductEdit([Bind(Include = "PRODUCT_ID,NAME,CATEGORY_ID,SUB_CATEGORY_ID,BRAND_ID,VENDOR_ID,BAR_CODE,CURRENT_PRICE,PRODUCT_CD,DESCR,DEFAULT_UOM, AVERAGE_COST,WARRANTY_TERMS,IS_ACT")] STORE_PRODUCTS sTORE_PRODUCTS)
+        {
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
+            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
+            ViewBag.BRAND_ID = options3;
+
+            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_brands"] = product_brands;
+
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            if (ModelState.IsValid)
+            {
+                STORE_PRODUCTS sTORE_PRODUCTS_UPD = db.STORE_PRODUCTS.Find(sTORE_PRODUCTS.PRODUCT_ID);
+                sTORE_PRODUCTS_UPD.PRODUCT_CD = sTORE_PRODUCTS.PRODUCT_CD;
+                sTORE_PRODUCTS_UPD.NAME = sTORE_PRODUCTS.NAME;
+                sTORE_PRODUCTS_UPD.DESCR = sTORE_PRODUCTS.DESCR;
+                sTORE_PRODUCTS_UPD.BAR_CODE = sTORE_PRODUCTS.BAR_CODE;
+                sTORE_PRODUCTS_UPD.WARRANTY_TERMS = sTORE_PRODUCTS.WARRANTY_TERMS;
+                sTORE_PRODUCTS_UPD.CATEGORY_ID = sTORE_PRODUCTS.CATEGORY_ID;
+                sTORE_PRODUCTS_UPD.SUB_CATEGORY_ID = sTORE_PRODUCTS.SUB_CATEGORY_ID;
+                sTORE_PRODUCTS_UPD.BRAND_ID = sTORE_PRODUCTS.BRAND_ID;
+                sTORE_PRODUCTS_UPD.VENDOR_ID = sTORE_PRODUCTS.VENDOR_ID;
+
+                sTORE_PRODUCTS_UPD.CURRENT_PRICE = sTORE_PRODUCTS.CURRENT_PRICE;
+                sTORE_PRODUCTS_UPD.DEFAULT_UOM = sTORE_PRODUCTS.DEFAULT_UOM;
+
+                sTORE_PRODUCTS_UPD.IS_ACT = sTORE_PRODUCTS.IS_ACT;
+                sTORE_PRODUCTS_UPD.UPDATED_AT = DateTime.Now;
+                db.Entry(sTORE_PRODUCTS_UPD).State = EntityState.Modified;
+
+                try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Product details updated successfully."); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(sTORE_PRODUCTS);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(sTORE_PRODUCTS);
+                }
+                return RedirectToAction("Product", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            return View(sTORE_PRODUCTS);
+        }
+
+        public ActionResult ProductDelete(int id)
+        {
+            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
+
+            sTORE_PRODUCTS.IS_DEL = true;
+            sTORE_PRODUCTS.IS_ACT = false;
+            sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
+            db.Entry(sTORE_PRODUCTS).State = EntityState.Modified;
+            try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Product Deleted Successfully."); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return View(sTORE_PRODUCTS);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                return View(sTORE_PRODUCTS);
+            }
+
+            return RedirectToAction("Product", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+        }
+
+        // GET: Store/Edit/5
+        public ActionResult ProductDetail(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
+            if (sTORE_PRODUCTS == null)
+            {
+                return HttpNotFound();
+            }
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
+            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
+            ViewBag.BRAND_ID = options3;
+
+            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_brands"] = product_brands;
+
+
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            return View(sTORE_PRODUCTS);
+        }
+        // GET: Student
+        public ActionResult ViewAll(string CATEGORY_ID, string SUB_CATEGORY_ID, int? page, string ErrorMessage, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
+            ViewBag.page = page;
+
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = null;
+            if (!string.IsNullOrEmpty(CATEGORY_ID) && CATEGORY_ID != "-1" && CATEGORY_ID != "undefined")
+            {
+                int? CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
+                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == CATEGORY_ID_VAL).OrderBy(x => x.NAME), "ID", "NAME", SUB_CATEGORY_ID).ToList();
+            }
+            else
+            {
+                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", SUB_CATEGORY_ID).ToList();
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            return View();
+        }
+
+        [OutputCache(Duration = 0, VaryByParam = "*")]
+        [HttpGet]
+        public ActionResult Prod_Sub_Categories_Select(int? id)
+        {
+            List<SelectListItem> options = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == id).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options;
+
+            return PartialView("_Prod_Sub_Categories_Select");
+        }
+        // GET: Store Products
+        public ActionResult ListAllProducts(string sortOrder, string currentFilter, string CATEGORY_ID, string currentFilter2, string SUB_CATEGORY_ID, int? page)
+        {
+
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            int? CATEGORY_ID_VAL = null;
+            int? SUB_CATEGORY_ID_VAL = null;
+
+            if (!string.IsNullOrEmpty(CATEGORY_ID) && CATEGORY_ID != "-1" && CATEGORY_ID != "undefined")
+            {
+                page = 1;
+                CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
+            }
+            else
+            {
+                CATEGORY_ID = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = CATEGORY_ID;
+            if (!string.IsNullOrEmpty(SUB_CATEGORY_ID) && SUB_CATEGORY_ID != "-1" && SUB_CATEGORY_ID != "undefined") { page = 1; SUB_CATEGORY_ID_VAL = Convert.ToInt32(SUB_CATEGORY_ID); }
+            else { SUB_CATEGORY_ID = currentFilter2; }
+            ViewBag.CurrentFilter2 = SUB_CATEGORY_ID;
+
+            var ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+
+            if (!String.IsNullOrEmpty(CATEGORY_ID))
+            {
+                ProductS = ProductS.Where(s => s.CategoryData.ID == CATEGORY_ID_VAL);
+            }
+            if (!String.IsNullOrEmpty(SUB_CATEGORY_ID))
+            {
+                ProductS = ProductS.Where(s => s.SubCategoryData.ID == SUB_CATEGORY_ID_VAL);
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    ProductS = ProductS.OrderByDescending(s => s.ProductData.NAME);
+                    break;
+                case "Date":
+                    ProductS = ProductS.OrderBy(s => s.ProductData.CREATED_AT);
+                    break;
+                case "date_desc":
+                    ProductS = ProductS.OrderByDescending(s => s.ProductData.CREATED_AT);
+                    break;
+                default:  // Name ascending 
+                    ProductS = ProductS.OrderBy(s => s.ProductData.NAME);
+                    break;
+            }
+
+            int pageSize = 100;
+            int pageNumber = (page ?? 1);
+
+            return PartialView("_ListAllProducts", ProductS.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult Products_pdf(int? CATEGORY_ID, int? SUB_CATEGORY_ID)
+        {
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
+
+            IEnumerable<SFSAcademy.Products> ProductS = Enumerable.Empty<SFSAcademy.Products>();
+            if (CATEGORY_ID != null && SUB_CATEGORY_ID != null && CATEGORY_ID != -1 && SUB_CATEGORY_ID != -1)
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                                join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                                join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                                from subgsc in gsc.DefaultIfEmpty()
+                                orderby pd.NAME, ct.NAME
+                                where pd.IS_DEL == false && pd.IS_ACT == true && ct.ID == CATEGORY_ID && subgsc.ID == SUB_CATEGORY_ID
+                                select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+            else if (CATEGORY_ID != null && CATEGORY_ID != -1)
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true && ct.ID == CATEGORY_ID
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+            else
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+            
+
+            return View(ProductS.ToList());
         }
 
         [OutputCache(Duration = 0, VaryByParam = "*")]
@@ -116,380 +473,7 @@ namespace SFSAcademy.Controllers
 
             return PartialView("_Sub_Categories_Select");
         }
-
-        // POST: Store/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PRODUCT_ID,NAME,CATEGORY_ID,SUB_CATEGORY_ID,BRAND_ID,TOTAL_UNIT,TOTAL_COST,COST_PER_UNIT,SELL_PRICE_PER_UNIT,PURCHASED_ON,VENDOR_ID,PAID_BY,UNIT_LEFT,IS_ACT,IS_DEL,CREATED_AT,UPDATED_AT")] STORE_PRODUCTS sTORE_PRODUCTS)
-        {
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
-            ViewBag.CATEGORY_ID = options;
-
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
-            // add the 'ALL' option
-            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
-            ViewBag.SUB_CATEGORY_ID = options2;
-
-            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
-            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
-            ViewBag.BRAND_ID = options3;
-
-            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_brands"] = product_brands;
-
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
-            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
-            ViewBag.VENDOR_ID = options4;
-
-            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_vendor"] = product_vendor;
-
-
-            if (ModelState.IsValid)
-            {
-                sTORE_PRODUCTS.IS_DEL = false;
-                sTORE_PRODUCTS.CREATED_AT = DateTime.Now;
-                sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
-                db.STORE_PRODUCTS.Add(sTORE_PRODUCTS);
-                try { db.SaveChanges(); ViewBag.Notice = "New product added in system successfully."; }
-                catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
-                    return View();
-                }
-                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                    return View();
-                }
-                return RedirectToAction("ViewAll", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
-            }
-            ViewBag.ErrorMessage = "Model State not valid. Please try again.";
-            return View(sTORE_PRODUCTS);
-        }
-
-        // GET: Store/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
-            if (sTORE_PRODUCTS == null)
-            {
-                return HttpNotFound();
-            }
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
-            ViewBag.CATEGORY_ID = options;
-
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
-            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
-            ViewBag.SUB_CATEGORY_ID = options2;
-
-            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
-            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
-            ViewBag.BRAND_ID = options3;
-
-            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_brands"] = product_brands;
-
-
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
-            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
-            ViewBag.VENDOR_ID = options4;
-
-            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_vendor"] = product_vendor;
-
-            ViewBag.PAID_BY = sTORE_PRODUCTS.PAID_BY;
-            DateTime PDate = Convert.ToDateTime(sTORE_PRODUCTS.PURCHASED_ON);
-            ViewBag.PURCHASED_ON = PDate.ToShortDateString();
-            return View(sTORE_PRODUCTS);
-        }
-
-        // POST: Store/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PRODUCT_ID,NAME,CATEGORY_ID,SUB_CATEGORY_ID,BRAND_ID,TOTAL_UNIT,TOTAL_COST,COST_PER_UNIT,SELL_PRICE_PER_UNIT,PURCHASED_ON,VENDOR_ID,PAID_BY,UNIT_LEFT,IS_ACT")] STORE_PRODUCTS sTORE_PRODUCTS)
-        {
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", sTORE_PRODUCTS.CATEGORY_ID).ToList();
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
-            ViewBag.CATEGORY_ID = options;
-
-            List<SelectListItem> options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == sTORE_PRODUCTS.CATEGORY_ID).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.SUB_CATEGORY_ID).ToList();
-            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
-            ViewBag.SUB_CATEGORY_ID = options2;
-
-            List<SelectListItem> options3 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.BRAND_ID).ToList();
-            options3.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Brand" });
-            ViewBag.BRAND_ID = options3;
-
-            var product_brands = db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_brands"] = product_brands;
-
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.VENDOR_ID).ToList();
-            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
-            ViewBag.VENDOR_ID = options4;
-
-            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_vendor"] = product_vendor;
-
-            ViewBag.PAID_BY = sTORE_PRODUCTS.PAID_BY;
-            DateTime PDateIner = Convert.ToDateTime(sTORE_PRODUCTS.PURCHASED_ON);
-            ViewBag.PURCHASED_ON = PDateIner.ToString("dd/mm/yyyy");
-
-            if (ModelState.IsValid)
-            {
-                STORE_PRODUCTS sTORE_PRODUCTS_UPD = db.STORE_PRODUCTS.Find(sTORE_PRODUCTS.PRODUCT_ID);
-                sTORE_PRODUCTS_UPD.NAME = sTORE_PRODUCTS.NAME;
-                sTORE_PRODUCTS_UPD.CATEGORY_ID = sTORE_PRODUCTS.CATEGORY_ID;
-                sTORE_PRODUCTS_UPD.SUB_CATEGORY_ID = sTORE_PRODUCTS.SUB_CATEGORY_ID;
-                sTORE_PRODUCTS_UPD.BRAND_ID = sTORE_PRODUCTS.BRAND_ID;
-                sTORE_PRODUCTS_UPD.TOTAL_UNIT = sTORE_PRODUCTS.TOTAL_UNIT;
-                sTORE_PRODUCTS_UPD.TOTAL_COST = sTORE_PRODUCTS.TOTAL_COST;
-                sTORE_PRODUCTS_UPD.COST_PER_UNIT = sTORE_PRODUCTS.COST_PER_UNIT;
-                sTORE_PRODUCTS_UPD.SELL_PRICE_PER_UNIT = sTORE_PRODUCTS.SELL_PRICE_PER_UNIT;
-                sTORE_PRODUCTS_UPD.PURCHASED_ON = sTORE_PRODUCTS.PURCHASED_ON;
-                sTORE_PRODUCTS_UPD.VENDOR_ID = sTORE_PRODUCTS.VENDOR_ID;
-                sTORE_PRODUCTS_UPD.PAID_BY = sTORE_PRODUCTS.PAID_BY;
-                sTORE_PRODUCTS_UPD.UNIT_LEFT = sTORE_PRODUCTS.UNIT_LEFT;
-                sTORE_PRODUCTS_UPD.IS_ACT = sTORE_PRODUCTS.IS_ACT;
-                sTORE_PRODUCTS_UPD.UPDATED_AT = DateTime.Now;
-                db.Entry(sTORE_PRODUCTS_UPD).State = EntityState.Modified;
-
-                try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Product details updated successfully."); }
-                catch (DbEntityValidationException e)
-                {
-                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                    return View(sTORE_PRODUCTS);
-                }
-                catch (Exception e)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                    return View(sTORE_PRODUCTS);
-                }
-                return RedirectToAction("ViewAll", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
-            }
-            return View(sTORE_PRODUCTS);
-        }
-
-        // GET: Store/Edit/5
-        public ActionResult New_Procurement(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            //STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
-            var sTORE_PRODUCTS = (from prd in db.STORE_PRODUCTS
-                                  join cat in db.STORE_CATEGORY on prd.CATEGORY_ID equals cat.ID
-                                  join subcat in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals subcat.ID
-                                  join brd in db.STORE_BRAND on prd.BRAND_ID equals brd.ID
-                                  where prd.PRODUCT_ID == id
-                                  select new SFSAcademy.Products { ProductData = prd, CategoryData = cat, SubCategoryData = subcat, BrandData = brd }).Distinct().FirstOrDefault();
-            if (sTORE_PRODUCTS == null)
-            {
-                return HttpNotFound();
-            }
-
-
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.ProductData.VENDOR_ID).ToList();
-            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
-            ViewBag.VENDOR_ID = options4;
-
-            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_vendor"] = product_vendor;
-
-            ViewBag.PAID_BY = sTORE_PRODUCTS.ProductData.PAID_BY;
-            DateTime PDate = Convert.ToDateTime(sTORE_PRODUCTS.ProductData.PURCHASED_ON);
-            ViewBag.PURCHASED_ON = PDate.ToShortDateString();
-            return View(sTORE_PRODUCTS);
-        }
-
-        // POST: Store/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult New_Procurement(SFSAcademy.Products sTORE_PRODUCTS, int? VENDOR_ID)
-        {          
-            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PRODUCTS.ProductData.VENDOR_ID).ToList();
-            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
-            ViewBag.VENDOR_ID = options4;
-
-            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
-            ViewData["product_vendor"] = product_vendor;
-
-            ViewBag.PAID_BY = sTORE_PRODUCTS.ProductData.PAID_BY;
-            DateTime PDateIner = Convert.ToDateTime(sTORE_PRODUCTS.ProductData.PURCHASED_ON);
-            ViewBag.PURCHASED_ON = PDateIner.ToString("dd/mm/yyyy");
-
-            if (ModelState.IsValid)
-            {
-                STORE_PRODUCTS sTORE_PRODUCTS_UPD = db.STORE_PRODUCTS.Find(sTORE_PRODUCTS.ProductData.PRODUCT_ID);
-                sTORE_PRODUCTS_UPD.TOTAL_UNIT = sTORE_PRODUCTS.ProductData.TOTAL_UNIT;
-                sTORE_PRODUCTS_UPD.TOTAL_COST = sTORE_PRODUCTS.ProductData.TOTAL_COST;
-                sTORE_PRODUCTS_UPD.COST_PER_UNIT = sTORE_PRODUCTS.ProductData.COST_PER_UNIT;
-                sTORE_PRODUCTS_UPD.SELL_PRICE_PER_UNIT = sTORE_PRODUCTS.ProductData.SELL_PRICE_PER_UNIT;
-                sTORE_PRODUCTS_UPD.PURCHASED_ON = sTORE_PRODUCTS.ProductData.PURCHASED_ON;
-                sTORE_PRODUCTS_UPD.VENDOR_ID = VENDOR_ID;
-                sTORE_PRODUCTS_UPD.PAID_BY = sTORE_PRODUCTS.ProductData.PAID_BY;
-                sTORE_PRODUCTS_UPD.UNIT_LEFT = sTORE_PRODUCTS_UPD.UNIT_LEFT + sTORE_PRODUCTS.ProductData.TOTAL_UNIT;
-                sTORE_PRODUCTS_UPD.IS_ACT = true;
-                sTORE_PRODUCTS_UPD.IS_DEL = false;
-                sTORE_PRODUCTS_UPD.CREATED_AT = DateTime.Now;
-                sTORE_PRODUCTS_UPD.UPDATED_AT = DateTime.Now;
-                db.STORE_PRODUCTS.Add(sTORE_PRODUCTS_UPD);
-                try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Product details updated successfully."); }
-                catch (DbEntityValidationException e)
-                {
-                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                    return View(sTORE_PRODUCTS);
-                }
-                catch (Exception e)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                    return View(sTORE_PRODUCTS);
-                }
-
-                STORE_PRODUCTS sTORE_PRODUCTS_ORG = db.STORE_PRODUCTS.Find(sTORE_PRODUCTS.ProductData.PRODUCT_ID);
-                sTORE_PRODUCTS_ORG.IS_ACT = false;
-                sTORE_PRODUCTS_ORG.UPDATED_AT = DateTime.Now;
-                db.Entry(sTORE_PRODUCTS_ORG).State = EntityState.Modified;
-
-                try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Previous information saved."); }
-                catch (DbEntityValidationException e)
-                {
-                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                    return View(sTORE_PRODUCTS);
-                }
-                catch (Exception e)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                    return View(sTORE_PRODUCTS);
-                }
-                return RedirectToAction("ViewAll", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
-            }
-            return View(sTORE_PRODUCTS);
-        }
-
-
-        public ActionResult Delete(int id)
-        {
-            STORE_PRODUCTS sTORE_PRODUCTS = db.STORE_PRODUCTS.Find(id);
-
-            sTORE_PRODUCTS.IS_DEL = true;
-            sTORE_PRODUCTS.IS_ACT = false;
-            sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
-            db.Entry(sTORE_PRODUCTS).State = EntityState.Modified;
-            try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Product Deleted Successfully."); }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                return View(sTORE_PRODUCTS);
-            }
-            catch (Exception e)
-            {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                return View(sTORE_PRODUCTS);
-            }
-
-            return RedirectToAction("ViewAll", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
-        }
-
-        // GET: Student
-        public ActionResult ViewAll(string CATEGORY_ID, string SUB_CATEGORY_ID, string ErrorMessage, string Notice)
-        {
-            ViewBag.ErrorMessage = ErrorMessage;
-            ViewBag.Notice = Notice;
-            ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
-                                 select t).Count();
-            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
-            ViewBag.CATEGORY_ID = options;
-
-            List<SelectListItem> options2 = null;
-            if(!string.IsNullOrEmpty(CATEGORY_ID))
-            {
-                int? CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
-                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == CATEGORY_ID_VAL).OrderBy(x => x.NAME), "ID", "NAME").ToList();
-            }
-            else
-            {
-                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
-            }
-            // add the 'ALL' option
-            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
-            ViewBag.SUB_CATEGORY_ID = options2;
-
-            return View();
-        }
-
-        // GET: Store Products
-        public ActionResult ListAllProducts(string sortOrder, string currentFilter, string CATEGORY_ID, string currentFilter2, string SUB_CATEGORY_ID, int? page)
-        {
-
-            ViewBag.CurrentSort = sortOrder;
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            int? CATEGORY_ID_VAL = null;
-            int? SUB_CATEGORY_ID_VAL = null;
-
-            if (!string.IsNullOrEmpty(CATEGORY_ID) && CATEGORY_ID != "-1")
-            {
-                page = 1;
-                CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
-            } 
-            else 
-            {
-                CATEGORY_ID = currentFilter;
-            }
-
-            ViewBag.CurrentFilter = CATEGORY_ID;
-            if (!string.IsNullOrEmpty(SUB_CATEGORY_ID) && SUB_CATEGORY_ID != "-1") { page = 1; SUB_CATEGORY_ID_VAL = Convert.ToInt32(SUB_CATEGORY_ID); }
-            else { SUB_CATEGORY_ID = currentFilter2; }
-            ViewBag.CurrentFilter2 = SUB_CATEGORY_ID;
-
-            var ProductS = (from pd in db.STORE_PRODUCTS.Include(x=>x.STORE_BRAND)
-                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
-                            from subgsc in gsc.DefaultIfEmpty()
-                            orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == false && pd.IS_ACT == true
-                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
-
-            if (!String.IsNullOrEmpty(CATEGORY_ID))
-            {
-                ProductS = ProductS.Where(s => s.CategoryData.ID == CATEGORY_ID_VAL);
-            }
-            if (!String.IsNullOrEmpty(SUB_CATEGORY_ID))
-            {
-                ProductS = ProductS.Where(s => s.SubCategoryData.ID == SUB_CATEGORY_ID_VAL);
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    ProductS = ProductS.OrderByDescending(s => s.ProductData.NAME);
-                    break;
-                case "Date":
-                    ProductS = ProductS.OrderBy(s => s.ProductData.PURCHASED_ON);
-                    break;
-                case "date_desc":
-                    ProductS = ProductS.OrderByDescending(s => s.ProductData.PURCHASED_ON);
-                    break;
-                default:  // Name ascending 
-                    ProductS = ProductS.OrderBy(s => s.ProductData.NAME);
-                    break;
-            }
-
-            int pageSize = 100;
-            int pageNumber = (page ?? 1);
-            return View(ProductS.ToPagedList(pageNumber, pageSize));
-        }
-
+        
         // GET: Student/Details/5
         public ActionResult Categories()
         {
@@ -692,20 +676,189 @@ namespace SFSAcademy.Controllers
             return View(sTOREsUBcATEGORY);
         }
 
+        public ActionResult Procurement(string ErrorMessage, string Notice)
+        {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
+            var ProductS = db.STORE_PRODUCTS.Include(x => x.STORE_CATEGORY).Include(x => x.STORE_SUB_CATEGORY).Include(x => x.STORE_BRAND).Where(x => x.IS_ACT == true && x.IS_DEL == false).ToList();
+
+            return View(ProductS);
+        }
+        // GET: Store/Edit/5
+        public ActionResult New_Procurement(int? id)
+        {
+            ViewBag.PRODUCT_ID = id;
+            List<SelectListItem> options = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Vendor" });
+            ViewBag.VENDOR_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Brand" });
+            ViewBag.BRAND_ID = options2;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            return View();
+        }
+
+        // POST: Store/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult New_Procurement([Bind(Include = "ID,DESCR,PRODUCT_ID,BRAND_ID,VENDOR_ID,UNIT_PROCURED,TOTAL_COST,COST_PER_UNIT,SELL_PRICE_PER_UNIT,PROCURED_ON,PAID_BY,IS_ACT")] STORE_PROCUREMENT sTORE_PROCUREMENT)
+        {
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.BRAND_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Brand" });
+            ViewBag.BRAND_ID = options2;
+            ViewBag.PAID_BY = sTORE_PROCUREMENT.PAID_BY;
+            DateTime PDateIner = Convert.ToDateTime(sTORE_PROCUREMENT.PROCURED_ON);
+            ViewBag.PROCURED_ON = PDateIner.ToString("dd/mm/yyyy");
+
+            if (ModelState.IsValid)
+            {
+                sTORE_PROCUREMENT.IS_DEL = false;
+                sTORE_PROCUREMENT.CREATED_AT = DateTime.Now;
+                sTORE_PROCUREMENT.UPDATED_AT = DateTime.Now;
+                db.STORE_PROCUREMENT.Add(sTORE_PROCUREMENT);
+                STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTORE_PROCUREMENT.PRODUCT_ID).FirstOrDefault();
+                InvUpd.UNIT_LEFT = InvUpd.UNIT_LEFT + sTORE_PROCUREMENT.UNIT_PROCURED;
+                InvUpd.COST_PER_UNIT = sTORE_PROCUREMENT.COST_PER_UNIT;
+                db.Entry(InvUpd).State = EntityState.Modified;
+                try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Procurement details added successfully."); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(sTORE_PROCUREMENT);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View(sTORE_PROCUREMENT);
+                }               
+                return RedirectToAction("Procurement", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please contact Administrator.";
+            return View(sTORE_PROCUREMENT);
+        }
+
+        // GET: Store/Edit/5
+        public ActionResult Edit_Procurement(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            STORE_PROCUREMENT sTORE_PROCUREMENT = db.STORE_PROCUREMENT.Find(id);
+            if (sTORE_PROCUREMENT == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.PRODUCT_ID = id;
+            List<SelectListItem> options = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Vendor" });
+            ViewBag.VENDOR_ID = options;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Brand" });
+            ViewBag.BRAND_ID = options2;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+            return View(sTORE_PROCUREMENT);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit_Procurement([Bind(Include = "ID,DESCR,PRODUCT_ID,BRAND_ID,VENDOR_ID,UNIT_PROCURED,TOTAL_COST,COST_PER_UNIT,SELL_PRICE_PER_UNIT,PROCURED_ON,PAID_BY,IS_ACT")] STORE_PROCUREMENT sTORE_PROCUREMENT)
+        {
+            List<SelectListItem> options4 = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.VENDOR_ID).ToList();
+            options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product Vendor" });
+            ViewBag.VENDOR_ID = options4;
+
+            var product_vendor = db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
+            ViewData["product_vendor"] = product_vendor;
+
+            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.BRAND_ID).ToList();
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Brand" });
+            ViewBag.BRAND_ID = options2;
+            ViewBag.PAID_BY = sTORE_PROCUREMENT.PAID_BY;
+            DateTime PDateIner = Convert.ToDateTime(sTORE_PROCUREMENT.PROCURED_ON);
+            ViewBag.PROCURED_ON = PDateIner.ToString("dd/mm/yyyy");
+            if (ModelState.IsValid)
+            {
+                STORE_PROCUREMENT sTORE_PROCUREMENT_UPD = db.STORE_PROCUREMENT.Find(sTORE_PROCUREMENT.ID);
+                if (sTORE_PROCUREMENT.UNIT_PROCURED != sTORE_PROCUREMENT_UPD.UNIT_PROCURED)
+                {
+                    STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTORE_PROCUREMENT.PRODUCT_ID).FirstOrDefault();
+                    if (sTORE_PROCUREMENT.UNIT_PROCURED <= sTORE_PROCUREMENT_UPD.UNIT_PROCURED)
+                    {
+                        InvUpd.UNIT_LEFT -= (sTORE_PROCUREMENT_UPD.UNIT_PROCURED - sTORE_PROCUREMENT.UNIT_PROCURED);
+                    }
+                    else
+                    {
+                        InvUpd.UNIT_LEFT -= (sTORE_PROCUREMENT.UNIT_PROCURED - sTORE_PROCUREMENT_UPD.UNIT_PROCURED);
+                    }
+                    InvUpd.COST_PER_UNIT = sTORE_PROCUREMENT.COST_PER_UNIT;
+                    db.Entry(InvUpd).State = EntityState.Modified;
+                }
+
+                sTORE_PROCUREMENT_UPD.PRODUCT_ID = sTORE_PROCUREMENT.PRODUCT_ID;
+                sTORE_PROCUREMENT_UPD.UNIT_PROCURED = sTORE_PROCUREMENT.UNIT_PROCURED;
+                sTORE_PROCUREMENT_UPD.DESCR = sTORE_PROCUREMENT.DESCR;
+                sTORE_PROCUREMENT_UPD.BRAND_ID = sTORE_PROCUREMENT.BRAND_ID;
+                sTORE_PROCUREMENT_UPD.VENDOR_ID = sTORE_PROCUREMENT.VENDOR_ID;
+                sTORE_PROCUREMENT_UPD.TOTAL_COST = sTORE_PROCUREMENT.TOTAL_COST;
+                sTORE_PROCUREMENT_UPD.COST_PER_UNIT = sTORE_PROCUREMENT.COST_PER_UNIT;
+                sTORE_PROCUREMENT_UPD.SELL_PRICE_PER_UNIT = sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT;
+                sTORE_PROCUREMENT_UPD.PAID_BY = sTORE_PROCUREMENT.PAID_BY;
+                sTORE_PROCUREMENT_UPD.IS_ACT = sTORE_PROCUREMENT.IS_ACT;
+                sTORE_PROCUREMENT_UPD.UPDATED_AT = DateTime.Now;
+                db.Entry(sTORE_PROCUREMENT_UPD).State = EntityState.Modified;
+                try { db.SaveChanges(); ViewBag.Notice = "Selling Details are updated successfully."; }
+                catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                return RedirectToAction("Procurement", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
+            }
+            ViewBag.ErrorMessage = "Model State does not seems to be valid";
+            return View(sTORE_PROCUREMENT);
+        }
+        public ActionResult ProcurementHistory(int? id)
+        {
+            var ProcurementS = db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_BRAND).Where(x => x.PRODUCT_ID == id).ToList();
+
+            return View(ProcurementS);
+        }
+        public ActionResult Sell()
+        {
+            ViewBag.CartItems = (from t in db.STORE_SELLING_CART
+                                 select t).Count();
+            var InventoryS = db.STORE_INVENTORY.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_BRAND).Where(x => x.IS_ACT == true && x.IS_DEL == false).ToList();
+
+            return View(InventoryS);
+        }
         // GET: Purchase/Create
-        public ActionResult Purchase(int? QUANTY, int? PRODUCT_ID)
+        public ActionResult Selling(int? QUANTY, int? PRODUCT_ID)
         {
             if (QUANTY >= 1)
             {
                 int? SoldBy = Convert.ToInt32(this.Session["UserId"]);
                 STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(PRODUCT_ID);
-                var sTORE_PURCHAGE_cART = new STORE_PURCHAGE_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD = QUANTY, SOLD_PRICE = sTOREpRODUCT.SELL_PRICE_PER_UNIT * QUANTY, SOLD_BY_ID = SoldBy, SOLD_ON = DateTime.Now, STUDENT_ID = null, STUDENT_CONTACT_NO = null, MONEY_RECEIVED_BY_ID = SoldBy, IS_DEPOSITED = false, IS_ACT = true, IS_DEL = false, CREATED_AT = DateTime.Now, UPDATED_AT = DateTime.Now };
-                db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
+                STORE_INVENTORY sTOREiNVENTORY = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == PRODUCT_ID).FirstOrDefault();
+                var sTORE_PURCHAGE_cART = new STORE_SELLING_CART() { PRODUCT_ID = sTOREpRODUCT.PRODUCT_ID, UNIT_SOLD = QUANTY, SOLD_PRICE = sTOREiNVENTORY.SELL_PRICE_PER_UNIT * QUANTY, SOLD_BY_ID = SoldBy, SOLD_ON = DateTime.Now, STUDENT_ID = null, STUDENT_CONTACT_NO = null, MONEY_RECEIVED_BY_ID = SoldBy, IS_DEPOSITED = false, IS_ACT = true, IS_DEL = false, CREATED_AT = DateTime.Now, UPDATED_AT = DateTime.Now };
+                db.STORE_SELLING_CART.Add(sTORE_PURCHAGE_cART);
 
-                sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-                sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT - QUANTY;
-                db.Entry(sTOREpRODUCT).State = EntityState.Modified;
-                try { db.SaveChanges(); }
+                sTOREiNVENTORY.UPDATED_AT = DateTime.Now;
+                sTOREiNVENTORY.UNIT_LEFT = sTOREiNVENTORY.UNIT_LEFT - QUANTY;
+                db.Entry(sTOREiNVENTORY).State = EntityState.Modified;
+                try { db.SaveChanges(); ViewBag.Notice = "Item added in cart."; }
                 catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){ foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
                     return View();
                 }
@@ -719,43 +872,188 @@ namespace SFSAcademy.Controllers
             {
                 ViewBag.ErrorMessage = "Quantity Entered is not appropriate.";
             }
-            ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
+            ViewBag.CartItems = (from t in db.STORE_SELLING_CART
                                  select t).Count();
-            return RedirectToAction("ViewAll",new { ErrorMessage = ViewBag.ErrorMessage });
+            return RedirectToAction("Sell", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice});
         }
 
-        // POST: Purchase/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Purchase([Bind(Include = "ID,PRODUCT_ID,UNIT_SOLD,SOLD_PRICE,SOLD_BY_ID,SOLD_ON,STUDENT_ID,STUDENT_CONTACT_NO,MONEY_RECEIVED_BY_ID,IS_DEPOSITED,IS_ACT,IS_DEL,CREATED_AT,UPDATED_AT")] STORE_PURCHAGE_CART sTORE_PURCHAGE_cART)
+        public ActionResult ViewAllSelling(string CATEGORY_ID, string SUB_CATEGORY_ID, int? page, string Notice, string ErrorMessage)
         {
-            if (ModelState.IsValid)
-            {
-                sTORE_PURCHAGE_cART.IS_DEL = false;
-                sTORE_PURCHAGE_cART.CREATED_AT = DateTime.Now;
-                sTORE_PURCHAGE_cART.UPDATED_AT = DateTime.Now;
-                db.STORE_PURCHAGE_CART.Add(sTORE_PURCHAGE_cART);
-                db.SaveChanges();
-                STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(sTORE_PURCHAGE_cART.PRODUCT_ID);
-                sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-                sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT - sTORE_PURCHAGE_cART.UNIT_SOLD;
-                db.Entry(sTOREpRODUCT).State = EntityState.Modified;
-                db.SaveChanges();
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
 
-                ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
-                                                 select t).Count();
-                return RedirectToAction("ViewAll");
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
+            ViewBag.page = page;
+
+            List<SelectListItem> options = new SelectList(db.STORE_CATEGORY.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.ID), "ID", "NAME", CATEGORY_ID).ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Category" });
+            ViewBag.CATEGORY_ID = options;
+
+            List<SelectListItem> options2 = null;
+            if (!string.IsNullOrEmpty(CATEGORY_ID) && CATEGORY_ID != "-1" && CATEGORY_ID != "undefined")
+            {
+                int? CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
+                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == CATEGORY_ID_VAL).OrderBy(x => x.NAME), "ID", "NAME", SUB_CATEGORY_ID).ToList();
+            }
+            else
+            {
+                options2 = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", SUB_CATEGORY_ID).ToList();
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options2;
+
+            return View();
+        }
+
+        [OutputCache(Duration = 0, VaryByParam = "*")]
+        [HttpGet]
+        public ActionResult Sell_Sub_Categories_Select(int? id)
+        {
+            List<SelectListItem> options = new SelectList(db.STORE_SUB_CATEGORY.Where(x => x.IS_DEL == false && x.STORE_CATEGORY_ID == id).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Product Sub Category" });
+            ViewBag.SUB_CATEGORY_ID = options;
+
+            return PartialView("_Sell_Sub_Categories_Select");
+        }
+        public ActionResult Update_ViewAllSelling(string sortOrder, string currentFilter, string CATEGORY_ID, string currentFilter2, string SUB_CATEGORY_ID, int? page)
+        {
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            int? CATEGORY_ID_VAL = null;
+            int? SUB_CATEGORY_ID_VAL = null;
+
+            if (!string.IsNullOrEmpty(CATEGORY_ID) && CATEGORY_ID != "-1" && CATEGORY_ID != "undefined")
+            {
+                page = 1;
+                CATEGORY_ID_VAL = Convert.ToInt32(CATEGORY_ID);
+            }
+            else
+            {
+                CATEGORY_ID = currentFilter;
             }
 
-            ViewBag.PRODUCT_ID = new SelectList(db.STORE_PRODUCTS, "PRODUCT_ID", "NAME", sTORE_PURCHAGE_cART.PRODUCT_ID);
-            return View(sTORE_PURCHAGE_cART);
+            ViewBag.CurrentFilter = CATEGORY_ID;
+            if (!string.IsNullOrEmpty(SUB_CATEGORY_ID) && SUB_CATEGORY_ID != "-1" && SUB_CATEGORY_ID != "undefined") { page = 1; SUB_CATEGORY_ID_VAL = Convert.ToInt32(SUB_CATEGORY_ID); }
+            else { SUB_CATEGORY_ID = currentFilter2; }
+            ViewBag.CurrentFilter2 = SUB_CATEGORY_ID;
+
+            var ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join inv in db.STORE_INVENTORY.Include(x=>x.STORE_BRAND) on pd.PRODUCT_ID equals inv.PRODUCT_ID
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true
+                            select new Products { InventoryData = inv, ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+
+            if (!String.IsNullOrEmpty(CATEGORY_ID))
+            {
+                ProductS = ProductS.Where(s => s.CategoryData.ID == CATEGORY_ID_VAL);
+            }
+            if (!String.IsNullOrEmpty(SUB_CATEGORY_ID))
+            {
+                ProductS = ProductS.Where(s => s.SubCategoryData.ID == SUB_CATEGORY_ID_VAL);
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    ProductS = ProductS.OrderByDescending(s => s.ProductData.NAME);
+                    break;
+                case "Date":
+                    ProductS = ProductS.OrderBy(s => s.InventoryData.LAST_SOLD);
+                    break;
+                case "date_desc":
+                    ProductS = ProductS.OrderByDescending(s => s.InventoryData.LAST_SOLD);
+                    break;
+                default:  // Name ascending 
+                    ProductS = ProductS.OrderBy(s => s.ProductData.NAME);
+                    break;
+            }
+
+            int pageSize = 100;
+            int pageNumber = (page ?? 1);
+
+            return PartialView("_View_AllSelling", ProductS.ToPagedList(pageNumber, pageSize));
         }
 
+        public ActionResult Selling_pdf(int? CATEGORY_ID, int? SUB_CATEGORY_ID)
+        {
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = SUB_CATEGORY_ID;
 
+            IEnumerable<SFSAcademy.Products> ProductS = Enumerable.Empty<SFSAcademy.Products>();
+            if (CATEGORY_ID != null && SUB_CATEGORY_ID != null && CATEGORY_ID != -1 && SUB_CATEGORY_ID != -1)
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join inv in db.STORE_INVENTORY.Include(x => x.STORE_BRAND) on pd.PRODUCT_ID equals inv.PRODUCT_ID
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true && ct.ID == CATEGORY_ID && subgsc.ID == SUB_CATEGORY_ID
+                            select new Products { InventoryData = inv, ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+            else if (CATEGORY_ID != null && CATEGORY_ID != -1)
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join inv in db.STORE_INVENTORY.Include(x => x.STORE_BRAND) on pd.PRODUCT_ID equals inv.PRODUCT_ID
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true && ct.ID == CATEGORY_ID
+                            select new Products { InventoryData = inv, ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+            else
+            {
+                ProductS = (from pd in db.STORE_PRODUCTS.Include(x => x.STORE_BRAND)
+                            join inv in db.STORE_INVENTORY.Include(x => x.STORE_BRAND) on pd.PRODUCT_ID equals inv.PRODUCT_ID
+                            join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                            join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
+                            from subgsc in gsc.DefaultIfEmpty()
+                            orderby pd.NAME, ct.NAME
+                            where pd.IS_DEL == false && pd.IS_ACT == true
+                            select new Products { InventoryData = inv, ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc) }).Distinct();
+            }
+
+
+            return View(ProductS.ToList());
+        }
         // GET: Student
-        public ActionResult ViewAllSelling(string Notice, string ErrorMessage, string sortOrder, int? currentFilter, int? PRODUCT_ID, int? page, int? currentFilter2, int? STUDENT_ID, string currentFilter3, string ContactNumber, int? currentFilter4, int? USER_ID, int? currentFilter5, int? MoneyDeposited, string currentFilter9, string SoldFromDate, string currentFilter10, string SoldToDate, int? currentFilter11, int? IncludeBackup)
+        public ActionResult SellingHistory(int? id)
+        {           
+            IEnumerable<SFSAcademy.Selling> SellingS = Enumerable.Empty<SFSAcademy.Selling>();
+            SellingS = (from pd in db.STORE_PRODUCTS
+                         join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                         join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                         join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
+                         from subgstd in gstd.DefaultIfEmpty()
+                         join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
+                         from subgusr in gusr.DefaultIfEmpty()
+                         orderby pur.SOLD_ON, pd.NAME, ct.NAME
+                         where pur.IS_DEL == false && pur.PRODUCT_ID == id
+                         select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, SelliingData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
+                                 .Union(from pd in db.STORE_PRODUCTS
+                                        join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
+                                        join pur in db.STORE_SELLING_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                                        join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
+                                        from subgstd in gstd.DefaultIfEmpty()
+                                        join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
+                                        from subgusr in gusr.DefaultIfEmpty()
+                                        orderby pur.SOLD_ON, pd.NAME, ct.NAME
+                                        where pur.IS_DEL == false && pur.PRODUCT_ID == id
+                                        select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, SelliingData = null, PurchaseBackupData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+         
+            return View(SellingS.ToList());
+        }
+        // GET: Student
+        public ActionResult AdvancedSellingReport(string Notice, string ErrorMessage, string sortOrder, int? currentFilter, int? PRODUCT_ID, int? page, int? currentFilter2, int? STUDENT_ID, string currentFilter3, string ContactNumber, int? currentFilter4, int? USER_ID, int? currentFilter5, int? MoneyDeposited, string currentFilter9, string SoldFromDate, string currentFilter10, string SoldToDate, int? currentFilter11, int? IncludeBackup)
         {
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.Notice = Notice;
@@ -801,83 +1099,83 @@ namespace SFSAcademy.Controllers
             if (IncludeBackup != null && IncludeBackup != -1) { page = 1; }
             else { IncludeBackup = currentFilter11; }
             ViewBag.CurrentFilter11 = IncludeBackup;
-            IEnumerable<SFSAcademy.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Purchase>();
+            IEnumerable<SFSAcademy.Selling> SellingS = Enumerable.Empty<SFSAcademy.Selling>();
             if (IncludeBackup == 1)
             {
-                PurchaseS = (from pd in db.STORE_PRODUCTS
+                SellingS = (from pd in db.STORE_PRODUCTS
                                  join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                                 join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                                 join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                                  join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                                  from subgstd in gstd.DefaultIfEmpty()
                                  join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                                  from subgusr in gusr.DefaultIfEmpty()
                                  orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                  where pur.IS_DEL == false
-                                 select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
+                                 select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, SelliingData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
                                  .Union(from pd in db.STORE_PRODUCTS
                                         join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                                        join pur in db.STORE_PURCHAGE_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                                        join pur in db.STORE_SELLING_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
                                         join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                                         from subgstd in gstd.DefaultIfEmpty()
                                         join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                                         from subgusr in gusr.DefaultIfEmpty()
                                         orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                         where pur.IS_DEL == false
-                                        select new Purchase { ID=pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE=pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = null, PurchaseBackupData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                        select new Selling { ID=pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE=pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, SelliingData = null, PurchaseBackupData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             else
             {
-                PurchaseS = (from pd in db.STORE_PRODUCTS
+                SellingS = (from pd in db.STORE_PRODUCTS
                                  join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                                 join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                                 join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                                  join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                                  from subgstd in gstd.DefaultIfEmpty()
                                  join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                                  from subgusr in gusr.DefaultIfEmpty()
                                  orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                  where pur.IS_DEL == false
-                                 select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                 select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, SelliingData = pur, PurchaseBackupData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
+                SellingS = SellingS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
             }
             if (STUDENT_ID != null && STUDENT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.STUDENT_ID == STUDENT_ID);
+                SellingS = SellingS.Where(s => s.STUDENT_ID == STUDENT_ID);
             }
             if (!String.IsNullOrEmpty(ContactNumber))
             {
                 long? StdContactNum = Convert.ToInt64(ContactNumber);
-                PurchaseS = PurchaseS.Where(s => s.STUDENT_CONTACT_NO == StdContactNum);
+                SellingS = SellingS.Where(s => s.STUDENT_CONTACT_NO == StdContactNum);
             }
             if (USER_ID != null && USER_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.SOLD_BY_ID == USER_ID);
+                SellingS = SellingS.Where(s => s.SOLD_BY_ID == USER_ID);
             }
             if (MoneyDeposited != null && MoneyDeposited != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
+                SellingS = SellingS.Where(s => s.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
-                PurchaseS = PurchaseS.Where(s => s.SOLD_ON >= dFrom).Where(s => s.SOLD_ON <= dTo);
+                SellingS = SellingS.Where(s => s.SOLD_ON >= dFrom).Where(s => s.SOLD_ON <= dTo);
             }
             switch (sortOrder)
             {
                 case "date_desc":
-                    PurchaseS = PurchaseS.OrderBy(s => s.SOLD_ON);
+                    SellingS = SellingS.OrderBy(s => s.SOLD_ON);
                     break;
                 case "Name":
-                    PurchaseS = PurchaseS.OrderBy(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderBy(s => s.ProductData.NAME);
                     break;
                 case "name_desc":
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderByDescending(s => s.ProductData.NAME);
                     break;
                 default:  // Name ascending 
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.SOLD_ON);
+                    SellingS = SellingS.OrderByDescending(s => s.SOLD_ON);
                     break;
             }
             var queryStudent = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
@@ -935,7 +1233,7 @@ namespace SFSAcademy.Controllers
 
             int pageSize = 100;
             int pageNumber = (page ?? 1);
-            return View(PurchaseS.ToPagedList(pageNumber, pageSize));
+            return View(SellingS.ToPagedList(pageNumber, pageSize));
         }
 
         [OutputCache(Duration = 0, VaryByParam = "*")]
@@ -964,7 +1262,7 @@ namespace SFSAcademy.Controllers
 
         // GET: Student
         [HttpGet]
-        public void PurchasePdf(string sortOrder, int? PRODUCT_ID, int? STUDENT_ID, string ContactNumber, int? USER_ID, int? MoneyDeposited, string SoldFromDate, string SoldToDate, int? IncludeBackup)
+        public void SellingPdf(string sortOrder, int? PRODUCT_ID, int? STUDENT_ID, string ContactNumber, int? USER_ID, int? MoneyDeposited, string SoldFromDate, string SoldToDate, int? IncludeBackup)
         {
             ViewBag.CurrentSort = sortOrder;
             //ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -978,87 +1276,87 @@ namespace SFSAcademy.Controllers
             dTo = DateTime.TryParse(SoldToDate, out dtTo) ? dtTo : (DateTime?)null;
             ViewBag.CurrentFilter10 = SoldToDate;
 
-            IEnumerable<SFSAcademy.Purchase> PurchaseS = Enumerable.Empty<SFSAcademy.Purchase>();
+            IEnumerable<SFSAcademy.Selling> SellingS = Enumerable.Empty<SFSAcademy.Selling>();
             if (IncludeBackup == 1)
             {
-                PurchaseS = (from pd in db.STORE_PRODUCTS
+                SellingS = (from pd in db.STORE_PRODUCTS
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                             join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                             join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                              from subgstd in gstd.DefaultIfEmpty()
                              join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
+                             select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, SelliingData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) })
                                  .Union(from pd in db.STORE_PRODUCTS
                                         join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                                        join pur in db.STORE_PURCHAGE_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                                        join pur in db.STORE_SELLING_BACKUP on pd.PRODUCT_ID equals pur.PRODUCT_ID
                                         join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                                         from subgstd in gstd.DefaultIfEmpty()
                                         join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                                         from subgusr in gusr.DefaultIfEmpty()
                                         orderby pur.SOLD_ON, pd.NAME, ct.NAME
                                         where pur.IS_DEL == false
-                                        select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = pur, PurchaseData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                                        select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = true, STUDENT_ID = pur.STUDENT_ID, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = pur, SelliingData = null, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
             else
             {
-                PurchaseS = (from pd in db.STORE_PRODUCTS
+                SellingS = (from pd in db.STORE_PRODUCTS
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                             join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                             join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                              from subgstd in gstd.DefaultIfEmpty()
                              join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Purchase { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                             select new Selling { ID = pur.ID, UNIT_SOLD = pur.UNIT_SOLD, SOLD_PRICE = pur.SOLD_PRICE, SOLD_BY_ID = pur.SOLD_BY_ID, SOLD_ON = pur.SOLD_ON, IS_DEPOSITED = pur.IS_DEPOSITED, IS_BACKUP = false, STUDENT_CONTACT_NO = pur.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID = pur.MONEY_RECEIVED_BY_ID, PurchaseBackupData = null, SelliingData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
             }
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
+                SellingS = SellingS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
             }
             if (STUDENT_ID != null && STUDENT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.STUDENT_ID == STUDENT_ID);
+                SellingS = SellingS.Where(s => s.STUDENT_ID == STUDENT_ID);
             }
             if (!String.IsNullOrEmpty(ContactNumber))
             {
                 long? StdContactNum = Convert.ToInt64(ContactNumber);
-                PurchaseS = PurchaseS.Where(s => s.STUDENT_CONTACT_NO == StdContactNum);
+                SellingS = SellingS.Where(s => s.STUDENT_CONTACT_NO == StdContactNum);
             }
             if (USER_ID != null && USER_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.SOLD_BY_ID == USER_ID);
+                SellingS = SellingS.Where(s => s.SOLD_BY_ID == USER_ID);
             }
             if (MoneyDeposited != null && MoneyDeposited != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
+                SellingS = SellingS.Where(s => s.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
-                PurchaseS = PurchaseS.Where(s => s.SOLD_ON >= dFrom).Where(s => s.SOLD_ON <= dTo);
+                SellingS = SellingS.Where(s => s.SOLD_ON >= dFrom).Where(s => s.SOLD_ON <= dTo);
             }
             switch (sortOrder)
             {
                 case "date_desc":
-                    PurchaseS = PurchaseS.OrderBy(s => s.SOLD_ON);
+                    SellingS = SellingS.OrderBy(s => s.SOLD_ON);
                     break;
                 case "Name":
-                    PurchaseS = PurchaseS.OrderBy(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderBy(s => s.ProductData.NAME);
                     break;
                 case "name_desc":
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderByDescending(s => s.ProductData.NAME);
                     break;
                 default:  // Name ascending 
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.SOLD_ON);
+                    SellingS = SellingS.OrderByDescending(s => s.SOLD_ON);
                     break;
             }
 
-            var PdfStoreS = (from res in PurchaseS
-                               select new { PName = res.ProductData.NAME, ContactNum = res.STUDENT_CONTACT_NO, RecBy = res.MONEY_RECEIVED_BY_ID, MDepo = res.IS_DEPOSITED, SoldOn = res.SOLD_ON.Value.ToShortDateString(), IS_BACKUP = res.IS_BACKUP }).ToList();
+            var PdfStoreS = (from res in SellingS
+                             select new { PName = res.ProductData.NAME, ContactNum = res.STUDENT_CONTACT_NO, RecBy = res.MONEY_RECEIVED_BY_ID, MDepo = res.IS_DEPOSITED, SoldOn = res.SOLD_ON.Value.ToShortDateString(), IS_BACKUP = res.IS_BACKUP }).ToList();
 
 
             var configuration = new ReportConfiguration();
@@ -1128,8 +1426,8 @@ namespace SFSAcademy.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            STORE_PURCHAGE sTORE_PURCHASE = db.STORE_PURCHAGE.Find(id);
-            if (sTORE_PURCHASE == null)
+            STORE_SELLING sTORE_SELLING = db.STORE_SELLING.Find(id);
+            if (sTORE_SELLING == null)
             {
                 return HttpNotFound();
             }
@@ -1141,7 +1439,7 @@ namespace SFSAcademy.Controllers
                 var result = new SelectListItem();
                 result.Text = StudentFullName;
                 result.Value = item.ID.ToString();
-                result.Selected = item.ID == sTORE_PURCHASE.STUDENT_ID ? true : false;
+                result.Selected = item.ID == sTORE_SELLING.STUDENT_ID ? true : false;
                 options2.Add(result);
             }
             options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Student" });
@@ -1150,7 +1448,7 @@ namespace SFSAcademy.Controllers
             var student_select = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
             ViewData["student_select"] = student_select;
 
-            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_PURCHASE.PRODUCT_ID).ToList();
+            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_SELLING.PRODUCT_ID).ToList();
             options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product" });
             ViewBag.PRODUCT_ID = options4;
 
@@ -1165,7 +1463,7 @@ namespace SFSAcademy.Controllers
                 var result = new SelectListItem();
                 result.Text = UserFullName;
                 result.Value = item.ID.ToString();
-                result.Selected = item.ID == sTORE_PURCHASE.SOLD_BY_ID ? true : false;
+                result.Selected = item.ID == sTORE_SELLING.SOLD_BY_ID ? true : false;
                 options6.Add(result);
             }
             options6.Insert(0, new SelectListItem() { Value = null, Text = "Select User" });
@@ -1174,9 +1472,9 @@ namespace SFSAcademy.Controllers
             var user_select = db.USERS.Where(x => x.IS_DEL == false).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.LAST_NAME).ToList();
             ViewData["user_select"] = user_select;
 
-            DateTime SDate = Convert.ToDateTime(sTORE_PURCHASE.SOLD_ON);
+            DateTime SDate = Convert.ToDateTime(sTORE_SELLING.SOLD_ON);
             ViewBag.SOLD_ON = SDate.ToShortDateString();
-            return View(sTORE_PURCHASE);
+            return View(sTORE_SELLING);
         }
 
         // POST: Store/Edit/5
@@ -1184,7 +1482,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSelling([Bind(Include = "ID,PRODUCT_ID,UNIT_SOLD,SOLD_PRICE,SOLD_BY_ID,SOLD_ON,STUDENT_ID,STUDENT_CONTACT_NO,MONEY_RECEIVED_BY_ID,IS_DEPOSITED,IS_ACT,IS_DEL")] STORE_PURCHAGE sTORE_PURCHASE, int? USER_ID)
+        public ActionResult EditSelling([Bind(Include = "ID,PRODUCT_ID,UNIT_SOLD,SOLD_PRICE,SOLD_BY_ID,SOLD_ON,STUDENT_ID,STUDENT_CONTACT_NO,MONEY_RECEIVED_BY_ID,IS_DEPOSITED,IS_ACT,IS_DEL")] STORE_SELLING sTORE_SELLING, int? USER_ID)
         {
             var queryStudent = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
             List<SelectListItem> options2 = new List<SelectListItem>();
@@ -1194,7 +1492,7 @@ namespace SFSAcademy.Controllers
                 var result = new SelectListItem();
                 result.Text = StudentFullName;
                 result.Value = item.ID.ToString();
-                result.Selected = item.ID == sTORE_PURCHASE.STUDENT_ID ? true : false;
+                result.Selected = item.ID == sTORE_SELLING.STUDENT_ID ? true : false;
                 options2.Add(result);
             }
             options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Student" });
@@ -1203,7 +1501,7 @@ namespace SFSAcademy.Controllers
             var student_select = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
             ViewData["student_select"] = student_select;
 
-            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_PURCHASE.PRODUCT_ID).ToList();
+            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_SELLING.PRODUCT_ID).ToList();
             options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product" });
             ViewBag.PRODUCT_ID = options4;
 
@@ -1226,29 +1524,43 @@ namespace SFSAcademy.Controllers
 
             var user_select = db.USERS.Where(x => x.IS_DEL == false).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.LAST_NAME).ToList();
             ViewData["user_select"] = user_select;
-            DateTime SDate = Convert.ToDateTime(sTORE_PURCHASE.SOLD_ON);
+            DateTime SDate = Convert.ToDateTime(sTORE_SELLING.SOLD_ON);
             ViewBag.SOLD_ON = SDate.ToShortDateString();
             if (ModelState.IsValid)
             {
-                STORE_PURCHAGE sTORE_PURCHASE_UPD = db.STORE_PURCHAGE.Find(sTORE_PURCHASE.ID);
-                sTORE_PURCHASE_UPD.PRODUCT_ID = sTORE_PURCHASE.PRODUCT_ID;
-                sTORE_PURCHASE_UPD.UNIT_SOLD = sTORE_PURCHASE.UNIT_SOLD;
-                sTORE_PURCHASE_UPD.SOLD_PRICE = sTORE_PURCHASE.SOLD_PRICE;
+                STORE_SELLING sTORE_PURCHASE_UPD = db.STORE_SELLING.Find(sTORE_SELLING.ID);
+                if(sTORE_SELLING.UNIT_SOLD != sTORE_PURCHASE_UPD.UNIT_SOLD)
+                {
+                    STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTORE_SELLING.PRODUCT_ID).FirstOrDefault();
+                    if (sTORE_SELLING.UNIT_SOLD <= sTORE_PURCHASE_UPD.UNIT_SOLD)
+                    {
+                        InvUpd.UNIT_LEFT += (sTORE_PURCHASE_UPD.UNIT_SOLD - sTORE_SELLING.UNIT_SOLD);
+                    }
+                    else
+                    {
+                        InvUpd.UNIT_LEFT -= (sTORE_SELLING.UNIT_SOLD - sTORE_PURCHASE_UPD.UNIT_SOLD);
+                    }
+                    db.Entry(InvUpd).State = EntityState.Modified;
+                }
+
+                sTORE_PURCHASE_UPD.PRODUCT_ID = sTORE_SELLING.PRODUCT_ID;
+                sTORE_PURCHASE_UPD.UNIT_SOLD = sTORE_SELLING.UNIT_SOLD;
+                sTORE_PURCHASE_UPD.SOLD_PRICE = sTORE_SELLING.SOLD_PRICE;
                 sTORE_PURCHASE_UPD.SOLD_BY_ID = USER_ID == -1? null : USER_ID;
-                sTORE_PURCHASE_UPD.SOLD_ON = sTORE_PURCHASE.SOLD_ON;
-                sTORE_PURCHASE_UPD.STUDENT_ID = sTORE_PURCHASE.STUDENT_ID == -1? null : sTORE_PURCHASE.STUDENT_ID;
-                sTORE_PURCHASE_UPD.STUDENT_CONTACT_NO = sTORE_PURCHASE.STUDENT_CONTACT_NO;
+                sTORE_PURCHASE_UPD.SOLD_ON = sTORE_SELLING.SOLD_ON;
+                sTORE_PURCHASE_UPD.STUDENT_ID = sTORE_SELLING.STUDENT_ID == -1? null : sTORE_SELLING.STUDENT_ID;
+                sTORE_PURCHASE_UPD.STUDENT_CONTACT_NO = sTORE_SELLING.STUDENT_CONTACT_NO;
                 sTORE_PURCHASE_UPD.MONEY_RECEIVED_BY_ID = USER_ID == -1 ? null : USER_ID;
-                sTORE_PURCHASE_UPD.IS_DEPOSITED = sTORE_PURCHASE.IS_DEPOSITED;
-                sTORE_PURCHASE_UPD.IS_ACT = sTORE_PURCHASE.IS_ACT;
+                sTORE_PURCHASE_UPD.IS_DEPOSITED = sTORE_SELLING.IS_DEPOSITED;
+                sTORE_PURCHASE_UPD.IS_ACT = sTORE_SELLING.IS_ACT;
                 sTORE_PURCHASE_UPD.UPDATED_AT = DateTime.Now;
                 db.Entry(sTORE_PURCHASE_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Selling Details are updated successfully."; }
                 catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
-                return RedirectToAction("ViewAllSelling", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
+                return RedirectToAction("Sell", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid";
-            return View(sTORE_PURCHASE);
+            return View(sTORE_SELLING);
         }
 
         // GET: Student
@@ -1257,9 +1569,9 @@ namespace SFSAcademy.Controllers
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
             ViewBag.PURCHAGE_DATE = DateTime.Now.ToShortDateString();
-            ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
+            ViewBag.CartItems = (from t in db.STORE_SELLING_CART
                                  select t).Count();
-            var TotalPriceSel = db.STORE_PURCHAGE_CART.GroupBy(o => o.ID)
+            var TotalPriceSel = db.STORE_SELLING_CART.GroupBy(o => o.ID)
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.SOLD_PRICE) });
             int TCost = 0;
             foreach (var group in TotalPriceSel)
@@ -1269,11 +1581,11 @@ namespace SFSAcademy.Controllers
 
             ViewBag.TotalPrice = TCost.ToString();
 
-            var ProductS = (from pd in db.STORE_PRODUCTS
+            var ProductS = (from pd in db.STORE_PRODUCTS.Include(x=>x.STORE_INVENTORY)
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                            join pct in db.STORE_PURCHAGE_CART on pd.PRODUCT_ID equals pct.PRODUCT_ID
+                            join pct in db.STORE_SELLING_CART on pd.PRODUCT_ID equals pct.PRODUCT_ID
                             orderby pd.NAME, ct.NAME
-                            select new PurchaseCart { ProductData = pd, CategoryData = ct, PurchaseCartData = pct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.SOLD_PRICE, PUR_DATE = pct.CREATED_AT }).Distinct();
+                            select new SellingCart { ProductData = pd, CategoryData = ct, SellingCartData = pct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.SOLD_PRICE, PUR_DATE = pct.CREATED_AT }).Distinct();
 
 
             var queryStudent = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
@@ -1338,9 +1650,9 @@ namespace SFSAcademy.Controllers
                 STUDENT_ID = null;
                 ViewBag.STUDENT_NAME = "External Sales";
             }
-            ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
+            ViewBag.CartItems = (from t in db.STORE_SELLING_CART
                                  select t).Count();
-            var TotalPriceSel = db.STORE_PURCHAGE_CART.GroupBy(o => o.ID)
+            var TotalPriceSel = db.STORE_SELLING_CART.GroupBy(o => o.ID)
                 .Select(g => new { membername = g.Key, total = g.Sum(p => p.SOLD_PRICE) });
             int TCost = 0;
             foreach (var group in TotalPriceSel)
@@ -1356,12 +1668,12 @@ namespace SFSAcademy.Controllers
             var IDList = new int[100];
             int i = 0;
 
-            //var pURcART = (from res in db.STORE_PURCHAGE_CART
+            //var pURcART = (from res in db.STORE_SELLING_CART
             //             select res).ToList();
 
-            var paymentsOrg = from p in db.STORE_PURCHAGE_CART
-                               //where p.CREATED_AT.Value.ToShortDateString() == DateTime.Now.ToShortDateString()
-                           group p by p.PRODUCT_ID into g
+            var paymentsOrg = from p in db.STORE_SELLING_CART
+                                  //where p.CREATED_AT.Value.ToShortDateString() == DateTime.Now.ToShortDateString()
+                              group p by p.PRODUCT_ID into g
                            select new
                            {
                                ProductNo = g.Key,
@@ -1378,11 +1690,11 @@ namespace SFSAcademy.Controllers
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join pct in paymentsOrg on pd.PRODUCT_ID equals pct.ProductNo
                             orderby pd.NAME, ct.NAME
-                            select new PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE, SOLD_BY_ID=pct.SOLD_BY_ID, CREATED_AT = pct.CREATED_AT, UPDATED_AT = pct.UPDATED_AT, MONEY_RECEIVED_BY_ID = pct.MONEY_RECEIVED_BY_ID}).Distinct();
+                            select new SellingCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE, SOLD_BY_ID=pct.SOLD_BY_ID, CREATED_AT = pct.CREATED_AT, UPDATED_AT = pct.UPDATED_AT, MONEY_RECEIVED_BY_ID = pct.MONEY_RECEIVED_BY_ID}).Distinct();
 
             foreach (var PurCarList in ProductSOrg.ToList())
             {
-                var StorePur = new STORE_PURCHAGE()
+                var StorePur = new STORE_SELLING()
                 {
                     PRODUCT_ID = PurCarList.ProductData.PRODUCT_ID,
                     UNIT_SOLD = PurCarList.UNIT_SOLD,
@@ -1399,7 +1711,7 @@ namespace SFSAcademy.Controllers
                     CREATED_AT = PurCarList.CREATED_AT,
                     UPDATED_AT = PurCarList.UPDATED_AT,
                 };
-                db.STORE_PURCHAGE.Add(StorePur);
+                db.STORE_SELLING.Add(StorePur);
 
                 if(STUDENT_ID != null && STUDENT_ID != -1)
                 {
@@ -1427,7 +1739,7 @@ namespace SFSAcademy.Controllers
 
             }
 
-            var payments = from p in db.STORE_PURCHAGE.Where(a => IDList.Any(s => a.ID.Equals(s)))
+            var payments = from p in db.STORE_SELLING.Where(a => IDList.Any(s => a.ID.Equals(s)))
                            select new
                            {
                                ProductNo = p.PRODUCT_ID,
@@ -1440,9 +1752,9 @@ namespace SFSAcademy.Controllers
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join pct in payments on pd.PRODUCT_ID equals pct.ProductNo
                             orderby pd.NAME, ct.NAME
-                            select new PurchaseCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
+                            select new SellingCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
 
-            try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_PURCHAGE_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage," Cart cleared now."); }
+            try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_SELLING_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage," Cart cleared now."); }
             catch (Exception e) { Console.WriteLine(e); ViewBag.StoreDeleteMessage = string.Concat(ViewBag.PaymentMessage, e.InnerException.InnerException.Message); }
           
             return View("_ListPurchagedProducts", ProductS.ToList());
@@ -1456,19 +1768,19 @@ namespace SFSAcademy.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            STORE_PURCHAGE_CART sTORE_PURCHASE_CART = db.STORE_PURCHAGE_CART.Find(id);
-            if (sTORE_PURCHASE_CART == null)
+            STORE_SELLING_CART sTORE_SELLING_CART = db.STORE_SELLING_CART.Find(id);
+            if (sTORE_SELLING_CART == null)
             {
                 return HttpNotFound();
             }
-            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_PURCHASE_CART.PRODUCT_ID).ToList();
+            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_SELLING_CART.PRODUCT_ID).ToList();
             options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product" });
             ViewBag.PRODUCT_ID = options4;
 
             var product_select = db.STORE_PRODUCTS.Include(x => x.STORE_CATEGORY).Include(x => x.STORE_SUB_CATEGORY).Where(x => x.IS_DEL == false).OrderBy(x => x.NAME).ToList();
             ViewData["product_select"] = product_select;
 
-            return View(sTORE_PURCHASE_CART);
+            return View(sTORE_SELLING_CART);
         }
 
         // POST: Store/Edit/5
@@ -1476,9 +1788,9 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSellingCart([Bind(Include = "ID,PRODUCT_ID,UNIT_SOLD,CREATED_AT")] STORE_PURCHAGE_CART sTORE_PURCHASE_CART)
+        public ActionResult EditSellingCart([Bind(Include = "ID,PRODUCT_ID,UNIT_SOLD,CREATED_AT")] STORE_SELLING_CART sTORE_SELLING_CART)
         {
-            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_PURCHASE_CART.PRODUCT_ID).ToList();
+            List<SelectListItem> options4 = new SelectList(db.STORE_PRODUCTS.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "PRODUCT_ID", "NAME", sTORE_SELLING_CART.PRODUCT_ID).ToList();
             options4.Insert(0, new SelectListItem() { Value = null, Text = "Select Product" });
             ViewBag.PRODUCT_ID = options4;
 
@@ -1487,46 +1799,46 @@ namespace SFSAcademy.Controllers
 
             if (ModelState.IsValid)
             {
-                if (sTORE_PURCHASE_CART.UNIT_SOLD >= 1)
+                if (sTORE_SELLING_CART.UNIT_SOLD >= 1)
                 {
-                    STORE_PURCHAGE_CART sTORE_PURCHASE_CART_upd = db.STORE_PURCHAGE_CART.Find(sTORE_PURCHASE_CART.ID);
+                    STORE_SELLING_CART sTORE_SELLING_CART_upd = db.STORE_SELLING_CART.Find(sTORE_SELLING_CART.ID);
 
-                    STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(sTORE_PURCHASE_CART.PRODUCT_ID);
-                    sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-                    sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT + sTORE_PURCHASE_CART_upd.UNIT_SOLD - sTORE_PURCHASE_CART.UNIT_SOLD;
-                    db.Entry(sTOREpRODUCT).State = EntityState.Modified;
+                    STORE_INVENTORY sTOREInventory = db.STORE_INVENTORY.Where(X=>X.PRODUCT_ID == sTORE_SELLING_CART.PRODUCT_ID).FirstOrDefault();
+                    sTOREInventory.UPDATED_AT = DateTime.Now;
+                    sTOREInventory.UNIT_LEFT = sTOREInventory.UNIT_LEFT + sTORE_SELLING_CART_upd.UNIT_SOLD - sTORE_SELLING_CART.UNIT_SOLD;
+                    db.Entry(sTOREInventory).State = EntityState.Modified;
 
-                    sTORE_PURCHASE_CART_upd.PRODUCT_ID = sTORE_PURCHASE_CART.PRODUCT_ID;
-                    sTORE_PURCHASE_CART_upd.UNIT_SOLD = sTORE_PURCHASE_CART.UNIT_SOLD;
-                    sTORE_PURCHASE_CART_upd.SOLD_PRICE = sTOREpRODUCT.SELL_PRICE_PER_UNIT * sTORE_PURCHASE_CART.UNIT_SOLD;
-                    sTORE_PURCHASE_CART_upd.UPDATED_AT = System.DateTime.Now;
-                    db.Entry(sTORE_PURCHASE_CART_upd).State = EntityState.Modified;
+                    sTORE_SELLING_CART_upd.PRODUCT_ID = sTORE_SELLING_CART.PRODUCT_ID;
+                    sTORE_SELLING_CART_upd.UNIT_SOLD = sTORE_SELLING_CART.UNIT_SOLD;
+                    sTORE_SELLING_CART_upd.SOLD_PRICE = sTOREInventory.SELL_PRICE_PER_UNIT * sTORE_SELLING_CART.UNIT_SOLD;
+                    sTORE_SELLING_CART_upd.UPDATED_AT = System.DateTime.Now;
+                    db.Entry(sTORE_SELLING_CART_upd).State = EntityState.Modified;
 
                     try { db.SaveChanges(); ViewBag.Notice = "Selling Details updated successfully."; }
                     catch (DbEntityValidationException e)
                     {
                         foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                        return View(sTORE_PURCHASE_CART);
+                        return View(sTORE_SELLING_CART);
                     }
                     catch (Exception e)
                     {
                         ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                        return View(sTORE_PURCHASE_CART);
+                        return View(sTORE_SELLING_CART);
                     }
                 }
                 else
                 {
                     ViewBag.ErrorMessage = "Quantity Entered is not appropriate.";
-                    return View(sTORE_PURCHASE_CART);
+                    return View(sTORE_SELLING_CART);
                 }
 
-                ViewBag.CartItems = (from t in db.STORE_PURCHAGE_CART
+                ViewBag.CartItems = (from t in db.STORE_SELLING_CART
                                      select t).Count();
                 return RedirectToAction("ViewCart", new { ErrorMessage = ViewBag.ErrorMessage });
             }
 
             ViewBag.ErrorMessage = "Model State does not seems to be valid.";
-            return View(sTORE_PURCHASE_CART);
+            return View(sTORE_SELLING_CART);
         }
 
         // GET: Store/Edit/5
@@ -1536,16 +1848,16 @@ namespace SFSAcademy.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            STORE_PURCHAGE_CART sTORE_PURCHASE_CART_Item = db.STORE_PURCHAGE_CART.Find(id);
+            STORE_SELLING_CART sTORE_SELLING_CART_Item = db.STORE_SELLING_CART.Find(id);
 
-            STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(sTORE_PURCHASE_CART_Item.PRODUCT_ID);
-            sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-            sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT + sTORE_PURCHASE_CART_Item.UNIT_SOLD;
-            db.Entry(sTOREpRODUCT).State = EntityState.Modified;
+            STORE_INVENTORY sTOREInventory = db.STORE_INVENTORY.Where(X=>X.PRODUCT_ID == sTORE_SELLING_CART_Item.PRODUCT_ID).FirstOrDefault();
+            sTOREInventory.UPDATED_AT = DateTime.Now;
+            sTOREInventory.UNIT_LEFT = sTOREInventory.UNIT_LEFT + sTORE_SELLING_CART_Item.UNIT_SOLD;
+            db.Entry(sTOREInventory).State = EntityState.Modified;
             try { db.SaveChanges(); ViewBag.Notice = "Product Details Updated."; }
             catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
 
-            try { db.Database.ExecuteSqlCommand(string.Concat("DELETE FROM STORE_PURCHAGE_CART WHERE ID =",id)); ViewBag.Notice = string.Concat(ViewBag.Notice, " Transaction Deleted Successfully."); }
+            try { db.Database.ExecuteSqlCommand(string.Concat("DELETE FROM STORE_SELLING_CART WHERE ID =",id)); ViewBag.Notice = string.Concat(ViewBag.Notice, " Transaction Deleted Successfully."); }
             catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
             return RedirectToAction("ViewCart", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
@@ -1554,41 +1866,41 @@ namespace SFSAcademy.Controllers
         public ActionResult CancelTransaction()
         {
 
-            var pURcART = (from res in db.STORE_PURCHAGE_CART
-                             select res).ToList();
-            foreach(var PurCarList in pURcART) 
+            var sELLcART = (from res in db.STORE_SELLING_CART
+                           select res).ToList();
+            foreach(var SellCarList in sELLcART) 
             {
  
-                STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(PurCarList.PRODUCT_ID);
-                sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-                sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT + PurCarList.UNIT_SOLD;
-                db.Entry(sTOREpRODUCT).State = EntityState.Modified;
+                STORE_INVENTORY sTOREiNVENTORY = db.STORE_INVENTORY.Where(x=>x.PRODUCT_ID == SellCarList.PRODUCT_ID).FirstOrDefault();
+                sTOREiNVENTORY.UPDATED_AT = DateTime.Now;
+                sTOREiNVENTORY.UNIT_LEFT = sTOREiNVENTORY.UNIT_LEFT + SellCarList.UNIT_SOLD;
+                db.Entry(sTOREiNVENTORY).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Product Details Updated."; }
                 catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
 
             }
-            try { db.Database.ExecuteSqlCommand("TRUNCATE TABLE STORE_PURCHAGE_CART"); ViewBag.Notice = string.Concat(ViewBag.Notice," Transaction Cancelled Successfully."); }
+            try { db.Database.ExecuteSqlCommand("TRUNCATE TABLE STORE_SELLING_CART"); ViewBag.Notice = string.Concat(ViewBag.Notice," Transaction Cancelled Successfully."); }
             catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
-            return RedirectToAction("ViewAll", new { ErrorMessage = ViewBag.ErrorMessage , Notice = ViewBag.Notice });
+            return RedirectToAction("Sell", new { ErrorMessage = ViewBag.ErrorMessage , Notice = ViewBag.Notice });
         }
 
         // GET: Student
         public ActionResult CleanCart()
         {
-            var pURcART = (from res in db.STORE_PURCHAGE_CART
+            var sELLcART = (from res in db.STORE_SELLING_CART
                            select res).ToList();
-            foreach (var PurCarList in pURcART)
+            foreach (var SellCarList in sELLcART)
             {
 
-                STORE_PRODUCTS sTOREpRODUCT = db.STORE_PRODUCTS.Find(PurCarList.PRODUCT_ID);
-                sTOREpRODUCT.UPDATED_AT = DateTime.Now;
-                sTOREpRODUCT.UNIT_LEFT = sTOREpRODUCT.UNIT_LEFT + PurCarList.UNIT_SOLD;
-                db.Entry(sTOREpRODUCT).State = EntityState.Modified;
+                STORE_INVENTORY sTOREiNVENTORY = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == SellCarList.PRODUCT_ID).FirstOrDefault();
+                sTOREiNVENTORY.UPDATED_AT = DateTime.Now;
+                sTOREiNVENTORY.UNIT_LEFT = sTOREiNVENTORY.UNIT_LEFT + SellCarList.UNIT_SOLD;
+                db.Entry(sTOREiNVENTORY).State = EntityState.Modified;
                 db.SaveChanges();
             }
 
-            db.Database.ExecuteSqlCommand("TRUNCATE TABLE STORE_PURCHAGE_CART");
-            return RedirectToAction("ViewAll");
+            db.Database.ExecuteSqlCommand("TRUNCATE TABLE STORE_SELLING_CART");
+            return RedirectToAction("Sell");
         }
 
 
@@ -1636,55 +1948,55 @@ namespace SFSAcademy.Controllers
             dTo = DateTime.TryParse(SoldToDate, out dtTo) ? dtTo : (DateTime?)null;
             ViewBag.CurrentFilter10 = SoldToDate;
 
-            var PurchaseS = (from pd in db.STORE_PRODUCTS
+            var SellingS = (from pd in db.STORE_PRODUCTS
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                             join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                             join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              join std in db.STUDENTs on pur.STUDENT_ID equals std.ID into gstd
                              from subgstd in gstd.DefaultIfEmpty()
                              join usr in db.USERS on pur.SOLD_BY_ID equals usr.ID into gusr
                              from subgusr in gusr.DefaultIfEmpty()
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
+                             select new Selling { SelliingData = pur, ProductData = pd, CategoryData = ct, StudentData = (subgstd == null ? null : subgstd), UserData = (subgusr == null ? null : subgusr) }).Distinct();
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
+                SellingS = SellingS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
             }
             if (STUDENT_ID != null && STUDENT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.STUDENT_ID == STUDENT_ID);
+                SellingS = SellingS.Where(s => s.SelliingData.STUDENT_ID == STUDENT_ID);
             }
             if (!String.IsNullOrEmpty(ContactNumber))
             {
                 long? StdContactNum = Convert.ToInt64(ContactNumber);
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.STUDENT_CONTACT_NO == StdContactNum);
+                SellingS = SellingS.Where(s => s.SelliingData.STUDENT_CONTACT_NO == StdContactNum);
             }
             if (USER_ID  != null && USER_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.SOLD_BY_ID == USER_ID);
+                SellingS = SellingS.Where(s => s.SelliingData.SOLD_BY_ID == USER_ID);
             }
             if (MoneyDeposited != null && MoneyDeposited != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
+                SellingS = SellingS.Where(s => s.SelliingData.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.SOLD_ON >= dFrom).Where(s => s.PurchaseData.SOLD_ON <= dTo);
+                SellingS = SellingS.Where(s => s.SelliingData.SOLD_ON >= dFrom).Where(s => s.SelliingData.SOLD_ON <= dTo);
             }
             switch (sortOrder)
             {
                 case "date_desc":
-                    PurchaseS = PurchaseS.OrderBy(s => s.PurchaseData.SOLD_ON);
+                    SellingS = SellingS.OrderBy(s => s.SelliingData.SOLD_ON);
                     break;
                 case "Name":
-                    PurchaseS = PurchaseS.OrderBy(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderBy(s => s.ProductData.NAME);
                     break;
                 case "name_desc":
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.ProductData.NAME);
+                    SellingS = SellingS.OrderByDescending(s => s.ProductData.NAME);
                     break;
                 default:  // Name ascending 
-                    PurchaseS = PurchaseS.OrderByDescending(s => s.PurchaseData.SOLD_ON);
+                    SellingS = SellingS.OrderByDescending(s => s.SelliingData.SOLD_ON);
                     break;
             }
             var queryStudent = db.STUDENTs.Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
@@ -1736,8 +2048,7 @@ namespace SFSAcademy.Controllers
 
             int pageSize = 100;
             int pageNumber = (page ?? 1);
-            return View(PurchaseS.ToPagedList(pageNumber, pageSize));
-            //return View(db.USERS.ToList());
+            return View(SellingS.ToPagedList(pageNumber, pageSize));
         }
 
         [OutputCache(Duration = 0, VaryByParam = "*")]
@@ -1762,44 +2073,44 @@ namespace SFSAcademy.Controllers
             dFrom = DateTime.TryParse(SoldFromDate, out dtFrom) ? dtFrom : (DateTime?)null;
             DateTime? dTo; DateTime dtTo;
             dTo = DateTime.TryParse(SoldToDate, out dtTo) ? dtTo : (DateTime?)null;
-            var PurchaseS = (from pd in db.STORE_PRODUCTS
+            var SellingS = (from pd in db.STORE_PRODUCTS
                              join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
-                             join pur in db.STORE_PURCHAGE on pd.PRODUCT_ID equals pur.PRODUCT_ID
+                             join pur in db.STORE_SELLING on pd.PRODUCT_ID equals pur.PRODUCT_ID
                              orderby pur.SOLD_ON, pd.NAME, ct.NAME
                              where pur.IS_DEL == false
-                             select new Purchase { PurchaseData = pur, ProductData = pd, CategoryData = ct }).Distinct();
+                             select new Selling { SelliingData = pur, ProductData = pd, CategoryData = ct }).Distinct();
 
             if (PRODUCT_ID != null && PRODUCT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
+                SellingS = SellingS.Where(s => s.ProductData.PRODUCT_ID == PRODUCT_ID);
             }
             if (STUDENT_ID != null && STUDENT_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.STUDENT_ID == STUDENT_ID);
+                SellingS = SellingS.Where(s => s.SelliingData.STUDENT_ID == STUDENT_ID);
             }
             if (!String.IsNullOrEmpty(ContactNumber))
             {
                 long? StdContactNum = Convert.ToInt64(ContactNumber);
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.STUDENT_CONTACT_NO == StdContactNum);
+                SellingS = SellingS.Where(s => s.SelliingData.STUDENT_CONTACT_NO == StdContactNum);
             }
             if (USER_ID != null && USER_ID != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.SOLD_BY_ID == USER_ID);
+                SellingS = SellingS.Where(s => s.SelliingData.SOLD_BY_ID == USER_ID);
             }
             if (MoneyDeposited != null && MoneyDeposited != -1)
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
+                SellingS = SellingS.Where(s => s.SelliingData.IS_DEPOSITED.Equals(MoneyDeposited == 1 ? true : false));
             }
             if (!String.IsNullOrEmpty(SoldFromDate) && !String.IsNullOrEmpty(SoldToDate))
             {
-                PurchaseS = PurchaseS.Where(s => s.PurchaseData.SOLD_ON >= dFrom).Where(s => s.PurchaseData.SOLD_ON <= dTo);
+                SellingS = SellingS.Where(s => s.SelliingData.SOLD_ON >= dFrom).Where(s => s.SelliingData.SOLD_ON <= dTo);
             }
-            foreach (var item in PurchaseS.ToList())
+            foreach (var item in SellingS.ToList())
             {
-                var ST_PUR_BACKUp = new STORE_PURCHAGE_BACKUP() { ID = item.PurchaseData.ID, PRODUCT_ID = item.PurchaseData.PRODUCT_ID, UNIT_SOLD= item.PurchaseData.UNIT_SOLD, SOLD_PRICE=item.PurchaseData.SOLD_PRICE, SOLD_BY_ID=item.PurchaseData.SOLD_BY_ID, SOLD_ON=item.PurchaseData.SOLD_ON, STUDENT_ID=item.PurchaseData.STUDENT_ID, STUDENT_CONTACT_NO=item.PurchaseData.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID=item.PurchaseData.MONEY_RECEIVED_BY_ID, IS_DEPOSITED=item.PurchaseData.IS_DEPOSITED, IS_ACT=item.PurchaseData.IS_ACT, IS_DEL=item.PurchaseData.IS_DEL, CREATED_AT=item.PurchaseData.CREATED_AT, UPDATED_AT= item.PurchaseData.UPDATED_AT, PAYMENT_MODE = item.PurchaseData.PAYMENT_MODE };
-                db.STORE_PURCHAGE_BACKUP.Add(ST_PUR_BACKUp);
-                STORE_PURCHAGE sPURCHAGE = db.STORE_PURCHAGE.Find(item.PurchaseData.ID);
-                db.STORE_PURCHAGE.Remove(sPURCHAGE);
+                var ST_SELL_BACKUp = new STORE_SELLING_BACKUP() { ID = item.SelliingData.ID, PRODUCT_ID = item.SelliingData.PRODUCT_ID, UNIT_SOLD= item.SelliingData.UNIT_SOLD, SOLD_PRICE=item.SelliingData.SOLD_PRICE, SOLD_BY_ID=item.SelliingData.SOLD_BY_ID, SOLD_ON=item.SelliingData.SOLD_ON, STUDENT_ID=item.SelliingData.STUDENT_ID, STUDENT_CONTACT_NO=item.SelliingData.STUDENT_CONTACT_NO, MONEY_RECEIVED_BY_ID=item.SelliingData.MONEY_RECEIVED_BY_ID, IS_DEPOSITED=item.SelliingData.IS_DEPOSITED, IS_ACT=item.SelliingData.IS_ACT, IS_DEL=item.SelliingData.IS_DEL, CREATED_AT=item.SelliingData.CREATED_AT, UPDATED_AT= item.SelliingData.UPDATED_AT, PAYMENT_MODE = item.SelliingData.PAYMENT_MODE };
+                db.STORE_SELLING_BACKUP.Add(ST_SELL_BACKUp);
+                STORE_SELLING sPURCHAGE = db.STORE_SELLING.Find(item.SelliingData.ID);
+                db.STORE_SELLING.Remove(sPURCHAGE);
             }
             try { db.SaveChanges(); ViewBag.Notice = "Selected Data is backed up successfully."; }
             catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
@@ -2013,35 +2324,28 @@ namespace SFSAcademy.Controllers
                     catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
                     if (sTOREpURCHAGEoRDER_UPD.STATUS_ID == 4)
                     {
-                        STORE_PRODUCTS NewProd = db.STORE_PRODUCTS.Find(sTOREpURCHAGEoRDER_UPD.PRODUCT_ID);
+                        STORE_PRODUCTS NewProd = db.STORE_PRODUCTS.Include(x=>x.STORE_INVENTORY).Where(x=>x.PRODUCT_ID == sTOREpURCHAGEoRDER_UPD.PRODUCT_ID).FirstOrDefault();
 
-                        var sTORE_PRODUCTS_UPD = new STORE_PRODUCTS() { NAME = NewProd.NAME, CATEGORY_ID = NewProd.CATEGORY_ID,
-                            SUB_CATEGORY_ID = NewProd.SUB_CATEGORY_ID,
+                        var sTORE_PROCUREMENT_UPD = new STORE_PROCUREMENT() { DESCR = NewProd.NAME, PRODUCT_ID = NewProd.PRODUCT_ID,
                             BRAND_ID = sTOREpURCHAGEoRDER_UPD.BRAND_ID,
-                        TOTAL_UNIT = sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY,
+                            VENDOR_ID = sTOREpURCHAGEoRDER_UPD.VENDOR_ID,
+                            UNIT_PROCURED = sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY,
                         TOTAL_COST = Convert.ToInt32(sTOREpURCHAGEoRDER_UPD.SUB_TOTAL),
                         COST_PER_UNIT = Convert.ToInt32(Convert.ToInt32(sTOREpURCHAGEoRDER_UPD.SUB_TOTAL)/ sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY),
-                        SELL_PRICE_PER_UNIT = null,
-                        PURCHASED_ON = sTOREpURCHAGEoRDER_UPD.UPDATED_AT,
-                        VENDOR_ID = sTOREpURCHAGEoRDER_UPD.VENDOR_ID,
+                        SELL_PRICE_PER_UNIT = NewProd.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT,
+                        PROCURED_ON = sTOREpURCHAGEoRDER_UPD.UPDATED_AT,
                         PAID_BY = "School",
-                        UNIT_LEFT = NewProd.TOTAL_UNIT + sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY,
+                        //UNIT_LEFT = NewProd.TOTAL_UNIT + sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY,
                         IS_ACT = true,
                         IS_DEL = false,
                         CREATED_AT = DateTime.Now,
                         UPDATED_AT = DateTime.Now
                         };
-                        db.STORE_PRODUCTS.Add(sTORE_PRODUCTS_UPD);
+                        db.STORE_PROCUREMENT.Add(sTORE_PROCUREMENT_UPD);
+                        STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTOREpURCHAGEoRDER_UPD.PRODUCT_ID).FirstOrDefault();
+                        InvUpd.UNIT_LEFT = InvUpd.UNIT_LEFT +   sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY;
                         try { db.SaveChanges();}
                         catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
-
-                        STORE_PRODUCTS sTORE_PRODUCTS_ORG = db.STORE_PRODUCTS.Find(sTOREpURCHAGEoRDER_UPD.PRODUCT_ID);
-                        sTORE_PRODUCTS_ORG.IS_ACT = false;
-                        sTORE_PRODUCTS_ORG.UPDATED_AT = DateTime.Now;
-                        db.Entry(sTORE_PRODUCTS_ORG).State = EntityState.Modified;
-                        try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Purchaged Product is added in Product List. Please update further details."); }
-                        catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
-
                     }
                 }                                
                 return RedirectToAction("PurchageOrder", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
@@ -2098,16 +2402,19 @@ namespace SFSAcademy.Controllers
         // GET: Store Products
         public ActionResult ShortageProducts()
         {
-
+            var newProcurement = db.STORE_PROCUREMENT.GroupBy(o => o.PRODUCT_ID)
+                .Select(g => new { PRODUCT_ID = g.Key, LAST_PROCURED = g.Max(p => p.PROCURED_ON) });
             var ProductS = (from pd in db.STORE_PRODUCTS
+                            join inv in db.STORE_INVENTORY on pd.PRODUCT_ID equals inv.PRODUCT_ID
                             join ct in db.STORE_CATEGORY on pd.CATEGORY_ID equals ct.ID
                             join subcat in db.STORE_SUB_CATEGORY on pd.SUB_CATEGORY_ID equals subcat.ID into gsc
                             from subgsc in gsc.DefaultIfEmpty()
                             join brd in db.STORE_BRAND on pd.BRAND_ID equals brd.ID into gbrd
                             from subgbrd in gbrd.DefaultIfEmpty()
+                            join np in newProcurement on pd.PRODUCT_ID equals np.PRODUCT_ID
                             orderby pd.NAME, ct.NAME
-                            where pd.IS_DEL == false && pd.IS_ACT == true && pd.UNIT_LEFT <= 2
-                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), BrandData = (subgbrd == null ? null : subgbrd) }).Distinct();
+                            where pd.IS_DEL == false && pd.IS_ACT == true && inv.UNIT_LEFT <= 2
+                            select new Products { ProductData = pd, CategoryData = ct, SubCategoryData = (subgsc == null ? null : subgsc), BrandData = (subgbrd == null ? null : subgbrd), LAST_PROCURED = np.LAST_PROCURED }).Distinct();
 
             return View(ProductS.ToList());
         }
@@ -2374,6 +2681,618 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
             return View(PurchageStatus);
+        }
+
+
+
+
+
+
+        // GET: Finance
+        public ActionResult Monthly_Report()
+        {
+            return View();
+        }
+
+
+        public ActionResult Update_Monthly_Report(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+
+            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+            var ConsolidateTransactions = DetailedTransactions
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.CATEGORY_ID,
+                    CATEGORY_NAME = o.CATEGORY_NAME,
+                })
+                .Select(g => new ConsolidatedSelling()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    transactions_income = g.Sum(p => p.transactions_income) ,
+                    transactions_expense = g.Sum(p => p.transactions_expense)
+                });
+
+            ViewData["ConsolidateTransactions"] = ConsolidateTransactions;
+
+            ViewBag.graph = null;
+
+            return View();
+        }
+
+        public ActionResult Update_Monthly_Report_Sub(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, int? id)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.CATEGORY_ID = id;
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+
+            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == id)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == id)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+            var ConsolidateTransactions = DetailedTransactions
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.CATEGORY_ID,
+                    CATEGORY_NAME = o.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = o.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.SUB_CATEGORY_NAME,
+                })
+                .Select(g => new ConsolidatedSelling()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    transactions_income = g.Sum(p => p.transactions_income),
+                    transactions_expense = g.Sum(p => p.transactions_expense)
+                });
+
+            ViewData["ConsolidateTransactions"] = ConsolidateTransactions;
+
+            ViewBag.graph = null;
+
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Transaction_pdf(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, int? CATEGORY_ID)
+        {
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            IEnumerable<SFSAcademy.DetailedTransactions> DetailedTransactions = Enumerable.Empty<SFSAcademy.DetailedTransactions>();
+            IEnumerable<SFSAcademy.ConsolidatedSelling> ConsolidateTransactions = Enumerable.Empty<SFSAcademy.ConsolidatedSelling>();
+            if (CATEGORY_ID != null)
+            {
+                ViewBag.CATEGORY_ID = CATEGORY_ID;
+                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == CATEGORY_ID)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == CATEGORY_ID)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+                ConsolidateTransactions = DetailedTransactions
+                    .GroupBy(o => new
+                    {
+                        CATEGORY_ID = o.CATEGORY_ID,
+                        CATEGORY_NAME = o.CATEGORY_NAME,
+                        SUB_CATEGORY_ID = o.SUB_CATEGORY_ID,
+                        SUB_CATEGORY_NAME = o.SUB_CATEGORY_NAME,
+                    })
+                    .Select(g => new ConsolidatedSelling()
+                    {
+                        CATEGORY_ID = g.Key.CATEGORY_ID,
+                        SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                        CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                        SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                        transactions_income = g.Sum(p => p.transactions_income),
+                        transactions_expense = g.Sum(p => p.transactions_expense)
+                    });
+            }
+            else
+            {
+                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+                ConsolidateTransactions = DetailedTransactions
+                    .GroupBy(o => new
+                    {
+                        CATEGORY_ID = o.CATEGORY_ID,
+                        CATEGORY_NAME = o.CATEGORY_NAME,
+                    })
+                    .Select(g => new ConsolidatedSelling()
+                    {
+                        CATEGORY_ID = g.Key.CATEGORY_ID,
+                        CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                        transactions_income = g.Sum(p => p.transactions_income),
+                        transactions_expense = g.Sum(p => p.transactions_expense)
+                    });
+            }
+            
+            //ViewData["transactions"] = TransactionVal;
+            ViewData["ConsolidateTransactions"] = ConsolidateTransactions;
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+
+
+            ViewBag.graph = null;
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Salary_Department(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.ErrorMessage = "HR System is not set-up yet for this intitution.";
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Income_Details(int? id, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, int? CATEGORY_ID)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = id;
+            var TransactionVal = (from sl in db.STORE_SELLING
+                              join prd in db.STORE_PRODUCTS on sl.PRODUCT_ID equals prd.PRODUCT_ID
+                              join sc in db.STORE_CATEGORY on prd.CATEGORY_ID equals sc.ID
+                              join ssc in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals ssc.ID
+                              where sl.SOLD_ON >= START_TRAN_DATE && sl.SOLD_ON <= END_TRAN_DATE && prd.CATEGORY_ID == CATEGORY_ID && prd.SUB_CATEGORY_ID == id
+                              select new StoreIncomeDetail { Id = sl.ID, Sub_Category_Name = ssc.NAME, Name = prd.NAME, Description = prd.DESCR, Amount = sl.SOLD_PRICE, Number_Of_Unit = sl.UNIT_SOLD, Receipt_Number = sl.ID, Transactions_Date = sl.SOLD_ON, Is_Income = true })
+                              .Union(from sl in db.STORE_PROCUREMENT
+                                     join prd in db.STORE_PRODUCTS on sl.PRODUCT_ID equals prd.PRODUCT_ID
+                                     join sc in db.STORE_CATEGORY on prd.CATEGORY_ID equals sc.ID
+                                     join ssc in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals ssc.ID
+                                     where sl.PROCURED_ON >= START_TRAN_DATE && sl.PROCURED_ON <= END_TRAN_DATE && prd.CATEGORY_ID == CATEGORY_ID && prd.SUB_CATEGORY_ID == id
+                                     select new StoreIncomeDetail { Id = sl.ID, Sub_Category_Name = ssc.NAME, Name = prd.NAME, Description = sl.DESCR, Amount = sl.TOTAL_COST, Number_Of_Unit = sl.UNIT_PROCURED, Receipt_Number = sl.ID, Transactions_Date = sl.PROCURED_ON, Is_Income = false }).OrderBy(x=>x.Transactions_Date).Distinct();
+
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Income_Details_pdf(int? id, DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, int? CATEGORY_ID)
+        {
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.CATEGORY_ID = CATEGORY_ID;
+            ViewBag.SUB_CATEGORY_ID = id;
+            var TransactionVal = (from sl in db.STORE_SELLING
+                                  join prd in db.STORE_PRODUCTS on sl.PRODUCT_ID equals prd.PRODUCT_ID
+                                  join sc in db.STORE_CATEGORY on prd.CATEGORY_ID equals sc.ID
+                                  join ssc in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals ssc.ID
+                                  where sl.SOLD_ON >= START_TRAN_DATE && sl.SOLD_ON <= END_TRAN_DATE && prd.CATEGORY_ID == CATEGORY_ID && prd.SUB_CATEGORY_ID == id
+                                  select new StoreIncomeDetail { Id = sl.ID, Sub_Category_Name = ssc.NAME, Name = prd.NAME, Description = prd.DESCR, Amount = sl.SOLD_PRICE, Number_Of_Unit = sl.UNIT_SOLD, Receipt_Number = sl.ID, Transactions_Date = sl.SOLD_ON, Is_Income = true })
+                              .Union(from sl in db.STORE_PROCUREMENT
+                                     join prd in db.STORE_PRODUCTS on sl.PRODUCT_ID equals prd.PRODUCT_ID
+                                     join sc in db.STORE_CATEGORY on prd.CATEGORY_ID equals sc.ID
+                                     join ssc in db.STORE_SUB_CATEGORY on prd.SUB_CATEGORY_ID equals ssc.ID
+                                     where sl.PROCURED_ON >= START_TRAN_DATE && sl.PROCURED_ON <= END_TRAN_DATE && prd.CATEGORY_ID == CATEGORY_ID && prd.SUB_CATEGORY_ID == id
+                                     select new StoreIncomeDetail { Id = sl.ID, Sub_Category_Name = ssc.NAME, Name = prd.NAME, Description = sl.DESCR, Amount = sl.TOTAL_COST, Number_Of_Unit = sl.UNIT_PROCURED, Receipt_Number = sl.ID, Transactions_Date = sl.PROCURED_ON, Is_Income = false }).OrderBy(x => x.Transactions_Date).Distinct();
+
+            return View(TransactionVal.ToList());
+        }
+
+        // GET: Finance
+        public ActionResult Compare_Report()
+        {
+
+            return View();
+        }
+
+        // GET: Finance
+        public ActionResult Report_Compare(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE, DateTime START_TRAN_DATE2, DateTime END_TRAN_DATE2)
+        {
+
+            if (END_TRAN_DATE < START_TRAN_DATE)
+            {
+                ViewBag.ErrorMessage = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            if (END_TRAN_DATE2 < START_TRAN_DATE2)
+            {
+                ViewBag.ErrorMessage = "End Date should be greater than or equal to Start Date!";
+                return View();
+            }
+            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
+            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewBag.START_TRAN_DATE2 = START_TRAN_DATE2;
+            ViewBag.END_TRAN_DATE2 = END_TRAN_DATE2;
+
+            ViewBag.hr = null;
+            var configValue = (from C in db.CONFIGURATIONs
+                               select C).Distinct();
+            foreach (var item in configValue)
+            {
+                if (item.CONFIG_KEY == "HR")
+                {
+                    ViewBag.hr = item.CONFIG_VAL;
+                }
+            }
+
+            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+            decimal salary = 0;
+            decimal salary_income = 0;
+            decimal salary_expense = 0;
+            foreach (var item in DetailedTransactions)
+            {
+                if (item.CATEGORY_NAME.Contains("Salary"))
+                {
+                    salary_expense += (decimal)item.transactions_expense;
+
+                }
+
+            }
+            salary = salary_expense - salary_income;
+            ViewBag.salary = salary;
+
+            var ConsolidateTransactions = DetailedTransactions
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.CATEGORY_ID,
+                    CATEGORY_NAME = o.CATEGORY_NAME,
+                })
+                .Select(g => new ConsolidatedSelling()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    transactions_income = g.Sum(p => p.transactions_income),
+                    transactions_expense = g.Sum(p => p.transactions_expense)
+                });
+
+            ViewData["ConsolidateTransactions"] = ConsolidateTransactions;
+
+
+            var DetailedTransactions2 = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.SOLD_ON >= START_TRAN_DATE2 && x.SOLD_ON <= END_TRAN_DATE2)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_SOLD),
+                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_expense = 0
+                })
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Where(x => x.PROCURED_ON >= START_TRAN_DATE2 && x.PROCURED_ON <= END_TRAN_DATE2)
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.STORE_PRODUCTS.CATEGORY_ID,
+                    CATEGORY_NAME = o.STORE_PRODUCTS.STORE_CATEGORY.NAME,
+                    SUB_CATEGORY_ID = o.STORE_PRODUCTS.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = o.STORE_PRODUCTS.STORE_SUB_CATEGORY.NAME,
+                    PRODUCT_ID = o.STORE_PRODUCTS.PRODUCT_ID,
+                    PRODUCT_NAME = o.STORE_PRODUCTS.NAME,
+                })
+                .Select(g => new DetailedTransactions()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    SUB_CATEGORY_ID = g.Key.SUB_CATEGORY_ID,
+                    SUB_CATEGORY_NAME = g.Key.SUB_CATEGORY_NAME,
+                    PRODUCT_ID = g.Key.PRODUCT_ID,
+                    PRODUCT_NAME = g.Key.PRODUCT_NAME,
+                    total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
+                    transactions_income = 0,
+                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                }));
+
+            decimal salary2 = 0;
+            decimal salary_income2 = 0;
+            decimal salary_expense2 = 0;
+            foreach (var item2 in DetailedTransactions2)
+            {
+                if (item2.CATEGORY_NAME.Contains("Salary"))
+                {
+                    salary_expense2 += (decimal)item2.transactions_expense;
+                }
+
+            }
+            salary2 = salary_expense2 - salary_income2;
+            ViewBag.salary2 = salary2;
+
+            var ConsolidateTransactions2 = DetailedTransactions2
+                .GroupBy(o => new
+                {
+                    CATEGORY_ID = o.CATEGORY_ID,
+                    CATEGORY_NAME = o.CATEGORY_NAME,
+                })
+                .Select(g => new ConsolidatedSelling()
+                {
+                    CATEGORY_ID = g.Key.CATEGORY_ID,
+                    CATEGORY_NAME = g.Key.CATEGORY_NAME,
+                    transactions_income = g.Sum(p => p.transactions_income),
+                    transactions_expense = g.Sum(p => p.transactions_expense)
+                });
+
+            ViewData["ConsolidateTransactions2"] = ConsolidateTransactions2;
+
+            ViewBag.graph = null;
+            return View();
         }
 
         protected override void Dispose(bool disposing)

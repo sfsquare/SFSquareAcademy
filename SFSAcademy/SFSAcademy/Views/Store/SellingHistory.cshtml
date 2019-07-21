@@ -1,0 +1,145 @@
+﻿@model IEnumerable<SFSAcademy.Selling>
+
+@{
+    ViewBag.Title = "Selling History";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_store.png" alt="Show Store Logo">
+    <h1>Store</h1>
+    <h3>Selling History</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Sellings", "Sell") &raquo;
+    Selling History
+</div>
+<div id="page-yield">
+    <div class="students-table">
+        <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1">
+            <tr class="tr-head">
+                <th>
+                    Sl. No.
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Unit Sold
+                </th>
+                <th>
+                    Sold Amount
+                </th>
+                <th>
+                    Sold By
+                </th>
+                <th>
+                    Is Deposited?
+                </th>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    Sold On
+                </th>
+                @if (Html.Permitted_To("ProductEdit", "Store"))
+                {
+                    <th></th>
+                }
+            </tr>
+            <tr class="tr-blank"></tr>
+            @{int i = 1; }
+            @foreach (var item in Model)
+            {
+                string selectedRow = "tr-even";
+                if (i % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    @Html.HiddenFor(modelItem => item.IS_BACKUP)
+                    <td class="col-1">@i</td>
+                    <td class="col-2">
+                        @Html.DisplayFor(modelItem => item.ProductData.NAME)
+                    </td>
+                    <td class="col-3">
+                        @Html.DisplayFor(modelItem => item.CategoryData.NAME)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.UNIT_SOLD)
+                    </td>
+                    <td class="col-4">
+                        @Html.DisplayFor(modelItem => item.SOLD_PRICE)
+                    </td>
+                    @if (item.UserData != null)
+                    {
+                        <td class="col-4" nowrap>
+                            @item.UserData.FIRST_NAME  @item.UserData.LAST_NAME
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-4" nowrap></td>
+                    }
+                    @if (item.IS_DEPOSITED == null || item.IS_DEPOSITED != true)
+                    {
+                        <td class="col-5" nowrap>
+                            No
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-5" nowrap>
+                            Yes
+                        </td>
+                    }
+                    @if (item.StudentData != null)
+                    {
+                        <td class="col-6" nowrap>
+                            @item.StudentData.FIRST_NAME  @item.StudentData.MID_NAME  @item.StudentData.LAST_NAME
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-6" nowrap></td>
+                    }
+                    <td class="col-7" nowrap>
+                        @if (!item.SOLD_ON.Equals(null))
+                        {
+                            @item.SOLD_ON.Value.ToShortDateString()
+                        }
+                    </td>
+                    @if (Html.Permitted_To("ProductEdit", "Store"))
+                    {
+                        if (item.IS_BACKUP != true)
+                        {
+                            <td class="col-8" nowrap>
+                                @Html.ActionLink("Edit ", "EditSelling", new { id = item.ID, IS_BACKUP = item.IS_BACKUP }, new { style = "text-decoration:underline" })
+
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="col-8" nowrap>
+                                Backed-up Data
+                            </td>
+                        }
+
+                    }
+                </tr>
+                i = i + 1;
+            }
+        </table>       
+    </div>
+    <div id="products"></div>
+</div>
+
+

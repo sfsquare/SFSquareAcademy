@@ -1,98 +1,85 @@
-﻿@model SFSAcademy.STORE_PRODUCTS
-
-@{
-    ViewBag.Title = "ViewAll";
+﻿@{
+    ViewBag.Title = "View All Products";
 }
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    /* This is change event for your dropdownlist */
+<script type="text/javascript">
     $(document).ready(function () {
-        $(".LoaderBox1").hide();
+        var selectedSubCatId = $('#SubCategoryDropDown').val();
+        var SelectedCatId = $('#CategoryDropDown').val();
+        var page = $('#page').val();
+        $.get('/Store/ListAllProducts?CATEGORY_ID=' + SelectedCatId + "&SUB_CATEGORY_ID=" + selectedSubCatId + "&page=" + page, function (data) {
+            $('#report').html(data);
+            $('#report').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
         $('#CategoryDropDown').change(function () {
             var selectedID = $(this).val();
-            $(".LoaderBox1").show();
-            $.get('/Store/Sub_Categories_Select/' + selectedID, function (data) {
+            $(".LoaderBox").show();
+            $.get('/Store/Prod_Sub_Categories_Select/' + selectedID, function (data) {
                 $('#sub_categories_select').html(data);
                 $('#sub_categories_select').fadeIn('fast');
             }).success(function (status) {
-                $(".LoaderBox1").hide();
+                $(".LoaderBox").hide();
             });
 
         });
     });
+
+    function show_products() {
+        $(".LoaderBox").show();
+        var selectedSubCatId = $('#SubCategoryDropDown').val();
+        var SelectedCatId = $('#CategoryDropDown').val();
+        $.get('/Store/ListAllProducts?CATEGORY_ID=' + SelectedCatId + "&SUB_CATEGORY_ID=" + selectedSubCatId, function (data) {
+            $('#report').html(data);
+            $('#report').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
 </script>
+
 <div id="content-header">
-    <img src="~/Content/images/show_store.png" alt="Show Store Logo">
-    <h1>Store</h1>
-    <h3>View Product Details</h3>
+    <img src="~/Content/images/show_store.png" alt="Store Logo">
+    <h1>Store Products</h1>
+    <h3>All Products</h3>
     <div id="app-back-button">
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-<div id="inner-tab-menu">
-    <ul>
-        <li>@Html.ActionLink("Show Cart", "ViewCart")</li>
-        @if (Html.Permitted_To("Edit", "Store"))
-        {
-            <li>@Html.ActionLink("Add New Product", "Create")</li>
-        }
-        <li>@Html.ActionLink("Shortage Products**", "ShortageProducts")@Html.Check_ShortageProducts()</li>
-    </ul>
-</div>
 <div class="bread_crumb">
     @Html.ActionLink("Store", "Index") &raquo;
+    @Html.ActionLink("Setting", "Setting") &raquo;
+    @Html.ActionLink("Manage Products", "Product") &raquo;
     View All Products
 </div>
-<div id="flash_box">
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-    }
-</div>
-<div id="flash_box">
-    @if (ViewBag.CartItems != null && ViewBag.CartItems != 0)
-    {
-        <p class="flash-msg"> Number of Items in the Cart = @ViewBag.CartItems </p>
-    }
-</div>
 <div id="page-yield">
-    <div id="flash_box">
-        @if (ViewBag.Notice != null)
-        {
-            <p class="flash-msg"> @ViewBag.Notice </p>
-        }
-    </div>
-    <div id="search_box_bg">
-        <div id="searchbox">
-            <form name="search-form" id="search-form" action="" style="display:inline">
-                @using (Html.BeginForm("ViewAll", "Store", FormMethod.Get))
-                {
-                    <div class="label-field-pair label">
-                        @Html.LabelFor(model => model.CATEGORY_ID, "Product Category", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="text-input-bg">
-                            @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "CategoryDropDown" })
-                            <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-                            @Html.ValidationMessageFor(model => model.CATEGORY_ID, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-                    @Html.Partial("_Sub_Categories_Select")
-                    <input type="submit" value="Search" id="submit-button" class="user_button" />
-                }
-            </form>
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @Html.AntiForgeryToken()
+    <div class="label-field-pair">
+        <div class="timetable_entry_course_id">@Html.Label("CATEGORY_ID", "Select Category :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+        <div class="text-input-bg">
+            @Html.DropDownList("CATEGORY_ID", null, htmlAttributes: new { @class = "form-control", @id = "CategoryDropDown", @onChange = "show_products()" })
+            @Html.ValidationMessage("CATEGORY_ID", "", new { @class = "text-danger" })
         </div>
     </div>
-
-    <div class="students-table">
-        <div id="text-input-bg">
-            @{Html.RenderAction("ListAllProducts", "Store", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter });}
-
-        </div>
-    </div>
-    <div id="products"></div>
+    @Html.Partial("_Prod_Sub_Categories_Select")
+    <div class="extender"> </div>
+    <div id="report"> </div>
 </div>
+<input type="hidden" value="@ViewBag.page" id="page" name="page" />
+

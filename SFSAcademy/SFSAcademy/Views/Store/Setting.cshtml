@@ -12,14 +12,23 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%" /></div>
-
+<div class="bread_crumb">
+    @Html.ActionLink("Store", "Index") &raquo;
+    Settings
+</div>
 <div id="page-yield">
     <div class="box">
         <div class="link-box">
             <div class="link-heading">@Html.ActionLink("Manage Product Category", "Categories")</div>
             <div class="link-descr">Manage Product Categories and Sub Categories</div>
         </div>
-
+        @if (Html.Permitted_To("ProductEdit", "Store"))
+        {
+            <div class="link-box">
+                <div class="link-heading">@Html.ActionLink("Manage Products", "Product")</div>
+                <div class="link-descr">Add / Edit / Delete Product Details</div>
+            </div>
+        }
         <div class="link-box">
             <div class="link-heading">@Html.ActionLink("Add Vendor", "Vendor")</div>
             <div class="link-descr">Add/Edit Vendors supplying products to Store</div>
