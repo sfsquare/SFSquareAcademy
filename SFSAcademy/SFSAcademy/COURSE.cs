@@ -20,6 +20,7 @@ namespace SFSAcademy
             this.BATCHes = new HashSet<BATCH>();
             this.CLASS_DESIGNATION = new HashSet<CLASS_DESIGNATION>();
             this.RANKING_LEVEL = new HashSet<RANKING_LEVEL>();
+            this.CCE_WEIGHTAGE = new HashSet<CCE_WEIGHTAGE>();
         }
     
         public int ID { get; set; }
@@ -37,5 +38,7 @@ namespace SFSAcademy
         public virtual ICollection<CLASS_DESIGNATION> CLASS_DESIGNATION { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RANKING_LEVEL> RANKING_LEVEL { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CCE_WEIGHTAGE> CCE_WEIGHTAGE { get; set; }
     }
 }

@@ -27,6 +27,13 @@ namespace SFSAcademy
         string course_full_name { get; set; }
 */
     }
+    public enum GradingType
+    {
+        Normal,
+        GPA,
+        CWA,
+        CCE
+    }
     public partial class BATCH
     {
         private SFSAcademyEntities db = new SFSAcademyEntities();
@@ -210,6 +217,60 @@ namespace SFSAcademy
                 }
             }
             return all_days;
+        }
+        public bool GPA_Enabled()
+        {
+            var Config_Val = new Configuration();
+            var gpa_Enabled = Config_Val.find_by_config_key("GPA");
+            if (gpa_Enabled == "1" && GRADING_TYPE == "GPA")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        public bool CWA_Enabled()
+        {
+            var Config_Val = new Configuration();
+            var cwa_Enabled = Config_Val.find_by_config_key("CWA");
+            if (cwa_Enabled == "1" && GRADING_TYPE == "CWA")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        public bool CCE_Enabled()
+        {
+            var Config_Val = new Configuration();
+            var cce_Enabled = Config_Val.find_by_config_key("CCE");
+            if (cce_Enabled == "1" && GRADING_TYPE == "CCE")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+        public bool Normal_Enabled()
+        {
+            if (GRADING_TYPE == null || GRADING_TYPE == "Normal")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
     }

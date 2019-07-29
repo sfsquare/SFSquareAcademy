@@ -1,0 +1,67 @@
+﻿@{
+    IEnumerable<SFSAcademy.PRIVILEGE> privilege = (IEnumerable<SFSAcademy.PRIVILEGE>)ViewData["privilege"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
+}
+
+@{
+    ViewBag.Title = "Settings";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Exam</h1>
+    <h3>Settings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    Settings
+</div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        @if (Html.Permitted_To("Index", "Grading_Levels"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Index", "Grading_Levels")">Set grading levels</a></div>
+                <div class="link-descr">Set grading levels</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Index", "Ranking_Levels"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Index", "Ranking_Levels")">Ranking Levels</a></div>
+                <div class="link-descr">Manage Ranking Levels</div>
+            </div>
+        }
+        @if (Html.Permitted_To("Index", "Class_Designations"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Index", "Class_Designations")">Class Designations</a></div>
+                <div class="link-descr">Manage Class Designations</div>
+            </div>
+        }
+        @if (ViewBag.CCE_config == true)
+        {
+            if (Html.Permitted_To("Index", "CCE_Settings"))
+            {
+                <div class="link-box">
+                    <div class="link-heading"><a href="@Url.Action("Index", "CCE_Settings")">CCE Settings</a></div>
+                    <div class="link-descr">Manage CCE Settings</div>
+                </div>
+            }
+        }
+
+        <div class="extender"></div>
+    </div>
+</div>
+
+
+
