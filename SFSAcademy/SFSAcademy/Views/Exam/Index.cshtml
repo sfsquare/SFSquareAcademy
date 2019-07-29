@@ -1,0 +1,57 @@
+﻿@{
+    IEnumerable<SFSAcademy.PRIVILEGE> privilege = (IEnumerable<SFSAcademy.PRIVILEGE>)ViewData["privilege"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Exam</h1>
+    <h3>Home</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        @if (privilege.Select(p => p.NAME).Contains("ExaminationControl") || Html.CurrentUser_UserType().Equals("Admin"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Settings", "Exam")">Settings</a></div>
+                <div class="link-descr">Manage Grading Levels, Ranking Levels and Class Designations</div>
+            </div>
+        }
+        @if ((Html.Permitted_To("Create_Exam", "Exam") && ViewBag.allow_for_exams == true && !privilege.Select(p => p.NAME).Contains("ViewResults")) || Html.CurrentUser_UserType().Equals("Admin") || employee_subjects != null || privilege.Select(p => p.NAME).Contains("ExaminationControl") || privilege.Select(p => p.NAME).Contains("EnterResults"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a></div>
+                <div class="link-descr">Create new exams, enter results.</div>
+            </div>
+        }
+        @if (privilege.Select(p => p.NAME).Contains("ExaminationControl") || Html.CurrentUser_UserType().Equals("Admin"))
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Generate_Reports", "Exam")">Generate Reports</a></div>
+                <div class="link-descr">Generates Student Reports for Grouped Exams</div>
+            </div>
+        }
+
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Report_Center", "Exam")">Reports center</a></div>
+            <div class="link-descr">View Student Reports</div>
+        </div>
+
+        <div class="extender"></div>
+    </div>
+</div>
+

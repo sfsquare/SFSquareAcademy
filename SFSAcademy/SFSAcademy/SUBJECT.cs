@@ -24,6 +24,7 @@ namespace SFSAcademy
             this.STUDENT_SUBJECT = new HashSet<STUDENT_SUBJECT>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
+            this.FA_GROUP = new HashSet<FA_GROUP>();
         }
     
         public int ID { get; set; }
@@ -57,5 +58,7 @@ namespace SFSAcademy
         public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FA_GROUP> FA_GROUP { get; set; }
     }
 }

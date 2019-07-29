@@ -120,7 +120,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,IS_ACT,EMP_ID")] BATCH bATCH)
+        public ActionResult Create([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,IS_ACT,EMP_ID,GRADING_TYPE")] BATCH bATCH)
         {
             if (ModelState.IsValid)
             {
@@ -171,7 +171,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,EMP_ID")] BATCH bATCH)
+        public ActionResult Edit([Bind(Include = "ID,NAME,CRS_ID,START_DATE,END_DATE,IS_DEL,EMP_ID,GRADING_TYPE")] BATCH bATCH)
         {
             if (ModelState.IsValid)
             {
@@ -181,6 +181,7 @@ namespace SFSAcademy.Controllers
                 BatchToUpdate.START_DATE = bATCH.START_DATE;
                 BatchToUpdate.END_DATE = bATCH.END_DATE;
                 BatchToUpdate.EMP_ID = bATCH.EMP_ID;
+                BatchToUpdate.GRADING_TYPE = bATCH.GRADING_TYPE;
                 db.Entry(BatchToUpdate).State = EntityState.Modified;
                 try
                 {

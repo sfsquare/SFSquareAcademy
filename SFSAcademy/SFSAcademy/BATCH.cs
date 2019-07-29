@@ -19,6 +19,7 @@ namespace SFSAcademy
         {
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.ATTENDENCEs = new HashSet<ATTENDENCE>();
+            this.CCE_REPORTS = new HashSet<CCE_REPORTS>();
             this.CLASS_TIMING = new HashSet<CLASS_TIMING>();
             this.EXAM_GROUP = new HashSet<EXAM_GROUP>();
             this.FINANCE_FEE_CATGEORY = new HashSet<FINANCE_FEE_CATGEORY>();
@@ -49,6 +50,8 @@ namespace SFSAcademy
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATTENDENCE> ATTENDENCEs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CCE_REPORTS> CCE_REPORTS { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLASS_TIMING> CLASS_TIMING { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
