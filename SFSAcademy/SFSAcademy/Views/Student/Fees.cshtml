@@ -1,6 +1,5 @@
 ﻿@model SFSAcademy.STUDENT
 
-
 @{
     IEnumerable<SFSAcademy.StundentFee> dates = (IEnumerable<SFSAcademy.StundentFee>)ViewData["dates"];
     IList<SFSAcademy.SelectCourseBatch> batch = (IList<SFSAcademy.SelectCourseBatch>)ViewData["batch"];
@@ -13,11 +12,21 @@
     IEnumerable<FEE_FINE> batch_fine = (IEnumerable<FEE_FINE>)ViewData["batch_fine"];
     IEnumerable<FEE_FINE> student_fine = (IEnumerable<FEE_FINE>)ViewData["student_fine"];
     IEnumerable<FEE_FINE> category_fine = (IEnumerable<FEE_FINE>)ViewData["category_fine"];
+    IEnumerable<FINANCE_FEE_COLLECTION> fee_select = (IEnumerable<FINANCE_FEE_COLLECTION>)ViewData["fee_select"];
 }
 @{
     ViewBag.Title = "Fees";
 }
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <div id="content-header">
     <img src="~/Content/images/student_details/student_details_logo.jpg" alt="Student Details Logo">
     <h1>Student</h1>
@@ -29,14 +38,19 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
-        <li>@Html.ActionLink("Student Profile", "Profiles", new { id= Model.ID})</li>
+        <li>@Html.ActionLink("Student Profile", "Profiles", new { id = Model.ID })</li>
+        <li>@Html.Partial("_FeeSelect", fee_select)</li>
     </ul>
 </div>
 <div id="page-yield">
     <div id="flash_box">
         @if (ViewBag.ErrorMessage != null)
-            {
+        {
             <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
         }
     </div>
     <div id="student_profile_heading">
@@ -51,22 +65,22 @@
     <div class="fees">
         @if (Html.Permitted_To("Fees", "Finance") || Html.CurrentUser_UserType().Equals("Admin"))
         {
-           using (Html.BeginForm())
-           {
-            @Html.AntiForgeryToken()
-            @Html.CheckBoxFor(x => x.HAS_PD_FE, new { @class = "category_select", @id = "category_select" }) <label>Has paid all the Fees </label>
-            <input type="submit" value="► Update" id="user_button" class="user_button" />
-           }
+            using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.CheckBoxFor(x => x.HAS_PD_FE, new { @class = "category_select", @id = "category_select" }) <label>Has paid all the Fees </label>
+                <input type="submit" value="► Update" id="user_button" class="user_button" />
+            }
         }
     </div>
     <ul id="category-list">
         @if (dates != null && dates.Count() != 0)
         {
-        <li class="listheading">
-            <div class="category-name">Fees </div>
-            <div class="due-date">Last Batch/ Due Date </div>
-            <div class="category-edit">Payment Status</div>
-        </li>
+            <li class="listheading">
+                <div class="category-name">Fees </div>
+                <div class="due-date">Last Batch/ Due Date </div>
+                <div class="category-edit">Payment Status</div>
+            </li>
         }
         @{ int i = 0;}
         @foreach (var item in dates)
@@ -162,18 +176,18 @@
             }
             var BatchInner = batches.Where(x => x.BatchData.ID == item.FeeCollectionData.BTCH_ID);
 
-        <li class="@selectedRow">
-            <div class="category-name">@Html.ActionLink(item.FeeCollectionData.NAME, "Fee_Details", new { id = Model.ID, id2 = item.FeeCollectionData.ID })</div>
-            <div class="due-date">@BatchInner.FirstOrDefault().CourseData.CODE / @item.FeeCollectionData.DUE_DATE.Value.ToShortDateString()</div>
-            @if (item.FinanceFeeData.IS_PD == true)
-            {
-                <div class="category-edit">PAID</div>
-            }
-            else
-            {
-                <div class="category-edit">UNPAID - @total_fees</div>
-            }
-        </li>
+            <li class="@selectedRow">
+                <div class="category-name">@Html.ActionLink(item.FeeCollectionData.NAME, "Fee_Details", new { id = Model.ID, id2 = item.FeeCollectionData.ID })</div>
+                <div class="due-date">@BatchInner.FirstOrDefault().CourseData.CODE / @item.FeeCollectionData.DUE_DATE.Value.ToShortDateString()</div>
+                @if (item.FinanceFeeData.IS_PD == true)
+                {
+                    <div class="category-edit">PAID</div>
+                }
+                else
+                {
+                    <div class="category-edit">UNPAID - @total_fees</div>
+                }
+            </li>
             i = i + 1;
         }
     </ul>

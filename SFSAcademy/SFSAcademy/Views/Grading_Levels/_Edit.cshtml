@@ -1,0 +1,81 @@
+﻿@model SFSAcademy.GRADING_LEVEL
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+<link href="~/Content/stylesheets/modalbox.css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+
+    function CloseGradingDialog() {
+        $('#modal-box').dialog("close");
+    }
+    function OpenLoader() {
+        $(".LoaderBox2").show();
+    }
+
+</script>
+
+<div id="grading-levels-form">
+    @if (batch != null)
+    {
+        <h4>@batch.Course_full_name</h4>
+    }
+    @using (Ajax.BeginForm("Update", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "grading-levels", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseGradingDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        <div id="form-errors"></div>
+
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2", required = "required" })</div>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="input-field">@Html.TextBoxFor(model => model.NAME, null, new { @class = "form-control" })</div>
+            @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+        </div>
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.MIN_SCORE, "Minimum Score", htmlAttributes: new { @class = "control-label col-md-2", required = "required" })</div>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="input-field">@Html.TextBoxFor(model => model.MIN_SCORE, null, new { @class = "form-control" })</div>
+            @Html.ValidationMessageFor(model => model.MIN_SCORE, "", new { @class = "text-danger" })
+        </div>
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.DESCR, "Description", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="input-field">@Html.TextBoxFor(model => model.DESCR, null, new { @class = "form-control" })</div>
+            @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+        </div>
+        @if (ViewBag.credit == true)
+        {
+            <div class="label-field-pair">
+                <div class="label-container">@Html.LabelFor(model => model.CRED_PT, "Credit Point", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                <div class="input-field">@Html.TextBoxFor(model => model.CRED_PT, null, new { @class = "form-control" })</div>
+                @Html.ValidationMessageFor(model => model.CRED_PT, "", new { @class = "text-danger" })
+            </div>
+        }
+
+        <input type="submit" value="► Save" id="submit-button" class="submit-button" />
+        <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+    }
+</div>
+

@@ -1,0 +1,75 @@
+﻿@model IEnumerable<FINANCE_FEE_COLLECTION>
+@{
+    IEnumerable<SFSAcademy.StundentFee> dates = (IEnumerable<SFSAcademy.StundentFee>)ViewData["dates"];
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(function () {
+            $("#resultCollection").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultCollection").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+    });
+
+    function OpenDialog() {
+        $('#resultCollection').dialog("open");
+    }
+
+</script>
+
+<div id="student-model-box">
+    <a href='#' onclick="OpenDialog()">Add Fees</a>
+</div>
+
+<div id="resultCollection" style="display:none" class="form" title="Collection Details">
+    <div class="container">
+        <div class="students-table" id="CollectionList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Collection Name
+                    </th>
+                    <th>
+                        Fee Category
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="SearchStudent @selectedRow">
+                        <td class="col-1">
+                            <a href="@Url.Action("Add_Fee", "Student",new {id=item.ID, std_id = dates.FirstOrDefault().StudentData.ID})" class="link-text">@item.NAME ( @item.START_DATE.Value.ToShortDateString() - @item.END_DATE.Value.ToShortDateString() )</a>
+                        </td>
+                        <td class="col-3" nowrap>
+                            @item.FINANCE_FEE_CATGEORY.NAME
+                        </td>
+
+                    </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>
+

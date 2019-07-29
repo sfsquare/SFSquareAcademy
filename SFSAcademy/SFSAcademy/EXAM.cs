@@ -19,6 +19,7 @@ namespace SFSAcademy
         {
             this.ARCHIVED_EXAM_SCORE = new HashSet<ARCHIVED_EXAM_SCORE>();
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
+            this.CCE_REPORTS = new HashSet<CCE_REPORTS>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
         }
     
@@ -39,6 +40,8 @@ namespace SFSAcademy
         public virtual ICollection<ARCHIVED_EXAM_SCORE> ARCHIVED_EXAM_SCORE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CCE_REPORTS> CCE_REPORTS { get; set; }
         public virtual EVENT EVENT { get; set; }
         public virtual EXAM_GROUP EXAM_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

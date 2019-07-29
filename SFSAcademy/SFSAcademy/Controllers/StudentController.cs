@@ -2038,8 +2038,10 @@ namespace SFSAcademy.Controllers
 
 
         // GET: Student/Guardian Details
-        public ActionResult Fees(int? id)
+        public ActionResult Fees(int? id, string Notice, string ErrorMessage)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             STUDENT student = db.STUDENTs.Find(id);
             var StudentValDefaulters = (from ff in db.FINANCE_FEE
                                         join st in db.STUDENTs on ff.STDNT_ID equals st.ID
@@ -2107,6 +2109,9 @@ namespace SFSAcademy.Controllers
                                      where ff.TYPE == "Student Category" && ff.RCVR_ID == student.STDNT_CAT_ID
                                      select ff);
             ViewData["category_fine"] = category_fine_val;
+
+            var fee_select = db.FINANCE_FEE_COLLECTION.Include(x => x.FINANCE_FEE_CATGEORY).Where(x => x.BTCH_ID == student.BTCH_ID && !StudentValDefaulters.Any(p => x.ID.Equals(p.FeeCollectionData.ID))).ToList();
+            ViewData["fee_select"] = fee_select;
 
             return View(student);
         }
@@ -2198,6 +2203,30 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.ErrorMessage = "There seems to be some issue with ModelState.";
             return View(sTUDENT);
+        }
+
+        public ActionResult Add_Fee(int? id, int? std_id)
+        {
+            var dates = (from ff in db.FINANCE_FEE
+                                        join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                        join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                        where st.ID == std_id && fc.IS_DEL == false
+                                        select new StundentFee { StudentData = st, FeeCollectionData = fc, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+
+            var fee_select = db.FINANCE_FEE_COLLECTION.Include(x => x.FINANCE_FEE_CATGEORY).Where(x => x.ID == id && !dates.Any(p => x.ID.Equals(p.FeeCollectionData.ID))).ToList();
+
+            if (fee_select != null && fee_select.Count() != 0)
+            {
+                FINANCE_FEE NewFee = new FINANCE_FEE { FEE_CLCT_ID = id, STDNT_ID = std_id, TRAN_ID = null, IS_PD = false };
+                db.FINANCE_FEE.Add(NewFee);
+                try { db.SaveChanges(); ViewBag.Notice = "Fee Collection added for student successfully."; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Fee already added for student.";
+            }
+            return RedirectToAction("Fees", new { id = std_id, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
         // GET: Student/Guardian Details
         public ActionResult Fee_Details(int? id, int? id2, string Notice, string ErrorMessage)

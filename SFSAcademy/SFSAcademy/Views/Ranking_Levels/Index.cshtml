@@ -1,0 +1,93 @@
+﻿@model IEnumerable<SFSAcademy.RANKING_LEVEL>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GPA)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MKS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SUBJ_CNT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PRIR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FULL_CRS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SUBJ_LMT_TYPE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MKS_LMT_TYPE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.COURSE.CRS_NAME)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GPA)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MKS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SUBJ_CNT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PRIR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CREATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UPDATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FULL_CRS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SUBJ_LMT_TYPE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MKS_LMT_TYPE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.COURSE.CRS_NAME)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

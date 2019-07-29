@@ -18,6 +18,9 @@
                     End Date
                 </th>
                 <th>
+                    Grading Type
+                </th>
+                <th>
                     Class Teacher
                 </th>
                 <th> </th>
@@ -41,6 +44,9 @@
                     </td>
                     <td>
                         @item.BatchData.END_DATE.Value.ToShortDateString()
+                    </td>
+                    <td>
+                        @item.BatchData.GRADING_TYPE
                     </td>
                     @if (item.EmployeeData != null)
                     {

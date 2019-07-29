@@ -2233,16 +2233,13 @@
     <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="SFSAcademyModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
       <LastGenOutput>SFSAcademyModel.Context.cs</LastGenOutput>
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="SFSAcademyModel.edmx.diagram">
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Content>
     <Content Include="SFSAcademyModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SFSAcademyModel.cs</LastGenOutput>
       <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
+      <LastGenOutput>SFSAcademyModel.cs</LastGenOutput>
     </Content>
     <Content Include="Views\Finance\_Select_Batch_Particular.cshtml" />
     <Content Include="Views\Web.config">
@@ -2597,11 +2594,6 @@
     <Content Include="Views\Employee\_Subjects.cshtml" />
     <Content Include="Views\Employee\_Select_Department.cshtml" />
     <Content Include="Views\Employee\_Employee_List.cshtml" />
-    <Content Include="Views\Timetable_Entries\Create.cshtml" />
-    <Content Include="Views\Timetable_Entries\Delete.cshtml" />
-    <Content Include="Views\Timetable_Entries\Details.cshtml" />
-    <Content Include="Views\Timetable_Entries\Edit.cshtml" />
-    <Content Include="Views\Timetable_Entries\Index.cshtml" />
     <Content Include="Views\Timetable_Entries\New.cshtml" />
     <Content Include="Views\Student\BatchTransfer_Index.cshtml" />
     <Content Include="Views\Student\BatchTransfer_Student_Search.cshtml" />
@@ -2718,10 +2710,6 @@
     <Content Include="Views\Store\Sell.cshtml" />
     <Content Include="Views\Store\SellingHistory.cshtml" />
     <Content Include="tsconfig.json" />
-    <EntityDeploy Include="SFSAcademyModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
     <Content Include="Views\Store\Monthly_Report.cshtml" />
     <Content Include="Views\Store\Update_Monthly_Report.cshtml" />
     <Content Include="Views\Store\Transaction_pdf.cshtml" />
@@ -2741,6 +2729,40 @@
     <Content Include="Views\Store\Products_pdf.cshtml" />
     <Content Include="Views\Store\Selling_pdf.cshtml" />
     <Content Include="Views\Store\_Prod_Sub_Categories_Select.cshtml" />
+    <Content Include="Views\Exam\Create_Exam.cshtml" />
+    <Content Include="Views\Exam\Edit_Previous_Marks.cshtml" />
+    <Content Include="Views\Exam\Index.cshtml" />
+    <Content Include="Views\Exam\Settings.cshtml" />
+    <Content Include="Views\Grading_Levels\Create.cshtml" />
+    <Content Include="Views\Grading_Levels\Delete.cshtml" />
+    <Content Include="Views\Grading_Levels\_Edit.cshtml" />
+    <Content Include="Views\Grading_Levels\Index.cshtml" />
+    <Content Include="Views\Ranking_Levels\Create.cshtml" />
+    <Content Include="Views\Ranking_Levels\Delete.cshtml" />
+    <Content Include="Views\Ranking_Levels\Details.cshtml" />
+    <Content Include="Views\Ranking_Levels\Edit.cshtml" />
+    <Content Include="Views\Ranking_Levels\Index.cshtml" />
+    <Content Include="Views\Class_Designations\Create.cshtml" />
+    <Content Include="Views\Class_Designations\Delete.cshtml" />
+    <Content Include="Views\Class_Designations\Details.cshtml" />
+    <Content Include="Views\Class_Designations\Edit.cshtml" />
+    <Content Include="Views\Class_Designations\Index.cshtml" />
+    <Content Include="Views\Grading_Levels\_Grading_Levels.cshtml" />
+    <Content Include="Views\CCE_Settings\Index.cshtml" />
+    <Content Include="Views\Grading_Levels\_New.cshtml" />
+    <Content Include="Views\Student\_FeeSelect.cshtml" />
+    <EntityDeploy Include="SFSAcademyModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="SFSAcademyModel.edmx.diagram">
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Views\Reminder\Create.cshtml" />
+    <Content Include="Views\Reminder\Delete.cshtml" />
+    <Content Include="Views\Reminder\Details.cshtml" />
+    <Content Include="Views\Reminder\Edit.cshtml" />
+    <Content Include="Views\Reminder\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2797,6 +2819,21 @@
     <Compile Include="BATCH_EVENT.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="CCE_EXAM_CATEGORY.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CCE_GRADE.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CCE_GRADE_SET.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CCE_REPORTS.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CCE_WEIGHTAGE.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="CLASS_DESIGNATION.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
@@ -2815,6 +2852,8 @@
     <Compile Include="Controllers\AttendancesController.cs" />
     <Compile Include="Controllers\Attendance_ReportsController.cs" />
     <Compile Include="Controllers\BATCHController.cs" />
+    <Compile Include="Controllers\CCE_SettingsController.cs" />
+    <Compile Include="Controllers\Class_DesignationsController.cs" />
     <Compile Include="Controllers\Class_TimingsController.cs" />
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
@@ -2822,10 +2861,14 @@
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\Employee_AttendanceController.cs" />
     <Compile Include="Controllers\Employee_AttendancesController.cs" />
+    <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
+    <Compile Include="Controllers\Grading_LevelsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\newsController.cs" />
     <Compile Include="Controllers\PayrollController.cs" />
+    <Compile Include="Controllers\Ranking_LevelsController.cs" />
+    <Compile Include="Controllers\ReminderController.cs" />
     <Compile Include="Controllers\StoreController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\Student_AttendanceController.cs" />
@@ -2904,6 +2947,12 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="EXAM_SCORE.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FA_CRITERIAS.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FA_GROUP.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="FEE_COLLECTION_DISCOUNT.cs">
@@ -2998,6 +3047,7 @@
     <Compile Include="Models\Subject_Leave.cs" />
     <Compile Include="Models\Timetable.cs" />
     <Compile Include="Models\Timetable_Entries.cs" />
+    <Compile Include="Models\Reminder.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Weekday.cs" />
     <Compile Include="MONTHLY_PAYSLIP.cs">
@@ -3007,6 +3057,12 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="NEWS_COMMENTS.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OBSERVATION.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OBSERVATION_GROUP.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PAYROLL_CATEGORY.cs">
@@ -3037,19 +3093,22 @@
     <Compile Include="RANKING_LEVEL.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="REMINDER.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="SFSAcademyModel.Context.cs">
-      <DependentUpon>SFSAcademyModel.Context.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SFSAcademyModel.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="SFSAcademyModel.cs">
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="SFSAcademyModel.Designer.cs">
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="SMS_LOG.cs">

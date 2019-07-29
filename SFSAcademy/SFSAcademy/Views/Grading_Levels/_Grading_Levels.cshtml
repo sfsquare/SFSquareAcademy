@@ -1,0 +1,94 @@
+﻿@model IEnumerable<GRADING_LEVEL>
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    var Configuration = new Configuration();
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+    <script>
+        function LoadEditModelPage(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function (data) {
+                $('#modal-box').html(data);
+                $('#modal-box').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+                $('#modal-box').dialog('open');
+            });
+        }
+        function LoadNewModelPage(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function (data) {
+                $('#modal-box').html(data);
+                $('#modal-box').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+                $('#modal-box').dialog('open');
+            });
+        }
+        function LoadDeletePartialPage(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function (data) {
+                $('#register').html(data);
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+        }
+    </script>
+<div class="add_grade">
+    <a href="@Url.Action("New", "Grading_Levels",new {id =batch.ID})" onclick='LoadNewModelPage(this.href); return false;'>Add Grades</a>
+</div>
+@{ var credit = false;}
+@if (batch != null)
+{
+    credit = (batch.GPA_Enabled() == true || batch.CCE_Enabled() == true) ? true : false;
+}
+else
+{
+    credit = (Configuration.find_by_config_key("CCE") == "1" || Configuration.find_by_config_key("CWA") == "1" || Configuration.find_by_config_key("GPA") == "1") ? true : false;
+}
+
+@if (Model != null)
+{
+    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>Name</td>
+            <td>Min Score</td>
+            @if (credit == true)
+            {
+                <td>Credit Points</td>
+            }
+            <td>Description</td>
+            <td></td>
+        </tr>
+        @{int i = 1; }
+        @foreach (var grade in Model)
+        {
+            string cycle = "tr-even";
+            if (i % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            <tr id="grading-level-@grade.ID" class="@cycle">
+                <td class="col-2">@grade.NAME</td>
+                <td class="col-2">@grade.MIN_SCORE</td>
+                @if (credit == true)
+                {
+                    <td class="col-2">@grade.CRED_PT</td>
+                }
+                @{ string Description = grade.DESCR != null ? grade.DESCR : "-";}
+                <td class="col-2">@Description</td>
+                <td class="col-1">
+                    <small>
+                        <a href="@Url.Action("Edit", "Grading_Levels",new {id =batch.ID})" onclick='LoadEditModelPage(this.href); return false;'>Edit</a> |
+                        <a href="@Url.Action("Delete", "Grading_Levels",new {id =batch.ID})" onclick='LoadDeletePartialPage(this.href); return confirm('are you sure?');'>Delete</a>
+                    </small>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <h4>set in common</h4>
+}

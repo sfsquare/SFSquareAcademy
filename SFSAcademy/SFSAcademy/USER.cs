@@ -23,6 +23,8 @@ namespace SFSAcademy
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
             this.PRIVILEGES_USERS = new HashSet<PRIVILEGES_USERS>();
+            this.REMINDERs = new HashSet<REMINDER>();
+            this.REMINDERs1 = new HashSet<REMINDER>();
             this.STORE_SELLING = new HashSet<STORE_SELLING>();
             this.STORE_SELLING1 = new HashSet<STORE_SELLING>();
             this.STORE_SELLING_BACKUP = new HashSet<STORE_SELLING_BACKUP>();
@@ -64,6 +66,10 @@ namespace SFSAcademy
         public virtual ICollection<GUARDIAN> GUARDIANs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRIVILEGES_USERS> PRIVILEGES_USERS { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<REMINDER> REMINDERs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<REMINDER> REMINDERs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<STORE_SELLING> STORE_SELLING { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
