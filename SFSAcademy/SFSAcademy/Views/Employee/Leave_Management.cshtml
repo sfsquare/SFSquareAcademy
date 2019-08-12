@@ -1,0 +1,165 @@
+﻿@model APPLY_LEAVE
+@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<EMPLOYEE> all_employee = (IEnumerable<EMPLOYEE>)ViewData["all_employee"];
+    IEnumerable<EMPLOYEE> reporting_employees = (IEnumerable<EMPLOYEE>)ViewData["reporting_employees"];
+}
+@{
+    ViewBag.Title = "Leave_Management";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    function LoadRemotePage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#application-list').html(data);
+            $('#application-list').fadeIn('fast');
+        }).success(function (status) {
+            $('#application-list').dialog('open');
+            $(".LoaderBox").hide();
+        });
+    }
+$(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+        $("#datepicker2").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd-mm-yy',
+            buttonImageOnly: true
+        });
+    });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/HR/leave-new.png" alt="Leave Logo">
+    <h1>Personal Leave Management</h1>
+    <h3></h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div>
+    <img src="~/Content/images/_global/header_underline_.jpg" style="width:100%">
+</div>
+
+<div id="nav">
+    <ul>
+        <li>
+            <a href="#" class="drops" id="link_one">My Leaves ▼</a>
+            <ul id="box_one" class="scriptaculously">
+                <li><a href="@Url.Action("Leave_Management", "Employee")">Apply</a></li>
+                <li> <a href="@Url.Action("Individual_Leave_Applications", "Employee_Attendance", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>My Leaves</a></li>
+                <li><a href="@Url.Action("Leave_History", "Employee_Attendance", new {id = employee.ID })">History</a></li>
+            </ul>
+        </li>
+
+        @if (reporting_employees != null && reporting_employees.Count() != 0)
+        {
+            if (ViewBag.total_leave_count == 0)
+            {
+                <li>
+                    <a href="#" class="drops" id="link_two">My Emp ▼</a>
+                    <ul id="box_two" class="scriptaculously">
+                        <!-- no new leave applications of any employee -->
+                        <li> <a href="@Url.Action("All_Leave_Applications", "Employee_Attendance", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>All Leaves</a></li>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="#" class="drops" id="link_two">My Emp( @ViewBag.total_leave_count ) ▼</a>
+                    <ul id="box_two" class="scriptaculously">
+                        <!-- no new leave applications of any employee -->
+                        <li> <a href="@Url.Action("New_Leave_Applications", "Employee_Attendance", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>New( @ViewBag.total_leave_count )</a></li>
+                        <li> <a href="@Url.Action("All_Leave_Applications", "Employee_Attendance", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>All Leaves</a></li>
+                    </ul>
+                </li>
+            }
+        }
+
+        @if (ViewBag.all_employee_total_leave_count == 0)
+        {
+            <li>
+                <a href="#" class="drops" id="link_three">All Employees  ▼</a>
+                <ul id="box_three" class="scriptaculously">
+                    <!-- no new leave applications of any employee -->
+                    <li> <a href="@Url.Action("All_Employee_Leave_Applications", "Employee", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>All Records</a></li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="#" class="drops" id="link_three">All Employees( @ViewBag.all_employee_total_leave_count ) ▼ </a>
+                <ul id="box_three" class="scriptaculously">
+                    <!-- no new leave applications of any employee -->
+                    <li> <a href="@Url.Action("All_Employee_Leave_Applications", "Employee_Attendance", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>New ( @ViewBag.all_employee_total_leave_count )</a></li>
+                    <li> <a href="@Url.Action("All_Employee_Leave_Applications", "Employee", new {id = employee.ID })" onclick='LoadRemotePage(this.href); return false;'>All Records</a></li>
+                </ul>
+            </li>
+        }
+    </ul>
+
+</div>
+<div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div id="application-list">
+        <div class="heading themed_text">Apply for a leave</div>
+        @using (Html.BeginForm("Leave_Management", "Employee", FormMethod.Post, new { @encType = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+            <input type="hidden" value="@employee.ID" id="employee_id" name="employee_id" />
+            <div class="label-field-pair">
+                <label for="leave_type">Leave Types:</label>
+                <div class="text-input-bg">@Html.DropDownList("EMP_LEAVE_TYPES_ID", null, htmlAttributes: new { @class = "form-control" }) </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="create_user" id="create_user_option">Half Day?:</label>
+                <div class="text-input-bg">@Html.CheckBoxFor(x => x.IS_HALF_DAY, new { @class = "form-control" })</div>
+                @Html.ValidationMessageFor(model => model.IS_HALF_DAY, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="label-field-pair">
+                <label for="start_date">Start Date:</label>
+                <div class="text-input-bg">@Html.EditorFor(x => x.START_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker" } })</div>
+                @Html.ValidationMessageFor(model => model.START_DATE, "", new { @class = "text-danger" })
+            </div>
+            <div class="label-field-pair">
+                <label for="end_date">End Date:</label>
+                <div class="text-input-bg">@Html.EditorFor(x => x.END_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2" } })</div>
+                @Html.ValidationMessageFor(model => model.END_DATE, "", new { @class = "text-danger" })
+            </div>
+            <div class="label-field-pair">
+                <label for="reason">Reason:</label>
+                <div class="text-input-bg">@Html.EditorFor(model => model.RSN, new { htmlAttributes = new { @class = "form-control" } })</div>
+                @Html.ValidationMessageFor(model => model.RSN, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div id="submit-button">
+                <input type="submit" value="► Create" />
+            </div>
+        }
+        <div class="extender"></div>
+    </div>
+
+</div>
+

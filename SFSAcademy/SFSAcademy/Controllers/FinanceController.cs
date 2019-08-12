@@ -1872,9 +1872,7 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpGet]
-        // GET: Fee Index
         public ActionResult Fees_Submission_Batch(string ErrorMessage)
         {
             var queryCourceBatch = (from cs in db.COURSEs
@@ -1903,9 +1901,7 @@ namespace SFSAcademy.Controllers
 
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpGet]
-        // GET: Fee Index
         public ActionResult _fees_collection_dates(int? id)
         {
             var queryCollections = (from cl in db.FINANCE_FEE_COLLECTION
@@ -1932,7 +1928,6 @@ namespace SFSAcademy.Controllers
 
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpGet]
         // GET: Fee Index
         public ActionResult _Student_Fees_Submission(int? id, int? batch_id, int? student_id)
@@ -2167,7 +2162,6 @@ namespace SFSAcademy.Controllers
             return PartialView("_Student_Fees_Submission", vModel);
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update_Fine_Ajax(SFSAcademy.SubmitFeeFine vModelFine)
@@ -2483,7 +2477,6 @@ namespace SFSAcademy.Controllers
             return PartialView("_Student_Fees_Submission", vModel);
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Update_Discount_Ajax(SFSAcademy.SubmitFeeDiscounts vModelDiscount)
@@ -3324,7 +3317,6 @@ namespace SFSAcademy.Controllers
             }
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpGet]
         // GET: Fee Index
         public ActionResult Fees_Student_Search(string ErrorMessage)
@@ -3337,7 +3329,6 @@ namespace SFSAcademy.Controllers
 
         }
 
-        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpGet]
         // GET: Fee Index
         public ActionResult fees_student_dates(string id)
@@ -3358,11 +3349,6 @@ namespace SFSAcademy.Controllers
                                 .OrderBy(x => x.BatchData.ID).ToList();
                 ViewData["batch"] = batch_val;
 
-                /*var queryCollections = (from cl in db.FINANCE_FEE_COLLECTION
-                                        join ff in db.FINANCE_FEE_PARTICULAR on cl.FEE_CAT_ID equals ff.FIN_FEE_CAT_ID
-                                        where cl.IS_DEL == false && cl.BTCH_ID == student.BTCH_ID && (ff.STDNT_ID == StudentVal.FirstOrDefault().Student_data.ID || ff.STDNT_ID == null) && (ff.STDNT_CAT_ID == StudentVal.FirstOrDefault().Student_data.STDNT_CAT_ID || ff.STDNT_CAT_ID == null)
-                                        select new { cl.ID, cl.NAME, cl.DUE_DATE })
-             .OrderBy(x => x.NAME).Distinct().ToList();*/
 
                 var queryCollections = (from ff in db.FINANCE_FEE
                                      join st in db.STUDENTs on ff.STDNT_ID equals st.ID

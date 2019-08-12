@@ -17,7 +17,7 @@ namespace SFSAcademy
         public int ID { get; set; }
         public Nullable<int> EMP_ID { get; set; }
         public Nullable<int> EMP_LEAVE_TYPES_ID { get; set; }
-        public string IS_HALF_DAY { get; set; }
+        public bool IS_HALF_DAY { get; set; }
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public string RSN { get; set; }

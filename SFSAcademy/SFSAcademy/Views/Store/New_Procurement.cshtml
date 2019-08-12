@@ -75,6 +75,7 @@
             </div>
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.BRAND_ID, "Product Brand", htmlAttributes: new { @class = "control-label col-md-2" })
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
                     @Html.DropDownList("BRAND_ID", null, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
@@ -123,6 +124,7 @@
                 </div>
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.VENDOR_ID, "Vendor", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
                         <div id="vendor-modal-box">
                             @Html.Partial("_vendor_select", product_vendor)

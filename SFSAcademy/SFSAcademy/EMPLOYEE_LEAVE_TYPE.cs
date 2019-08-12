@@ -17,10 +17,10 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EMPLOYEE_LEAVE_TYPE()
         {
-            this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
             this.ARCHIVED_EMPLOYEE_ATTENDENCES = new HashSet<ARCHIVED_EMPLOYEE_ATTENDENCES>();
             this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
             this.EMPLOYEE_LEAVE = new HashSet<EMPLOYEE_LEAVE>();
+            this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
         }
     
         public int ID { get; set; }
@@ -31,12 +31,12 @@ namespace SFSAcademy
         public bool CARR_FRWD { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ARCHIVED_EMPLOYEE_ATTENDENCES> ARCHIVED_EMPLOYEE_ATTENDENCES { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_ATTENDENCES> EMPLOYEE_ATTENDENCES { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEE_LEAVE> EMPLOYEE_LEAVE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }
     }
 }

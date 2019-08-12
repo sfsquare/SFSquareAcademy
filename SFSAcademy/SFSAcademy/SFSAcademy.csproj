@@ -2763,6 +2763,8 @@
     <Content Include="Views\Reminder\Details.cshtml" />
     <Content Include="Views\Reminder\Edit.cshtml" />
     <Content Include="Views\Reminder\Index.cshtml" />
+    <Content Include="Views\Employee\Leave_Management.cshtml" />
+    <Content Include="Views\Employee_Attendance\_Individual_Leave_Applications.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
