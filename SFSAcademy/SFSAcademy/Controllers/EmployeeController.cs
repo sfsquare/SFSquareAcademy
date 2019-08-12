@@ -4102,6 +4102,113 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
+        public ActionResult Leave_Management()
+        {
+            var userdetails = this.Session["CurrentUser"] as UserDetails;
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            EMPLOYEE employee = db.EMPLOYEEs.Where(x => x.USRID == UserId).FirstOrDefault();
+            ViewData["employee"] = employee;
+            var all_employee = db.EMPLOYEEs.ToList();
+            ViewData["all_employee"] = all_employee;
+            var reporting_employees = db.EMPLOYEEs.Where(x => x.RPTG_MGR_ID == employee.ID).ToList();
+            ViewData["reporting_employees"] = reporting_employees;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in leave_types)
+            {
+                string FullName = string.Concat(item.NAME, "(", item.CODE, ")");
+                var result = new SelectListItem();
+                result.Text = FullName;
+                result.Value = item.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Leave Type" });
+            ViewBag.EMP_LEAVE_TYPES_ID = options;
+
+            int? total_leave_count = 0;
+            foreach (var e in reporting_employees)
+            {
+                int? app_leaves = db.APPLY_LEAVE.Where(x => x.EMP_ID == e.ID && x.VW_BY_MGR == false).Count();
+                total_leave_count = total_leave_count + (int)app_leaves;
+            }
+            ViewBag.total_leave_count = total_leave_count;
+            int? all_employee_total_leave_count = 0;
+            foreach(var a in all_employee)
+            {
+                int? all_emp_app_leaves = db.APPLY_LEAVE.Where(x=>x.EMP_ID == a.ID && x.VW_BY_MGR == false).Count();
+                all_employee_total_leave_count = all_employee_total_leave_count + (int)all_emp_app_leaves;
+            }
+            ViewBag.all_employee_total_leave_count = all_employee_total_leave_count;
+            ViewBag.ReturnDate = DateTime.Now.ToShortDateString();
+            return View();
+        }
+
+        [OutputCache(Duration = 0, VaryByParam = "*")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Leave_Management([Bind(Include = "ID,EMP_ID,EMP_LEAVE_TYPES_ID,IS_HALF_DAY,START_DATE,END_DATE,RSN,APPR,VW_BY_MGR,MGR_RMRK")] APPLY_LEAVE leave_apply)
+        {
+            var userdetails = this.Session["CurrentUser"] as UserDetails;
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            EMPLOYEE employee = db.EMPLOYEEs.Where(x => x.USRID == UserId).FirstOrDefault();
+            ViewData["employee"] = employee;
+            var all_employee = db.EMPLOYEEs.ToList();
+            ViewData["all_employee"] = all_employee;
+            var reporting_employees = db.EMPLOYEEs.Where(x => x.RPTG_MGR_ID == employee.ID).ToList();
+            ViewData["reporting_employees"] = reporting_employees;
+            var leave_types = db.EMPLOYEE_LEAVE_TYPE.ToList();
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in leave_types)
+            {
+                string FullName = string.Concat(item.NAME, "(", item.CODE, ")");
+                var result = new SelectListItem();
+                result.Text = FullName;
+                result.Value = item.ID.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Leave Type" });
+            ViewBag.EMP_LEAVE_TYPES_ID = options;
+
+            int? total_leave_count = 0;
+            foreach (var e in reporting_employees)
+            {
+                int? app_leaves = db.APPLY_LEAVE.Where(x => x.EMP_ID == e.ID && x.VW_BY_MGR == false).Count();
+                total_leave_count = total_leave_count + (int)app_leaves;
+            }
+            ViewBag.total_leave_count = total_leave_count;
+            int? all_employee_total_leave_count = 0;
+            foreach (var a in all_employee)
+            {
+                int? all_emp_app_leaves = db.APPLY_LEAVE.Where(x => x.EMP_ID == a.ID && x.VW_BY_MGR == false).Count();
+                all_employee_total_leave_count = all_employee_total_leave_count + (int)all_emp_app_leaves;
+            }
+            ViewBag.all_employee_total_leave_count = all_employee_total_leave_count;
+            ViewBag.ReturnDate = DateTime.Now.ToShortDateString();
+            if (ModelState.IsValid)
+            {
+                leave_apply.APPR = false;
+                leave_apply.VW_BY_MGR = false;
+                db.APPLY_LEAVE.Add(leave_apply);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View();
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    return View();
+                }
+                ViewBag.Notice = "Leave applied successfully.";
+                return View();
+            }
+            ViewBag.ErrorMessage = "There seems to be some issue with Model State. Please talk to Administrator.";
+            return View();
+        }       
+
         /////Document Upload related methods////////////////////////////////////////////////////////////////
 
         [HttpGet]

@@ -1,0 +1,86 @@
+﻿@{
+    EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    IEnumerable<APPLY_LEAVE> pending_applied_leaves = (IEnumerable<APPLY_LEAVE>)ViewData["pending_applied_leaves"];
+    IEnumerable<APPLY_LEAVE> applied_leaves = (IEnumerable<APPLY_LEAVE>)ViewData["applied_leaves"];
+}
+
+<div class="heading themed_text">My leave applications</div>
+@if (applied_leaves != null && applied_leaves.Count() != 0)
+{
+    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>
+                Start Date
+            </td>
+            <td>
+                End Date
+            </td>
+            <td>
+                Status
+            </td>
+            <td>
+                Remark
+            </td>
+        </tr>
+        <tr class="tr-blank"></tr>
+        @{int i = 1; }
+        @foreach (var l in applied_leaves)
+        {
+            string cycle = "tr-even";
+            if (i % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            if (l.VW_BY_MGR == false)
+            {
+                <tr class="@cycle">
+                    <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.START_DATE.Value.ToShortDateString()</a></td>
+                    <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.END_DATE.Value.ToShortDateString()</a></td>
+                    <td class="col-1"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">Pending</a></td>
+                    <td class="col-1"> No Remark</td>
+                </tr>
+            }
+            else
+            {
+                if (l.APPR == true)
+                {
+                    <tr class="@cycle">
+                        <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.START_DATE.Value.ToShortDateString()</a></td>
+                        <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.END_DATE.Value.ToShortDateString()</a></td>
+                        <td class="col-1"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">Approved</a></td>
+                        @if (l.MGR_RMRK == null)
+                        {
+                            <td class="col-1"> No Remark</td>
+                        }
+                        else
+                        {
+                            <td class="col-1">@l.MGR_RMRK</td>
+                        }
+
+                    </tr>
+                }
+                else
+                {
+                    <tr class="@cycle">
+                        <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.START_DATE.Value.ToShortDateString()</a></td>
+                        <td class="col-3"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">@l.END_DATE.Value.ToShortDateString()</a></td>
+                        <td class="col-1"><a href="@Url.Action("Own_Leave_Application", "Employee_Attendance", new {id = l.ID })">Denied</a></td>
+                        @if (l.MGR_RMRK == null)
+                        {
+                            <td class="col-1"> No Remark</td>
+                        }
+                        else
+                        {
+                            <td class="col-1">@l.MGR_RMRK</td>
+                        }
+                    </tr>
+                }
+            }
+            i += 1;
+        }
+    </table>
+}
+else
+{
+    <span>There are no leave applications</span>
+}
