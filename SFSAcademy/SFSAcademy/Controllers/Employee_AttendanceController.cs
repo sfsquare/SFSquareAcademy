@@ -575,6 +575,17 @@ namespace SFSAcademy.Controllers
             return PartialView("_Employee_Reset_Sucess");
         }
 
+        public ActionResult Individual_Leave_Applications(int? id)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Where(x => x.USRID == id).FirstOrDefault();
+            ViewData["employee"] = employee;
+            var pending_applied_leaves = db.APPLY_LEAVE.Where(x => x.EMP_ID == employee.ID && x.APPR == false && x.VW_BY_MGR == false).OrderByDescending(x => x.START_DATE).ToList();
+            ViewData["pending_applied_leaves"] = pending_applied_leaves;
+            var applied_leaves = db.APPLY_LEAVE.Where(x => x.EMP_ID == employee.ID).OrderByDescending(x => x.START_DATE).ToList();
+            ViewData["applied_leaves"] = applied_leaves;
+
+            return PartialView("_Individual_Leave_Applications");
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

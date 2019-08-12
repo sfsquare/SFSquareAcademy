@@ -17,7 +17,6 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public EMPLOYEE()
         {
-            this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
             this.MONTHLY_PAYSLIP = new HashSet<MONTHLY_PAYSLIP>();
             this.EMPLOYEE_ADDITIONAL_DETAIL = new HashSet<EMPLOYEE_ADDITIONAL_DETAIL>();
             this.EMPLOYEE_ATTENDENCES = new HashSet<EMPLOYEE_ATTENDENCES>();
@@ -32,6 +31,7 @@ namespace SFSAcademy
             this.EMPLOYEE1 = new HashSet<EMPLOYEE>();
             this.STORE_PURCHAGE_ORDER = new HashSet<STORE_PURCHAGE_ORDER>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
+            this.APPLY_LEAVE = new HashSet<APPLY_LEAVE>();
         }
     
         public int ID { get; set; }
@@ -89,8 +89,6 @@ namespace SFSAcademy
         public Nullable<int> IMAGE_DOCUMENTS_ID { get; set; }
         public string LIBRARY_CARD { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         public virtual COUNTRY COUNTRY1 { get; set; }
         public virtual COUNTRY COUNTRY2 { get; set; }
@@ -128,5 +126,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
         public virtual USER USER { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<APPLY_LEAVE> APPLY_LEAVE { get; set; }
     }
 }

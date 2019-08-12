@@ -167,7 +167,7 @@
                 }
                 <tr class="Search @selectedRow">
                     <td class="col-3">
-                        @Html.ActionLink(item.DESCR, "ProductDetail", new { id = item.PRODUCT_ID })
+                        @Html.ActionLink(item.STORE_PRODUCTS.NAME, "ProductDetail", new { id = item.PRODUCT_ID })
                     </td>
                     <td class="col-3">
                         @Html.DisplayFor(modelItem => item.STORE_PRODUCTS.STORE_CATEGORY.NAME)
