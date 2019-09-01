@@ -1,0 +1,136 @@
+﻿@model IEnumerable<SFSAcademy.Student>
+
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(".LoaderBox1").hide();
+        $(function () {
+            $("#resultStudent").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 500,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#resultStudent").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+        $("#StudentList").hide();
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1)
+                return true;
+        }
+        $("#SearchStudent").keyup(function () {
+            var SearchStudentText = $("#SearchStudent").val().toLowerCase();
+            $(".SearchStudent").each(function () {
+                if (!Contains($(this).text().toLowerCase(), SearchStudentText)) {
+                    $("#StudentList").show();
+                    $(this).hide();
+                }
+                else {
+                    $("#StudentList").show();
+                    $(this).show();
+                }
+            });
+            if ($("#SearchStudent").val() == '') {
+                $("#StudentList").hide();
+            }
+        });
+    });
+
+    function OpenStdDialog() {
+        $('#resultStudent').dialog("open");
+    }
+
+</script>
+
+<script type="text/javascript" language="javascript">
+    //Very similar function as before (except this time with an argument)
+    function LoadStudent(admission_number) {
+        $(".LoaderBox1").show();
+        $("#resultStudent").dialog("close");
+        var selectedID = admission_number;
+        $("#STUDENT_ID1").val(admission_number);
+        $.get('/Finance/fees_student_dates/' + selectedID, function (data) {
+                    /* data is the pure html returned from action method, load it to your page */
+              $('#fees_student_dates').html(data);
+                    /* little fade in effect */
+              $('#fees_student_dates').fadeIn('fast');
+        }).success(function (status) {
+              $(".LoaderBox1").hide();
+        });
+    }
+</script>
+
+<div id="student-model-box">
+    <div class="search_textbox">
+        @Html.TextBox("STUDENT_ID1", null, new { @class = "form-control", @id = "STUDENT_ID1" })
+        <a href='#' onclick="OpenStdDialog()"><img src="~/Content/images/search_icon.png" title="Click to search..."></a>
+        <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    </div>
+</div>
+
+<div id="resultStudent" style="display:none" class="form" title="Student Details">
+    <p class="flash-msg">*Enter Admission Number or Name to search.</p>
+    <div class="container">
+        <div class="input-group">
+            <input type="text" id="SearchStudent" placeholder="Search" class="form-control" />
+        </div>
+        <br />
+        <div class="students-table" id="StudentList">
+            <table id="listing" align="center" style="width:100%" cellpadding="1" cellspacing="1" class="table table-striped">
+                <tr class="tr-head">
+                    <th>
+                        Admission Number
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Class
+                    </th>
+                    <th>
+                        Roll Number
+                    </th>
+                </tr>
+                <tr class="tr-blank"></tr>
+                @{int i = 1; }
+                @foreach (var item in Model)
+                {
+                    string selectedRow = "tr-even";
+                    if (i % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    string OnClickString = string.Concat("LoadStudent('", item.StudentData.ADMSN_NO, "');");
+                    <tr class="SearchStudent @selectedRow">
+                        <td class="col-1">
+                            <a href="#" onclick= @OnClickString class="link-text">@item.StudentData.ADMSN_NO</a>
+                        </td>
+                        <td class="col-3" nowrap>
+                            @item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME
+                        </td>
+                        <td class="col-2">
+                            @item.CourseData.CODE - @item.BatcheData.NAME
+                        </td>
+                        <td class="col-4">
+                            @item.StudentData.CLS_ROLL_NO
+                        </td>
+
+                    </tr>
+                    i = i + 1;
+                }
+            </table>
+            <br />
+        </div>
+    </div>
+
+</div>
+
