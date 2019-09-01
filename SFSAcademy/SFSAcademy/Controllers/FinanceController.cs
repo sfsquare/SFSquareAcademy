@@ -3325,6 +3325,15 @@ namespace SFSAcademy.Controllers
                               where st.IS_DEL==false && st.IS_ACT == true
                               select st ).OrderBy(x => x.ID).Distinct();
             ViewBag.FeeCollectionMessage = ErrorMessage;
+
+            //var student_select = db.STUDENTs.Include(x=>x.b).Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.FIRST_NAME).ThenBy(x => x.MID_NAME).ThenBy(x => x.LAST_NAME).ToList();
+            var student_select = (from std in db.STUDENTs
+                                  join bt in db.BATCHes on std.BTCH_ID equals bt.ID
+                                  join cs in db.COURSEs on bt.CRS_ID equals cs.ID
+                                  where std.IS_DEL == false && std.IS_ACT == true
+                                  select new Student {StudentData = std, BatcheData = bt, CourseData = cs }).OrderBy(x => x.StudentData.FIRST_NAME).ThenBy(x => x.StudentData.MID_NAME).ThenBy(x => x.StudentData.LAST_NAME).ToList();
+            ViewData["student_select"] = student_select;
+
             return View(StudentVal.ToList());
 
         }

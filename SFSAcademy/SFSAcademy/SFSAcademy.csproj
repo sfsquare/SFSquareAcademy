@@ -2765,6 +2765,7 @@
     <Content Include="Views\Reminder\Index.cshtml" />
     <Content Include="Views\Employee\Leave_Management.cshtml" />
     <Content Include="Views\Employee_Attendance\_Individual_Leave_Applications.cshtml" />
+    <Content Include="Views\Finance\_student_select.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

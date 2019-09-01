@@ -110,6 +110,23 @@ namespace SFSAcademy.Controllers
                 sTORE_PRODUCTS.CREATED_AT = DateTime.Now;
                 sTORE_PRODUCTS.UPDATED_AT = DateTime.Now;
                 db.STORE_PRODUCTS.Add(sTORE_PRODUCTS);
+                var StInv_New = new STORE_INVENTORY()
+                {
+                    TITL = sTORE_PRODUCTS.NAME,
+                    DESCR = sTORE_PRODUCTS.DESCR,
+                    PRODUCT_ID = sTORE_PRODUCTS.PRODUCT_ID,
+                    BRAND_ID = sTORE_PRODUCTS.BRAND_ID,
+                    STORE_ID = null,
+                    UNIT_LEFT = 0,
+                    COST_PER_UNIT = sTORE_PRODUCTS.CURRENT_PRICE,
+                    SELL_PRICE_PER_UNIT = sTORE_PRODUCTS.CURRENT_PRICE,
+                    LAST_SOLD = DateTime.Today,
+                    IS_ACT = true,
+                    IS_DEL = false,
+                    CREATED_AT = DateTime.Today,
+                    UPDATED_AT = DateTime.Today
+                    };
+                db.STORE_INVENTORY.Add(StInv_New);
                 try { db.SaveChanges(); ViewBag.Notice = "New product added in system successfully."; }
                 catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
                     return View();
