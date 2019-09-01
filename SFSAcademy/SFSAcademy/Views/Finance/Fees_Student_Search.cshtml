@@ -3,6 +3,9 @@
 @{
     ViewBag.Title = "Fees_Student_Search";
 }
+@{
+    IEnumerable<SFSAcademy.Student> student_select = (IEnumerable<SFSAcademy.Student>)ViewData["student_select"];
+}
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
@@ -47,7 +50,7 @@
 
         });
 
-        });
+    });
 </script>
 
 <div id="content-header">
@@ -78,10 +81,8 @@
             @Html.AntiForgeryToken()
             <div class="label-field-pair label">
                 <div class="label-container label">@Html.Label("STUDENT_ID1", "Enter Admission Number:", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                <div class="search_textbox">
-                    @Html.TextBox("STUDENT_ID1", null, new { @class = "form-control", @id = "STUDENT_ID1" })
-                    <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-                    @Html.ValidationMessage("STUDENT_ID1", "", new { @class = "text-danger" })
+                <div class="text-input-bg">
+                    @Html.Partial("_student_select", student_select)
                 </div>
             </div>
             <!-- Place where you will insert your partial -->
