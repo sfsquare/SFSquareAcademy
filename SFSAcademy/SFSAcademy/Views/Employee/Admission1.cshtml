@@ -40,6 +40,7 @@
 </div>
 
 <div id="page-yield">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <div id="flash_box">
         @if (ViewBag.Notice != null)
         {

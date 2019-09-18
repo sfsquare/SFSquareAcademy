@@ -1,0 +1,67 @@
+﻿@{
+    IEnumerable<SFSAcademy.MonthyPayslip> monthly_payslips = (IEnumerable<SFSAcademy.MonthyPayslip>)ViewData["monthly_payslips"];
+    IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual_payslips = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual_payslips"];
+    IEnumerable<SFSAcademy.Payslip> salary = (IEnumerable<SFSAcademy.Payslip>)ViewData["salary"];
+}
+<link href="~/Content/stylesheets/modalbox.css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $(function () {
+            $("#modal-box-Accept").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box-Accept").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+
+    function OpenAcceptDialog() {
+        $('#modal-box-Accept').dialog("open");
+    }
+    function CloseAcceptDialog() {
+        $('#modal-box-Accept').dialog("close");
+    }
+    function OpenLoader() {
+        $(".LoaderBox").show();
+    }
+
+</script>
+
+<div id="Accept">
+    <a href='#' onclick="OpenAcceptDialog()" class = "user_button">Accept</a>
+</div>
+
+<div id="modal-box-Accept" style="display:none" class="form" title="Accept">
+    @using (Ajax.BeginForm("Employee_Payslip_Approve", null, new AjaxOptions { HttpMethod = "GET", OnBegin = "OpenLoader()", OnSuccess = "CloseAcceptDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        <div id="form-errors"></div>
+        <div class="label-field-pair">
+            <label for="employee_name" class="reason">Remark</label>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">@Html.TextBox("RMRK", null, new { @class = "form-control", required = "required"})</div>
+        </div>
+        <input type="submit" value="► Accept" id="submit-button" class="submit-button" />
+        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+        int? id = monthly_payslips.FirstOrDefault().EmployeeData.ID; int Sal_Year = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Year; int Sal_Month = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Month; int Sal_Day = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Day;
+        @Html.Hidden("id", id)
+        @Html.Hidden("Sal_Year", Sal_Year)
+        @Html.Hidden("Sal_Month", Sal_Month)
+        @Html.Hidden("Sal_Day", Sal_Day)
+
+    }
+</div>

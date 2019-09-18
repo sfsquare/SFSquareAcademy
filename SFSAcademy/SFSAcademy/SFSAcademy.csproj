@@ -2766,6 +2766,13 @@
     <Content Include="Views\Employee\Leave_Management.cshtml" />
     <Content Include="Views\Employee_Attendance\_Individual_Leave_Applications.cshtml" />
     <Content Include="Views\Finance\_student_select.cshtml" />
+    <Content Include="Views\Finance\Payslip_Index.cshtml" />
+    <Content Include="Views\Finance\View_Monthly_Payslip.cshtml" />
+    <Content Include="Views\Finance\View_Employee_Payslip.cshtml" />
+    <Content Include="Views\Finance\_Accept_Form.cshtml" />
+    <Content Include="Views\Finance\_Reject_Form.cshtml" />
+    <Content Include="Views\Finance\Approve_Monthly_Payslip.cshtml" />
+    <Content Include="Views\Finance\_One_Click_Approve.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3039,7 +3046,8 @@
     <Compile Include="Models\CommonModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\Courses.cs" />
-    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\HR\Employee.cs" />
+    <Compile Include="Models\HR\Monthly_Payslip.cs" />
     <Compile Include="Models\Payroll.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\PictureUpload.cs" />
