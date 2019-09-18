@@ -27,7 +27,7 @@
 
 </script>
 
-@if (new_payslip_category != null && new_payslip_category.Count() != 0)
+@if ((new_payslip_category != null && new_payslip_category.Count() != 0) || (individual != null && individual.Count() != 0))
 {
     <div id="list-payslip-category">
         @Html.Partial("_List_Payslip_Category")
@@ -38,7 +38,7 @@
 <div class="extender"></div>
 <div id="add-payslip-category-link">
     <a href="@Url.Action("Add_Payslip_Category", "Employee", new { emp_id = employee.ID, salary_date = ViewBag.salary_date, CallingAction = ViewBag.CallingAction })" class="user_button" id="General" onclick='LoadUserEditPartialPage(this.href); return false;'>Add New Category</a>
-    <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none" hidden="hidden"></div>
+    <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
 </div>
 
 <div id="payslip-category-form"> </div>

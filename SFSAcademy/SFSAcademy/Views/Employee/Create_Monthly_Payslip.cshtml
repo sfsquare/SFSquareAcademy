@@ -13,6 +13,11 @@
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
 <script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
 <link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     $(function () {
@@ -57,12 +62,12 @@
     </div>
     <div id="flash_box">
         @if (ViewBag.Notice != null)
-            {
+        {
             <p class="flash-msg"> @ViewBag.Notice </p>
         }
     </div>
     @if (ViewBag.Warn_Notice != null)
-            {
+    {
         <div id="errorExplanation" class="errorExplanation">
             @ViewBag.Warn_Notice
         </div>

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using PagedList;
-using SFSAcademy;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -5918,6 +5917,474 @@ namespace SFSAcademy.Controllers
             }
             ViewBag.Notice = "Donation deleted from system sucessfully!";
             return RedirectToAction("Automatic_Transactions", new { Notice = ViewBag.Notice });
+        }
+
+        // GET: Finance
+        public ActionResult Payslip_Index(string ErrorMessage, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            return View();
+        }
+
+        public ActionResult View_Monthly_Payslip(string ErrorMessage, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).OrderBy(x=>x.NAMES).Distinct(), "ID", "NAMES").ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Department" });
+            ViewBag.departments = options;
+            ViewBag.IsPost = false;
+            var PSL_Sal_date = (from psl in db.MONTHLY_PAYSLIP
+                                select new { Salary_date = psl.SAL_DATE }).Distinct()
+                        .OrderBy(x => x.Salary_date).ToList();
+
+
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in PSL_Sal_date)
+            {
+                string sala_Month_Year = string.Concat(((DateTime)item.Salary_date.Value).ToString("MMMM"), "-", item.Salary_date.Value.Year);
+                var result = new SelectListItem();
+                result.Text = sala_Month_Year;
+                result.Value = item.Salary_date.ToString();
+                options2.Add(result);
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Salary Date" });
+            ViewBag.Salary_Date = options2;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult View_Monthly_Payslip(int? departments, DateTime? Salary_Date, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.IsPost = true;
+            ViewBag.Selected_Salary_Date = Salary_Date;
+            List<SelectListItem> options = new SelectList(db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).Distinct(), "ID", "NAMES", departments).ToList();
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Department" });
+            ViewBag.departments = options;
+            var PSL_Sal_date = (from psl in db.MONTHLY_PAYSLIP
+                                select new { Salary_date = psl.SAL_DATE }).Distinct()
+                        .OrderBy(x => x.Salary_date).ToList();
+
+
+            List<SelectListItem> options2 = new List<SelectListItem>();
+            foreach (var item in PSL_Sal_date)
+            {
+                string sala_Month_Year = string.Concat(((DateTime)item.Salary_date.Value).ToString("MMMM"), "-", item.Salary_date.Value.Year);
+                var result = new SelectListItem();
+                result.Text = sala_Month_Year;
+                result.Value = item.Salary_date.ToString();
+                result.Selected = item.Salary_date == Salary_Date ? true : false;
+                options2.Add(result);
+            }
+            // add the 'ALL' option
+            options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Salary Date" });
+            ViewBag.Salary_Date = options2;
+
+            if (departments != null || Salary_Date != null)
+            {
+                if (departments != null && Salary_Date != null)
+                {
+                    var monthly_payslips = (from ps in db.MONTHLY_PAYSLIP
+                                            join pc in db.PAYROLL_CATEGORY on ps.PYRL_CAT_ID equals pc.ID
+                                            where ps.SAL_DATE == Salary_Date
+                                            select new MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
+
+                    var grouped_monthly_payslips = from mps in monthly_payslips
+                                                   group mps by mps.MonthlyPayslipData.EMP_ID into g
+                                                   select new
+                                                   {
+                                                       Employee_ID = g.Key,
+                                                       Status = (from ps2 in g select ps2.MonthlyPayslipData.IS_APPR).FirstOrDefault() == true ? "Approved" : ((from ps2 in g select ps2.MonthlyPayslipData.IS_RJCT).FirstOrDefault() == true ? "Rejected" : null),
+                                                       Monthy_Payslip_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == false ? x.MonthlyPayslipData.AMT : -x.MonthlyPayslipData.AMT),
+                                                       Salare_Date = g.Max(x => x.MonthlyPayslipData.SAL_DATE)
+                                                   };
+
+                    var approved_grouped_monthly_payslips = from mps in monthly_payslips
+                                                            where mps.MonthlyPayslipData.IS_APPR == true
+                                                            group mps by mps.MonthlyPayslipData.EMP_ID into g
+                                                            select new
+                                                            {
+                                                                Employee_ID = g.Key,
+                                                                Status = (from ps2 in g select ps2.MonthlyPayslipData.IS_APPR).FirstOrDefault() == true ? "Approved" : ((from ps2 in g select ps2.MonthlyPayslipData.IS_RJCT).FirstOrDefault() == true ? "Rejected" : null),
+                                                                Aapproved_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == false ? x.MonthlyPayslipData.AMT : -x.MonthlyPayslipData.AMT),
+                                                                Salare_Date = g.Max(x => x.MonthlyPayslipData.SAL_DATE)
+                                                            };
+
+                    var grouped_individual_payslip_categories = from ps in db.INDIVIDUAL_PAYSLIP_CATGEORY
+                                                                where ps.SAL_DATE == Salary_Date
+                                                                group ps by ps.EMP_ID into g
+                                                                select new
+                                                                {
+                                                                    Employee_ID = g.Key,
+                                                                    Individual_Pyaslip_Amount = g.Sum(x => x.IS_DED == false ? x.AMT : -x.AMT),
+                                                                    Salare_Date = g.Max(x => x.SAL_DATE)
+                                                                };
+
+                    var payslips = (from emp in db.EMPLOYEEs
+                                    join gmp in grouped_monthly_payslips on emp.ID equals gmp.Employee_ID
+                                    join gamp in approved_grouped_monthly_payslips on emp.ID equals gamp.Employee_ID into ggamp
+                                    from subggamp in ggamp.DefaultIfEmpty()
+                                    join gipc in grouped_individual_payslip_categories on emp.ID equals gipc.Employee_ID into ggipc
+                                    from subgipc in ggipc.DefaultIfEmpty()
+                                    where emp.EMP_DEPT_ID == departments
+                                    select new SFSAcademy.Payslip { EmployeeData = emp, SAL_DATE = gmp.Salare_Date, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount) }).Distinct();
+                    ViewData["payslips"] = payslips.ToList();
+
+                    return View();
+                }
+                else
+                {
+                    ViewBag.Notice = "Select salary date";
+                    return RedirectToAction("Department_Payslip", new { Notice = ViewBag.Notice });
+                }
+            }
+            return View();
+        }
+
+        public ActionResult View_Employee_Payslip(int? id, DateTime? salary_date, string Notice, string ErrorMessage)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Salary_Date = salary_date;
+            ViewBag.Selected_Salary_Date = salary_date.Value.ToShortDateString();
+            EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
+            bool is_present_employee = true;
+            if(Employee == null)
+            {
+                is_present_employee = false;
+            }
+            ViewBag.is_present_employee = is_present_employee;
+            var Config = new Configuration();
+            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            var monthly_payslips = (from emp in db.EMPLOYEEs
+                                    join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
+                                    join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
+                                    where mp.SAL_DATE == salary_date && emp.ID == id
+                                    select new MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
+            ViewData["monthly_payslips"] = monthly_payslips;
+            ViewBag.Status = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : null);
+            var individual_payslips = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == salary_date).ToList();
+            ViewData["individual_payslips"] = individual_payslips;
+
+            var monthly_payslips_val = (from ps in db.MONTHLY_PAYSLIP
+                                        join pc in db.PAYROLL_CATEGORY on ps.PYRL_CAT_ID equals pc.ID
+                                        where ps.SAL_DATE == salary_date
+                                        select new MonthyPayslip { MonthlyPayslipData = ps, PayrollCatogaryData = pc });
+
+            var grouped_monthly_payslips = from mps in monthly_payslips_val
+                                           group mps by mps.MonthlyPayslipData.EMP_ID into g
+                                           select new
+                                           {
+                                               Employee_ID = g.Key,
+                                               Status = (from ps2 in g select ps2.MonthlyPayslipData.IS_APPR).FirstOrDefault() == true ? "Approved" : ((from ps2 in g select ps2.MonthlyPayslipData.IS_RJCT).FirstOrDefault() == true ? "Rejected" : null),
+                                               Monthy_Payslip_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == false ? x.MonthlyPayslipData.AMT : -x.MonthlyPayslipData.AMT),
+                                               Non_Deductionable_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == false ? x.MonthlyPayslipData.AMT : 0),
+                                               Deductionable_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == true ? x.MonthlyPayslipData.AMT : 0),
+                                               Salare_Date = g.Max(x => x.MonthlyPayslipData.SAL_DATE)
+                                           };
+
+            var approved_grouped_monthly_payslips = from mps in monthly_payslips_val
+                                                    where mps.MonthlyPayslipData.IS_APPR == true
+                                                    group mps by mps.MonthlyPayslipData.EMP_ID into g
+                                                    select new
+                                                    {
+                                                        Employee_ID = g.Key,
+                                                        Status = (from ps2 in g select ps2.MonthlyPayslipData.IS_APPR).FirstOrDefault() == true ? "Approved" : ((from ps2 in g select ps2.MonthlyPayslipData.IS_RJCT).FirstOrDefault() == true ? "Rejected" : null),
+                                                        Aapproved_Amount = g.Sum(x => x.PayrollCatogaryData.IS_DED == false ? x.MonthlyPayslipData.AMT : -x.MonthlyPayslipData.AMT)
+                                                    };
+
+            var grouped_individual_payslip_categories = from ps in db.INDIVIDUAL_PAYSLIP_CATGEORY
+                                                        where ps.SAL_DATE == salary_date
+                                                        group ps by ps.EMP_ID into g
+                                                        select new
+                                                        {
+                                                            Employee_ID = g.Key,
+                                                            Individual_Pyaslip_Amount = g.Sum(x => x.IS_DED == false ? x.AMT : -x.AMT),
+                                                            Non_Deductionable_Amount = g.Sum(x => x.IS_DED == false ? x.AMT : 0),
+                                                            Deductionable_Amount = g.Sum(x => x.IS_DED == true ? x.AMT : 0)
+                                                        };
+
+            var payslips = (from emp in db.EMPLOYEEs
+                            join gmp in grouped_monthly_payslips on emp.ID equals gmp.Employee_ID
+                            join gamp in approved_grouped_monthly_payslips on emp.ID equals gamp.Employee_ID into ggamp
+                            from subggamp in ggamp.DefaultIfEmpty()
+                            join gipc in grouped_individual_payslip_categories on emp.ID equals gipc.Employee_ID into ggipc
+                            from subgipc in ggipc.DefaultIfEmpty()
+                            where emp.ID == id
+                            select new SFSAcademy.Payslip { EmployeeData = emp, SAL_DATE = gmp.Salare_Date, Monthy_Payslip_Amount = gmp.Monthy_Payslip_Amount, Status = gmp.Status, Aapproved_Amount = (subggamp == null ? null : subggamp.Aapproved_Amount), Individual_Pyaslip_Amount = (subgipc == null ? null : subgipc.Individual_Pyaslip_Amount), Net_Amount = (subgipc == null ? gmp.Monthy_Payslip_Amount : gmp.Monthy_Payslip_Amount + subgipc.Individual_Pyaslip_Amount), Net_Non_Deductionable_Amount = (subgipc == null ? gmp.Non_Deductionable_Amount : gmp.Non_Deductionable_Amount + subgipc.Non_Deductionable_Amount), Net_Deductionable_Amount = (subgipc == null ? gmp.Deductionable_Amount : gmp.Deductionable_Amount + subgipc.Deductionable_Amount) }).Distinct();
+
+            ViewData["salary"] = payslips;
+
+            return View(Employee);
+        }
+        public ActionResult Employee_Payslip_Accept_Form(int? id, DateTime? id2)
+        {
+            ViewBag.id = id;
+            ViewBag.id2 = id2;
+
+            return PartialView("_Accept_Form");
+        }
+        public ActionResult Employee_Payslip_Reject_Form(int? id, DateTime? id2)
+        {
+            ViewBag.id = id;
+            ViewBag.id2 = id2;
+
+            return PartialView("_Reject_Form");
+        }
+        public ActionResult Employee_Payslip_Approve(int? id, int Sal_Year, int Sal_Month, int Sal_Day, string RMRK)
+        {
+            DateTime SalaryDate = new DateTime(Sal_Year, Sal_Month, Sal_Day);
+            var dates = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == id && x.SAL_DATE == SalaryDate).ToList();
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            foreach (var d in dates)
+            {
+                d.Approve(UserId, RMRK);
+            }
+            ViewBag.Notice = "Payslip has been approved";
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == id && x.IS_APPR == true && x.SAL_DATE == SalaryDate).OrderByDescending(x => x.SAL_DATE).ToList();
+            var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == SalaryDate).OrderByDescending(x => x.SAL_DATE).ToList();
+            CalulatedSalary cs = employee.Calculate_Salary(monthly_payslips, individual_payslip_category);
+
+            //var FeeCat = db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.NAME == "Fees").Distinct();
+            int? TranCatId = db.FINANCE_TRANSACTION_CATEGORY.Where(x=>x.NAME == "Salary").Select(x=>x.ID).FirstOrDefault();
+            //int FinanceFee_id = financefeeVal != null && financefeeVal.Count() != 0 ? financefeeVal.FirstOrDefault().ID : -1;
+            string ReceiptNo = ""; int Index = 1;
+            foreach (var item in monthly_payslips)
+            {
+                if(Index == 1)
+                {
+                    ReceiptNo = item.ID.ToString();
+                }
+                else
+                {
+                    ReceiptNo = string.Concat(ReceiptNo, "-", item.ID.ToString());
+                }
+                Index += 1;
+            }
+            int PayeeId = 1;
+
+            var OldTrans = db.FINANCE_TRANSACTION.Where(x => x.RCPT_NO == ReceiptNo && x.CAT_ID == TranCatId).ToList();
+            if(OldTrans != null && OldTrans.Count() != 0)
+            {
+                foreach(var item in OldTrans)
+                {
+                    FINANCE_TRANSACTION OldTransId = db.FINANCE_TRANSACTION.Find(item.ID);
+                    db.FINANCE_TRANSACTION.Remove(OldTransId);
+                }
+            }
+
+            var transaction = new FINANCE_TRANSACTION()
+            {
+                TIL = string.Concat("SAL-", employee.FIRST_NAME),
+                CAT_ID = TranCatId,
+                DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", SalaryDate.ToString("MMMM")),
+                PAYEE_ID = PayeeId,
+                PAYEE_TYPE = "Institution",
+                AMT = (decimal)cs.net_amount,
+                FINE_AMT = (decimal)cs.net_deductionable_amount,
+                FINE_INCLD = false,
+                FIN_FE_ID = null,
+                MSTRTRAN_ID = -1,
+                RCPT_NO = ReceiptNo,
+                TRAN_DATE = DateTime.Today,
+                CRETAED_AT = System.DateTime.Now,
+                UPDATED_AT = System.DateTime.Now
+            };
+            db.FINANCE_TRANSACTION.Add(transaction);
+            try { db.SaveChanges(); }
+            catch (DbEntityValidationException e)
+            {
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = SalaryDate, ErrorMessage = ViewBag.ErrorMessage });
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = SalaryDate, ErrorMessage = ViewBag.ErrorMessage });
+            }
+
+            return RedirectToAction("View_Employee_Payslip",new { id = id, salary_date = SalaryDate, Notice = ViewBag.Notice});
+        }
+        public ActionResult Employee_Payslip_Reject(int? id, int Sal_Year, int Sal_Month, int Sal_Day, string RSN)
+        {
+            DateTime SalaryDate = new DateTime(Sal_Year, Sal_Month, Sal_Day);
+            var dates = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == id && x.SAL_DATE == SalaryDate).ToList();
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == id && x.IS_APPR == true && x.SAL_DATE == SalaryDate).OrderByDescending(x => x.SAL_DATE).ToList();
+            int? TranCatId = db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.NAME == "Salary").Select(x => x.ID).FirstOrDefault();
+            string ReceiptNo = ""; int Index = 1;
+            foreach (var item in monthly_payslips)
+            {
+                if (Index == 1)
+                {
+                    ReceiptNo = item.ID.ToString();
+                }
+                else
+                {
+                    ReceiptNo = string.Concat(ReceiptNo, "-", item.ID.ToString());
+                }
+                Index += 1;
+            }
+            var OldTrans = db.FINANCE_TRANSACTION.Where(x => x.RCPT_NO == ReceiptNo && x.CAT_ID == TranCatId).ToList();
+            if (OldTrans != null && OldTrans.Count() != 0)
+            {
+                foreach (var item in OldTrans)
+                {
+                    FINANCE_TRANSACTION OldTransId = db.FINANCE_TRANSACTION.Find(item.ID);
+                    db.FINANCE_TRANSACTION.Remove(OldTransId);
+                }
+            }
+            try { db.SaveChanges(); }
+            catch (Exception e) { Console.WriteLine(e); }
+
+            foreach (var d in dates)
+            {
+                d.Reject(UserId, RSN);
+            }
+            ViewBag.Notice = "Payslip Rejected";
+
+            /*var privilege = Privilege.find_by_name("PayslipPowers");
+            var hr_ids = privilege.user_ids; */
+            var hr_ids = 1;
+            string subject = "Payslip Rejected";
+            string body= string.Concat("Payslip has been rejected for " , employee.FIRST_NAME , " " , employee.LAST_NAME , " (Employee Number :" , employee.EMP_NUM , ") For the month: " , SalaryDate.ToShortDateString());
+            REMINDER rm = new REMINDER() { SNDR = UserId, SUB = subject, BODY = body, RCPNT = hr_ids };
+            db.REMINDERs.Add(rm);
+            try { db.SaveChanges(); }
+            catch (Exception e) { Console.WriteLine(e); }
+
+            return RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = SalaryDate, Notice = ViewBag.Notice });
+        }
+
+        public ActionResult Approve_Monthly_Payslip(string ErrorMessage, string Notice)
+        {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
+            var PSL_Sal_date = (from psl in db.MONTHLY_PAYSLIP
+                                select new { Salary_date = psl.SAL_DATE }).Distinct()
+             .OrderBy(x => x.Salary_date).ToList();
+
+
+            List<SelectListItem> options = new List<SelectListItem>();
+            foreach (var item in PSL_Sal_date)
+            {
+                string sala_Month_Year = string.Concat(((DateTime)item.Salary_date.Value).ToString("MMMM"), "-", item.Salary_date.Value.Year);
+                var result = new SelectListItem();
+                result.Text = sala_Month_Year;
+                result.Value = item.Salary_date.ToString();
+                options.Add(result);
+            }
+            // add the 'ALL' option
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select a month" });
+            ViewBag.salary_dates = options;
+
+            return View();
+        }
+        public ActionResult One_Click_Approve(string salary_date)
+        {
+            DateTime salary_date_val = DateTime.Parse(salary_date);
+            ViewBag.salary_date = salary_date_val;
+            var monthly_payslips = (from emp in db.EMPLOYEEs
+                                    join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
+                                    join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
+                                    where mp.SAL_DATE == salary_date_val && (mp.IS_APPR == false || (mp.IS_APPR  == true && mp.RMRK == null))
+                                    select new MonthyPayslip { EmployeeData = emp, MonthlyPayslipData = mp, PayrollCatogaryData = pc }).OrderBy(x => x.PayrollCatogaryData.NAME).ToList();
+            ViewData["dates"] = monthly_payslips;
+
+            return PartialView("_One_Click_Approve");
+        }
+        public ActionResult One_Click_Approve_Submit(DateTime? date)
+        {
+            ViewBag.salary_date = date;
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            var dates = db.MONTHLY_PAYSLIP.Where(x => x.SAL_DATE == date && x.IS_RJCT == false).ToList();
+            foreach (var d in dates)
+            {
+                d.Approve(UserId, "One Click Approved");
+                EMPLOYEE employee = db.EMPLOYEEs.Find(d.EMP_ID);
+                var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == d.EMP_ID && x.IS_APPR == true && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == d.EMP_ID && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                CalulatedSalary cs = employee.Calculate_Salary(monthly_payslips, individual_payslip_category);
+                int? TranCatId = db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.NAME == "Salary").Select(x => x.ID).FirstOrDefault();
+                string ReceiptNo = ""; int Index = 1;
+                foreach (var item in monthly_payslips)
+                {
+                    if (Index == 1)
+                    {
+                        ReceiptNo = item.ID.ToString();
+                    }
+                    else
+                    {
+                        ReceiptNo = string.Concat(ReceiptNo, "-", item.ID.ToString());
+                    }
+                    Index += 1;
+                }
+                int PayeeId = 1;
+
+                var OldTrans = db.FINANCE_TRANSACTION.Where(x => x.RCPT_NO == ReceiptNo && x.CAT_ID == TranCatId).ToList();
+                if (OldTrans != null && OldTrans.Count() != 0)
+                {
+                    foreach (var item in OldTrans)
+                    {
+                        FINANCE_TRANSACTION OldTransId = db.FINANCE_TRANSACTION.Find(item.ID);
+                        db.FINANCE_TRANSACTION.Remove(OldTransId);
+                    }
+                }
+
+                var transaction = new FINANCE_TRANSACTION()
+                {
+                    TIL = string.Concat("SAL-", employee.FIRST_NAME),
+                    CAT_ID = TranCatId,
+                    DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", date.Value.ToString("MMMM")),
+                    PAYEE_ID = PayeeId,
+                    PAYEE_TYPE = "Institution",
+                    AMT = (decimal)cs.net_amount,
+                    FINE_AMT = (decimal)cs.net_deductionable_amount,
+                    FINE_INCLD = false,
+                    FIN_FE_ID = null,
+                    MSTRTRAN_ID = -1,
+                    RCPT_NO = ReceiptNo,
+                    TRAN_DATE = DateTime.Today,
+                    CRETAED_AT = System.DateTime.Now,
+                    UPDATED_AT = System.DateTime.Now
+                };
+                db.FINANCE_TRANSACTION.Add(transaction);
+                try { db.SaveChanges(); }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors)
+                    {
+                        foreach (var ve in eve.ValidationErrors)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                        }
+                    }
+                    RedirectToAction("Payslip_Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    RedirectToAction("Payslip_Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
+            ViewBag.Notice = "Payslip has been approved.";        
+            return RedirectToAction("Payslip_Index", new { Notice = ViewBag.Notice });
         }
     }
 }
