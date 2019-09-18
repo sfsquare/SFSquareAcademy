@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "Approve_Monthly_Payslip";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#SalDateDropDown').change(function () {
+
+        /* Get the selected value of dropdownlist */
+        var selectedID = $(this).val();
+        $(".LoaderBox").show();
+        /* Request the partial view with .get request. */
+        $.get('/Finance/One_Click_Approve?salary_date=' + selectedID , function (data) {
+
+            /* data is the pure html returned from action method, load it to your page */
+            $('#approve').html(data);
+            /* little fade in effect */
+            $('#approve').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+
+    });
+   });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Payslip</h1>
+    <h3>Approve Payslip</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Finance")">Finance</a> &raquo;
+    <a href="@Url.Action("Payslip_Index", "Finance")">Payslip</a> &raquo;
+    Aprove Monthly Payslip
+</div>
+<div id="page-yield">
+    <div class="box">
+        <div class="label-field-pair label">
+            <label for="salary_date">Salary Month</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("salary_dates", null, htmlAttributes: new { @class = "form-control", @id = "SalDateDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+
+            </div>
+        </div>
+        <div id="approve" style="display:none"> </div>
+    </div>
+</div>
+
+

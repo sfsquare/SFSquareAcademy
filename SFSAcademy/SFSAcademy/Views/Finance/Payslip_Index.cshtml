@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Payslip_Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Payslip</h1>
+    <h3>Employee Payslip</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="flash_box">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+</div>
+<div id="page-yield">
+    <div id="flash_box">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
+    <div class="box">
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("View Payslip", "View_Monthly_Payslip")</div>
+            <div class="link-descr">View employee monthly payslip</div>
+        </div>
+
+        <div class="link-box">
+            <div class="link-heading">@Html.ActionLink("One click approve payslip", "Approve_Monthly_Payslip")</div>
+            <div class="link-descr">Approve monthly payslip</div>
+        </div>
+
+    </div>
+</div>
+

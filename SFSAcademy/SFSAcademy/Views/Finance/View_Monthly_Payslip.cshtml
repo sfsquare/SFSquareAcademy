@@ -1,10 +1,11 @@
 ﻿
 @{
-    ViewBag.Title = "Department_Payslip";
+    ViewBag.Title = "View_Monthly_Payslip";
 }
+
 <div id="content-header">
-    <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
-    <h1>Employee</h1>
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>Finance</h1>
     <h3>Department Wise Payslip</h3>
     <div id="app-back-button">
         <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
@@ -12,13 +13,15 @@
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
+
 <div id="page-yield">
     <div class="bread_crumb">
-        @Html.ActionLink("HR", "HR") &raquo;
-        Employee Payslip
+        <a href="@Url.Action("Index", "Finance")">Finance</a> &raquo;
+        <a href="@Url.Action("Payslip_Index", "Finance")">Payslip</a> &raquo;
+        Monthly Payslip
     </div>
     @if (ViewBag.Notice != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
     @using (Html.BeginForm())
@@ -79,7 +82,7 @@
                                 <td class="col-1"> @item.EmployeeData.EMP_NUM</td>
                                 <td class="col-1"> @item.Net_Amount</td>
                                 <td class="col-1"> @item.Status</td>
-                                <td class="col-5">@Html.ActionLink("View", "View_Employee_Payslip", new { id = item.EmployeeData.ID, salary_date = ViewBag.Selected_Salary_Date }) </td>
+                                <td class="col-5">@Html.ActionLink("View", "View_Employee_Payslip", new { id = item.EmployeeData.ID, salary_date = item.SAL_DATE }) </td>
                             </tr>
                             i += 1;
                         }
@@ -93,13 +96,14 @@
                         <td class="col-1">@total_approved_salary</td>
                     </tr>
                 </table>
-                        }
-                        else
-                        {
+            }
+            else
+            {
                 <p class="flash-msg"> No payslip found</p>
             }
         }
     </div>
+
 </div>
 
 

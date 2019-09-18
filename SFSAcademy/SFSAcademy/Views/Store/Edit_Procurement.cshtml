@@ -65,7 +65,8 @@
             <hr class="sub-heading">
             <div id="autofill-area">
             </div>
-            @Html.HiddenFor(x=>x.ID)
+            @Html.HiddenFor(x => x.ID)
+            @Html.HiddenFor(x => x.PRODUCT_ID)
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.DESCR, "Procurement Description", htmlAttributes: new { @class = "control-label col-md-2" })
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
