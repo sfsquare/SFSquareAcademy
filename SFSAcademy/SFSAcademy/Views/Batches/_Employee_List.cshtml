@@ -1,0 +1,110 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<EMPLOYEE> employees = (IEnumerable<EMPLOYEE>)ViewData["employees"];
+}
+<script type="text/javascript" language="javascript">
+    function LoadAssign(id, batch_id, department_id) {
+        $(".LoaderBox").show();
+        $.ajax({
+            type: 'GET',
+            url: "/Batches/Assign_Employee",
+            dataType: 'json',
+            data: {
+                id: id,
+                batch_id: batch_id,
+                department_id: department_id
+            },
+            success: function (result) {
+                if (result != null) {
+                    $("#tutor-list").html(result.TutorPartialView);
+                    $('#tutor-list').fadeIn('fast');
+                    $("#employee-list").html(result.EmployeePartialView);
+                    $('#employee-list').fadeIn('fast');
+                    $(".LoaderBox").hide();
+                } else {
+                    alert('Error getting data.');
+                    $(".LoaderBox").hide();
+                }
+            },
+            error: function () {
+                alert('Error getting data.');
+                $(".LoaderBox").hide();
+            }
+        });
+    }
+    function LoadRemove(id, batch_id, department_id) {
+        $(".LoaderBox").show();
+        $.ajax({
+            type: 'GET',
+            url: "/Batches/Remove_Employee",
+            dataType: 'json',
+            data: {
+                id: id,
+                batch_id: batch_id,
+                department_id: department_id
+            },
+            success: function (result) {
+                if (result != null) {
+                    $("#tutor-list").html(result.TutorPartialView);
+                    $('#tutor-list').fadeIn('fast');
+                    $("#employee-list").html(result.EmployeePartialView);
+                    $('#employee-list').fadeIn('fast');
+                    $(".LoaderBox").hide();
+                } else {
+                    alert('Error getting data.');
+                    $(".LoaderBox").hide();
+                }
+            },
+            error: function () {
+                alert('Error getting data.');
+                $(".LoaderBox").hide();
+            }
+        });
+    }
+
+</script>
+<ul id="tutor-list">
+    @{ IEnumerable<string> emps_assigned = null;}
+    @if (batch.EMP_ID != null)
+    {
+        emps_assigned = ApplicationHelper.SplitCommaString(batch.EMP_ID);
+    }
+    @if (employees != null && employees.Count() != 0)
+    {
+        <li class="heading"> Assign New: </li>
+        int i = 1;
+        foreach (var e in employees)
+        {
+            string cycle = "listeven";
+            if (i % 2 == 0)
+            {
+                cycle = "listodd";
+            }
+            string AssignEmployee = string.Concat("LoadAssign('", e.ID, "','", batch.ID, "','", ViewBag.department_id, "');  return false;");
+            string RemoveEmployee = string.Concat("LoadRemove('", e.ID, "','", batch.ID, "','", ViewBag.department_id, "');  return false;");
+            <li class="@cycle">
+                <div class="tutor-name">@e.Full_Name</div>
+
+                @if (batch.EMP_ID == null || !emps_assigned.ToList().Contains(e.ID.ToString()))
+                {
+                    <div class="remove">
+                        <a href="#" onclick="@AssignEmployee">Assign</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="remove">
+                        <a href="#" onclick="@RemoveEmployee">Remove</a>
+                    </div>
+                }
+
+            </li>
+        }
+    }
+    else
+    {
+        <p class="flash-msg"> No Employee Found.</p>
+    }
+</ul>
+
+

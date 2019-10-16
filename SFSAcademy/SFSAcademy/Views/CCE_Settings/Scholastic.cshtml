@@ -1,0 +1,38 @@
+﻿<link href="~/Content/stylesheets/exam/index.css" rel="stylesheet" />
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>CCE Settings</h1>
+    <h3>Scholastic Settings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    <a href="@Url.Action("Settings", "Exam")">Settings</a> &raquo;
+    <a href="@Url.Action("Settings", "CCE_Settings")">CCE Settings</a> &raquo;
+    Scholastic Settings
+</div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "FA_Groups")">Formative Assessment Items</a></div>
+            <div class="link-descr">Manage Formative Assessment Items.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Assign_FA_Groups", "FA_Groups")">Assign FA Items</a></div>
+            <div class="link-descr">>Assign Formative Assessment Items to subjects.</div>
+        </div>
+        <div class="extender"></div>
+    </div>
+</div>
+
+
+

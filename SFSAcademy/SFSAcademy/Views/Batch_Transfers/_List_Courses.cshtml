@@ -1,0 +1,25 @@
+﻿@{
+    IEnumerable<BATCH> batches = (IEnumerable<BATCH>)ViewData["batches"];
+    COURSE course = (COURSE)ViewData["course"];
+}
+
+<ul id="category-list">
+    @{int i = 1; }
+    @foreach (var batch in batches)
+    {
+        string cycle = "listeven";
+        if (i % 2 == 0)
+        {
+            cycle = "listodd";
+        }
+        <li class="@cycle">
+            <div class="category-name">
+                <a href="@Url.Action("Show", "Batch_Transfers",new { id = batch.ID})">@batch.Full_Name</a>
+            </div>
+            <div class="category-edit">
+                <a href="@Url.Action("Graduation", "Batch_Transfers",new { id = batch.ID})">Graduation</a>
+            </div>
+        </li>
+        i += 1;
+    }
+</ul>

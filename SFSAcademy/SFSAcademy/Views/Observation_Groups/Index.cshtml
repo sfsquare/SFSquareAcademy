@@ -1,0 +1,81 @@
+﻿@model IEnumerable<SFSAcademy.OBSERVATION_GROUP>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HDR_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DESCR)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OBSV_KIND)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MAX_MKS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IS_DEL)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CCE_GRADE_SET.NAME)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HDR_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DESCR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CREATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UPDATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OBSV_KIND)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MAX_MKS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IS_DEL)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CCE_GRADE_SET.NAME)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

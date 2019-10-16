@@ -77,7 +77,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View();
                 }
                 ViewBag.Notice = "Leave Type added successfully!!";
@@ -131,7 +131,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View();
                 }
                 ViewBag.Notice = "Leave Type edited successfully!!";
@@ -177,7 +177,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View();
             }
             return RedirectToAction("Add_Leave_Types", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -283,11 +283,10 @@ namespace SFSAcademy.Controllers
         }
         public ActionResult Leave_Reset_Settings()
         {
-            var Config = new Configuration();
-            ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
-            ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
-            ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
-            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[1]), Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[0]));
+            ViewBag.auto_reset = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "AutomaticLeaveReset").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            ViewBag.reset_period = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "LeaveResetPeriod").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            ViewBag.last_reset = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "LastAutoLeaveReset").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "FinancialYearStartDate").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString().Split('_')[1]), Convert.ToInt32(db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "FinancialYearStartDate").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString().Split('_')[0]));
             ViewBag.fin_start_date = FinYearStartDate;
             return View();
         }
@@ -314,16 +313,15 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View();
             }
             ViewBag.Notice = "Settings has been saved";
 
-            var Config = new Configuration();
-            ViewBag.auto_reset = Config.find_by_config_key("AutomaticLeaveReset");
-            ViewBag.reset_period = Config.find_by_config_key("LeaveResetPeriod");
-            ViewBag.last_reset = Config.find_by_config_key("LastAutoLeaveReset");
-            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[1]), Convert.ToInt32(Config.find_by_config_key("FinancialYearStartDate").Split('_')[0]));
+            ViewBag.auto_reset = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "AutomaticLeaveReset").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            ViewBag.reset_period = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "LeaveResetPeriod").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            ViewBag.last_reset = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "LastAutoLeaveReset").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            DateTime FinYearStartDate = new DateTime(DateTime.Now.Year, Convert.ToInt32(db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "FinancialYearStartDate").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString().Split('_')[1]), Convert.ToInt32(db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "FinancialYearStartDate").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString().Split('_')[0]));
             ViewBag.fin_start_date = FinYearStartDate;
 
             return View();

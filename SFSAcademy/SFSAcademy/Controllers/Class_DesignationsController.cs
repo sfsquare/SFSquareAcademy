@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using System.Web.UI.WebControls;
+using PagedList;
 using SFSAcademy;
+using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -16,110 +20,165 @@ namespace SFSAcademy.Controllers
 
         // GET: Class_Designations
         public ActionResult Index()
-        {
-            var cLASS_DESIGNATION = db.CLASS_DESIGNATION.Include(c => c.COURSE);
-            return View(cLASS_DESIGNATION.ToList());
-        }
+        {          
+            List<SelectListItem> options = new SelectList(db.COURSEs.FirstOrDefault().ACTIVE().OrderBy(x => x.ID), "ID", "CRS_NAME").ToList();
+            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Batch" });
+            ViewBag.CRS_ID = options;
+            COURSE course = db.COURSEs.Where(x => x.ID == -1).FirstOrDefault();
+            ViewData["course"] = course;
 
-        // GET: Class_Designations/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CLASS_DESIGNATION cLASS_DESIGNATION = db.CLASS_DESIGNATION.Find(id);
-            if (cLASS_DESIGNATION == null)
-            {
-                return HttpNotFound();
-            }
-            return View(cLASS_DESIGNATION);
-        }
-
-        // GET: Class_Designations/Create
-        public ActionResult Create()
-        {
-            ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME");
             return View();
         }
 
-        // POST: Class_Designations/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        public ActionResult Load_Class_Designations(int? course_id, string ErrorMessage, string Notice)
+        {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
+            COURSE course = db.COURSEs.Find(course_id);
+            ViewData["course"] = course;
+            var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+            ViewData["class_designations"] = class_designations;
+            CLASS_DESIGNATION class_designation = db.CLASS_DESIGNATION.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
+            ViewData["class_designation"] = class_designation;
+
+            return PartialView("_Course_Class_Designations");
+        }
+
+        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,NAME,CGPA,CREATED_AT,UPDATED_AT,MKS,CRS_ID")] CLASS_DESIGNATION cLASS_DESIGNATION)
+        public ActionResult Create_Class_Designation([Bind(Include = "ID,NAME,CGPA,MKS,CREATED_AT,UPDATED_AT,CRS_ID")] CLASS_DESIGNATION class_designation, int? course_id)
         {
+            COURSE course = db.COURSEs.Find(course_id);
+            ViewData["course"] = course;
+            var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+            ViewData["class_designations"] = class_designations;
             if (ModelState.IsValid)
             {
-                db.CLASS_DESIGNATION.Add(cLASS_DESIGNATION);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                class_designation.CRS_ID = course.ID;
+                db.CLASS_DESIGNATION.Add(class_designation);
+                try
+                {
+                    db.SaveChanges();
+                    class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+                    ViewData["class_designations"] = class_designations;
+                    ViewBag.Notice = "Class Designation created successfully.";
+                    return PartialView("_Course_Class_Designations");
+                }
+                catch (DbEntityValidationException e)
+                {
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(class_designation);
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return View(class_designation);
+                }
             }
-
-            ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", cLASS_DESIGNATION.CRS_ID);
-            return View(cLASS_DESIGNATION);
+            else
+            {
+                ViewBag.ErrorMessage = "There is some issue in model state. Please cotact administrator.";
+                return View(class_designation);
+            }
         }
-
-        // GET: Class_Designations/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit_Class_Designation(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            CLASS_DESIGNATION cLASS_DESIGNATION = db.CLASS_DESIGNATION.Find(id);
-            if (cLASS_DESIGNATION == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", cLASS_DESIGNATION.CRS_ID);
-            return View(cLASS_DESIGNATION);
-        }
+            CLASS_DESIGNATION class_designation = db.CLASS_DESIGNATION.Find(id);
+            COURSE course = db.COURSEs.Find(class_designation.CRS_ID);
+            ViewData["course"] = course;
 
-        // POST: Class_Designations/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+            return PartialView("_Class_Edit_Form", class_designation);
+        }
+        [OutputCache(Duration = 0, VaryByParam = "*")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,NAME,CGPA,CREATED_AT,UPDATED_AT,MKS,CRS_ID")] CLASS_DESIGNATION cLASS_DESIGNATION)
+        public ActionResult Update_Class_Designation([Bind(Include = "ID,NAME,CGPA,MKS,CREATED_AT,UPDATED_AT,CRS_ID")] CLASS_DESIGNATION class_designation, int? course_id)
         {
+            COURSE course = db.COURSEs.Find(course_id);
+            ViewData["course"] = course;
             if (ModelState.IsValid)
             {
-                db.Entry(cLASS_DESIGNATION).State = EntityState.Modified;
+                class_designation.CRS_ID = course.ID;
+                db.Entry(class_designation).State = EntityState.Modified;
+                try
+                {
+                    db.SaveChanges();
+                    var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+                    ViewData["class_designations"] = class_designations;
+                    ViewBag.Notice = "Class Designation updated successfully.";
+                    return RedirectToAction("Load_Class_Designations", new { course_id = course.ID, Notice = ViewBag.Notice });
+                }
+                catch (DbEntityValidationException e)
+                {
+                    var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+                    ViewData["class_designations"] = class_designations;
+                    foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                    return View(class_designation);
+                }
+                catch (Exception e)
+                {
+                    var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+                    ViewData["class_designations"] = class_designations;
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return View(class_designation);
+                }
+            }
+            else
+            {
+                var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course_id).ToList();
+                ViewData["class_designations"] = class_designations;
+                ViewBag.ErrorMessage = "There is some issue in model state. Please cotact administrator.";
+                return View(class_designation);
+            }
+        }
+        public ActionResult Delete_Class_Designation(int? id)
+        {
+            CLASS_DESIGNATION class_designation = db.CLASS_DESIGNATION.Find(id);
+            COURSE course = db.COURSEs.Find(class_designation.CRS_ID);
+            ViewData["course"] = course;
+            db.CLASS_DESIGNATION.Remove(class_designation);
+            try
+            {
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course.ID).ToList();
+                ViewData["class_designations"] = class_designations;
+                ViewBag.Notice = "Class Designation deleted successfully.";
+                return RedirectToAction("Load_Class_Designations", new { course_id = course.ID, Notice = ViewBag.Notice });
             }
-            ViewBag.CRS_ID = new SelectList(db.COURSEs, "ID", "CRS_NAME", cLASS_DESIGNATION.CRS_ID);
-            return View(cLASS_DESIGNATION);
-        }
-
-        // GET: Class_Designations/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
+            catch (DbEntityValidationException e)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course.ID).ToList();
+                ViewData["class_designations"] = class_designations;
+                foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
+                return View(class_designation);
             }
-            CLASS_DESIGNATION cLASS_DESIGNATION = db.CLASS_DESIGNATION.Find(id);
-            if (cLASS_DESIGNATION == null)
+            catch (Exception e)
             {
-                return HttpNotFound();
+                var class_designations = db.CLASS_DESIGNATION.Where(x => x.CRS_ID == course.ID).ToList();
+                ViewData["class_designations"] = class_designations;
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                return View(class_designation);
             }
-            return View(cLASS_DESIGNATION);
         }
 
-        // POST: Class_Designations/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [AllowAnonymous]
+        public JsonResult CGPAIsNumeric([Bind(Prefix = "CGPA")] decimal? CGPA, [Bind(Prefix = "CRS_ID")] int? CRS_ID)
         {
-            CLASS_DESIGNATION cLASS_DESIGNATION = db.CLASS_DESIGNATION.Find(id);
-            db.CLASS_DESIGNATION.Remove(cLASS_DESIGNATION);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var course = db.COURSEs.Find(CRS_ID);
+            int Num;
+            bool isNum = int.TryParse(CGPA.ToString(), out Num);
+            return Json(!(CRS_ID != null && isNum == false && course.GPA_Enabled()) == true, JsonRequestBehavior.AllowGet);
         }
 
+        [AllowAnonymous]
+        public JsonResult MarksIsNumeric([Bind(Prefix = "MKS")] decimal? MKS, [Bind(Prefix = "CRS_ID")] int? CRS_ID)
+        {
+            var course = db.COURSEs.Find(CRS_ID);
+            int Num;
+            bool isNum = int.TryParse(MKS.ToString(), out Num);
+            return Json(!(CRS_ID != null && isNum == false && course.CWA_Enabled() == true), JsonRequestBehavior.AllowGet);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

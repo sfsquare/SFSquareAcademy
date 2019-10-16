@@ -17,8 +17,7 @@ namespace SFSAcademy.Controllers
         // GET: Student_Attendance
         public ActionResult Index()
         {
-            var Config_Val = new Configuration();
-            ViewBag.config = Config_Val.find_by_config_key("StudentAttendanceType");
+            ViewBag.config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.privilege = userdetails.privilage_list.ToList();

@@ -1,0 +1,83 @@
+﻿@{
+    IEnumerable<BATCH> batches = (IEnumerable<BATCH>)ViewData["batches"];
+    COURSE course = (COURSE)ViewData["course"];
+}
+@{
+    ViewBag.Title = "Show";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Courses</h1>
+    <h3>Show</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        <li><a href="@Url.Action("New", "Batches",new { course_id = course.ID})">New</a> </li>
+        <li><a href="@Url.Action("Grouped_Batches", "Courses",new { id = course.ID})">Group Batches</a> </li>
+        @if (Html.Permitted_To("Edit", "Courses"))
+        {
+            <li><a href="@Url.Action("Edit", "Courses",new { id = course.ID})">Edit</a> </li>
+        }
+        @if (Html.Permitted_To("Destroy", "Courses"))
+        {
+            <li>@Html.ActionLink("Delete", "Destroy", new { id = course.ID }, new { onclick = "return confirm('are you sure you want to delete this?')" })</li>
+
+        }
+    </ul>
+</div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("Manage_Course", "Courses")">Manage Course</a> &raquo;
+        @course.Full_Name
+    </div>
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+<div class="box">
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <ul id="category-list">
+        @{int i = 1; }
+        @foreach (var batch in batches)
+        {
+            string cycle = "listeven";
+            if (i % 2 == 0)
+            {
+                cycle = "listodd";
+            }
+            <li class="@cycle">
+                <div class="category-name"><a href="@Url.Action("Show", "Batches",new { id = batch.ID})">@batch.Course_full_name</a></div>
+
+                <div class="category-edit">
+                    @if (Html.Permitted_To("Edit", "Batches"))
+                    {
+                        <a href="@Url.Action("Edit", "Batches",new { id = batch.ID})">Edit</a>
+                    }
+                </div>
+                <div class="category-delete">
+                    @if (Html.Permitted_To("Delete", "Batches"))
+                    {
+                        <a href="@Url.Action("Delete", "Batches",new { id = batch.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
+                    }
+                </div>
+            </li>
+        }
+
+    </ul>
+
+    <div class="extender"></div>
+</div>
+</div>
+
+

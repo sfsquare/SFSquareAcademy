@@ -17,8 +17,7 @@ namespace SFSAcademy.Controllers
         // GET: Exam
         public ActionResult Index()
         {
-            var Config_Val = new Configuration();
-            ViewBag.config = Config_Val.find_by_config_key("StudentAttendanceType");
+            ViewBag.config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.privilege = userdetails.privilage_list.ToList();
@@ -31,9 +30,8 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Settings()
         {
-            var Config_Val = new Configuration();
-            ViewBag.config = Config_Val.find_by_config_key("StudentAttendanceType");
-            ViewBag.CCE_config = Config_Val.find_by_config_key("CCE") == "0" ? false : true;
+            ViewBag.config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            ViewBag.CCE_config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CCE").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "0" ? false : true;
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.privilege = userdetails.privilage_list.ToList();
@@ -77,8 +75,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Generate_Reports()
         {
-            var Config_Val = new Configuration();
-            ViewBag.config = Config_Val.find_by_config_key("StudentAttendanceType");
+            ViewBag.config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.privilege = userdetails.privilage_list.ToList();
@@ -91,8 +88,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Report_Center()
         {
-            var Config_Val = new Configuration();
-            ViewBag.config = Config_Val.find_by_config_key("StudentAttendanceType");
+            ViewBag.config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             ViewBag.privilege = userdetails.privilage_list.ToList();

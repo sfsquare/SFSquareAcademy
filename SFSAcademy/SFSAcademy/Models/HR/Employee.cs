@@ -1,19 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Data.Entity;
-using System.Net;
-using System.Web.Mvc;
-using PagedList;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using iTextSharp.tool.xml;
-using System.Text;
 using System.Data.Entity.Validation;
 using System.Text.RegularExpressions;
 
@@ -187,7 +177,7 @@ namespace SFSAcademy
         public IEnumerable<BATCH> Employee_Batches()
         {
             var batches_with_employees = db.BATCHes.Where(x => x.IS_ACT == true && x.EMP_ID != null).ToList();
-            var assigned_batches = batches_with_employees.Where(x=>x.EMP_ID == ID).ToList();
+            var assigned_batches = batches_with_employees.Where(x=> HtmlHelpers.ApplicationHelper.SplitCommaString(x.EMP_ID).Contains(ID.ToString())).ToList();
             return (IEnumerable<BATCH>)assigned_batches;
         }
         public decimal Max_Hours_Per_Day()
@@ -210,10 +200,9 @@ namespace SFSAcademy
             var emp = db.EMPLOYEEs.Include(x => x.EMPLOYEE_DEPARTMENT).Where(x => x.EMPLOYEE_DEPARTMENT.ID == EMP_DEPT_ID && x.ID < ID).OrderByDescending(x => x.ID).ToList();
             return emp.FirstOrDefault();
         }
-        public string Full_Name()
+        public string Full_Name
         {
-            string FullName = string.Concat(FIRST_NAME, " ", MID_NAME, " ", LAST_NAME);
-            return FullName;
+            get { return string.Concat(FIRST_NAME, " ", MID_NAME, " ", LAST_NAME); }
         }
         public bool Is_Payslip_Approved(DateTime? date)
         {

@@ -3,41 +3,6 @@
 @{
     ViewBag.Title = "Fees_Submission_Batch";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    /* This is change event for your dropdownlist */
-    $(document.forms[0]).ready(function () {
-        $(".LoaderBox1").hide();
-        $('#BatchDropDown').change(function () {
-
-            /* Get the selected value of dropdownlist */
-            var selectedID = $(this).val();
-            $(".LoaderBox1").show();
-            /* Request the partial view with .get request. */
-            $.get('/Finance/_fees_collection_dates/' + selectedID, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
-                $('#fees_collection_dates').html(data);
-                /* little fade in effect */
-                $('#fees_collection_dates').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox1").hide();
-            });
-
-        });
-    });
-</script>
-
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
     <h1>Fees Submission</h1>
@@ -78,3 +43,32 @@
         <div id="modal-box" style="display:none;"></div>
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        /* This is change event for your dropdownlist */
+        $(document.forms[0]).ready(function () {
+            $(".LoaderBox1").hide();
+            $('#BatchDropDown').change(function () {
+
+                /* Get the selected value of dropdownlist */
+                var selectedID = $(this).val();
+                $(".LoaderBox1").show();
+                /* Request the partial view with .get request. */
+                $.get('/Finance/_fees_collection_dates/' + selectedID, function (data) {
+
+                    /* data is the pure html returned from action method, load it to your page */
+                    $('#fees_collection_dates').html(data);
+                    /* little fade in effect */
+                    $('#fees_collection_dates').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox1").hide();
+                });
+
+            });
+        });
+    </script>
+}

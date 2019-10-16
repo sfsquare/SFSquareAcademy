@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <meta charset="UTF-8">
-   
+
     <link rel="icon" href="~/Content/front-page/images/cropped-favicon-1-1-32x32-S.png" sizes="32x32" />
     <link rel="icon" href="~/Content/front-page/images/cr-favicon-1-1-192x192SF.png" sizes="192x192" />
     <link rel="apple-touch-icon-precomposed" href="~/Content/front-page/images/cr-favicon-1-1-180x180SF.png" />
     <meta name="msapplication-TileImage" content="/Content/front-page/images/cr-favicon-1-1-270x270SF.png" />
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script> 
     @Html.DynamicHeader()
     @Html.Partial("_Partial/Get_Stylesheets")
     @Html.Partial("_Partial/Get_Javascript")
+    @Scripts.Render("~/bundles/nicetitle")
+    @Scripts.Render("~/bundles/fckeditor")
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("header", required: false)
 </head>
 <body>
     <div id="header_bg">
@@ -45,8 +47,8 @@
     </div>
 
     <div id="content_wrapper">
-        <div id="content"> 
-        @RenderBody() 
+        <div id="content">
+            @RenderBody()
         </div>
 
         <div class="extender"></div>
@@ -59,6 +61,6 @@
             </div>
         </div>
     </div>
-    @RenderSection("scripts", false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>

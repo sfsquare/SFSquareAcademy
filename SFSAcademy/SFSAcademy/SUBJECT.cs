@@ -25,6 +25,7 @@ namespace SFSAcademy
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
             this.FA_GROUP = new HashSet<FA_GROUP>();
+            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
         }
     
         public int ID { get; set; }
@@ -42,7 +43,6 @@ namespace SFSAcademy
         public Nullable<int> BTCH_ID { get; set; }
         public bool LANG { get; set; }
     
-        public virtual BATCH BATCH { get; set; }
         public virtual ELECTIVE_GROUP ELECTIVE_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
@@ -60,5 +60,8 @@ namespace SFSAcademy
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FA_GROUP> FA_GROUP { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
+        public virtual BATCH BATCH { get; set; }
     }
 }

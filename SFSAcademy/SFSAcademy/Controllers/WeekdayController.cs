@@ -211,7 +211,7 @@ namespace SFSAcademy.Controllers
                         }
                     }
                     try { db.SaveChanges(); }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
                 }
                 foreach(var OldWkD in old)
                 {
@@ -259,7 +259,7 @@ namespace SFSAcademy.Controllers
 
                 }
                 try { db.SaveChanges(); }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage }); }
                 ViewBag.Notice = "Weekdays modified.";
                 return RedirectToAction("Index",new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }

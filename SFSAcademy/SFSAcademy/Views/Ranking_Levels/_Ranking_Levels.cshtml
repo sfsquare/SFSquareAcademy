@@ -1,0 +1,82 @@
+﻿@{
+    IEnumerable<RANKING_LEVEL> ranking_levels = (IEnumerable<RANKING_LEVEL>)ViewData["ranking_levels"];
+    COURSE course = (COURSE)ViewData["course"];
+    RANKING_LEVEL ranking_level = (RANKING_LEVEL)ViewData["ranking_level"];
+}
+<script type="text/javascript" language="javascript">
+    function EditRankingLevel(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#course_ranking_levels').html(data);
+            $('#course_ranking_levels').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+    function DeleteRankingLevel(sender) {
+         $(".LoaderBox2").show();
+        if (confirm("Are you sure you want to delete this ?")) {
+            $.get(sender, function (data) {
+                $('#course_ranking_levels').html(data);
+                $('#course_ranking_levels').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox2").hide();
+            });
+        } else {
+            $(".LoaderBox2").hide()
+            return false;
+        }
+    }
+    function ChangePriority(sender) {
+        $(".LoaderBox2").show();
+        $.get(sender, function (data) {
+            $('#category-list').html(data);
+            $('#category-list').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+        });
+    }
+</script>
+<div class="LoaderBox2" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+<ul class="category-list">
+    @if (ranking_levels != null && ranking_levels.Count() != 0)
+    {
+        int i = 0;
+        <li class="heading">Ranking Levels</li>
+        foreach (var rank in ranking_levels)
+        {
+            string cycle = "listeven"; string UpClass = i == 0 ? "inactive" : ""; string DownClass = i + 1 == ranking_levels.Count() ? "inactive" : "";
+            if (i % 2 == 0)
+            {
+                cycle = "listodd";
+            }
+            <li class="@cycle">
+                <div class="category-name">
+                    @rank.NAME
+                    <span class="category-up-down @UpClass"><a href="@Url.Action("Change_Priority", "Ranking_Levels",new {order ="up", id = rank.ID})" onclick='ChangePriority(this.href); return false;'>▲</a></span>
+                    <span class="category-up-down @DownClass"><a href="@Url.Action("Change_Priority", "Ranking_Levels",new {order ="down", id = rank.ID})" onclick='ChangePriority(this.href); return false;'>▼</a></span>
+                </div>
+                <div class="category-edit">
+                    @if (Html.Permitted_To("Edit_Ranking_Level", "Ranking_Levels"))
+                    {
+                        <a href="@Url.Action("Edit_Ranking_Level", "Ranking_Levels",new {id = rank.ID })" onclick='EditRankingLevel(this.href); return false;'> Edit</a>
+                    }
+                </div>
+                <div class="category-delete">
+                    @if (Html.Permitted_To("Delete_Ranking_Level", "Ranking_Levels"))
+                    {
+                        <a href="@Url.Action("Delete_Ranking_Level", "Ranking_Levels",new {id = rank.ID})"  onclick="DeleteRankingLevel(this.href); return false;">Delete</a>
+                    }
+                </div>
+            </li>
+            i += 1;
+        }
+
+    }
+    else
+    {
+        <p class="flash-msg">No Ranking Level found.</p>
+    }
+</ul>
+
+

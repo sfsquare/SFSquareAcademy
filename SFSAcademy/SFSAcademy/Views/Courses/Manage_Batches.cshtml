@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Manage_Batches";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Courses</h1>
+    <h3>Manage Batch</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (Html.Permitted_To("Index", "Grading_Levels"))
+        {
+            <li><a href="@Url.Action("Index", "Grading_Levels")">Grading System</a></li>
+        }
+        <li><a href="@Url.Action("Index", "Batch_Transfers")">Batch Transfer</a></li>
+    </ul>
+</div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        Manage Batch
+    </div>
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        <div class="label-field-pair">
+            <label for="student_course">Select a Course</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("CRS_ID", null, htmlAttributes: new { @class = "form-control", @id = "CourseDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+
+        <div id="update_batch"></div>
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        /* This is change event for your dropdownlist */
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#CourseDropDown').change(function () {
+                var selectedID = $(this).val();
+                $(".LoaderBox").show();
+                $.get('/Courses/Update_Batch?course_id=' + selectedID, function (data) {
+                    $('#update_batch').html(data);
+                    $('#update_batch').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

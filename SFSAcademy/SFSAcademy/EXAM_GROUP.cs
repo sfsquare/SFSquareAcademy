@@ -18,6 +18,7 @@ namespace SFSAcademy
         public EXAM_GROUP()
         {
             this.EXAMs = new HashSet<EXAM>();
+            this.GROUPED_EXAM = new HashSet<GROUPED_EXAM>();
         }
     
         public int ID { get; set; }
@@ -30,9 +31,11 @@ namespace SFSAcademy
         public bool IS_FINAL_EXAM { get; set; }
         public Nullable<int> CCE_EXAM_CAT_ID { get; set; }
     
-        public virtual BATCH BATCH { get; set; }
         public virtual CCE_EXAM_CATEGORY CCE_EXAM_CATEGORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM> EXAMs { get; set; }
+        public virtual BATCH BATCH { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM> GROUPED_EXAM { get; set; }
     }
 }

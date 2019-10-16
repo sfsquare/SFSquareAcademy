@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Http;
 
-namespace SFSAcademy.Helpers
+namespace SFSAcademy
 {
     public abstract class NoResubmitAbstract
     {

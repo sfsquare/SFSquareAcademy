@@ -3,6 +3,7 @@
     IEnumerable<SFSAcademy.SUBJECT> electives = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["electives"];
     BATCH batch = (BATCH)ViewData["batch"];
     ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+    COURSE course = (COURSE)ViewData["course"];
 }
 @{
     ViewBag.Title = "Show";
@@ -55,8 +56,8 @@
     </div>
     <div class="bread_crumb">
         <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
-        <a href="@Url.Action("ManageCourse", "Courses")">Manage Course</a> &raquo;
-        <a href="@Url.Action("ManageBatches", "BATCH")">Manage Batch</a> &raquo;
+        <a href="@Url.Action("Manage_Course", "Courses")">Manage Course</a> &raquo;
+        <a href="@Url.Action("Show", "Courses",new { id = course.ID})">@course.Full_Name</a> &raquo;
         <a href="@Url.Action("Index", "Elective_Groups",new {BatchId = batch.ID})">Electives</a> &raquo;
         @elective_group.ELECTIVE_GRP_NAME
     </div>

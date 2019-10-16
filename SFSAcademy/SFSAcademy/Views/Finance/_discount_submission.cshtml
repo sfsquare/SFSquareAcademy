@@ -14,7 +14,7 @@
                 autoOpen: false,
                 draggable: true,
                 resizable: true,
-                width: 500,
+                width: 'auto',
                 height: 'auto',
                 dialogClass: "alert",
                 cache: false,
@@ -47,19 +47,23 @@
     @using (Ajax.BeginForm("Update_Discount_Ajax", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "modal-box", InsertionMode = InsertionMode.Replace, OnSuccess = "CloseDiscountDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
     {
         @Html.AntiForgeryToken()
-        <div class="label-field-pair label">
-            <div class="label-container label">@Html.LabelFor(model => model.Discount, "Discount Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-            <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">@Html.TextBoxFor(model => model.Discount, null, new { @class = "form-control", @id = "Discount" })</div>
-            @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.Discount, "Discount Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.TextBoxFor(model => model.Discount, null, new { @class = "form-control", @id = "Discount", required = "required" })
+                <span class="necessary-field" style="font-size:small">*</span>
+                @Html.ValidationMessageFor(model => model.Discount, "", new { @class = "text-danger" })
+            </div>
         </div>
-        <div class="label-field-pair label">
-            <div class="label-container label">@Html.LabelFor(model => model.Discount_Desc, "Discount Description", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-            <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">@Html.TextBoxFor(model => model.Discount_Desc, null, new { @class = "form-control", @id = "Discount_Desc" })</div>
-            @Html.ValidationMessageFor(model => model.Discount_Desc, "", new { @class = "text-danger" })
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.Discount_Desc, "Discount Description", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.TextBoxFor(model => model.Discount_Desc, null, new { @class = "form-control", @id = "Discount_Desc", required = "required" })
+                <span class="necessary-field" style="font-size:small">*</span>
+                @Html.ValidationMessageFor(model => model.Discount_Desc, "", new { @class = "text-danger" })
+            </div>
         </div>
-
+        <div class="extender"></div>
         <input type="submit" value="Add Discount" id="submit-button5" class="submit-button" />
         <div class="LoaderBox5"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
 

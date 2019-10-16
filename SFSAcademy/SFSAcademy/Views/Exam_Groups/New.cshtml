@@ -1,0 +1,110 @@
+﻿@model SFSAcademy.EXAM_GROUP
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    COURSE course = (COURSE)ViewData["course"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+    List<PRIVILEGE> user_privileges = (List<PRIVILEGE>)ViewData["user_privileges"];
+}
+@{
+    ViewBag.Title = "Create";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Settings Logo">
+    <h1>Courses</h1>
+    <h3>New Batch</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("Show", "Courses",new { id = course.ID})">@course.Full_Name</a> &raquo;
+        <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">Batch: @batch.Full_Name</a> &raquo;
+        <a href="@Url.Action("Index", "Exam_Groups",new { id = batch.ID})">Exam</a> &raquo;
+        New Exam
+    </div>
+    <div class="box">
+        <div id="flash"></div>
+        <div id="exam-form">
+            @if (exam_group != null)
+            {
+                if (exam_group.EXAM_TYPE == "Marks" || exam_group.EXAM_TYPE == "MarksAndGrades")
+                {
+                    @Html.Partial("Exam/_Exam_Marks_Form");
+                }
+                else
+                {
+                    @Html.Partial("Exam/_Exam_Grade_Form");
+                }
+            }
+            else
+            {
+                if (ViewBag.ErrorMessage != null)
+                {
+                    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+                }
+                using (Html.BeginForm("Update_Exam_Form", "Exam", FormMethod.Post, new { @encType = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    if (ViewBag.ErrorMessage != null)
+                    {
+                        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+                    }
+                    @Html.Hidden("BTCH_ID", batch.ID)
+                    <div class="label-field-pair">
+                        @Html.LabelFor(model => model.NAME, "Exam Name", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="text-input-bg">
+                            @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required", @Value = ViewBag.ename } })
+                            <span class="necessary-field" style="font-size:small">*</span>
+                            @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                        </div>
+                    </div>
+                    if (batch.GPA_Enabled() || batch.CWA_Enabled())
+                    {
+                        <div class="label-field-pair">
+                            @Html.LabelFor(model => model.EXAM_TYPE, "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="text-input-bg">
+                                @Html.DropDownList("EXAM_TYPE", EnumHelper.GetSelectList(typeof(ExamType)), "Select Exam Type", new { @class = "form-control", @Value = "MarksAndGrades" })
+                                @Html.ValidationMessageFor(model => model.EXAM_TYPE, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }
+                    else if (batch.CCE_Enabled())
+                    {
+                        <div class="label-field-pair">
+                            @Html.LabelFor(model => model.CCE_EXAM_CAT_ID, "CCE Exam Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="text-input-bg">
+                                @Html.DropDownList("CCE_EXAM_CAT_ID", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.CCE_EXAM_CAT_ID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        @Html.Hidden("EXAM_TYPE", "MarksAndGrades")
+                    }
+                    else
+                    {
+                        <div class="label-field-pair">
+                            @Html.LabelFor(model => model.EXAM_TYPE, "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="text-input-bg">
+                                @Html.DropDownList("EXAM_TYPE", EnumHelper.GetSelectList(typeof(ExamType)), "Select Exam Type", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.EXAM_TYPE, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }
+                    <input type="submit" value="► Save" class="submit_button" />
+                    <div class="extender"></div>
+                }
+            }
+        </div>
+
+
+    </div>
+</div>
+

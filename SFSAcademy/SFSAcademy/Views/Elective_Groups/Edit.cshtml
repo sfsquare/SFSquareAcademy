@@ -1,5 +1,7 @@
 ﻿@model SFSAcademy.ELECTIVE_GROUP
-
+@{
+    COURSE course = (COURSE)ViewData["course"];
+}
 @{
     SFSAcademy.CoursesBatch batch = (SFSAcademy.CoursesBatch)ViewData["batch"];
 }
@@ -31,8 +33,8 @@
 
     <div class="bread_crumb">
         <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
-        <a href="@Url.Action("ManageCourse", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
-        <a href="@Url.Action("ManageBatches", "BATCH")">Batch @batch.BatchData.NAME</a> &raquo;
+        <a href="@Url.Action("Manage_Course", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
+        <a href="@Url.Action("Show", "Courses",new { id = course.ID})">@course.Full_Name</a> &raquo;
         <a href="@Url.Action("Index", "Elective_Groups",new {BatchId = batch.BatchData.ID})">Electives</a> &raquo;
         Edit
     </div>
