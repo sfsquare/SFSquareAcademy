@@ -228,7 +228,7 @@ namespace SFSAcademy.Controllers
                             sTUDENTfROMuPD.UPDATED_AT = System.DateTime.Now;
                             db.Entry(sTUDENTfROMuPD).State = EntityState.Modified;
                             try { db.SaveChanges(); }
-                            catch (Exception e) { ViewBag.BatchTransferMessage = e.InnerException.InnerException.Message; }
+                            catch (Exception e) { ViewBag.BatchTransferMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                             //Find all available Fee Collection which are active.
                             var FeeCollectionSet = (from ffc in db.FINANCE_FEE_CATGEORY
                                                     join b in db.BATCHes on ffc.BTCH_ID equals b.ID
@@ -245,7 +245,7 @@ namespace SFSAcademy.Controllers
                                 db.FINANCE_FEE.Add(FF_fEE);
                             }
                             try { db.SaveChanges(); }
-                            catch (Exception e) { ViewBag.BatchTransferMessage = e.InnerException.InnerException.Message; }
+                            catch (Exception e) { ViewBag.BatchTransferMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                         }                        
                     }
                     if(FaultedStudents != "")
@@ -351,7 +351,7 @@ namespace SFSAcademy.Controllers
                         sTUDENTfROMuPD.UPDATED_AT = System.DateTime.Now;
                         db.Entry(sTUDENTfROMuPD).State = EntityState.Modified;
                         try { db.SaveChanges(); }
-                        catch (Exception e) { ViewBag.BatchTransferMessage = e.InnerException.InnerException.Message; }
+                        catch (Exception e) { ViewBag.BatchTransferMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
 
                         //Find all available Fee Collection which are active.
                         var FeeCollectionSet = (from ffc in db.FINANCE_FEE_CATGEORY
@@ -369,7 +369,7 @@ namespace SFSAcademy.Controllers
                             db.FINANCE_FEE.Add(FF_fEE);
                         }
                         try { db.SaveChanges(); ViewBag.BatchTransferMessage = string.Concat("Student with Admission Number ", AdmissionNumber, " is transfered from ", OldBatch.COURSE.CODE, "-", OldBatch.NAME, " to ", NewBatch.COURSE.CODE, " -", NewBatch.NAME); }
-                        catch (Exception e) { Console.WriteLine(e); ViewBag.BatchTransferMessage = e.InnerException.InnerException.Message; }
+                        catch (Exception e) { Console.WriteLine(e); ViewBag.BatchTransferMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                     }
                     
                 }
@@ -453,13 +453,11 @@ namespace SFSAcademy.Controllers
                             from subct in gk.DefaultIfEmpty()
                             join cat in db.STUDENT_CATGEORY on st.STDNT_CAT_ID equals cat.ID into gl
                             from subcat in gl.DefaultIfEmpty()
-                            join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                            from subemp in gm.DefaultIfEmpty()
                             join img in db.IMAGE_DOCUMENTS on st.PHTO_DATA equals img.DOCUMENTID into gn
                             from subimg in gn.DefaultIfEmpty()
                             where st.ID == id
                             orderby st.LAST_NAME, subb.NAME
-                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), ImageData = (subimg == null ? null : subimg) }).Distinct();
 
             if (StudentS == null)
             {
@@ -485,13 +483,11 @@ namespace SFSAcademy.Controllers
                             from subct in gk.DefaultIfEmpty()
                             join cat in db.STUDENT_CATGEORY on st.STDNT_CAT_ID equals cat.ID into gl
                             from subcat in gl.DefaultIfEmpty()
-                            join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                            from subemp in gm.DefaultIfEmpty()
                             join img in db.IMAGE_DOCUMENTS on st.PHTO_DATA equals img.DOCUMENTID into gn
                             from subimg in gn.DefaultIfEmpty()
                             where st.ID == id
                             orderby st.LAST_NAME, subb.NAME
-                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), ImageData = (subimg == null ? null : subimg) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), ImageData = (subimg == null ? null : subimg) }).Distinct();
 
             return View(StudentS.FirstOrDefault());
 
@@ -565,14 +561,12 @@ namespace SFSAcademy.Controllers
                             from subct in gk.DefaultIfEmpty()
                             join cat in db.STUDENT_CATGEORY on st.STDNT_CAT_ID equals cat.ID into gl
                             from subcat in gl.DefaultIfEmpty()
-                            join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                            from subemp in gm.DefaultIfEmpty()
                             join esc in db.EXAM_SCORE on st.ID equals esc.STDNT_ID into gn
                             from subesc in gn.DefaultIfEmpty()
                             join grl in db.GRADING_LEVEL on subesc.GRADING_LVL_ID equals grl.ID into go
                             from subgrl in go.DefaultIfEmpty()
                             orderby st.LAST_NAME, subb.NAME
-                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), GradeData = (subgrl == null ? null : subgrl) }).Distinct();
             var StudentGuardians = (from st in db.STUDENTs
                                     join gd in db.GUARDIANs on st.ID equals gd.WARD_ID
                                     where st.IS_DEL == false
@@ -751,8 +745,6 @@ namespace SFSAcademy.Controllers
                             from subct in gk.DefaultIfEmpty()
                             join cat in db.STUDENT_CATGEORY on st.STDNT_CAT_ID equals cat.ID into gl
                             from subcat in gl.DefaultIfEmpty()
-                            join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                            from subemp in gm.DefaultIfEmpty()
                             join esc in db.EXAM_SCORE on st.ID equals esc.STDNT_ID into gn
                             from subesc in gn.DefaultIfEmpty()
                             join grl in db.GRADING_LEVEL on subesc.GRADING_LVL_ID equals grl.ID into go
@@ -760,7 +752,7 @@ namespace SFSAcademy.Controllers
                             join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
                             from subgrd in gd.DefaultIfEmpty()
                             orderby st.LAST_NAME, subb.NAME
-                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), EmployeeData = (subemp == null ? null : subemp), GradeData = (subgrl == null ? null : subgrl), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                            select new Student { StudentData = st, BatcheData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), CountryData = (subct == null ? null : subct), CategoryData = (subcat == null ? null : subcat), GradeData = (subgrl == null ? null : subgrl), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -995,7 +987,7 @@ namespace SFSAcademy.Controllers
                     return View(sTUDENT);
                 }
                 catch (Exception e) {                   
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTUDENT);
                 }
 
@@ -1019,7 +1011,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTUDENT);
                 }
 
@@ -1050,7 +1042,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTUDENT);
                 }
                 // some code 
@@ -1197,7 +1189,7 @@ namespace SFSAcademy.Controllers
                     sTUDENT.IMMDT_CNTCT_ID = item.GuardianList.ID;
                     //db.SaveChanges();
                     try { db.SaveChanges(); ViewBag.ErrorMessage = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID); }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return View(model); }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return View(model); }
                     break;
                 }
             }
@@ -1337,7 +1329,7 @@ namespace SFSAcademy.Controllers
                 sTUDENTtOuPDATE.UPDATED_AT = System.DateTime.Now;
                 db.Entry(sTUDENTtOuPDATE).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.ErrorMessage = "Student's Details updated successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
 
                 ViewBag.NTLTY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", sTUDENTtOuPDATE.NTLTY_ID);
                 ViewBag.STDNT_CAT_ID = new SelectList(db.STUDENT_CATGEORY, "ID", "NAME", sTUDENTtOuPDATE.STDNT_CAT_ID);
@@ -1439,7 +1431,7 @@ namespace SFSAcademy.Controllers
                 try { db.SaveChanges(); }
                 catch (Exception e)
                 {
-                    ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return PartialView("_Student_TC_Generate");
                 }
 
@@ -1461,7 +1453,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Student_TC_Generate");
             }
 
@@ -1485,7 +1477,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Student_TC_Generate");
             }
 
@@ -1502,13 +1494,11 @@ namespace SFSAcademy.Controllers
                            from subb in gi.DefaultIfEmpty()
                            join c in db.COURSEs on subb.CRS_ID equals c.ID into gj
                            from subc in gj.DefaultIfEmpty()
-                           join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                           from subemp in gm.DefaultIfEmpty()
                            join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
                            from subgrd in gd.DefaultIfEmpty()
                            where st.ADMSN_NO == id
                            orderby st.LAST_NAME, subb.NAME
-                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (StudentVal.FirstOrDefault().GuardianData == null)
             {
@@ -1639,7 +1629,7 @@ namespace SFSAcademy.Controllers
                 try { db.SaveChanges();}
                 catch (Exception e)
                 {
-                    ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTUDENT);
                 }
 
@@ -1651,7 +1641,7 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); ViewBag.DeleteMessage = "Student deleted from system successfully"; }
             catch (Exception e)
             {
-                ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.DeleteMessage = string.Concat(ViewBag.DeleteMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(sTUDENT);
             }
             return View(sTUDENT);
@@ -1764,13 +1754,11 @@ namespace SFSAcademy.Controllers
                             from subb in gi.DefaultIfEmpty()
                             join c in db.COURSEs on subb.CRS_ID equals c.ID into gj
                             from subc in gj.DefaultIfEmpty()
-                            join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                            from subemp in gm.DefaultIfEmpty()
                             join grd in db.GUARDIANs on st.ID equals grd.WARD_ID into gd
                             from subgrd in gd.DefaultIfEmpty()
                            where st.ID == Std_id && st.IS_DEL == false
                            orderby st.LAST_NAME, subb.NAME
-                            select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc),  EmployeeData = (subemp == null ? null : subemp), GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
+                            select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc),  GuardianData = (subgrd == null ? null : subgrd) }).Distinct();
 
             if (parents.FirstOrDefault().GuardianData == null)
             {
@@ -1848,7 +1836,7 @@ namespace SFSAcademy.Controllers
                 gUARDIAN_UPD.UPDATED_AT = DateTime.Now;
                 db.Entry(gUARDIAN_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.GuardianEditMessage = "Guardian Details updated successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianEditMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianEditMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 ViewBag.CTRY_ID = new SelectList(db.COUNTRies, "ID", "CTRY_NAME", gUARDIAN.CTRY_ID);
                 DateTime SDate1 = Convert.ToDateTime(gUARDIAN.DOB);
                 ViewBag.DOB = SDate1.ToShortDateString();
@@ -1925,7 +1913,7 @@ namespace SFSAcademy.Controllers
                 var ParUser = new USER() { USRNAME = FullName, FIRST_NAME = gUARDIAN.FIRST_NAME, LAST_NAME = gUARDIAN.LAST_NAME, EML = gUARDIAN.EML, ROLE = "Parent" };
                 db.USERS.Add(ParUser);
                 try { db.SaveChanges(); ViewBag.GuardianAddMessage = "Guardian Added successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianAddMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianAddMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 // some code 
                 TempData["alertMessage"] = string.Concat("Student Admission Done. Website User ID :", ParUser.USRNAME, "     Password :", ParUser.HASHED_PSWRD);
 
@@ -1972,7 +1960,7 @@ namespace SFSAcademy.Controllers
                     sTUDENT.IMMDT_CNTCT_ID = item.GuardianList.ID;
                     //db.SaveChanges();
                     try { db.SaveChanges(); ViewBag.Notice = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID); }
-                    catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return View(model); }
+                    catch (Exception e) { ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return View(model); }
                     break;
                 }
             }
@@ -1990,12 +1978,10 @@ namespace SFSAcademy.Controllers
                            from subb in gi.DefaultIfEmpty()
                            join c in db.COURSEs on subb.CRS_ID equals c.ID into gj
                            from subc in gj.DefaultIfEmpty()
-                           join emp in db.EMPLOYEEs on subb.EMP_ID equals emp.ID into gm
-                           from subemp in gm.DefaultIfEmpty()
                            join grd in db.GUARDIANs on st.ID equals grd.WARD_ID
                            where st.IS_DEL == false
                            orderby grd.LAST_NAME, grd.FIRST_NAME
-                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), EmployeeData = (subemp == null ? null : subemp), GuardianData = grd }).Distinct();
+                           select new StudentsGuardians { StudentData = st, BatchData = (subb == null ? null : subb), CourseData = (subc == null ? null : subc), GuardianData = grd }).Distinct();
 
             ViewBag.WARD_ID = Std_id;
 
@@ -2032,7 +2018,7 @@ namespace SFSAcademy.Controllers
             };
             db.GUARDIANs.Add(gUARDIANnEW);
             try { db.SaveChanges(); ViewBag.GuardianAddMessage = "Guardian Added successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianAddMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.GuardianAddMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return RedirectToAction("Admission2", "Student", new { Std_id = Std_id });
         }
 
@@ -2130,7 +2116,7 @@ namespace SFSAcademy.Controllers
                 sTUDENTtOuPDATE.UPDATED_AT = System.DateTime.Now;
                 db.Entry(sTUDENTtOuPDATE).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.ErrorMessage = "Student's Details updated successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
 
                 STUDENT student = db.STUDENTs.Find(sTUDENT.ID);
                 var StudentValDefaulters = (from ff in db.FINANCE_FEE
@@ -2220,7 +2206,7 @@ namespace SFSAcademy.Controllers
                 FINANCE_FEE NewFee = new FINANCE_FEE { FEE_CLCT_ID = id, STDNT_ID = std_id, TRAN_ID = null, IS_PD = false };
                 db.FINANCE_FEE.Add(NewFee);
                 try { db.SaveChanges(); ViewBag.Notice = "Fee Collection added for student successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             }
             else
             {
@@ -2364,7 +2350,7 @@ namespace SFSAcademy.Controllers
             Fee_To_Activate.IS_PD = false;
             db.Entry(Fee_To_Activate).State = EntityState.Modified;
             try { db.SaveChanges(); ViewBag.Notice = "Fees Activated successfully to be edited in Fee Collection module."; }
-            catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
 
             return RedirectToAction("Fee_Details", new { id = id, id2 = id2, Notice = ViewBag.Notice , ErrorMessage = ViewBag.ErrorMessage });
         }
@@ -2434,7 +2420,7 @@ namespace SFSAcademy.Controllers
                 try { db.SaveChanges(); }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Electives", new { id = student.BTCH_ID, id2 = elective_subject.ID, ErrorMessage = ViewBag.ErrorMessage });
                 }
 
@@ -2461,7 +2447,7 @@ namespace SFSAcademy.Controllers
                         try { db.SaveChanges(); }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return RedirectToAction("Electives", new { id = batch.ID, id2 = elective_subject.ID, ErrorMessage = ViewBag.ErrorMessage });
                         }
 
@@ -2512,7 +2498,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Addional Field added in system successfully!";
@@ -2550,7 +2536,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Additional Field updated in system successfully!";
@@ -2586,7 +2572,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Additional Field deleted fom system successfully!";
@@ -2708,5 +2694,10 @@ namespace SFSAcademy.Controllers
             return fileBytes;
         }
 
+        [AllowAnonymous]
+        public JsonResult GurdianDOBFutureDate(DateTime? DOB)
+        {
+            return Json(!(DOB != null && DOB >= DateTime.Today), JsonRequestBehavior.AllowGet);
+        }
     }
 }

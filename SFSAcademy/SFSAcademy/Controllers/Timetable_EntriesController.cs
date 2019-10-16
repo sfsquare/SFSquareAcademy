@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using SFSAcademy.Helpers;
 
 
 namespace SFSAcademy.Controllers
@@ -229,7 +228,7 @@ namespace SFSAcademy.Controllers
                     }
                     try { db.SaveChanges(); }
                     catch (DbEntityValidationException e){foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }return PartialView("_New_Entry");}
-                    catch (Exception e){ ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);return PartialView("_New_Entry");}
+                    catch (Exception e){ ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));return PartialView("_New_Entry");}
                 }
             }
             ViewBag.validation_problems = validation_problems.AsEnumerable();
@@ -301,7 +300,7 @@ namespace SFSAcademy.Controllers
             }
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e) { foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } } }
-            catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message); }
+            catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message)); }
 
             TTE_From_Batch_And_TT(timetable.ID, batch_id);
 
@@ -329,7 +328,7 @@ namespace SFSAcademy.Controllers
             db.Entry(tte).State = EntityState.Modified;
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e) { foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } } }
-            catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message); }
+            catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message)); }
 
             TTE_From_Batch_And_TT(timetable.ID, tte.BTCH_ID);
 
@@ -367,7 +366,7 @@ namespace SFSAcademy.Controllers
                         db.TIMETABLE_ENTRY.Add(tte_new);
                     }
                     try { db.SaveChanges(); }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; return; }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return; }
                 }                
             }           
             var timetable_entries = db.TIMETABLE_ENTRY.Include(x => x.SUBJECT).Include(x => x.SUBJECT.ELECTIVE_GROUP).Include(x => x.EMPLOYEE).Include(x => x.WEEKDAY).Include(x => x.CLASS_TIMING).Where(x => x.BTCH_ID == batch_id && x.TIMT_ID == TT).ToList();

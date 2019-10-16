@@ -1,93 +1,69 @@
-﻿@model IEnumerable<SFSAcademy.RANKING_LEVEL>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.GPA)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MKS)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SUBJ_CNT)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PRIR)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CREATED_AT)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UPDATED_AT)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FULL_CRS)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SUBJ_LMT_TYPE)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MKS_LMT_TYPE)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.COURSE.CRS_NAME)
-        </th>
-        <th></th>
-    </tr>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#CourseDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox").show();
+            $.get('/Ranking_Levels/Load_Ranking_Levels?course_id=' + selectedID , function (data) {
+                $('#course_ranking_levels').html(data);
+                $('#course_ranking_levels').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GPA)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MKS)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SUBJ_CNT)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PRIR)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CREATED_AT)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UPDATED_AT)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FULL_CRS)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SUBJ_LMT_TYPE)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MKS_LMT_TYPE)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.COURSE.CRS_NAME)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+        });
+    });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Ranking Levels</h1>
+    <h3>Managing Ranking Levels</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    <a href="@Url.Action("Settings", "Exam")">Settings</a> &raquo;
+    Ranking Level
+</div>
 
-</table>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div id="course-select">
+        <div class="label-field-pair">
+            <label for="student_course">Select a Course</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("CRS_ID", null, htmlAttributes: new { @class = "form-control", @id = "CourseDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+    </div>
+    <div id="errors">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
+    <div id="course_ranking_levels">\</div>
+</div>

@@ -273,7 +273,6 @@ namespace SFSAcademy.Controllers
             NewsDetails newsDetail = new NewsDetails();
             try
             {
-                //Configuration config = new Configuration();
                 int userId = Convert.ToInt32(this.Session["UserId"]);
                 var userdetails = this.Session["CurrentUser"] as UserDetails;
                 var priv = userdetails.privilage_list.Where(p => p.NAME == "ManageNews").FirstOrDefault();

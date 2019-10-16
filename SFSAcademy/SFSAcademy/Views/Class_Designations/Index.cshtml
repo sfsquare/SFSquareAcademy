@@ -1,63 +1,69 @@
-﻿@model IEnumerable<SFSAcademy.CLASS_DESIGNATION>
-
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.NAME)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CGPA)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CREATED_AT)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UPDATED_AT)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MKS)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.COURSE.CRS_NAME)
-        </th>
-        <th></th>
-    </tr>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.NAME)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CGPA)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CREATED_AT)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UPDATED_AT)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MKS)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.COURSE.CRS_NAME)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $('#CourseDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox").show();
+            $.get('/Class_Designations/Load_Class_Designations?course_id=' + selectedID, function (data) {
+                $('#course_class_designations').html(data);
+                $('#course_class_designations').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
 
-</table>
+        });
+    });
+</script>
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Class Designations</h1>
+    <h3>Manage Class Designations</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    <a href="@Url.Action("Settings", "Exam")">Settings</a> &raquo;
+    Class Designations
+</div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div id="course-select">
+        <div class="label-field-pair">
+            <label for="student_course">Select a Course</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("CRS_ID", null, htmlAttributes: new { @class = "form-control", @id = "CourseDropDown" })
+                <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+    </div>
+    <div id="errors">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
+    <div id="course_class_designations"></div>
+</div>

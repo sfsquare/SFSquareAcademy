@@ -1,0 +1,72 @@
+﻿@model CLASS_DESIGNATION
+@{
+    IEnumerable<CLASS_DESIGNATION> class_designations = (IEnumerable<CLASS_DESIGNATION>)ViewData["class_designations"];
+    COURSE course = (COURSE)ViewData["course"];
+    CLASS_DESIGNATION class_designation = (CLASS_DESIGNATION)ViewData["class_designation"];
+}
+<script type="text/javascript" language="javascript">
+    function CloseLoader() {
+        $(".LoaderBox").hide();
+    }
+    function OpenLoader() {
+        $(".LoaderBox").show();
+    }
+</script>
+<div id="class_form">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @using (Ajax.BeginForm("Create_Class_Designation", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "course_class_designations", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseLoader()" }, htmlAttributes: new { @class = "form-horizontal"}))
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        @Html.Hidden("course_id", course.ID)
+        <div id="form-content">
+            <div class="label-field-pair">
+                <label for="name">Name</label>
+                <span class="necessary-field" style="font-size:small">* Required Field</span>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            @if (course.GPA_Enabled())
+            {
+                <div class="label-field-pair">
+                    <label for="gpa">CGPA</label>
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.CGPA, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CGPA, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="label-field-pair">
+                    <label for="name">Marks</label>
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.MKS, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MKS, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                    </div>
+                </div>
+            }
+
+            <div class="extender"></div>
+
+            <div id="submit-button">
+                <input type="submit" value="► Create" class="user_button" />
+            </div>
+
+
+        </div>
+    }
+</div>
+<div id="category-list">
+    @Html.Partial("_Class_Designations")
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/dropzone.js"></script>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,10 @@ namespace SFSAcademy
     public interface IHasBeforeSave
     {
         void Before_Save();
+    }
+    public interface IHasBeforeDestroy
+    {
+        IEnumerable<ValidationResult> Before_Destroy(ValidationContext validationContext);
     }
 
     public partial class SFSAcademyEntities : DbContext
@@ -39,6 +44,15 @@ namespace SFSAcademy
                 foreach (var entry in BeforeSavechangeSet.Where(c => c.State != EntityState.Unchanged))
                 {
                     (entry.Entity as IHasBeforeSave).Before_Save();
+                }
+            }
+            var BeforeDestroychangeSet = ChangeTracker.Entries<IHasBeforeDestroy>();
+            ValidationContext validationContext = new ValidationContext(this);
+            if (BeforeDestroychangeSet != null)
+            {
+                foreach (var entry in BeforeDestroychangeSet.Where(c => c.State == EntityState.Deleted))
+                {
+                    (entry.Entity as IHasBeforeDestroy).Before_Destroy(validationContext);
                 }
             }
 

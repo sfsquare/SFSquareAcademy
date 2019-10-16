@@ -199,7 +199,41 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Index",new { Notice = ViewBag.Notice });
         }
 
+        [AllowAnonymous]
+        public JsonResult CreditHoursCheck([Bind(Prefix = "CR_HRS")] decimal? CR_HRS, [Bind(Prefix = "BTCH_ID")] int? BTCH_ID)
+        {
+            bool flag = false;
+            if (BTCH_ID != null)
+            {
+                BATCH batch = db.BATCHes.Find(BTCH_ID);
+                if (batch.GPA_Enabled() || batch.CWA_Enabled())
+                {
+                    flag = true;
+                }
+            }
+            return Json(!(flag ==true && CR_HRS == null), JsonRequestBehavior.AllowGet);
+        }
 
+        [AllowAnonymous]
+        public JsonResult WklyClNumeric([Bind(Prefix = "MAX_WKILY_CLSES")] int? MAX_WKILY_CLSES)
+        {
+            int Num;
+            bool isNum = int.TryParse(MAX_WKILY_CLSES.ToString(), out Num);
+            return Json(!(isNum == false), JsonRequestBehavior.AllowGet);
+        }
+        [AllowAnonymous]
+        public JsonResult AmtNumeric([Bind(Prefix = "AMT")] decimal? AMT)
+        {
+            int Num;
+            bool isNum = int.TryParse(AMT.ToString(), out Num);
+            return Json(!(AMT != null && isNum == false), JsonRequestBehavior.AllowGet);
+        }
+        [AllowAnonymous]
+        public JsonResult UniqueCode([Bind(Prefix = "CODE")] string CODE)
+        {
+            //check if any of the UserName matches the UserName specified in the Parameter using the ANY extension method.   
+            return Json(!db.SUBJECTs.Include(x=>x.BATCH).Where(x=>x.BATCH.IS_DEL == false).Any(x => x.CODE.ToUpper() == CODE.ToUpper()), JsonRequestBehavior.AllowGet);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

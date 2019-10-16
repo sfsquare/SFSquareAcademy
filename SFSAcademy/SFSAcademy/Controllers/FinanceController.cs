@@ -12,7 +12,6 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Text;
 using System.Data.Entity.Validation;
-using SFSAcademy.Helpers;
 
 namespace SFSAcademy.Controllers
 {
@@ -948,7 +947,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of select batch added in system successfully");
@@ -983,7 +982,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of Student Category added in system successfully");
@@ -1033,7 +1032,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return View();
                         }
                         ViewBag.ErrorMessage = string.Concat("Fee Discounts of ", stdCount, " Students added in system successfully");
@@ -1354,7 +1353,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Fine for select batch added in system successfully");
@@ -1389,7 +1388,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Fine for Student Category added in system successfully");
@@ -1439,7 +1438,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return View();
                         }
                         ViewBag.ErrorMessage = string.Concat("Fee Fine for ", stdCount, " Students added in system successfully");
@@ -1854,7 +1853,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCE_FEE_cOLLECTION);
                 }
 
@@ -2412,7 +2411,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return PartialView("_Student_Fees_Submission");
                         }
                         var student_fine_val2 = (from ff in db.FEE_FINE
@@ -2732,7 +2731,7 @@ namespace SFSAcademy.Controllers
                             }
                             catch (Exception e)
                             {
-                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                                 return PartialView("_Student_Fees_Submission");
                             }
                             var student_discounts_val2 = (from ff in db.FEE_DISCOUNT
@@ -3056,10 +3055,13 @@ namespace SFSAcademy.Controllers
                                 }
                                 catch (Exception e)
                                 {
-                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
-                                    if (e.InnerException.InnerException.Message.Contains("FIN_F_FINA_FINA_NI5"))
+                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                                    if(e.InnerException != null)
                                     {
-                                        ViewBag.ErrorMessage = "This Student is added in system after current fee collection was set-up. Current fee has to be collected manually. This Student’s fee can be collected through system next collection onward.";
+                                        if (e.InnerException.InnerException.Message.Contains("FIN_F_FINA_FINA_NI5"))
+                                        {
+                                            ViewBag.ErrorMessage = "This Student is added in system after current fee collection was set-up. Current fee has to be collected manually. This Student’s fee can be collected through system next collection onward.";
+                                        }
                                     }
                                     return PartialView("_Student_Fees_Submission");
                                 }
@@ -3091,7 +3093,7 @@ namespace SFSAcademy.Controllers
                                 }
                                 catch (Exception e)
                                 {
-                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                                     return PartialView("_Student_Fees_Submission");
                                 }
                                 var paid_fees_val2 = (from ff in db.FINANCE_FEE
@@ -3457,7 +3459,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return PartialView("_Student_Fees_Submission");
                 }
                 return View();
@@ -3520,7 +3522,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCE_FEE);
                 }
                 return RedirectToAction("Index");
@@ -3565,7 +3567,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(fINANCE_FEE);
             }
             return RedirectToAction("Index");
@@ -3631,7 +3633,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(fINANCEcATEGORY);
             }
             ViewBag.ErrorMessage = "Finance Category Deleted Sucessfully!";
@@ -3681,7 +3683,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEcATEGORY);
                 }
                 ViewBag.ErrorMessage = "Finance Category Edited Sucessfully!";
@@ -3716,7 +3718,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEcATEGORY);
                 }
                 return RedirectToAction("Categories");
@@ -4781,7 +4783,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(PageName);
                 }
                 ViewBag.ErrorMessage = string.Concat("Transaction Added Successfully. Receipt No. - ", fINANCEtRANSACTIONS.ID);
@@ -4866,7 +4868,7 @@ namespace SFSAcademy.Controllers
                     try { db.SaveChanges(); }
                     catch (Exception e)
                     {
-                        ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Expense_List_Update", "Finance", new ViewDataDictionary { { "Warn_Notice", ViewData["Warn_Notice"] } });
                     }
                 }
@@ -4876,7 +4878,7 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 if (IncomeType == true)
                 {
                     return RedirectToAction("Income_List", "Finance", new { ErrorMessage = ViewBag.ErrorMessage });
@@ -4945,7 +4947,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction(PageName, "Finance", new { id = fINANCEtRANSACTIONS.ID, ErrorMessage = ViewBag.ErrorMessage });
                 //return View(PageName);
             }
@@ -5677,7 +5679,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEdONATION);
                 }
                 ViewBag.Notice = "Donation added in system sucessfully!";
@@ -5752,7 +5754,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEdONATION);
                 }
                 ViewBag.Notice = "Donation updated in system sucessfully!";
@@ -5771,14 +5773,14 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(donation);
             }
             db.FINANCE_DONATION.Remove(donation);
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(donation);
             }
             ViewBag.Notice = "Donation deleted from system sucessfully!";
@@ -5842,7 +5844,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
                 ViewBag.Notice = "Transaction Trigger added in system sucessfully!";
@@ -5893,7 +5895,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Transaction_Trigger_Edit", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
                 ViewBag.Notice = "Transaction Trigger updated in system sucessfully!";
@@ -5912,7 +5914,7 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
             }
             ViewBag.Notice = "Donation deleted from system sucessfully!";
@@ -6062,8 +6064,7 @@ namespace SFSAcademy.Controllers
                 is_present_employee = false;
             }
             ViewBag.is_present_employee = is_present_employee;
-            var Config = new Configuration();
-            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            ViewBag.currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
@@ -6186,7 +6187,7 @@ namespace SFSAcademy.Controllers
             {
                 TIL = string.Concat("SAL-", employee.FIRST_NAME),
                 CAT_ID = TranCatId,
-                DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", SalaryDate.ToString("MMMM")),
+                DESCR = string.Concat("Salary Paid for ", employee.Full_Name, "For the month of ", SalaryDate.ToString("MMMM")),
                 PAYEE_ID = PayeeId,
                 PAYEE_TYPE = "Institution",
                 AMT = (decimal)cs.net_amount,
@@ -6214,7 +6215,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = SalaryDate, ErrorMessage = ViewBag.ErrorMessage });
             }
 
@@ -6313,13 +6314,17 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.salary_date = date;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var dates = db.MONTHLY_PAYSLIP.Where(x => x.SAL_DATE == date && x.IS_RJCT == false).ToList();
+            var dates = db.MONTHLY_PAYSLIP.Where(x => x.SAL_DATE == date && x.IS_RJCT == false).AsEnumerable();
             foreach (var d in dates)
             {
-                d.Approve(UserId, "One Click Approved");
-                EMPLOYEE employee = db.EMPLOYEEs.Find(d.EMP_ID);
-                var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == d.EMP_ID && x.IS_APPR == true && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
-                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == d.EMP_ID && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                d.Approve(UserId, "One Click Approved");                
+            }
+            var Employees = db.EMPLOYEEs.Where(x => dates.Select(p => p.EMP_ID).Distinct().Contains(x.ID)).ToList();
+            foreach(var employee in Employees)
+            {
+                //EMPLOYEE employee = db.EMPLOYEEs.Find(d.EMP_ID);
+                var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == employee.ID && x.IS_APPR == true && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
                 CalulatedSalary cs = employee.Calculate_Salary(monthly_payslips, individual_payslip_category);
                 int? TranCatId = db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.NAME == "Salary").Select(x => x.ID).FirstOrDefault();
                 string ReceiptNo = ""; int Index = 1;
@@ -6351,7 +6356,7 @@ namespace SFSAcademy.Controllers
                 {
                     TIL = string.Concat("SAL-", employee.FIRST_NAME),
                     CAT_ID = TranCatId,
-                    DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", date.Value.ToString("MMMM")),
+                    DESCR = string.Concat("Salary Paid for ", employee.Full_Name, "For the month of ", date.Value.ToString("MMMM")),
                     PAYEE_ID = PayeeId,
                     PAYEE_TYPE = "Institution",
                     AMT = (decimal)cs.net_amount,
@@ -6379,12 +6384,24 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     RedirectToAction("Payslip_Index", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
             }
             ViewBag.Notice = "Payslip has been approved.";        
             return RedirectToAction("Payslip_Index", new { Notice = ViewBag.Notice });
+        }
+        [AllowAnonymous]
+        public JsonResult AmtIsNumeric([Bind(Prefix = "AMT")] decimal? AMT)
+        {
+            return Json(!(AMT < 0), JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult UniqueName([Bind(Prefix = "NAME")] string NAME)
+        {
+            //check if any of the UserName matches the UserName specified in the Parameter using the ANY extension method.   
+            return Json(!db.FINANCE_FEE_CATGEORY.Include(x => x.BATCH).Where(x => x.BATCH.IS_DEL == false).Any(x => x.NAME.ToUpper() == NAME.ToUpper()), JsonRequestBehavior.AllowGet);
         }
     }
 }

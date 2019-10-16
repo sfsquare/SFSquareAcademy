@@ -1,0 +1,64 @@
+﻿@model SFSAcademy.CCE_WEIGHTAGE
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>CCE_WEIGHTAGE</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.WTAGE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WTAGE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CRITA_TYPE)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CRITA_TYPE)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_AT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UPDATED_AT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CCE_EXAM_CATEGORY.NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CCE_EXAM_CATEGORY.NAME)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

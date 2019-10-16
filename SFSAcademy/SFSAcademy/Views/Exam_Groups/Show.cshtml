@@ -1,0 +1,221 @@
+﻿@using System.Data.Entity;
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    List<PRIVILEGE> user_privileges = (List<PRIVILEGE>)ViewData["user_privileges"];
+    IEnumerable<EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
+}
+@{
+    ViewBag.Title = "Show";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>View Exam Group</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (Html.Permitted_To("Publish", "Exam"))
+        {
+            if (exam_group.IS_PUB)
+            {
+                <li><a href="@Url.Action("Publish", "Exam",new {id = exam_group.ID, status = "result" })" onclick='ShowHideLoader(this.href); return false;'>Publish Exam Result</a></li>
+            }
+        }
+        @if (Html.Permitted_To("New", "Exams"))
+        {
+            <li><a href="@Url.Action("New", "Exams",new {id = exam_group.ID })">New</a></li>
+        }
+    </ul>
+</div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
+        <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
+        <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">Batch: @batch.Full_Name</a> &raquo;
+        <a href="@Url.Action("Index", "Exam_Groups",new { id = batch.ID})">Exam Groups</a> &raquo;
+        @exam_group.NAME
+    </div>
+    <div class="box">
+        <div class="update_msg">
+            @if (Html.Permitted_To("Edit", "Exams"))
+            {
+                <h4>
+                    @exam_group.NAME
+                    <div id="@string.Concat("exam_group_name_", exam_group.ID, "_edit")">
+                        <a href="@Url.Action("Edit", "Exam_Group",new {id = exam_group.ID })">Edit</a>
+                    </div>
+                </h4>
+            }
+            else
+            {
+                <h4><span>@exam_group.NAME</span></h4>
+            }
+            <h4>
+                <span class="flash_color" id="publish-notice-@exam_group.ID">
+                    <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+                </span>
+            </h4>
+        </div>
+        @if (current_user.User.EMP_IND == true)
+        {
+            employee_subjects = db.EMPLOYEES_SUBJECT.Include(x => x.SUBJECT).Where(x => x.EMP_ID == db.EMPLOYEEs.Where(p => p.USRID == current_user.User.ID).FirstOrDefault().ID).ToList();
+        }
+        @{PRIVILEGE privilege = user_privileges.Where(x => x.NAME == "EnterResults").FirstOrDefault();}
+        @if (exam_group.EXAM_TYPE != "Grades")
+        {
+            <table id="listing">
+                <tr class="tr-head">
+                    <td>Subject</td>
+                    <td>Max Mark</td>
+                    <td>Min Mark</td>
+                    @if (Html.Permitted_To("Edit", "Exams"))
+                    {
+                        <td>Manage</td>
+                    }
+                </tr>
+                @{int j = 1; }
+                @for (int i = 0; i < exam_group.EXAMs.Count(); i++)
+                {
+                    string cycle = "tr-even";
+                    if (j % 2 == 0)
+                    {
+                        cycle = "tr-odd";
+                    }
+                    EXAM exam = (EXAM)exam_group.EXAMs.ElementAt(i);
+                    if ((employee_subjects.Where(x => x.SUBJ_ID == exam.SUBJ_ID).FirstOrDefault() != null) || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    {
+                        <tr class="@cycle">
+                            <td class="col-2"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exam.SUBJECT.NAME</a></td>
+                            @if (Html.Permitted_To("Edit", "Exams"))
+                            {
+                                <td class="col-1">
+                                    <div id="@string.Concat("exam_maximum_marks_",exam.ID,"_edit")">
+                                        @Html.TextBox("[" + i + "].MAX_MKS", exam_group.EXAMs.ElementAt(i).MAX_MKS, new { @cols = 1 })
+                                    </div>
+                                </td>
+                                <td class="col-1">
+                                    <div id="@string.Concat("exam_minimum_marks_",exam.ID,"_edit")">
+                                        @Html.TextBox("[" + i + "].MIN_MKS", exam_group.EXAMs.ElementAt(i).MIN_MKS, new { @cols = 1 })
+                                    </div>
+                                </td>
+                                <td class="col-1">
+                                    @if (exam_group.RSULT_PUB)
+                                    {
+                                        <small><s>Edit</s></small>
+                                    }
+                                    else
+                                    {
+                                        <small><a href="@Url.Action("Edit", "Exam_Group",new {id = exam.EXAM_GROUP.ID })">Edit</a></small>
+                                    }
+                                    @if (exam.EXAM_GROUP.Removable())
+                                    {
+                                        <small><a href="@Url.Action("Delete", "Exam_Group",new {id = exam.EXAM_GROUP.ID })" onclick="return confirm('are you sure?')">Delete</a></small>
+                                    }
+                                    else
+                                    {
+                                        <small><s>Delete</s></small>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="col-1"><span>@exam.MAX_MKS</span></td>
+                                <td class="col-1"><span>@exam.MIN_MKS</span></td>
+                            }
+                        </tr>
+                    }
+                    j += 1;
+                }
+
+            </table>
+        }
+        else
+        {
+            <table id="listing" width="100%">
+                <tr class="tr-head">
+                    <td>Subject</td>
+                    @if (Html.Permitted_To("Edit", "Exams"))
+                    {
+                        <td>Manage</td>
+                    }
+                </tr>
+                @{int k = 1; }
+                @for (int i = 0; i < exam_group.EXAMs.Count(); i++)
+                {
+                    string cycle = "tr-even";
+                    if (k % 2 == 0)
+                    {
+                        cycle = "tr-odd";
+                    }
+                    EXAM exam = (EXAM)exam_group.EXAMs.ElementAt(i);
+                    if ((employee_subjects.Where(x => x.SUBJ_ID == exam.SUBJ_ID).FirstOrDefault() != null) || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    {
+                        <tr class="@cycle">
+                            <td class="col-3"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exam.SUBJECT.NAME</a></td>
+                            @if (Html.Permitted_To("Edit", "Exams"))
+                            {
+                                <td class="col-1">
+                                    <small><a href="@Url.Action("Edit", "Exam_Group",new {id = exam.EXAM_GROUP.ID })">Edit</a></small>
+                                    @if (exam.EXAM_GROUP.Removable())
+                                    {
+                                        <small><a href="@Url.Action("Delete", "Exam_Group",new {id = exam.EXAM_GROUP.ID })" onclick="return confirm('are you sure?')">Delete</a></small>
+                                    }
+                                    else
+                                    {
+                                        <small><s>Delete</s></small>
+                                    }
+                                </td>
+                            }
+
+                        </tr>
+                    }
+                    k += 1;
+                }
+
+            </table>
+        }
+
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+        });
+        function ShowHideLoader(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function () {
+            }).success(function () {
+                $(".LoaderBox").hide();
+            });
+        }
+        function PublishResult(sender) {
+            $(".LoaderBox").show();
+            if (confirm('Are you sure to publish result?')) {
+                $.get(sender, function () {
+                }).success(function () {
+                    $(".LoaderBox").hide();
+                });
+            }
+        }
+    </script>
+}
+
+

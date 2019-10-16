@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using SFSAcademy.Helpers;
 using System.Web.Mvc;
 
 namespace SFSAcademy

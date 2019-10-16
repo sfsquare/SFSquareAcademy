@@ -22,8 +22,7 @@ namespace SFSAcademy.Controllers
             ViewBag.Notice = Notice;
             var config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "AvailableModules").ToList();
             ViewData["config"] = config;
-            var Config_Val = new Configuration();
-            ViewBag.StudentAttendanceType = Config_Val.find_by_config_key("StudentAttendanceType");
+            ViewBag.StudentAttendanceType = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             return View();
         }
 
@@ -228,7 +227,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Work_Allotment", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
 
@@ -330,7 +329,7 @@ namespace SFSAcademy.Controllers
                         return RedirectToAction("New", "Timetable_Entries", new { timetable_id = tIMETABLE.ID, Notice = ViewBag.Notice });
                     }
                     catch (Exception e) {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage,"Error Occured. ", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage,"Error Occured. ", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View(tIMETABLE);
                     }
                 }
@@ -511,7 +510,7 @@ namespace SFSAcademy.Controllers
                                 db.SaveChanges();
                             }
                             catch (Exception e) {
-                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage,"|", e.InnerException.InnerException.Message);
+                                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage,"|", string.Concat(e.GetType().FullName, ":", e.Message));
                             }
                             ViewBag.Notice = string.Concat(ViewBag.Notice, "Timetable updated successfully. ");
                             return RedirectToAction("New", "Timetable_Entries", new { timetable_id = tt2.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -523,7 +522,7 @@ namespace SFSAcademy.Controllers
                         }
                     }
                     catch (Exception e) {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("New_Timetable", new { ErrorMessage  = ViewBag.ErrorMessage, Notice = ViewBag.Notice});
                     }
                 }
@@ -539,7 +538,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", "Timetable update failed", "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", "Timetable update failed", "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         error = true;
                         return View(timetable);
                     }
@@ -579,7 +578,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", "Timetable deletion failed", "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", "Timetable deletion failed", "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(timetable);
             }
         }

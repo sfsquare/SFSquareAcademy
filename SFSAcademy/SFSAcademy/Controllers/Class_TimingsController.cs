@@ -83,7 +83,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction("Index", new {ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.Notice = string.Concat("Class Timing Set deleted successfully.");

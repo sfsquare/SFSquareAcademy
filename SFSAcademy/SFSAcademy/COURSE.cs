@@ -17,10 +17,11 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public COURSE()
         {
-            this.BATCHes = new HashSet<BATCH>();
+            this.BATCH_GROUP = new HashSet<BATCH_GROUP>();
             this.CLASS_DESIGNATION = new HashSet<CLASS_DESIGNATION>();
+            this.CCE_WEIGHTAGES_COURSE = new HashSet<CCE_WEIGHTAGES_COURSE>();
             this.RANKING_LEVEL = new HashSet<RANKING_LEVEL>();
-            this.CCE_WEIGHTAGE = new HashSet<CCE_WEIGHTAGE>();
+            this.BATCHes = new HashSet<BATCH>();
         }
     
         public int ID { get; set; }
@@ -30,15 +31,17 @@ namespace SFSAcademy
         public Nullable<bool> IS_DEL { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string GRADING_TYPE { get; set; }
+        public Nullable<int> GRADING_TYPE { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BATCH> BATCHes { get; set; }
+        public virtual ICollection<BATCH_GROUP> BATCH_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CLASS_DESIGNATION> CLASS_DESIGNATION { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CCE_WEIGHTAGES_COURSE> CCE_WEIGHTAGES_COURSE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RANKING_LEVEL> RANKING_LEVEL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CCE_WEIGHTAGE> CCE_WEIGHTAGE { get; set; }
+        public virtual ICollection<BATCH> BATCHes { get; set; }
     }
 }

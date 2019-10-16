@@ -1,0 +1,106 @@
+﻿@model RANKING_LEVEL
+@{
+    COURSE course = (COURSE)ViewData["course"];
+}
+<script type="text/javascript" language="javascript">
+    function LoadRankingLevel(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#course_ranking_levels').html(data);
+            $('#course_ranking_levels').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+    function CloseLoader() {
+        $(".LoaderBox").hide();
+    }
+    function OpenLoader() {
+        $(".LoaderBox").show();
+    }
+</script>
+@using (Ajax.BeginForm("Update_Ranking_Level", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "course_ranking_levels", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseLoader()" }, htmlAttributes: new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("course_id", course.ID)
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.CREATED_AT)
+    @Html.HiddenFor(model => model.PRIR)
+    <div id="form-content">
+        <div class="label-field-pair">
+            <label for="name">Name</label>
+            <span class="necessary-field" style="font-size:small">* Required Field</span>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @if (course.GPA_Enabled())
+        {
+            <div class="label-field-pair">
+                <label for="name">GPA Level</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.GPA, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.GPA, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="label-field-pair">
+                <label for="name">Marks</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.MKS, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.MKS, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        <div class="label-field-pair">
+            @if (course.GPA_Enabled())
+            {
+                <label for="marks">GPA Limit Type</label>
+            }
+            else
+            {
+                <label for="marks">Marks Limit Type</label>
+            }
+            <div class="text-input-bg">
+                @Html.DropDownList("MKS_LMT_TYPE", new SelectList(Enum.GetValues(typeof(LIMIT_TYPES))), "Select Limit Types", new { @class = "form-control", @id = "MKS_LMT_TYPE" })
+                @Html.ValidationMessageFor(model => model.MKS_LMT_TYPE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            <label for="subject_count">Number of Subjects</label>
+            <div class="text-input-bg">
+                @Html.EditorFor(model => model.SUBJ_CNT, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SUBJ_CNT, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            <label for="marks">Subject Limit Type</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("SUBJ_LMT_TYPE", new SelectList(Enum.GetValues(typeof(LIMIT_TYPES))), "Select Limit Types", new { @class = "form-control", @id = "SUBJ_LMT_TYPE" })
+                @Html.ValidationMessageFor(model => model.SUBJ_LMT_TYPE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            <label for="subject_count">Consider Full Course Duration?</label>
+            <div class="text-input-bg">
+                @Html.CheckBoxFor(model => model.FULL_CRS, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FULL_CRS, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="extender"></div>
+
+        <div id="submit-button">
+            <input type="submit" value="► Update" id="finish-button" />
+            <a href="@Url.Action("Ranking_Level_Cancel", "Ranking_Levels",new {course_id = course.ID })" onclick='LoadRankingLevel(this.href); return false;' class="user_button"> ► Cancel</a>
+        </div>
+
+
+    </div>
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/dropzone.js"></script>

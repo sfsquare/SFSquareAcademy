@@ -100,7 +100,7 @@ namespace SFSAcademy.Controllers
                     try { db.SaveChanges(); }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
                     }
                 }
@@ -109,7 +109,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage});
                 }
                 ViewBag.Notice = "Leave details added sucessfully.";
@@ -219,7 +219,7 @@ namespace SFSAcademy.Controllers
                     try { db.SaveChanges(); }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
                     }
                 }
@@ -230,7 +230,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
                 ViewBag.Notice = "Leave details updated sucessfully.";
@@ -266,7 +266,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
             }
             ViewBag.Notice = "Leave details deleted sucessfully.";

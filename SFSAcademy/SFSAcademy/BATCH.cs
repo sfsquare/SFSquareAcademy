@@ -34,6 +34,11 @@ namespace SFSAcademy
             this.WEEKDAYs = new HashSet<WEEKDAY>();
             this.ELECTIVE_GROUP = new HashSet<ELECTIVE_GROUP>();
             this.BATCH_EVENT = new HashSet<BATCH_EVENT>();
+            this.BATCH_SEAT = new HashSet<BATCH_SEAT>();
+            this.BATCH_STUDENT = new HashSet<BATCH_STUDENT>();
+            this.GROUPED_BATCH = new HashSet<GROUPED_BATCH>();
+            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
+            this.GROUPED_EXAM = new HashSet<GROUPED_EXAM>();
         }
     
         public int ID { get; set; }
@@ -42,9 +47,9 @@ namespace SFSAcademy
         public Nullable<System.DateTime> START_DATE { get; set; }
         public Nullable<System.DateTime> END_DATE { get; set; }
         public bool IS_DEL { get; set; }
-        public Nullable<int> EMP_ID { get; set; }
+        public string EMP_ID { get; set; }
         public bool IS_ACT { get; set; }
-        public string GRADING_TYPE { get; set; }
+        public Nullable<int> GRADING_TYPE { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ASSESSMENT_SCORE> ASSESSMENT_SCORE { get; set; }
@@ -80,6 +85,16 @@ namespace SFSAcademy
         public virtual ICollection<ELECTIVE_GROUP> ELECTIVE_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BATCH_EVENT> BATCH_EVENT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BATCH_SEAT> BATCH_SEAT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BATCH_STUDENT> BATCH_STUDENT { get; set; }
         public virtual COURSE COURSE { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_BATCH> GROUPED_BATCH { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM> GROUPED_EXAM { get; set; }
     }
 }

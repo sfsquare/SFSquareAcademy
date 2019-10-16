@@ -1,0 +1,68 @@
+﻿@model IEnumerable<SFSAcademy.COURSE>
+
+@{
+    ViewBag.Title = "Manage_Course";
+}
+
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Courses</h1>
+    <h3>Manage Course</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>@Html.ActionLink("New", "New")</li>
+    </ul>
+</div>
+<div id="page-yield">
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        Manage Course
+    </div>
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="box">
+        <h4 align="center">Course</h4>
+        <ul id="category-list">
+            @{int i = 1; }
+            @foreach (var course in Model)
+            {
+                string cycle = "listeven";
+                if (i % 2 == 0)
+                {
+                    cycle = "listodd";
+                }
+                <li class="@cycle">
+                    <div class="category-name">@Html.ActionLink(course.Full_Name, "Show", new { id = course.ID })</div>
+                    <div class="category-edit">
+                        @if (Html.Permitted_To("Edit", "Courses"))
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = course.ID })
+                        }
+                    </div>
+                    <div class="category-delete">
+                        @if (Html.Permitted_To("Destroy", "Courses"))
+                        {
+                            @Html.ActionLink("Delete", "Destroy", new { id = course.ID }, new { onclick = "return confirm('are you sure you want to delete this?')" })
+                        }
+                    </div>
+                </li>
+                i = i + 1;
+            }
+
+        </ul>
+        <div class="extender"></div>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<ARCHIVED_STUDENT> id_lists = (IEnumerable<ARCHIVED_STUDENT>)ViewData["id_lists"];
+    IEnumerable<STUDENT> Students = (IEnumerable<STUDENT>)ViewData["Students"];
+}
+@{
+    ViewBag.Title = "Graduation";
+}
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Batch Transfer</h1>
+    <h3>Graduation</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+    <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+    <a href="@Url.Action("Manage_Batches", "Courses")">Manage Batch</a> &raquo;
+    <a href="@Url.Action("Index", "Batch_Transfers")">Batch Transfer</a> &raquo;
+    Greduation from @batch.Full_Name
+</div>
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (id_lists != null && id_lists.Count() != 0)
+    {
+        <a href="@Url.Action("Generate_All_TC_Pdf", "Student",new { stud = id_lists})" class="user_button" target="_blank">Generate TC for ALL</a>
+        <br />
+        <br />
+    }
+    <h4>Garduating Batch: @batch.Full_Name</h4>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        <p>Graduation Message</p>
+        <div class="label-field-pair">
+            <label for="subject_id">Status Description : </label>
+            <div class="text-input-bg">
+                @Html.Editor("Status_Description", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+
+        <p>Uncheck Message.</p>
+        <ul id="category-list">
+            <li class="listheading">
+                <div class="heading-no">Adm no.</div>
+                <div class="category-name">Name</div>
+                <div class="sel-list">
+                    <a href="javascript:$('input.right').each(function() { this.checked = true; });">All</a>,
+                    <a href="javascript:$('input.right').each(function() { this.checked = false; });">None</a>
+                </div>
+            </li>
+            @{int i = 1; }
+            @for (var j = 0; j < Students.Count(); j++)
+            {
+                string cycle = "listeven";
+                if (i % 2 == 0)
+                {
+                    cycle = "listodd";
+                }
+                <li class="@cycle">
+                    <div class="category-number">@Students.ElementAt(j).ADMSN_NO</div>
+                    <div class="category-name">@Students.ElementAt(j).Full_Name</div>
+                    <div class="category-edit">
+                        @Html.CheckBox("[" + j + "].Select", Students.ElementAt(j).Select, new { @class = "right" })
+                        @foreach (var props in Students.ElementAt(j).GetType().GetProperties().ToList())
+                        {
+                            string PropsName = props.Name;
+                            var PropsValue = props.GetValue(Students.ElementAt(j));
+                            @Html.Hidden("[" + j + "]." + PropsName, PropsValue)
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+        <input type="submit" value="► Save" class="submit_button" />
+
+    }
+
+    <div class="extender"></div>
+</div>
+
+

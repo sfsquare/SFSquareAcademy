@@ -259,7 +259,7 @@
                         <div class="each_batch">
                             @if (enabled_grading_types != null && enabled_grading_types.CONFIG_KEY != "0")
                             {
-                                if (grading_types.ElementAt(i).GRADING_TYPE == enabled_grading_types.CONFIG_KEY)
+                                if (grading_types.ElementAt(i).GRADING_TYPE.ToString() == enabled_grading_types.CONFIG_KEY)
                                 {
                                     @Html.CheckBox("[" + i + "].Select", true, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
                                 }

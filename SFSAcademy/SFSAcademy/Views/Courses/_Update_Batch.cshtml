@@ -1,0 +1,23 @@
+﻿@{
+    IEnumerable<BATCH> batch = (IEnumerable<BATCH>)ViewData["batch"];
+    COURSE course = (COURSE)ViewData["course"];
+}
+
+<h4 align="center">Active Batches</h4>
+
+<ul id="category-list">
+    @{int i = 1; }
+    @foreach (var b in batch)
+    {
+        string cycle = "listeven";
+        if (i % 2 == 0)
+        {
+            cycle = "listodd";
+        }
+        <li class="@cycle">
+            <div class="category-name"><a href="@Url.Action("Show", "Batches",new { id = b.ID})">@b.Course_full_name</a></div>
+        </li>
+        i += 1;
+    }
+
+</ul>

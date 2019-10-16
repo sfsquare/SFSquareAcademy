@@ -22,7 +22,7 @@ namespace SFSAcademy
         public Nullable<int> PRIR { get; set; }
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
-        public string FULL_CRS { get; set; }
+        public bool FULL_CRS { get; set; }
         public Nullable<int> CRS_ID { get; set; }
         public string SUBJ_LMT_TYPE { get; set; }
         public string MKS_LMT_TYPE { get; set; }

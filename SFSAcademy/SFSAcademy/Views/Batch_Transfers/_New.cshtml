@@ -1,0 +1,89 @@
+﻿@model SUBJECT
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    ELECTIVE_GROUP elective_group = (ELECTIVE_GROUP)ViewData["elective_group"];
+}
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+</script>
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
+<div id="grading-levels-form">
+    @if (batch != null)
+    {
+        <h4>@batch.Full_Name</h4>
+    }
+    @using (Html.BeginForm("Create_Subject", "Batch_Transfers", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        int? batch_id = 0; int? elective_group_id = 0;
+        if (batch == null) { batch_id = null; } else { batch_id = batch.ID; }
+        if (elective_group == null) { elective_group_id = null; } else { elective_group_id = elective_group.ID; }
+        @Html.Hidden("batch_id", batch_id)
+        @Html.Hidden("elective_group_id", elective_group_id)
+        <div id="form-errors"></div>
+
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="input-field">
+                @Html.EditorFor(model => model.NAME, null, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                <span class="necessary-field" style="font-size:small">*</span>
+                @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.CODE, "Code", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+            <div class="input-field">
+                @Html.EditorFor(model => model.CODE, null, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                <span class="necessary-field" style="font-size:small">*</span>
+                @Html.ValidationMessageFor(model => model.CODE, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.MAX_WKILY_CLSES, "Max Weekly Class")</div>
+            <div class="input-field">@Html.EditorFor(model => model.MAX_WKILY_CLSES, null, new { htmlAttributes = new { @class = "form-control" } })</div>
+            @Html.ValidationMessageFor(model => model.MAX_WKILY_CLSES, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+        </div>
+        if (batch != null && (batch.CWA_Enabled() || batch.GPA_Enabled()))
+        {
+            <div class="label-field-pair">
+                <div class="label-container">@Html.LabelFor(model => model.CR_HRS, "Credit Hourse")</div>
+                <div class="input-field">@Html.EditorFor(model => model.CR_HRS, null, new { htmlAttributes = new { @class = "form-control" } })</div>
+                @Html.ValidationMessageFor(model => model.CR_HRS, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+            </div>
+        }
+        <div class="label-field-pair">
+            <div class="label-container">@Html.LabelFor(model => model.NO_EXAMS, "No Exams?", htmlAttributes: new { required = "required" })</div>
+            <div class="input-field">
+                @Html.CheckBoxFor(model => model.NO_EXAMS)
+                @Html.ValidationMessageFor(model => model.NO_EXAMS, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+            </div>
+        </div>
+        <input type="submit" value="► Save" id="submit-button" class="submit-button" />
+    }
+</div>
+

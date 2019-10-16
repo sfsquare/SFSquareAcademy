@@ -32,7 +32,7 @@
     <a href="@Url.Action("Index", "Finance")">Finance</a> &raquo;
     <a href="@Url.Action("Payslip_Index", "Finance")">Payslip</a> &raquo;
     <a href="@Url.Action("View_Monthly_Payslip", "Finance")">Monthly Payslip</a> &raquo;
-    @monthly_payslips.FirstOrDefault().EmployeeData.Full_Name() : @ViewBag.Selected_Salary_Date
+    @monthly_payslips.FirstOrDefault().EmployeeData.Full_Name : @ViewBag.Selected_Salary_Date
 </div>
 <div id="flash_box">
     @if (ViewBag.Notice != null)
@@ -49,7 +49,7 @@
     </div>
     @{string Stat = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : null);}
     <ul class="item-list">
-        <li class="heading">@monthly_payslips.FirstOrDefault().EmployeeData.Full_Name() </li>
+        <li class="heading">@monthly_payslips.FirstOrDefault().EmployeeData.Full_Name </li>
         <li class="heading">Payslip generated on: @ViewBag.Selected_Salary_Date <span class="themed_text">(Status: @Stat)</span></li>
     </ul>
     <ul class="item-list">

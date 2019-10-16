@@ -95,7 +95,7 @@ namespace SFSAcademy.Controllers
             {
                 foreach (var item2 in config)
                 {
-                    if(item.GRADING_TYPE == item2.CONFIG_KEY)
+                    if(item.GRADING_TYPE.ToString() == item2.CONFIG_KEY)
                     {
                         item2.CONFIG_VAL = item.Select.ToString();
                     }

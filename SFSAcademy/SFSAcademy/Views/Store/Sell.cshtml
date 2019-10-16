@@ -3,77 +3,6 @@
 @{
     ViewBag.Title = "Selling";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script>
-    $(document).ready(function () {
-        $("#PrdList").hide();
-        $(".LoaderBox").hide();
-        $(function () {
-            $("#result").dialog({
-                autoOpen: false,
-                draggable: true,
-                resizable: true,
-                width: 600,
-                height: 'auto',
-                dialogClass: "alert",
-                cache: false,
-                buttons: {
-                    Cancel: function () {
-                        $("#result").dialog("close");
-                    }
-                },
-                modal: true
-            });
-
-        });
-
-        $('#myLink').click(function () {
-            $(".LoaderBox").show();
-            var Quantity = $('#QUANTY').val(); // get the textbox value
-            var ProductId = $('#PRODUCTID').val();
-            var url = $(this).attr('href') + '?QUANTY=' + Quantity + "&PRODUCT_ID=" + ProductId; // build new url         
-            location.href = url; // redirect
-            return false; // cancel default redirect
-        });
-        function Contains(text_one, text_two) {
-            if (text_one.indexOf(text_two) != -1)
-                return true;
-        }
-        $("#Search").keyup(function () {
-            var searchText = $("#Search").val().toLowerCase();
-            $(".Search").each(function () {
-                if (!Contains($(this).text().toLowerCase(), searchText)) {
-                    $("#PrdList").show();
-                    $(this).hide();
-                }
-                else {
-                    $("#PrdList").show();
-                    $(this).show();
-                }
-            });
-            if ($("#Search").val() == '') {
-                $("#PrdList").hide();
-            }
-        });
-
-    });
-
-    function AddQuantity(Value, ProductName) {
-        $('#PRODUCTID').val(Value);
-        $('#PRODUCT_NAME').val(ProductName);
-        $('#result').dialog('open');
-    }
-</script>
-
 <div id="content-header">
     <img src="~/Content/images/show_store.png" alt="Show Store Logo">
     <h1>Store</h1>
@@ -211,3 +140,68 @@
     </div>
 </div>
 <input type="hidden" id="PRODUCTID" name="PRODUCTID" />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $("#PrdList").hide();
+            $(".LoaderBox").hide();
+            $(function () {
+                $("#result").dialog({
+                    autoOpen: false,
+                    draggable: true,
+                    resizable: true,
+                    width: 600,
+                    height: 'auto',
+                    dialogClass: "alert",
+                    cache: false,
+                    buttons: {
+                        Cancel: function () {
+                            $("#result").dialog("close");
+                        }
+                    },
+                    modal: true
+                });
+
+            });
+
+            $('#myLink').click(function () {
+                $(".LoaderBox").show();
+                var Quantity = $('#QUANTY').val(); // get the textbox value
+                var ProductId = $('#PRODUCTID').val();
+                var url = $(this).attr('href') + '?QUANTY=' + Quantity + "&PRODUCT_ID=" + ProductId; // build new url
+                location.href = url; // redirect
+                return false; // cancel default redirect
+            });
+            function Contains(text_one, text_two) {
+                if (text_one.indexOf(text_two) != -1)
+                    return true;
+            }
+            $("#Search").keyup(function () {
+                var searchText = $("#Search").val().toLowerCase();
+                $(".Search").each(function () {
+                    if (!Contains($(this).text().toLowerCase(), searchText)) {
+                        $("#PrdList").show();
+                        $(this).hide();
+                    }
+                    else {
+                        $("#PrdList").show();
+                        $(this).show();
+                    }
+                });
+                if ($("#Search").val() == '') {
+                    $("#PrdList").hide();
+                }
+            });
+
+        });
+
+        function AddQuantity(Value, ProductName) {
+            $('#PRODUCTID').val(Value);
+            $('#PRODUCT_NAME').val(ProductName);
+            $('#result').dialog('open');
+        }
+    </script>
+}

@@ -172,7 +172,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(uSER);
                 }
                 return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
@@ -217,7 +217,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat("There is an Employee or Student or Parent in the system using this User ID. Please delete the base information first.", "\n", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat("There is an Employee or Student or Parent in the system using this User ID. Please delete the base information first.", "\n", string.Concat(e.GetType().FullName, ":", e.Message));
                 RedirectToAction("Edit", new { id = uSER.ID, ErrorMessage = ViewBag.ErrorMessage });
             }
             return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
@@ -233,8 +233,10 @@ namespace SFSAcademy.Controllers
         }
 
 
-        public ActionResult Dashboard(int? id)
+        public ActionResult Dashboard(int? id, string ErrorMessage, string Notice)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -276,8 +278,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Forgot_Password()
         {
-            var Config = new Configuration();
-            ViewBag.network_state = Config.find_by_config_key("NetworkState");
+            ViewBag.network_state = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "NetworkState").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             //ViewBag.network_state = "Active";
             return View();
 
@@ -375,7 +376,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 }
                 if (Calling_Method == "Employee")
                 {
@@ -461,6 +462,7 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Edit_Privilege", new { id = UserId });
         }
 
+        [AllowAnonymous]
         public JsonResult IsUserExists(string UserName)
         {
             //check if any of the UserName matches the UserName specified in the Parameter using the ANY extension method.   

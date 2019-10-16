@@ -1,0 +1,47 @@
+﻿<link href="~/Content/stylesheets/observation_groups/show.css" rel="stylesheet" />
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
+
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
+<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+<script type="text/javascript" language="javascript">
+    function NewGradeSet(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+</script>
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>CCE Grade Sets</h1>
+    <h3>Home</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    <a href="@Url.Action("Settings", "Exam")">Settings</a> &raquo;
+    <a href="@Url.Action("Index", "CCE_Settings")">CCE Settings</a> &raquo;
+    <a href="@Url.Action("Basic", "CCE_Settings")">Basic</a> &raquo;
+    CCE Grade Sets
+</div>
+
+<div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+<div id="page-yield">
+    <div id="grade_sets">
+        @Html.Partial("_Grade_Sets")
+    </div>
+    <div id="modal-box" style="display:none;"></div>
+</div>

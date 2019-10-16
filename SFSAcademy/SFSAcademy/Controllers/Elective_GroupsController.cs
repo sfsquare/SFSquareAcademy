@@ -27,6 +27,7 @@ namespace SFSAcademy.Controllers
             ViewData["batch"] = batch;
             var Subject = db.SUBJECTs.Where(x=>x.IS_DEL == false).ToList();
             ViewData["Subject"] = Subject;
+            ViewData["course"] = db.COURSEs.Find(batch.CourseData.ID);
 
             return View(elective_groups);
         }
@@ -39,6 +40,7 @@ namespace SFSAcademy.Controllers
                          where bt.ID == BatchId
                          select new SFSAcademy.CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
+            ViewData["course"] = db.COURSEs.Find(batch.CourseData.ID);
             return View();
         }
 
@@ -69,6 +71,7 @@ namespace SFSAcademy.Controllers
             ViewData["batch"] = batch;
             ELECTIVE_GROUP elective_group = db.ELECTIVE_GROUP.Find(id);
             ViewData["elective_group"] = elective_group;
+            ViewData["course"] = db.COURSEs.Find(batch.COURSE.ID);
             return View();
         }
 
@@ -89,6 +92,7 @@ namespace SFSAcademy.Controllers
                          where bt.ID == BatchId
                          select new CoursesBatch { BatchData = bt, CourseData = cs }).FirstOrDefault();
             ViewData["batch"] = batch;
+            ViewData["course"] = db.COURSEs.Find(batch.CourseData.ID);
             return View(eLECTIVE_GROUP);
         }
 
@@ -141,7 +145,7 @@ namespace SFSAcademy.Controllers
             }
             db.ELECTIVE_GROUP.Remove(eLECTIVE_GROUP);
             try { db.SaveChanges();}
-            catch (Exception e) {ViewBag.Notice = e.InnerException.InnerException.Message;
+            catch (Exception e) {ViewBag.Notice = string.Concat(e.GetType().FullName, ":", e.Message);
                 return RedirectToAction("Index", new { BatchId = BatchId, Notice = ViewBag.Notice });
             }
             ViewBag.Notice = "Deleted elective group!";

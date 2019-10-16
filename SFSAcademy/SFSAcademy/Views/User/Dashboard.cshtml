@@ -6,12 +6,16 @@
 }
 
 @Html.Partial("_Partial/News_Bar")
-<div id="flash_box">
-    @if (ViewBag.Notices != null)
-            {
-        <p class="flash-msg"> @ViewBag.Notices </p>
-    }
-</div>
+    <div id="flash_box">
+        @if (ViewBag.Notices != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notices </p>
+        }
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
 
 <div id="user_options">
     @if (Html.CurrentUser_UserType().Equals("Admin"))

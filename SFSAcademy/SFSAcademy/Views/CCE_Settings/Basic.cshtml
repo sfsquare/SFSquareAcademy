@@ -1,0 +1,46 @@
+﻿<link href="~/Content/stylesheets/exam/index.css" rel="stylesheet" />
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>CCE Settings</h1>
+    <h3>Basic Settings</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+    <a href="@Url.Action("Settings", "Exam")">Settings</a> &raquo;
+    <a href="@Url.Action("Index", "CCE_Settings")">CCE Settings</a> &raquo;
+    Basic Setting
+</div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "CCE_Grade_Sets")">CCE Grade Sets</a></div>
+            <div class="link-descr">Manage Grade sets and grades.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "CCE_Exam_Categories")">CCE Exam Categories</a></div>
+            <div class="link-descr">>Manage CCE Exam Categories.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Index", "CCE_Weightages")">CCE Weightages</a></div>
+            <div class="link-descr">Manage CCE Weightages.</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Assign_Weightages", "CCE_Weightages")">Assign Weightages</a></div>
+            <div class="link-descr">Assign Weightages to Courses.</div>
+        </div>
+        <div class="extender"></div>
+    </div>
+</div>
+
+
+
