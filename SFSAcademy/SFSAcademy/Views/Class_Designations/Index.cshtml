@@ -2,34 +2,6 @@
     ViewBag.Title = "Index";
 }
 
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    $(document).ready(function () {
-        $(".LoaderBox").hide();
-        $('#CourseDropDown').change(function () {
-            var selectedID = $(this).val();
-            $(".LoaderBox").show();
-            $.get('/Class_Designations/Load_Class_Designations?course_id=' + selectedID, function (data) {
-                $('#course_class_designations').html(data);
-                $('#course_class_designations').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-
-        });
-    });
-</script>
 <div id="content-header">
     <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
     <h1>Class Designations</h1>
@@ -67,3 +39,25 @@
     </div>
     <div id="course_class_designations"></div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#CourseDropDown').change(function () {
+                var selectedID = $(this).val();
+                $(".LoaderBox").show();
+                $.get('/Class_Designations/Load_Class_Designations?course_id=' + selectedID, function (data) {
+                    $('#course_class_designations').html(data);
+                    $('#course_class_designations').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

@@ -5,28 +5,7 @@
 @{
     ViewBag.Title = "Edit";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script>
-    $(function () {
-        $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-        $("#datepicker2").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-    });
 
-</script>
 <div id="content-header">
     <img src="~/Content/images/examination/show_exam.png" alt="Settings Logo">
     <h1>Courses</h1>
@@ -54,7 +33,7 @@
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.ID)
-            @Html.Hidden("CRS_ID",course.ID)
+            @Html.Hidden("CRS_ID", course.ID)
             <div class="label-field-pair">
                 @Html.LabelFor(model => model.NAME, "Batch Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="input-container">
@@ -86,3 +65,22 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd-mm-yy',
+                buttonImageOnly: true
+            });
+            $("#datepicker2").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd-mm-yy',
+                buttonImageOnly: true
+            });
+        });
+
+    </script>
+}

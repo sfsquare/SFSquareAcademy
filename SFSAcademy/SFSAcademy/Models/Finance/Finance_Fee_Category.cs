@@ -37,14 +37,13 @@ namespace SFSAcademy
         private SFSAcademyEntities db = new SFSAcademyEntities();
         internal sealed class FFCatMetadata
         {
-            [Remote("UniqueName", "Finance", ErrorMessage = "Subject Code already in use. Please choose another Code.")]
+            [Remote("UniqueName", "Finance", ErrorMessage = "Name already in use. Please choose another name.")]
             [Required]
             public string NAME { get; set; }
 
-            [Required]
-            public int? BTCH_ID { get; set; }
         }
         private string ErrorMessage { get; set; }
+        public bool Select { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             

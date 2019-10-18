@@ -6,35 +6,6 @@
 @{
     ViewBag.Title = "Show";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript">
-    function confirm_show() {
-        var elt = $('#Transfer_To');
-        if (elt.val() == "Select Batch") {
-            alert('Select a batch in Transfer-To to proceed.');
-            return false;
-        }
-        else {
-            if (confirm('Are you sure to transfer to ' + $("#Transfer_To option:selected").text())) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-    }
-
-</script>
 <div id="content-header">
     <img src="~/Content/images/show_settings.png" alt="Settings Logo">
     <h1>Batch Transfer</h1>
@@ -116,5 +87,27 @@
     <div class="extender"></div>
 </div>
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
 
+    <script type="text/javascript">
+        function confirm_show() {
+            var elt = $('#Transfer_To');
+            if (elt.val() == "Select Batch") {
+                alert('Select a batch in Transfer-To to proceed.');
+                return false;
+            }
+            else {
+                if (confirm('Are you sure to transfer to ' + $("#Transfer_To option:selected").text())) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+    </script>
+}
 

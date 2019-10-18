@@ -45,9 +45,9 @@ namespace SFSAcademy
             }
 
             NetworkState NetworkState;
-            if (this.CONFIG_KEY == "StudentAttendanceType" && !Enum.TryParse<NetworkState>(this.CONFIG_VAL, out NetworkState))
+            if (this.CONFIG_KEY == "NetworkState" && !Enum.TryParse<NetworkState>(this.CONFIG_VAL, out NetworkState))
             {
-                ErrorMessage = "Student Attendance Type should be any one of " + string.Join(",", NetworkState.GetValues(NetworkState.GetType()));
+                ErrorMessage = "Network should be any one of " + string.Join(",", NetworkState.GetValues(NetworkState.GetType()));
                 yield return new ValidationResult($"* {ErrorMessage}.", new[] { "CONFIG_VAL" });
             }
 
@@ -105,7 +105,7 @@ namespace SFSAcademy
         public List<string> Get_Grading_Types()
         {
             GradingTypes GradingTypes;
-            var types = db.CONFIGURATIONs.Where(x => Enum.TryParse<GradingTypes>(x.CONFIG_KEY, out GradingTypes)).ToList();
+            var types = db.CONFIGURATIONs.ToList().Where(x => Enum.TryParse<GradingTypes>(x.CONFIG_KEY, out GradingTypes)).ToList();
             List<string> GrgTypes = new List<string>();
             foreach (var item in types)
             {
