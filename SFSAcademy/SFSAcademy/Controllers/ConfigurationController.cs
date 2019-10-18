@@ -50,13 +50,13 @@ namespace SFSAcademy.Controllers
             var config = db.CONFIGURATIONs.Where(a => search.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();
             ViewData["config"] = config;
             //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
-            var grading_types = (from cs in db.COURSEs
-                                 where cs.IS_DEL == false
-                                 select new SFSAcademy.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
+            var grading_types = Enum.GetValues(typeof(GradingTypes)).Cast<GradingTypes>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
             ViewData["grading_types"] = grading_types;
-            var search2 = new string[] { "GPA", "CWA","CCE" };
-            var enabled_grading_types_val = db.CONFIGURATIONs.Where(a => search2.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();
-            var enabled_grading_types = enabled_grading_types_val.Where(x => x.CONFIG_VAL == "1").FirstOrDefault();
+            var enabled_grading_types = db.CONFIGURATIONs.FirstOrDefault().Get_Grading_Types();
             ViewData["enabled_grading_types"] = enabled_grading_types;
             var countries = db.COUNTRies.ToList();
             ViewData["countries"] = countries;
@@ -66,7 +66,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Settings(IEnumerable<SFSAcademy.CONFIGURATION> config , IEnumerable<SFSAcademy.GradingTypesSelect> grading_types)
+        public ActionResult Settings(IEnumerable<SFSAcademy.CONFIGURATION> config , List<SelectListItem> grading_types)
         {
             /////Picture Upload Code
             string FileName = null;
@@ -95,9 +95,9 @@ namespace SFSAcademy.Controllers
             {
                 foreach (var item2 in config)
                 {
-                    if(item.GRADING_TYPE.ToString() == item2.CONFIG_KEY)
+                    if(item.Text == item2.CONFIG_KEY)
                     {
-                        item2.CONFIG_VAL = item.Select.ToString();
+                        item2.CONFIG_VAL = item.Selected.ToString();
                     }
                 }
             }
@@ -126,14 +126,13 @@ namespace SFSAcademy.Controllers
             var search = new string[] { "InstitutionName", "InstitutionAddress", "InstitutionPhoneNo", "StudentAttendanceType", "CurrencyType", "ExamResultType", "AdmissionNumberAutoIncrement", "EmployeeNumberAutoIncrement", "NetworkState", "Locale", "FinancialYearStartDate", "FinancialYearEndDate", "EnableNewsCommentModeration", "DefaultCountry", "TimeZone", "FirstTimeLoginEnable" };
             var config_Inner = db.CONFIGURATIONs.Where(a => search.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();
             ViewData["config"] = config_Inner;
-            //var grading_types = db.COURSEs.Where(x => x.IS_DEL == "N").Select(x => x.GRADING_TYPE).Distinct();
-            var grading_types_Inner = (from cs in db.COURSEs
-                                 where cs.IS_DEL == false
-                                 select new SFSAcademy.GradingTypesSelect { GRADING_TYPE = cs.GRADING_TYPE, Select = false }).Distinct().ToList();
-            ViewData["grading_types"] = grading_types_Inner;
-            var search2 = new string[] { "GPA", "CWA", "CCE" };
-            var enabled_grading_types_val = db.CONFIGURATIONs.Where(a => search2.Any(s => a.CONFIG_KEY.Contains(s))).Distinct();
-            var enabled_grading_types = enabled_grading_types_val.Where(x => x.CONFIG_VAL == "1").FirstOrDefault();
+            var grading_types_inner = Enum.GetValues(typeof(GradingTypes)).Cast<GradingTypes>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewData["grading_types"] = grading_types_inner;
+            var enabled_grading_types = db.CONFIGURATIONs.FirstOrDefault().Get_Grading_Types();
             ViewData["enabled_grading_types"] = enabled_grading_types;
             var countries = db.COUNTRies.ToList();
             ViewData["countries"] = countries;

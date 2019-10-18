@@ -1,35 +1,14 @@
 ﻿
 @{
-    IEnumerable<SFSAcademy.GradingTypesSelect> grading_types = (IEnumerable<SFSAcademy.GradingTypesSelect>)ViewData["grading_types"];
+    List<SelectListItem> grading_types = (List<SelectListItem>)ViewData["grading_types"];
     IEnumerable<SFSAcademy.CONFIGURATION> config = (IEnumerable<SFSAcademy.CONFIGURATION>)ViewData["config"];
-    CONFIGURATION enabled_grading_types = (CONFIGURATION)ViewData["enabled_grading_types"];
+    List<string> enabled_grading_types = (List<string>)ViewData["enabled_grading_types"];
     IEnumerable<SFSAcademy.COUNTRY> countries = (IEnumerable<SFSAcademy.COUNTRY>)ViewData["countries"];
 }
 @{
     ViewBag.Title = "Settings";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script>
-    $(function () {
-        $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-MM',
-            buttonImageOnly: true
-        });
-        $("#datepicker2").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-MM',
-            buttonImageOnly: true
-        });
-    });
 
-</script>
 <div id="content-header">
     <img src="~/Content/images/show_settings.png" alt="Setting Logo">
     <h1>Configuration</h1>
@@ -42,11 +21,11 @@
 
 <div id="page-yield">
     @if (ViewBag.Notice != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
     @if (ViewBag.ErrorMessage != null)
-            {
+    {
         <p class="flash-msg"> @ViewBag.ErrorMessage </p>
     }
 
@@ -251,28 +230,28 @@
                 </div>
                 <div class="fee_category_scroll">
                     <div class="sel-list">
-                        Select: <a href='#' onclick="$$('.batches_box').each(function (checkbox) { checkbox.checked = true; });">All</a> ,
-                        <a href='#' onclick="$$('.batches_box').each(function (checkbox) { checkbox.checked = false; });">None</a>
+                        Select: <a href='#' onclick="$('.batches_box').each(function () { this.checked = true; });">All</a> ,
+                        <a href='#' onclick="$('.batches_box').each(function () { this.checked = false; });">None</a>
                     </div>
                     @for (int i = 0; i < grading_types.Count(); i++)
                     {
                         <div class="each_batch">
-                            @if (enabled_grading_types != null && enabled_grading_types.CONFIG_KEY != "0")
+                            @if (enabled_grading_types != null && enabled_grading_types.Count() != 0)
                             {
-                                if (grading_types.ElementAt(i).GRADING_TYPE.ToString() == enabled_grading_types.CONFIG_KEY)
+                                if ( enabled_grading_types.Contains(grading_types.ElementAt(i).ToString()))
                                 {
-                                    @Html.CheckBox("[" + i + "].Select", true, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                                    @Html.CheckBox("[" + i + "].Selected", true, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).Text </label>
                                 }
                                 else
                                 {
-                                    @Html.CheckBox("[" + i + "].Select", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                                    @Html.CheckBox("[" + i + "].Selected", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).Text </label>
                                 }
                             }
                             else
                             {
-                                @Html.CheckBox("[" + i + "].Select", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).GRADING_TYPE </label>
+                                @Html.CheckBox("[" + i + "].Selected", false, new { @class = "batches_box" }) <label>@grading_types.ElementAt(i).Text </label>
                             }
-                            @Html.Hidden("[" + i + "].GRADING_TYPE", grading_types.ElementAt(i).GRADING_TYPE)
+                            @Html.Hidden("[" + i + "].Value", grading_types.ElementAt(i).Value)
                         </div>
 
                     }
@@ -288,3 +267,25 @@
     }
 
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd-MM',
+                buttonImageOnly: true
+            });
+            $("#datepicker2").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd-MM',
+                buttonImageOnly: true
+            });
+        });
+
+    </script>
+}

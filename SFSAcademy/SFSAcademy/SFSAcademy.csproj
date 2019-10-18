@@ -2427,10 +2427,8 @@
     <Content Include="Views\Finance\Master_Category_Particulars.cshtml" />
     <Content Include="Views\Finance\Master_Category_Particulars_Edit.cshtml" />
     <Content Include="Views\Finance\pdf_Fee_Structure.cshtml" />
-    <Content Include="Views\Student\_ListStudentsForTransfer.cshtml" />
     <Content Include="Views\Student\_Student_TC_Generate.cshtml" />
     <Content Include="Views\Student\AdvancedSearchPdf.cshtml" />
-    <Content Include="Views\Student\BatchTransfer.cshtml" />
     <Content Include="Views\Student\Change_To_Former.cshtml" />
     <Content Include="Views\Student\Fee_Details.cshtml" />
     <Content Include="Views\Student\Fees.cshtml" />
@@ -2604,8 +2602,6 @@
     <Content Include="Views\Employee\_Select_Department.cshtml" />
     <Content Include="Views\Employee\_Employee_List.cshtml" />
     <Content Include="Views\Timetable_Entries\New.cshtml" />
-    <Content Include="Views\Student\BatchTransfer_Index.cshtml" />
-    <Content Include="Views\Student\BatchTransfer_Student_Search.cshtml" />
     <Content Include="Views\User\Create.cshtml" />
     <Content Include="Views\User\Dashboard.cshtml" />
     <Content Include="Views\User\Delete.cshtml" />

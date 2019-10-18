@@ -3,47 +3,6 @@
 @{
     ViewBag.Title = "Index";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    /* This is change event for your dropdownlist */
-    $(document).ready(function () {
-        $(".LoaderBox").hide();
-        $('#BatchDropDown').change(function () {
-            var selectedID = $(this).val();
-            var SelectedNext = null;
-            $(".LoaderBox").show();
-            $.get('/Attendances/Show?batch_id=' + selectedID + "&next=" + SelectedNext, function (data) {
-                $('#register').html(data);
-                $('#register').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-
-        });
-        $('#SubBatchDropDown').change(function () {
-            var selectedID = $(this).val();
-            var SelectedNext = null;
-            $(".LoaderBox").show();
-            $.get('/Attendances/List_Subject?batch_id=' + selectedID + "&next=" + SelectedNext, function (data) {
-                $('#subjects').html(data);
-                $('#subjects').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-
-        });
-    });
-</script>
 <div id="content-header">
     <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
     <h1>Attendance</h1>
@@ -86,3 +45,39 @@
     <div id="register"></div>
     <div id="modal-box" style="display:none;"></div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        /* This is change event for your dropdownlist */
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#BatchDropDown').change(function () {
+                var selectedID = $(this).val();
+                var SelectedNext = null;
+                $(".LoaderBox").show();
+                $.get('/Attendances/Show?batch_id=' + selectedID + "&next=" + SelectedNext, function (data) {
+                    $('#register').html(data);
+                    $('#register').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+            $('#SubBatchDropDown').change(function () {
+                var selectedID = $(this).val();
+                var SelectedNext = null;
+                $(".LoaderBox").show();
+                $.get('/Attendances/List_Subject?batch_id=' + selectedID + "&next=" + SelectedNext, function (data) {
+                    $('#subjects').html(data);
+                    $('#subjects').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

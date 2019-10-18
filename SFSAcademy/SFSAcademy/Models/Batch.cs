@@ -60,6 +60,7 @@ namespace SFSAcademy
         }
         public bool IMPORT_FEES { get; set; }
         public bool IMPORT_SUBJECTS { get; set; }
+        public bool Select { get; set; }
         public IEnumerable<BATCH> ACTIVE()
         {
             var ActiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);

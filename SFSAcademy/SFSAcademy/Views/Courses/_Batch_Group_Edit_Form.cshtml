@@ -31,8 +31,8 @@
             </div>
             <div class="fee_category_scroll">
                 <div class="sel-list">
-                    Select: <a href="javascript:$$('input.batches_box').each(function(checkbox) { checkbox.checked = true; });">All</a>,
-                    <a href="javascript:$$('input.batches_box').each(function(checkbox) { checkbox.checked = false; });">None</a>
+                    Select: <a href="javascript:$('input.batches_box').each(function() { this.checked = true; });">All</a>,
+                    <a href="javascript:$('input.batches_box').each(function() { this.checked = false; });">None</a>
                 </div>
                 @for (var j = 0; j < batches.Count(); j++)
                 {

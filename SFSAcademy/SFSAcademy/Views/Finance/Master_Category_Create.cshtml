@@ -27,9 +27,13 @@
     Fees Category
 </div>
 <div id="flash_box">
-    @if (Session["FeeCatErrorMessage"] != null)
+    @if (ViewBag.ErrorMessage != null)
     {
-        <p class="flash-msg"> @Session["FeeCatErrorMessage"] </p>
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
     }
 </div>
 <div id="page-yield">
@@ -69,3 +73,7 @@
 
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+}

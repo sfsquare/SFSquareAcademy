@@ -5,35 +5,7 @@
 @{
     ViewBag.Title = "Assign_Tutor";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    /* This is change event for your dropdownlist */
-    $(document).ready(function () {
-        $(".LoaderBox").hide();
-        $('#DeptDropDown').change(function () {
-            var selectedID = $(this).val();
-            var SelectedBatch = $('#batch_id').val();
-            $(".LoaderBox").show();
-            $.get('/Batches/Update_Employees?department_id=' + selectedID + "&batch_id=" + SelectedBatch, function (data) {
-                $('#employee-list').html(data);
-                $('#employee-list').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-
-        });
-    });
-</script>
 <div id="content-header">
     <img src="~/Content/images/show_settings.png" alt="Settings Logo">
     <h1>Batch</h1>
@@ -48,7 +20,7 @@
     <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
     <a href="@Url.Action("Manage_Batches", "Courses")">Manage Batches</a> &raquo;
     <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">@batch.Course_full_name</a> &raquo;
-   Assign Tutor
+    Assign Tutor
 </div>
 <div id="page-yield">
 
@@ -68,3 +40,27 @@
 
 </div>
 <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        /* This is change event for your dropdownlist */
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#DeptDropDown').change(function () {
+                var selectedID = $(this).val();
+                var SelectedBatch = $('#batch_id').val();
+                $(".LoaderBox").show();
+                $.get('/Batches/Update_Employees?department_id=' + selectedID + "&batch_id=" + SelectedBatch, function (data) {
+                    $('#employee-list').html(data);
+                    $('#employee-list').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

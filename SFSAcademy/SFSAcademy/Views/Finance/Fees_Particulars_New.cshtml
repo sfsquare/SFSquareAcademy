@@ -1,36 +1,7 @@
-﻿@model SFSAcademy.FINANCE_FEE_CATGEORY
-
-@{
+﻿@{
     ViewBag.Title = "Fees_Particulars_New";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    /* This is change event for your dropdownlist */
-    $(document.forms[0]).ready(function () {
-        $(".LoaderBox2").hide();
-        $('#myDropDown').change(function () {
 
-        /* Get the selected value of dropdownlist */
-        var selectedID = $(this).val();
-        $(".LoaderBox2").show();
-        /* Request the partial view with .get request. */
-        $.get('/Finance/Select_Batch_Particular/' + selectedID, function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
-            $('#partialPlaceHolder').html(data);
-            /* little fade in effect */
-            $('#partialPlaceHolder').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox2").hide();
-        });
-
-    });
-   });
-</script>
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
     <h1>Fees Collection</h1>
@@ -53,9 +24,13 @@
     Fees Particulars
 </div>
 <div id="flash_box">
-    @if (Session["FeeParticularMessage"] != null)
+    @if (ViewBag.ErrorMessage != null)
     {
-        <p class="flash-msg"> @Session["FeeParticularMessage"] </p>
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
     }
 </div>
 <div id="page-yield">
@@ -83,12 +58,27 @@
                 @{Html.RenderAction("_Fees_Particulars_Create", "Finance");}
             </div>
             <input type="submit" value="Create" class="submit_button" formaction='@Url.Action("_Fees_Particulars_Create", "Finance")' />
-                    }
+        }
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
 
-<script type="text/javascript">
- $$('input.category_select').each(function(checkbox) { checkbox.checked = true; });
- $$('input.category_select').each(function(checkbox) { checkbox.checked = false; });
-</script>
+    <script type="text/javascript" language="javascript">
+        $(document.forms[0]).ready(function () {
+            $(".LoaderBox2").hide();
+            $('#myDropDown').change(function () {
+                var selectedID = $(this).val();
+                $(".LoaderBox2").show();
+                $.get('/Finance/Select_Batch_Particular/' + selectedID, function (data) {
+                    $('#partialPlaceHolder').html(data);
+                    $('#partialPlaceHolder').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox2").hide();
+                });
 
+            });
+        });
+    </script>
+}
