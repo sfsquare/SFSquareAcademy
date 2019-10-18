@@ -12,7 +12,6 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using System.Text;
 using System.Data.Entity.Validation;
-using SFSAcademy.Helpers;
 
 namespace SFSAcademy.Controllers
 {
@@ -91,8 +90,10 @@ namespace SFSAcademy.Controllers
         }
 
         [HttpGet]
-        public ActionResult Master_Category_Create()
+        public ActionResult Master_Category_Create(string ErrorMessage, string Notice)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
             ViewBag.NAME = "";
             ViewBag.DESCR = "";
             return View();
@@ -101,104 +102,44 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult _Master_Category_Create_Form()
         {
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
-                        .OrderBy(x => x.BatchData.ID).ToList();
-
-
-            List<SelectListItem> options = new List<SelectListItem>();
-            foreach (var item in queryCourceBatch)
-            {
-                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
-                var result = new SelectListItem();
-                result.Text = BatchFullName;
-                result.Value = item.BatchData.ID.ToString();
-                options.Add(result);
-            }
-            // add the 'ALL' option
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
-            ViewBag.searchString = options;
+            var batches = db.BATCHes.FirstOrDefault().ACTIVE();
 
             List<SelectListItem> sFeeCategory = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
             // add the 'ALL' option
             sFeeCategory.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Master category" });
             ViewBag.MSTR_CATGRY_ID = sFeeCategory;
 
-            return View(queryCourceBatch);
+            return View(batches);
         }
 
-        // POST: Finance/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult _Master_Category_Create_Form(IList<SelectCourseBatch> model, string radioName, string NAME, string DESCR, string FEE_FREQ, int? MSTR_CATGRY_ID)
+        public ActionResult _Master_Category_Create_Form(IEnumerable<BATCH> model, string radioName, string NAME, string DESCR, string FEE_FREQ, int? MSTR_CATGRY_ID)
         {
-            if (ModelState.IsValid)
+            if (radioName == "Yes")
             {
-                int BatchCount = 0;
-                if (string.IsNullOrEmpty(NAME) || string.IsNullOrEmpty(DESCR))
+                var FF_cATAGORY = new FINANCE_FEE_CATGEORY() { NAME = NAME, DESCR = DESCR, FEE_FREQ = FEE_FREQ, BTCH_ID = null, IS_DEL = false, IS_MSTR = true, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, MSTR_CATGRY_ID = null };
+                db.FINANCE_FEE_CATGEORY.Add(FF_cATAGORY);
+            }
+            else
+            {
+                foreach (var item in model.Where(x => x.Select == true))
                 {
-                    Session["FeeCatErrorMessage"] = "Name or Description canot be blank";
-                }
-                else
-                {
-                    if (radioName == "Yes")
-                    {
-                        var FF_cATAGORY = new FINANCE_FEE_CATGEORY() { NAME = NAME, DESCR = DESCR, FEE_FREQ = FEE_FREQ, BTCH_ID = null, IS_DEL = false, IS_MSTR = true, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, MSTR_CATGRY_ID = null };
-                        db.FINANCE_FEE_CATGEORY.Add(FF_cATAGORY);
-                        db.SaveChanges();
-                        Session["FeeCatErrorMessage"] = "Master Category Added Successfully.";
-                    }
-                    else
-                    {
-                        foreach (SelectCourseBatch item in model)
-                        {
-                            if (item.Selected)
-                            {
-                                BatchCount++;
-                                var FF_cATAGORY = new FINANCE_FEE_CATGEORY() { NAME = NAME, DESCR = DESCR, FEE_FREQ = FEE_FREQ, BTCH_ID = item.BatchData.ID, IS_DEL = false, IS_MSTR = false, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, MSTR_CATGRY_ID = MSTR_CATGRY_ID };
-                                db.FINANCE_FEE_CATGEORY.Add(FF_cATAGORY);
-                                db.SaveChanges();
-                            }
-                        }
-                        Session["FeeCatErrorMessage"] = "Fee Category Added Successfully.";
-                    }
-
-                    if (radioName == "No" && BatchCount.Equals(0))
-                    {
-                        Session["FeeCatErrorMessage"] = "Please select at least one Batch";
-                    }
+                    var FF_cATAGORY = new FINANCE_FEE_CATGEORY() { NAME = NAME, DESCR = DESCR, FEE_FREQ = FEE_FREQ, BTCH_ID = item.ID, IS_DEL = false, IS_MSTR = false, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, MSTR_CATGRY_ID = MSTR_CATGRY_ID };
+                    db.FINANCE_FEE_CATGEORY.Add(FF_cATAGORY);
                 }
             }
-
-            var queryCourceBatch = (from cs in db.COURSEs
-                                    join bt in db.BATCHes on cs.ID equals bt.CRS_ID
-                                    select new SelectCourseBatch { CourseData = cs, BatchData = bt, Selected = false })
-                                    .OrderBy(x => x.BatchData.ID).ToList();
-
-
-            List<SelectListItem> options = new List<SelectListItem>();
-            foreach (var item in queryCourceBatch)
+            try { db.SaveChanges(); ViewBag.Notice = "Fee Category Added Successfully."; }
+            catch (Exception e)
             {
-                string BatchFullName = string.Concat(item.CourseData.CODE, "-", item.BatchData.NAME);
-                var result = new SelectListItem();
-                result.Text = BatchFullName;
-                result.Value = item.BatchData.ID.ToString();
-                options.Add(result);
+                ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                return RedirectToAction("Master_Category_Create", new { ErrorMessage = ViewBag.ErrorMessage });
             }
-            // add the 'ALL' option
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
-            ViewBag.searchString = options;
-
-            List<SelectListItem> sFeeCategory = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == true).OrderBy(x => x.ID), "ID", "NAME").ToList();
-            // add the 'ALL' option
-            sFeeCategory.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Master category" });
-            ViewBag.MSTR_CATGRY_ID = sFeeCategory;
-
-            //return View(queryCourceBatch);
-            return RedirectToAction("Master_Category_Create");
+            if (radioName == "No" && model.Where(x => x.Select == true).Count() == 0)
+            {
+                ViewBag.ErrorMessage = "Please select at least one Batch";
+            }
+            return RedirectToAction("Master_Category_Create", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
         public ActionResult Fee_Category_View()
@@ -472,148 +413,125 @@ namespace SFSAcademy.Controllers
 
 
         [HttpGet]
-        public ActionResult Fees_Particulars_New(int? FeeCatCount)
+        public ActionResult Fees_Particulars_New(string ErrorMessage, string Notice)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
             List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == true && x.IS_DEL == false).OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
-            // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Master Category" });
             ViewBag.MASTER_CATGEORY_ID = options;
-
-            if (!FeeCatCount.Equals(null))
-            {
-                ViewBag.FeeCatError = string.Concat("Fee Particular Details of ", FeeCatCount, " Student Batch updated in system successfully"); ;
-            }
             return View();
         }
 
         [HttpGet]
         public ActionResult Select_Batch_Particular(int? id)
         {
-            var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
-                                      join b in db.BATCHes on ffc.BTCH_ID equals b.ID
-                                      join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id && b.IS_ACT == true
-                                      select new SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+            var FinanceFeeCategory = db.FINANCE_FEE_CATGEORY.Include(x => x.BATCH).Include(x => x.BATCH.COURSE).Where(x => x.IS_DEL == false && x.BATCH.IS_DEL == false && x.IS_MSTR == false && x.MSTR_CATGRY_ID == id && x.BATCH.IS_ACT == true).OrderBy(x => x.ID).ToList();
 
-            return PartialView("_Select_Batch_Particular", fEEcATEGORYaACCESS);
+            return PartialView("_Select_Batch_Particular", FinanceFeeCategory);
         }
 
         [HttpGet]
         public ActionResult _Fees_Particulars_Create()
         {
             List<SelectListItem> sCategory = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.ID), "ID", "NAME").ToList();
-            // add the 'ALL' option
-            //sCategory.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
             ViewBag.STDNT_CAT_ID = sCategory;
             ViewBag.radioName = "";
-            ViewBag.FeePartOption = "";
-            //ViewBag.FeeCatError = TempData["FeeCatError"];
+            //ViewBag.FeePartOption = "";
             return View();
         }
 
 
-
-        // POST: Finance/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult _Fees_Particulars_Create([Bind(Include = "ID,NAME,DESCR,AMT,FIN_FEE_CAT_ID,STDNT_CAT_ID,ADMSN_NO,STDNT_ID,IS_DEL,CREATED_AT,UPDATED_AT")] FINANCE_FEE_PARTICULAR fINANCE_FEE_pARTUCULAR, IList<SelectFeeCategory> model, string FeePartOption, string radioName)
+        public ActionResult _Fees_Particulars_Create([Bind(Include = "ID,NAME,DESCR,AMT,FIN_FEE_CAT_ID,STDNT_CAT_ID,ADMSN_NO,STDNT_ID,IS_DEL,CREATED_AT,UPDATED_AT")] FINANCE_FEE_PARTICULAR fINANCE_FEE_pARTUCULAR, IEnumerable<FINANCE_FEE_CATGEORY> model, string radioName)
         {
-            Session["FeeParticularMessage"] = "";
-            if (ModelState.IsValid)
+            if (radioName == "Admission No.")
             {
-                if (radioName == "Admission No.")
+                int StdUpdated = 0;
+                foreach (var AdmissionNoList in HtmlHelpers.ApplicationHelper.StringToIntList(fINANCE_FEE_pARTUCULAR.ADMSN_NO).ToList())
                 {
-                    int StdUpdated = 0;
-                    foreach (var AdmissionNoList in HtmlHelpers.ApplicationHelper.StringToIntList(fINANCE_FEE_pARTUCULAR.ADMSN_NO).ToList())
+                    int stCount = 0;
+                    foreach (var item in model.Where(x=>x.Select == true))
                     {
-                        //var StdResult = from u in db.STUDENTs where (u.ADMSN_NO == AdmissionNoList.ToString()) select u;
-                        int stCount = 0;
-                        foreach (SelectFeeCategory item in model)
-                        {
-                            if (item.Selected)
-                            {
-                                fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.FinanceFeeCategoryData.ID;
-                                var StdFinResult = from u in db.STUDENTs
-                                                   where (u.ADMSN_NO == AdmissionNoList.ToString()
-                                                    && u.BTCH_ID == item.BatchData.ID)
-                                                   select u;
-                                stCount = StdFinResult.Count();
+                        fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.ID;
+                        var StdFinResult = from u in db.STUDENTs
+                                           where (u.ADMSN_NO == AdmissionNoList.ToString()
+                                            && u.BTCH_ID == item.BTCH_ID)
+                                           select u;
+                        stCount = StdFinResult.Count();
 
-                                if (StdFinResult.Count() != 0)
-                                {
-                                    StdUpdated = StdUpdated + 1;
-                                    fINANCE_FEE_pARTUCULAR.STDNT_CAT_ID = null;
-                                    fINANCE_FEE_pARTUCULAR.ADMSN_NO = AdmissionNoList.ToString();
-                                    fINANCE_FEE_pARTUCULAR.STDNT_ID = StdFinResult.FirstOrDefault().ID;
-                                    fINANCE_FEE_pARTUCULAR.IS_DEL = "N";
-                                    fINANCE_FEE_pARTUCULAR.CREATED_AT = System.DateTime.Now;
-                                    fINANCE_FEE_pARTUCULAR.UPDATED_AT = System.DateTime.Now;
-                                    db.FINANCE_FEE_PARTICULAR.Add(fINANCE_FEE_pARTUCULAR);
-                                    db.SaveChanges();
-                                }
-                            }
-                            if (!stCount.Equals(0)) { break; }
-                        }
-                        if (stCount.Equals(0)) { Session["FeeParticularMessage"] = string.Concat(Session["FeeParticularMessage"], "Admission Number: ", AdmissionNoList, " is either invalid or does not belong to batch selected. "); }
-                    }
-                    if (StdUpdated == 0)
-                    {
-                        Session["FeeParticularMessage"] = "No student found with given Admission Numbers or they are not from the Batch selected.";
-                    }
-                    else
-                    {
-                        Session["FeeParticularMessage"] = string.Concat(Session["FeeParticularMessage"], " Fee Particular Details of ", StdUpdated, " Students updated in system successfully");
-                    }
-                }
-                else if (radioName == "Student Category")
-                {
-                    int StdCatUpdated = 0;
-                    foreach (SelectFeeCategory item in model)
-                    {
-                        if (item.Selected)
+                        if (StdFinResult.Count() != 0)
                         {
-                            StdCatUpdated++;
-                            fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.FinanceFeeCategoryData.ID;
+                            StdUpdated = StdUpdated + 1;
+                            fINANCE_FEE_pARTUCULAR.STDNT_CAT_ID = null;
+                            fINANCE_FEE_pARTUCULAR.ADMSN_NO = AdmissionNoList.ToString();
+                            fINANCE_FEE_pARTUCULAR.STDNT_ID = StdFinResult.FirstOrDefault().ID;
                             fINANCE_FEE_pARTUCULAR.IS_DEL = "N";
-                            fINANCE_FEE_pARTUCULAR.CREATED_AT = System.DateTime.Now;
-                            fINANCE_FEE_pARTUCULAR.UPDATED_AT = System.DateTime.Now;
                             db.FINANCE_FEE_PARTICULAR.Add(fINANCE_FEE_pARTUCULAR);
-                            db.SaveChanges();
+                            try{db.SaveChanges();}
+                            catch (Exception e){
+                                ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                                return RedirectToAction("Fees_Particulars_New", new { ErrorMessage = ViewBag.ErrorMessage });
+                            }
                         }
+                        if (!stCount.Equals(0)) { break; }
                     }
-                    if (!StdCatUpdated.Equals(0)) { Session["FeeParticularMessage"] = string.Concat("Fee Particular Details of ", StdCatUpdated, " Student Category updated in system successfully"); }
-                    else { Session["FeeParticularMessage"] = string.Concat("No valid category selected"); }
+                    if (stCount.Equals(0)) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "Admission Number: ", AdmissionNoList, " is either invalid or does not belong to batch selected. "); }
+                }
+                if (StdUpdated == 0)
+                {
+                    ViewBag.ErrorMessage = "No student found with given Admission Numbers or they are not from the Batch selected.";
                 }
                 else
                 {
-                    int StdFeeUpdated = 0;
-                    foreach (SelectFeeCategory item in model)
-                    {
-                        if (item.Selected)
-                        {
-                            StdFeeUpdated++;
-                            fINANCE_FEE_pARTUCULAR.STDNT_CAT_ID = null;
-                            fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.FinanceFeeCategoryData.ID;
-                            fINANCE_FEE_pARTUCULAR.IS_DEL = "N";
-                            fINANCE_FEE_pARTUCULAR.CREATED_AT = System.DateTime.Now;
-                            fINANCE_FEE_pARTUCULAR.UPDATED_AT = System.DateTime.Now;
-                            db.FINANCE_FEE_PARTICULAR.Add(fINANCE_FEE_pARTUCULAR);
-                            try { db.SaveChanges(); }
-                            catch (Exception e) { Console.WriteLine(e); Session["FeeParticularMessage"] = e; }
-                        }
-                    }
-                    if (!StdFeeUpdated.Equals(0)) { Session["FeeParticularMessage"] = string.Concat("Fee Particular Details of ", StdFeeUpdated, " Student Category updated in system successfully"); }
-                    else { Session["FeeParticularMessage"] = string.Concat("No valid category selected"); }
+                    ViewBag.Notice = string.Concat(ViewBag.Notice, " Fee Particular Details of ", StdUpdated, " Students updated in system successfully");
                 }
-
             }
-            List<SelectListItem> sCategory = new SelectList(db.STUDENT_CATGEORY.OrderBy(x => x.ID), "ID", "NAME", fINANCE_FEE_pARTUCULAR.STDNT_CAT_ID).ToList();
-            // add the 'ALL' option
-            sCategory.Insert(0, new SelectListItem() { Value = "-1", Text = "ALL" });
-            ViewBag.STDNT_CAT_ID = sCategory;
-            return RedirectToAction("Fees_Particulars_New");
+            else if (radioName == "Student Category")
+            {
+                int StdCatUpdated = 0;
+                foreach (var item in model.Where(x=>x.Select == true))
+                {
+                    StdCatUpdated++;
+                    fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.ID;
+                    fINANCE_FEE_pARTUCULAR.IS_DEL = "N";
+                    fINANCE_FEE_pARTUCULAR.CREATED_AT = System.DateTime.Now;
+                    fINANCE_FEE_pARTUCULAR.UPDATED_AT = System.DateTime.Now;
+                    db.FINANCE_FEE_PARTICULAR.Add(fINANCE_FEE_pARTUCULAR);
+                    try { db.SaveChanges(); }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                        return RedirectToAction("Fees_Particulars_New", new { ErrorMessage = ViewBag.ErrorMessage });
+                    }
+                }
+                if (!StdCatUpdated.Equals(0)) { ViewBag.Notice = string.Concat("Fee Particular Details of ", StdCatUpdated, " Student Category updated in system successfully"); }
+                else { ViewBag.ErrorMessage = string.Concat("No valid category selected"); }
+            }
+            else
+            {
+                int StdFeeUpdated = 0;
+                foreach (var item in model.Where(x=>x.Select == true))
+                {
+                    StdFeeUpdated++;
+                    fINANCE_FEE_pARTUCULAR.STDNT_CAT_ID = null;
+                    fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID = item.ID;
+                    fINANCE_FEE_pARTUCULAR.IS_DEL = "N";
+                    fINANCE_FEE_pARTUCULAR.CREATED_AT = System.DateTime.Now;
+                    fINANCE_FEE_pARTUCULAR.UPDATED_AT = System.DateTime.Now;
+                    db.FINANCE_FEE_PARTICULAR.Add(fINANCE_FEE_pARTUCULAR);
+                    try { db.SaveChanges(); }
+                    catch (Exception e)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                        return RedirectToAction("Fees_Particulars_New", new { ErrorMessage = ViewBag.ErrorMessage });
+                    }
+                }
+                if (!StdFeeUpdated.Equals(0)) { ViewBag.Notice = string.Concat("Fee Particular Details of ", StdFeeUpdated, " Student Category updated in system successfully"); }
+                else { ViewBag.ErrorMessage = string.Concat("No valid category selected"); }
+            }
+            return RedirectToAction("Fees_Particulars_New",new {ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
 
         }
         // GET: Finance/Delete/5
@@ -663,7 +581,7 @@ namespace SFSAcademy.Controllers
             else
             { ViewBag.radioName = "All"; }
 
-            ViewBag.FeePartOption = "";
+            //ViewBag.FeePartOption = "";
             //ViewBag.FeeCatError = TempData["FeeCatError"];
 
             return View(fINANCE_FEE_PARTICULAR);
@@ -674,7 +592,7 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Master_Category_Particulars_Edit([Bind(Include = "ID,NAME,DESCR,AMT,FIN_FEE_CAT_ID,STDNT_CAT_ID,ADMSN_NO,STDNT_ID,IS_DEL,CREATED_AT,UPDATED_AT")] FINANCE_FEE_PARTICULAR fINANCE_FEE_pARTUCULAR, string FeePartOption, string radioName)
+        public ActionResult Master_Category_Particulars_Edit([Bind(Include = "ID,NAME,DESCR,AMT,FIN_FEE_CAT_ID,STDNT_CAT_ID,ADMSN_NO,STDNT_ID,IS_DEL,CREATED_AT,UPDATED_AT")] FINANCE_FEE_PARTICULAR fINANCE_FEE_pARTUCULAR, string radioName)
         {
             int StdFeeUpdated = 0;
             FINANCE_FEE_CATGEORY fINANCE_FEE_CATGEORY = db.FINANCE_FEE_CATGEORY.Find(fINANCE_FEE_pARTUCULAR.FIN_FEE_CAT_ID);
@@ -705,7 +623,7 @@ namespace SFSAcademy.Controllers
             else
             { ViewBag.radioName = "All"; }
 
-            ViewBag.FeePartOption = "";
+            //ViewBag.FeePartOption = "";
             return View(fINANCE_FEE_PARTICULAR_UPD);
         }
 
@@ -948,7 +866,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of select batch added in system successfully");
@@ -983,7 +901,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Discounts of Student Category added in system successfully");
@@ -1033,7 +951,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return View();
                         }
                         ViewBag.ErrorMessage = string.Concat("Fee Discounts of ", stdCount, " Students added in system successfully");
@@ -1354,7 +1272,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Fine for select batch added in system successfully");
@@ -1389,7 +1307,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View();
                     }
                     ViewBag.ErrorMessage = string.Concat("Fee Fine for Student Category added in system successfully");
@@ -1439,7 +1357,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return View();
                         }
                         ViewBag.ErrorMessage = string.Concat("Fee Fine for ", stdCount, " Students added in system successfully");
@@ -1541,8 +1459,10 @@ namespace SFSAcademy.Controllers
 
 
         [HttpGet]
-        public ActionResult Fee_Collection_New()
+        public ActionResult Fee_Collection_New(string Notice, string ErrorMessage)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
             List<SelectListItem> options = new SelectList(db.FINANCE_FEE_CATGEORY.Where(x => x.IS_MSTR == true && x.IS_DEL == false).OrderBy(x => x.NAME).Distinct(), "ID", "NAME").ToList();
             // add the 'ALL' option
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Master Category" });
@@ -1554,19 +1474,15 @@ namespace SFSAcademy.Controllers
         [HttpGet]
         public ActionResult Select_Batch_Collection(int? id)
         {
-            var fEEcATEGORYaACCESS = (from ffc in db.FINANCE_FEE_CATGEORY
-                                      join ffp in db.FINANCE_FEE_PARTICULAR on ffc.ID equals ffp.FIN_FEE_CAT_ID
-                                      join b in db.BATCHes on ffc.BTCH_ID equals b.ID
-                                      join cs in db.COURSEs on b.CRS_ID equals cs.ID
-                                      where ffc.IS_DEL.Equals(false) && b.IS_DEL.Equals(false) && ffc.IS_MSTR.Equals(false) && ffc.MSTR_CATGRY_ID == id 
-                                      select new SelectFeeCategory { FinanceFeeCategoryData = ffc, BatchData = b, CourseData = cs, Selected = false }).Distinct().OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+            var ParticularData = db.FINANCE_FEE_PARTICULAR.Where(x => x.IS_DEL == "N").Select(x=>x.FIN_FEE_CAT_ID).Distinct().ToList();
+            var FinanceFeeCategory = db.FINANCE_FEE_CATGEORY.Include(x=>x.FINANCE_FEE_PARTICULAR).Include(x => x.BATCH).Include(x => x.BATCH.COURSE).Where(x => x.IS_DEL == false && x.BATCH.IS_DEL == false && x.IS_MSTR == false && x.MSTR_CATGRY_ID == id && x.BATCH.IS_ACT == true && ParticularData.Contains(x.ID)).OrderBy(x => x.ID).ToList();
 
-            if (fEEcATEGORYaACCESS == null || fEEcATEGORYaACCESS.Count() == 0)
+            if (FinanceFeeCategory == null || FinanceFeeCategory.Count() == 0)
             {
-                ViewBag.FeeCollectionMessage = "No data to display. Either Fee Category is missing or no Particulars added.";
+                ViewBag.ErrorMessage = "No data to display. Either Fee Category is missing or no Particulars added.";
             }
 
-            return PartialView("_Select_Batch_Collection", fEEcATEGORYaACCESS);
+            return PartialView("_Select_Batch_Collection", FinanceFeeCategory);
         }
 
         [HttpGet]
@@ -1577,66 +1493,60 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
-
-
-        // POST: Finance/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult _Fee_Collection_Create([Bind(Include = "ID,NAME,START_DATE,END_DATE,FEE_CAT_ID,BTCH_ID,IS_DEL,DUE_DATE")] FINANCE_FEE_COLLECTION fINANCE_FEE_cOLLECTION, IList<SelectFeeCategory> model)
+        public ActionResult _Fee_Collection_Create([Bind(Include = "ID,NAME,START_DATE,END_DATE,FEE_CAT_ID,BTCH_ID,IS_DEL,DUE_DATE")] FINANCE_FEE_COLLECTION fINANCE_FEE_cOLLECTION, IEnumerable<FINANCE_FEE_CATGEORY> model)
         {
-
-            if (ModelState.IsValid)
+            int FeeCatCount = 0;
+            int FeeCatId = 0;
+            int SelectFeeCatId = 0;
+            foreach (var item in model.Where(x=>x.Select == true))
             {
-                int FeeCatCount = 0;
-                int FeeCatId = 0;
-                int SelectFeeCatId = 0;
-                foreach (SelectFeeCategory item in model)
+                FeeCatCount++;
+                SelectFeeCatId = item.ID;
+                var FFeeColl = new FINANCE_FEE_COLLECTION() { NAME = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, DUE_DATE = fINANCE_FEE_cOLLECTION.DUE_DATE, FEE_CAT_ID = item.ID, BTCH_ID = item.BTCH_ID, IS_DEL = false };
+                db.FINANCE_FEE_COLLECTION.Add(FFeeColl);
+                try { db.SaveChanges(); }
+                catch (Exception e)
                 {
-                    if (item.Selected)
-                    {
-                        FeeCatCount++;
-                        SelectFeeCatId = item.FinanceFeeCategoryData.ID;
-                        var FFeeColl = new FINANCE_FEE_COLLECTION() { NAME = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, DUE_DATE = fINANCE_FEE_cOLLECTION.DUE_DATE, FEE_CAT_ID = item.FinanceFeeCategoryData.ID, BTCH_ID = item.BatchData.ID, IS_DEL = false };
-                        db.FINANCE_FEE_COLLECTION.Add(FFeeColl);
-                        db.SaveChanges();
-                        //var StdResult = from u in db.STUDENTs where (u.BTCH_ID == item.BatchData.ID) select u;
-                        var StdResult = (from ffc in db.FINANCE_FEE_CATGEORY
-                                         join b in db.BATCHes on ffc.BTCH_ID equals b.ID
-                                         join st in db.STUDENTs on b.ID equals st.BTCH_ID
-                                         join fcol in db.FINANCE_FEE_COLLECTION on new { A = ffc.ID.ToString(), B = b.ID.ToString() } equals new { A = fcol.FEE_CAT_ID.ToString(), B = fcol.BTCH_ID.ToString() }
-                                         where fcol.ID == FFeeColl.ID && ffc.ID == item.FinanceFeeCategoryData.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && b.IS_ACT == true
-                                         select new { FinanceFeeCategoryData = ffc, BatchData = b, StudentData = st, FeeCollectionData = fcol }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
-                        foreach (var item2 in StdResult)
-                        {
-                            STUDENT FeeStudent = db.STUDENTs.Find(item2.StudentData.ID);
-                            FeeStudent.HAS_PD_FE =false;
-                            FeeStudent.UPDATED_AT = System.DateTime.Now;
-                            db.SaveChanges();
-                            var FF_fEE = new FINANCE_FEE() { STDNT_ID = item2.StudentData.ID, FEE_CLCT_ID = item2.FeeCollectionData.ID, IS_PD = false };
-                            db.FINANCE_FEE.Add(FF_fEE);
-                            db.SaveChanges();
-                        }
-                        if (!FeeCatId.Equals(SelectFeeCatId))
-                        {
-                            var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = 1, ORIGIN_TYPE = "Fee Collection",CREATED_AT= System.DateTime.Now, UPDATED_AT =System.DateTime.Now };
-                            db.EVENTs.Add(FF_eVENT);
-                            db.SaveChanges();
-                            FeeCatId = SelectFeeCatId;
-                        }
-
-                    }
+                    ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                    return RedirectToAction("Fee_Collection_New", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
-                if (FeeCatCount.Equals(0))
+                //var StdResult = from u in db.STUDENTs where (u.BTCH_ID == item.BatchData.ID) select u;
+                var StdResult = (from ffc in db.FINANCE_FEE_CATGEORY
+                                 join b in db.BATCHes on ffc.BTCH_ID equals b.ID
+                                 join st in db.STUDENTs on b.ID equals st.BTCH_ID
+                                 join fcol in db.FINANCE_FEE_COLLECTION on new { A = ffc.ID.ToString(), B = b.ID.ToString() } equals new { A = fcol.FEE_CAT_ID.ToString(), B = fcol.BTCH_ID.ToString() }
+                                 where fcol.ID == FFeeColl.ID && ffc.ID == item.ID && ffc.IS_DEL.Equals(false) && b.IS_DEL == false && st.IS_DEL == false && b.IS_ACT == true
+                                 select new { FinanceFeeCategoryData = ffc, BatchData = b, StudentData = st, FeeCollectionData = fcol }).OrderBy(g => g.FinanceFeeCategoryData.ID).ToList();
+                foreach (var item2 in StdResult)
                 {
-                    Session["FeeCollectionMessage"] = "Please select valid Fee Category";
+                    STUDENT FeeStudent = db.STUDENTs.Find(item2.StudentData.ID);
+                    FeeStudent.HAS_PD_FE = false;
+                    FeeStudent.UPDATED_AT = System.DateTime.Now;
+                    db.Entry(FeeStudent).State = EntityState.Modified;
+                    var FF_fEE = new FINANCE_FEE() { STDNT_ID = item2.StudentData.ID, FEE_CLCT_ID = item2.FeeCollectionData.ID, IS_PD = false };
+                    db.FINANCE_FEE.Add(FF_fEE);
                 }
-                else { Session["FeeCollectionMessage"] = string.Concat("Fee Collection for ", FeeCatCount, " Fee Categories added in system"); }
-                return RedirectToAction("Fee_Collection_New");
+                if (!FeeCatId.Equals(SelectFeeCatId))
+                {
+                    var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = 1, ORIGIN_TYPE = "Fee Collection", CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
+                    db.EVENTs.Add(FF_eVENT);
+                    FeeCatId = SelectFeeCatId;
+                }
+                try { db.SaveChanges(); }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                    return RedirectToAction("Fee_Collection_New", new { ErrorMessage = ViewBag.ErrorMessage });
+                }
             }
-            Session["FeeCollectionMessage"] = "There seems to be some issue with Model State";
-            return View(fINANCE_FEE_cOLLECTION);
+            if (FeeCatCount.Equals(0))
+            {
+                ViewBag.ErrorMessage = "Please select valid Fee Category";
+            }
+            else { ViewBag.Notice = string.Concat("Fee Collection for ", FeeCatCount, " Fee Categories added in system"); }
+            return RedirectToAction("Fee_Collection_New",new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
         }
 
 
@@ -1854,7 +1764,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCE_FEE_cOLLECTION);
                 }
 
@@ -2412,7 +2322,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return PartialView("_Student_Fees_Submission");
                         }
                         var student_fine_val2 = (from ff in db.FEE_FINE
@@ -2732,7 +2642,7 @@ namespace SFSAcademy.Controllers
                             }
                             catch (Exception e)
                             {
-                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                                ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                                 return PartialView("_Student_Fees_Submission");
                             }
                             var student_discounts_val2 = (from ff in db.FEE_DISCOUNT
@@ -3056,10 +2966,13 @@ namespace SFSAcademy.Controllers
                                 }
                                 catch (Exception e)
                                 {
-                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
-                                    if (e.InnerException.InnerException.Message.Contains("FIN_F_FINA_FINA_NI5"))
+                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                                    if(e.InnerException != null)
                                     {
-                                        ViewBag.ErrorMessage = "This Student is added in system after current fee collection was set-up. Current fee has to be collected manually. This Student’s fee can be collected through system next collection onward.";
+                                        if (e.InnerException.InnerException.Message.Contains("FIN_F_FINA_FINA_NI5"))
+                                        {
+                                            ViewBag.ErrorMessage = "This Student is added in system after current fee collection was set-up. Current fee has to be collected manually. This Student’s fee can be collected through system next collection onward.";
+                                        }
                                     }
                                     return PartialView("_Student_Fees_Submission");
                                 }
@@ -3091,7 +3004,7 @@ namespace SFSAcademy.Controllers
                                 }
                                 catch (Exception e)
                                 {
-                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", e.InnerException.InnerException.Message);
+                                    ViewBag.FeeCollectionMessage = string.Concat(ViewBag.FeeCollectionMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                                     return PartialView("_Student_Fees_Submission");
                                 }
                                 var paid_fees_val2 = (from ff in db.FINANCE_FEE
@@ -3457,7 +3370,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return PartialView("_Student_Fees_Submission");
                 }
                 return View();
@@ -3520,7 +3433,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCE_FEE);
                 }
                 return RedirectToAction("Index");
@@ -3565,7 +3478,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(fINANCE_FEE);
             }
             return RedirectToAction("Index");
@@ -3631,7 +3544,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(fINANCEcATEGORY);
             }
             ViewBag.ErrorMessage = "Finance Category Deleted Sucessfully!";
@@ -3681,7 +3594,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEcATEGORY);
                 }
                 ViewBag.ErrorMessage = "Finance Category Edited Sucessfully!";
@@ -3716,7 +3629,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEcATEGORY);
                 }
                 return RedirectToAction("Categories");
@@ -4781,7 +4694,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(PageName);
                 }
                 ViewBag.ErrorMessage = string.Concat("Transaction Added Successfully. Receipt No. - ", fINANCEtRANSACTIONS.ID);
@@ -4866,7 +4779,7 @@ namespace SFSAcademy.Controllers
                     try { db.SaveChanges(); }
                     catch (Exception e)
                     {
-                        ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Expense_List_Update", "Finance", new ViewDataDictionary { { "Warn_Notice", ViewData["Warn_Notice"] } });
                     }
                 }
@@ -4876,7 +4789,7 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewData["Warn_Notice"] = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 if (IncomeType == true)
                 {
                     return RedirectToAction("Income_List", "Finance", new { ErrorMessage = ViewBag.ErrorMessage });
@@ -4945,7 +4858,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction(PageName, "Finance", new { id = fINANCEtRANSACTIONS.ID, ErrorMessage = ViewBag.ErrorMessage });
                 //return View(PageName);
             }
@@ -5677,7 +5590,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEdONATION);
                 }
                 ViewBag.Notice = "Donation added in system sucessfully!";
@@ -5752,7 +5665,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(fINANCEdONATION);
                 }
                 ViewBag.Notice = "Donation updated in system sucessfully!";
@@ -5771,14 +5684,14 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(donation);
             }
             db.FINANCE_DONATION.Remove(donation);
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(donation);
             }
             ViewBag.Notice = "Donation deleted from system sucessfully!";
@@ -5842,7 +5755,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
                 ViewBag.Notice = "Transaction Trigger added in system sucessfully!";
@@ -5893,7 +5806,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Transaction_Trigger_Edit", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
                 ViewBag.Notice = "Transaction Trigger updated in system sucessfully!";
@@ -5912,7 +5825,7 @@ namespace SFSAcademy.Controllers
             try { db.SaveChanges(); }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction("Automatic_Transactions", new { ErrorMessage = ViewBag.ErrorMessage });
             }
             ViewBag.Notice = "Donation deleted from system sucessfully!";
@@ -6049,6 +5962,7 @@ namespace SFSAcademy.Controllers
             return View();
         }
 
+        [OutputCache(NoStore = true, Duration = 0)]
         public ActionResult View_Employee_Payslip(int? id, DateTime? salary_date, string Notice, string ErrorMessage)
         {
             ViewBag.Notice = Notice;
@@ -6062,8 +5976,7 @@ namespace SFSAcademy.Controllers
                 is_present_employee = false;
             }
             ViewBag.is_present_employee = is_present_employee;
-            var Config = new Configuration();
-            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            ViewBag.currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
@@ -6186,7 +6099,7 @@ namespace SFSAcademy.Controllers
             {
                 TIL = string.Concat("SAL-", employee.FIRST_NAME),
                 CAT_ID = TranCatId,
-                DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", SalaryDate.ToString("MMMM")),
+                DESCR = string.Concat("Salary Paid for ", employee.Full_Name, "For the month of ", SalaryDate.ToString("MMMM")),
                 PAYEE_ID = PayeeId,
                 PAYEE_TYPE = "Institution",
                 AMT = (decimal)cs.net_amount,
@@ -6214,7 +6127,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = SalaryDate, ErrorMessage = ViewBag.ErrorMessage });
             }
 
@@ -6313,13 +6226,17 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.salary_date = date;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var dates = db.MONTHLY_PAYSLIP.Where(x => x.SAL_DATE == date && x.IS_RJCT == false).ToList();
+            var dates = db.MONTHLY_PAYSLIP.Where(x => x.SAL_DATE == date && x.IS_RJCT == false).AsEnumerable();
             foreach (var d in dates)
             {
-                d.Approve(UserId, "One Click Approved");
-                EMPLOYEE employee = db.EMPLOYEEs.Find(d.EMP_ID);
-                var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == d.EMP_ID && x.IS_APPR == true && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
-                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == d.EMP_ID && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                d.Approve(UserId, "One Click Approved");                
+            }
+            var Employees = db.EMPLOYEEs.Where(x => dates.Select(p => p.EMP_ID).Distinct().Contains(x.ID)).ToList();
+            foreach(var employee in Employees)
+            {
+                //EMPLOYEE employee = db.EMPLOYEEs.Find(d.EMP_ID);
+                var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == employee.ID && x.IS_APPR == true && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
+                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == date).OrderByDescending(x => x.SAL_DATE).ToList();
                 CalulatedSalary cs = employee.Calculate_Salary(monthly_payslips, individual_payslip_category);
                 int? TranCatId = db.FINANCE_TRANSACTION_CATEGORY.Where(x => x.NAME == "Salary").Select(x => x.ID).FirstOrDefault();
                 string ReceiptNo = ""; int Index = 1;
@@ -6351,7 +6268,7 @@ namespace SFSAcademy.Controllers
                 {
                     TIL = string.Concat("SAL-", employee.FIRST_NAME),
                     CAT_ID = TranCatId,
-                    DESCR = string.Concat("Salary Paid for ", employee.Full_Name(), "For the month of ", date.Value.ToString("MMMM")),
+                    DESCR = string.Concat("Salary Paid for ", employee.Full_Name, "For the month of ", date.Value.ToString("MMMM")),
                     PAYEE_ID = PayeeId,
                     PAYEE_TYPE = "Institution",
                     AMT = (decimal)cs.net_amount,
@@ -6379,12 +6296,24 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     RedirectToAction("Payslip_Index", new { ErrorMessage = ViewBag.ErrorMessage });
                 }
             }
             ViewBag.Notice = "Payslip has been approved.";        
             return RedirectToAction("Payslip_Index", new { Notice = ViewBag.Notice });
+        }
+        [AllowAnonymous]
+        public JsonResult AmtIsNumeric([Bind(Prefix = "AMT")] decimal? AMT)
+        {
+            return Json(!(AMT < 0), JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult UniqueName([Bind(Prefix = "NAME")] string NAME)
+        {
+            //check if any of the UserName matches the UserName specified in the Parameter using the ANY extension method.   
+            return Json(!db.FINANCE_FEE_CATGEORY.Include(x => x.BATCH).Where(x => x.BATCH.IS_DEL == false).Any(x => x.NAME.ToUpper() == NAME.ToUpper()), JsonRequestBehavior.AllowGet);
         }
     }
 }

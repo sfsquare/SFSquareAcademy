@@ -1,0 +1,135 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<ELECTIVE_GROUP> elective_groups = (IEnumerable<ELECTIVE_GROUP>)ViewData["elective_groups"];
+    IEnumerable<SUBJECT> normal_subjects = (IEnumerable<SUBJECT>)ViewData["normal_subjects"];
+    IEnumerable<SUBJECT> elective_subjects = (IEnumerable<SUBJECT>)ViewData["elective_subjects"];
+}
+@{
+    ViewBag.Title = "Subject_Transfer";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Subjects</h1>
+    <h3>Assign Subject</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+    <a href="@Url.Action("Show", "Courses",new { id = batch.CRS_ID})">@batch.COURSE.Full_Name</a> &raquo;
+    <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">@batch.Full_Name</a> &raquo;
+    Manage Subjects
+</div>
+<div id="page-yield">
+    <div id="errors">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+    </div>
+    <div id="msg">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <div class="linker">
+        <a href="@Url.Action("New_Subject", "Batch_Transfers",new { id = batch.ID})" onclick='LoadModelPage(this.href); return false;'>Add Normal Subject</a> |
+        <a href="@Url.Action("Index", "Elective_Groups", new { BatchId = batch.ID})">Add Elective</a> |
+        <a href="@Url.Action("Get_Previous_Batch_Subjects", "Batch_Transfers", new {id = batch.ID })" onclick='LoadPreBatchSub(this.href); return false;'>Assign Old Batch Subject</a>
+    </div>
+    <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+    <div id="previous-batch-subjects"></div>
+
+    <div id="subjects">
+        @if (normal_subjects != null && normal_subjects.Count() != 0)
+        {
+            <ul id="category-list">
+                <h4>Normal Subjects</h4>
+                @{int i = 1; }
+                @foreach (var sub in normal_subjects)
+                {
+                    string cycle = "listeven";
+                    if (i % 2 == 0)
+                    {
+                        cycle = "listodd";
+                    }
+                    <li id="subject-@sub.ID" class="@cycle">
+                        <div class="category-name"> @sub.NAME</div>
+                        <div class="category-code">@sub.CODE</div>
+                    </li>
+                    i += 1;
+                }
+            </ul>
+        }
+
+        @if (elective_groups != null && elective_groups.Count() != 0)
+        {
+            foreach (var eg in elective_groups)
+            {
+                if (elective_subjects != null && elective_subjects.Count() != 0)
+                {
+                    <ul id="category-list">
+                        @eg.ELECTIVE_GRP_NAME:
+                        @{int i = 1; }
+                        @foreach (var elect in elective_subjects)
+                        {
+                            if (elect.ELECTIVE_GRP_ID == eg.ID)
+                            {
+                                string cycle = "listeven";
+                                if (i % 2 == 0)
+                                {
+                                    cycle = "listodd";
+                                }
+                                <li id="elect-@elect.ID" class="@cycle">
+                                    <div class="category-name"> @elect.NAME</div>
+                                    <div class="category-code">@elect.CODE</div>
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                }
+            }
+        }
+    </div>
+
+    <div id="modal-box" style="display:none;"></div>
+
+    <div class="extender"></div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+        });
+        function LoadModelPage(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function (data) {
+                $('#modal-box').html(data);
+                $('#modal-box').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+                $('#modal-box').dialog('open');
+            });
+        }
+        function LoadPreBatchSub(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function (data) {
+                $('#previous-batch-subjects').html(data);
+                $('#previous-batch-subjects').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+        }
+    </script>
+}
+
+

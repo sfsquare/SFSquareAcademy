@@ -1,0 +1,44 @@
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<string> assigned_employee = (IEnumerable<string>)ViewData["assigned_employee"];
+    SFSAcademyEntities db = new SFSAcademyEntities();
+}
+@if (assigned_employee != null)
+{
+    if (assigned_employee.Count() != 0)
+    {
+        <li class="heading"> Currently Assigned: </li>
+        int i = 1;
+        foreach (var e in assigned_employee)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(Convert.ToInt32(e));
+            if (employee != null)
+            {
+                string cycle = "listeven";
+                if (i % 2 == 0)
+                {
+                    cycle = "listodd";
+                }
+                <li class="@cycle">
+                    <div class="tutor-name">
+                        <div class="tutor-name">
+                            @employee.Full_Name -
+                            @db.EMPLOYEE_DEPARTMENT.Find(employee.EMP_DEPT_ID).NAMES
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+
+    }
+}
+else
+{
+<p class="flash-msg"> No Employee Assigned.</p>
+}
+
+

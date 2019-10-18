@@ -2,28 +2,6 @@
 @{
     ViewBag.Title = "Payslip";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    //Very similar function as before (except this time with an argument)
-    function LoadOneClickPartialPage(sender) {
-        $(".LoaderBox").show();
-        /* Request the partial view with .get request. */
-        $.get(sender, function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
-            $('#message-div').html(data);
-            /* little fade in effect */
-            $('#message-div').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox").hide();
-        });
-    }
-
-</script>
 <div id="content-header">
     <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
     <h1>Payslip</h1>
@@ -36,7 +14,7 @@
 <div id="page-yield">
     <div id="flash_box">
         @if (ViewBag.Notice != null)
-            {
+        {
             <p class="flash-msg"> @ViewBag.Notice </p>
         }
     </div>
@@ -76,3 +54,25 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        //Very similar function as before (except this time with an argument)
+        function LoadOneClickPartialPage(sender) {
+            $(".LoaderBox").show();
+            /* Request the partial view with .get request. */
+            $.get(sender, function (data) {
+
+                /* data is the pure html returned from action method, load it to your page */
+                $('#message-div').html(data);
+                /* little fade in effect */
+                $('#message-div').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+        }
+
+    </script>>
+}

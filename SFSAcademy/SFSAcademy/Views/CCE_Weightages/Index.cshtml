@@ -1,0 +1,57 @@
+﻿@model IEnumerable<SFSAcademy.CCE_WEIGHTAGE>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.WTAGE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CRITA_TYPE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CCE_EXAM_CATEGORY.NAME)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.WTAGE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CRITA_TYPE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CREATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UPDATED_AT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CCE_EXAM_CATEGORY.NAME)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

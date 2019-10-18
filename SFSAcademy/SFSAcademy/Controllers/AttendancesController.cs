@@ -20,8 +20,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.date_today = DateTime.Today.ToShortDateString();
 
@@ -42,16 +41,14 @@ namespace SFSAcademy.Controllers
             {
                 if(config == "Daily")
                 {
-                    foreach(var Sub in employee_subjects.Select(x=>x.SUBJECT))
-                    {
-                        batches = db.BATCHes.Include(x => x.COURSE).Where(x=>x.EMP_ID == Employee.ID).ToList();
-                    }
-                    
+                    batches = Employee.Employee_Batches();
+
                 }
                 else
                 {
-                    batches = db.BATCHes.Include(x => x.COURSE).Where(x => x.EMP_ID == Employee.ID).ToList();
-                    batches = batches.Union(employee_subjects.Select(x => x.SUBJECT.BATCH)).Distinct().ToList();
+                    batches = Employee.Employee_Batches();
+                    batches = batches.Union(employee_subjects.Select(x => x.SUBJECT.BATCH));
+                    batches = batches.Distinct().ToList();
                 }
             }
             List<SelectListItem> options = new SelectList(batches.OrderBy(x => x.ID), "ID", "Course_full_name").ToList();
@@ -76,7 +73,7 @@ namespace SFSAcademy.Controllers
                 var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == batch_id).ToList();
                 if (current_user.User.EMP_IND == true && allow_access == true && current_user.privilage_list.Select(x => x.NAME).Contains("StudentAttendanceRegister"))
                 {
-                    if(batch.EMP_ID == Employee.ID)
+                    if(batch.Employees().Where(x=>x.ID == Employee.ID).FirstOrDefault() != null)
                     {
                         subjects = db.SUBJECTs.Where(x => x.BTCH_ID == batch_id).ToList();
                     }
@@ -96,8 +93,7 @@ namespace SFSAcademy.Controllers
         public ActionResult Show(int? batch_id, int? subject_id, string next, string ErrorMessage)
         {
             ViewBag.ErrorMessage = ErrorMessage;
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             DateTime today = System.DateTime.Today;
             if (next != "null")
@@ -154,8 +150,7 @@ namespace SFSAcademy.Controllers
         // GET: Employee_Attendances
         public ActionResult Edit(int? Abs_Id, string next)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             //ATTENDENCE absenteeAt = db.ATTENDENCEs.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
             //SUBJECT_LEAVE absenteeSl = db.SUBJECT_LEAVE.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
@@ -195,8 +190,7 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Update(SFSAcademy.AttendanceSubLeave AttendanceSL)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             //ATTENDENCE absenteeAt = db.ATTENDENCEs.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
             //SUBJECT_LEAVE absenteeSl = db.SUBJECT_LEAVE.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
@@ -279,7 +273,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Register");
             }
             return PartialView("_Register");
@@ -288,8 +282,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Destroy(int? Abs_Id, string next)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             //ATTENDENCE absenteeAt = db.ATTENDENCEs.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
             //SUBJECT_LEAVE absenteeSl = db.SUBJECT_LEAVE.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
@@ -372,7 +365,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Register");
             }
             return PartialView("_Register");
@@ -382,8 +375,7 @@ namespace SFSAcademy.Controllers
         // GET: Employee_Attendances
         public ActionResult New(DateTime Month_date, int? student_id, int? subject_id, string next)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.today = next;
             ViewBag.subject_id = subject_id;
@@ -415,8 +407,7 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(SFSAcademy.AttendanceSubLeave AttendanceSL)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ATTENDENCE absenteeAt = db.ATTENDENCEs.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
             SUBJECT_LEAVE absenteeSl = db.SUBJECT_LEAVE.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
@@ -509,7 +500,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Register");
             }
             return PartialView("_Register");

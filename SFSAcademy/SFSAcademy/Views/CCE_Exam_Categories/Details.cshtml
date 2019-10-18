@@ -1,0 +1,50 @@
+﻿@model SFSAcademy.CCE_EXAM_CATEGORY
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CCE_EXAM_CATEGORY</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.NAME)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NAME)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DESCR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DESCR)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CREATED_AT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CREATED_AT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UPDATED_AT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UPDATED_AT)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

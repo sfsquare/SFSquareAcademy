@@ -134,6 +134,35 @@ namespace SFSAcademy.Controllers
             return RedirectToAction("Index");
         }
 
+        //This action is created from Student -> Profile page. Employee Ids are all tutors list comma seprated 
+        public ActionResult Create_Reminder(string employee_ids )
+        {
+            string TutorList = employee_ids;
+            ViewBag.TutorList = TutorList;
+            ViewBag.SNDR = new SelectList(db.USERS, "ID", "USRNAME");
+            ViewBag.RCPNT = new SelectList(db.USERS, "ID", "USRNAME");
+            return View();
+        }
+
+        // POST: Reminder/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create_Reminder([Bind(Include = "ID,SNDR,RCPNT,SUB,BODY,IS_READ,IS_DEL_BY_SNDR,IS_DEL_BY_RCPNT,CREATED_AT,UPDATED_AT")] REMINDER rEMINDER)
+        {
+            if (ModelState.IsValid)
+            {
+                db.REMINDERs.Add(rEMINDER);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.SNDR = new SelectList(db.USERS, "ID", "USRNAME", rEMINDER.SNDR);
+            ViewBag.RCPNT = new SelectList(db.USERS, "ID", "USRNAME", rEMINDER.RCPNT);
+            return View(rEMINDER);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

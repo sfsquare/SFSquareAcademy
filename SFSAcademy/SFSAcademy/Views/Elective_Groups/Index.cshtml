@@ -3,6 +3,7 @@
 @{
     SFSAcademy.CoursesBatch batch = (SFSAcademy.CoursesBatch)ViewData["batch"];
     IEnumerable<SFSAcademy.SUBJECT> Subject = (IEnumerable<SFSAcademy.SUBJECT>)ViewData["Subject"];
+    COURSE course = (COURSE)ViewData["course"];
 }
 
 @{
@@ -33,8 +34,8 @@
     <div class="box">
         <div class="bread_crumb">
             <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
-            <a href="@Url.Action("ManageCourse", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
-            <a href="@Url.Action("ManageBatches", "BATCH")">Batch @batch.BatchData.NAME</a> &raquo;
+            <a href="@Url.Action("Manage_Course", "Courses")">@batch.CourseData.CRS_NAME</a> &raquo;
+            <a href="@Url.Action("Show", "Batches",new { id = batch.BatchData.ID})">@batch.BatchData.Course_full_name</a> &raquo;
             Elective Groups
         </div>
 
@@ -60,8 +61,8 @@
                         </div>
                     }
                 </li>
-                            j += 1;
-                        }
+                j += 1;
+            }
 
         </ul>
         <div class="extender"></div>

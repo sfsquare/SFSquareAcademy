@@ -21,8 +21,7 @@ namespace SFSAcademy.Controllers
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x=>x.CONFIG_KEY == "StudentAttendanceType").Select(x=>x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.subject_id = "all_sub";
             ViewBag.date_today = DateTime.Today.ToShortDateString();
@@ -42,8 +41,9 @@ namespace SFSAcademy.Controllers
             }
             else if (current_user.User.EMP_IND == true)
             {
-                batches = db.BATCHes.Include(x => x.COURSE).Where(x => x.EMP_ID == Employee.ID).ToList();
-                batches = batches.Union(employee_subjects.Select(x => x.SUBJECT.BATCH)).Distinct().ToList();
+                batches = Employee.Employee_Batches();
+                batches = batches.Union(employee_subjects.Select(x => x.SUBJECT.BATCH));
+                batches = batches.Distinct().ToList();
             }
             List<SelectListItem> options = new SelectList(batches.OrderBy(x => x.ID), "ID", "Course_full_name").ToList();
             options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Batch" });
@@ -71,7 +71,7 @@ namespace SFSAcademy.Controllers
                 }
                 else
                 {
-                    if (batch.EMP_ID == Employee.ID)
+                    if (batch.Employees().Where(x => x.ID == Employee.ID).FirstOrDefault() != null)
                     {
                         subjects = db.SUBJECTs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false).ToList(); ;
                     }
@@ -102,8 +102,7 @@ namespace SFSAcademy.Controllers
         public JsonResult Mode(int? batch_id, string subject_id, string ErrorMessage)
         {
             ViewBag.ErrorMessage = ErrorMessage;
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             DateTime today = System.DateTime.Today;
             BATCH batch = db.BATCHes.Find(batch_id);
@@ -175,8 +174,7 @@ namespace SFSAcademy.Controllers
 
         public JsonResult Show(int? batch_id, string subject_id, string mode)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.report_type = mode;
             int? sub_id = null;
@@ -446,8 +444,7 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Filter(int? batch_id, string subject_id, string start_date, string end_date, string report_type, string RANGE, int? value)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.start_date = start_date;
             ViewBag.end_date = end_date;
@@ -707,8 +704,7 @@ namespace SFSAcademy.Controllers
             ViewBag.monthVal = month;
             ViewBag.yearVal = year;
             var students = db.STUDENTs.Where(x=>x.BTCH_ID == batch.ID).ToList();
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             DateTime? date = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), 1);
             DateTime start_date = (DateTime)date;
@@ -898,8 +894,7 @@ namespace SFSAcademy.Controllers
             ViewData["student"] = student;
             BATCH batch = db.BATCHes.Find(student.BTCH_ID);
             ViewData["batch"] = batch;
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             if(config == "Daily")
             {
@@ -926,8 +921,7 @@ namespace SFSAcademy.Controllers
 
         public ActionResult Report_pdf(int? batch_id, string subject_id, string start_date, string end_date, string report_type, string RANGE, string value)
         {
-            var Config_Val = new Configuration();
-            string config = Config_Val.find_by_config_key("StudentAttendanceType");
+            string config = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "StudentAttendanceType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             ViewBag.config = config;
             ViewBag.subject_id = subject_id;
             BATCH batch = db.BATCHes.Include(x=>x.COURSE).Where(x=>x.ID == batch_id).FirstOrDefault();

@@ -1,0 +1,88 @@
+﻿@{
+    IEnumerable<CCE_GRADE_SET> grade_sets = (IEnumerable<CCE_GRADE_SET>)ViewData["grade_sets"];
+}
+<script type="text/javascript" language="javascript">
+    function ViewGrades(sender) {
+        $(".LoaderBox2").show();
+        $.get(sender, function (data) {
+            $('#grade_sets').html(data);
+            $('#grade_sets').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+        });
+    }
+    function EditGradeSet(sender) {
+        $(".LoaderBox2").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function DeleteGradeSet(sender) {
+        $(".LoaderBox2").show();
+        if (confirm("Are you sure you want to delete this ?")) {
+            $.get(sender, function (data) {
+                $('#grade_sets').html(data);
+                $('#grade_sets').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox2").hide();
+            });
+        } else {
+            $(".LoaderBox2").hide()
+            return false;
+        }
+    }
+</script>
+<div class="LoaderBox2" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+<div id="inner-tab-menu">
+    <ul>
+        <li>
+            <a href="@Url.Action("New", "CCE_Grade_sets")" onclick='NewGradeSet(this.href); return false;'>New</a>
+        </li>
+    </ul>
+</div>
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
+<div class="box">
+    <div id="flash-box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
+    <table align="center" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>Grade Sets</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        @{ int i = 0;}
+        @foreach (var g in grade_sets)
+        {
+            string cycle = "tr-even";
+            if (i % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            <tr class="@cycle">
+                <td class="col-4">
+                    <a href="@Url.Action("Show", "CCE_Grade_sets",new {id = g.ID })" onclick='ViewGrades(this.href); return false;'> @g.NAME</a>
+                </td>
+                <td class="col-3">
+                    <div class="category-edit">
+                        <a href="@Url.Action("Edit", "CCE_Grade_sets",new {id = g.ID })" onclick='EditGradeSet(this.href); return false;'> Edit</a> |
+                        <a href="@Url.Action("Destroy", "CCE_Grade_sets",new {id = g.ID})" onclick="DeleteGradeSet(this.href); return false;">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

@@ -1,0 +1,162 @@
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    UserDetails current_user = (UserDetails)ViewData["current_user"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<EXAM_GROUP> exam_groups = (IEnumerable<EXAM_GROUP>)ViewData["exam_groups"];
+    List<PRIVILEGE> user_privileges = (List<PRIVILEGE>)ViewData["user_privileges"];
+    IEnumerable<EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
+}
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>Exam Groups</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+        {
+            if (Html.Permitted_To("New", "Exam_Groups"))
+            {
+                <li><a href="@Url.Action("New", "Exam_Groups",new {id = batch.ID })">New</a></li>
+            }
+        }
+        @if (Html.Permitted_To("Grouping", "Exam"))
+        {
+            <li><a href="@Url.Action("Grouping", "Exam",new {id = batch.ID })">Connect Exams</a></li>
+        }
+    </ul>
+</div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
+        <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
+        Exam Groups
+    </div>
+    <div class="box">
+        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+        <table id="listing" width="100%">
+            <tr class="tr-head">
+                <td>Exam Name</td>
+                @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                {
+                    <td>
+                        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+                    </td>
+                }
+            </tr>
+            @{ var config = db.CONFIGURATIONs.FirstOrDefault().Available_Modules();}
+            @{int i = 1; }
+            @foreach (var exam_group in exam_groups)
+            {
+                string cycle = "tr-even";
+                if (i % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+                <tr class="@cycle">
+                    <td class="col-2">
+                        <a href="@Url.Action("Show", "Exam_Group", new { id=exam_group.ID})">@exam_group.NAME</a>
+                        @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                        {
+                            <span>
+                                <small>
+                                    @if (exam_group.Removable() == true)
+                                    {
+                                        <a href="@Url.Action("Delete", "Exam_Group", new { id=batch.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
+                                    }
+                                    else
+                                    {
+                                        <s>Delete</s>
+                                    }
+                                </small>
+                            </span>
+                        }
+                    </td>
+                    @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    {
+                        <td class="col-2">
+                            <small>
+                                @if (exam_group.IS_PUB == false)
+                                {
+                                    <a href="@Url.Action("Publish", "Exam", new { id=exam_group.ID, status = "schedule"})" onclick='ShowHideLoader(this.href); return false;'>Publish Exam Schedule</a>
+                                }
+                                else
+                                {
+                                    if (exam_group.RSULT_PUB == false)
+                                    {
+                                        <s>Schedule Published</s>
+                                        <a href="@Url.Action("Publish", "Exam", new { id=exam_group.ID, status = "result"})" onclick='PublishResult(this.href); return false;'>Publish Exam Result</a>
+                                    }
+                                    else
+                                    {
+                                        <s>Result Published</s>
+                                    }
+
+                                }
+                                <span id="publish-notice-@exam_group.ID"></span>
+
+                            </small>
+                        </td>
+                    }
+                </tr>
+                i += 1;
+            }
+            @{ string cycle2 = "tr-even"; if (i % 2 == 0) { cycle2 = "tr-odd"; }}
+            @if (batch.CCE_Enabled() == true)
+            {
+                if (Html.Permitted_To("Assessment_Scores", "Observation_Groups"))
+                {
+                    <tr class="@cycle2">
+                        <td colspan="2" class="col-1">
+                            <a href="@Url.Action("Assessment_Scores", "Observation_Groups", new { batch_id=batch.ID})">Co-Scholastic result entry</a>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </table>
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+        });
+        function ShowHideLoader(sender) {
+            $(".LoaderBox").show();
+            $.get(sender, function () {
+            }).success(function () {
+                $(".LoaderBox").hide();
+            });
+        }
+        function PublishResult(sender) {
+            $(".LoaderBox").show();
+            if (confirm('Are you sure to publish result?')) {
+                $.get(sender, function () {
+                }).success(function () {
+                    $(".LoaderBox").hide();
+                });
+            }
+        }
+    </script>
+}

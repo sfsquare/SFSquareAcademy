@@ -1,5 +1,4 @@
-﻿using SFSAcademy.Infrastructure;
-
+﻿
 namespace SFSAcademy.App_Start
 {
     public class FilterConfig

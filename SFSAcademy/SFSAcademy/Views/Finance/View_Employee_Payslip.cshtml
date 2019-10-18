@@ -8,16 +8,7 @@
 @{
     ViewBag.Title = "View_Employee_Payslip";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
     <h1>Finance</h1>
@@ -32,7 +23,7 @@
     <a href="@Url.Action("Index", "Finance")">Finance</a> &raquo;
     <a href="@Url.Action("Payslip_Index", "Finance")">Payslip</a> &raquo;
     <a href="@Url.Action("View_Monthly_Payslip", "Finance")">Monthly Payslip</a> &raquo;
-    @monthly_payslips.FirstOrDefault().EmployeeData.Full_Name() : @ViewBag.Selected_Salary_Date
+    @monthly_payslips.FirstOrDefault().EmployeeData.Full_Name : @ViewBag.Selected_Salary_Date
 </div>
 <div id="flash_box">
     @if (ViewBag.Notice != null)
@@ -47,9 +38,9 @@
             <p class="flash-msg"> @ViewBag.ErrorMessage </p>
         }
     </div>
-    @{string Stat = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : null);}
+    @{string Stat = monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == true ? "Approved" : (monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == true ? "Rejected" : "");}
     <ul class="item-list">
-        <li class="heading">@monthly_payslips.FirstOrDefault().EmployeeData.Full_Name() </li>
+        <li class="heading">@monthly_payslips.FirstOrDefault().EmployeeData.Full_Name </li>
         <li class="heading">Payslip generated on: @ViewBag.Selected_Salary_Date <span class="themed_text">(Status: @Stat)</span></li>
     </ul>
     <ul class="item-list">
@@ -168,7 +159,7 @@
             <td>
                 @if (ViewBag.is_present_employee == true && monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_APPR == false && monthly_payslips.FirstOrDefault().MonthlyPayslipData.IS_RJCT == false)
                 {
-                    @Html.ActionLink("Approve", "Employee_Payslip_Approve", new { id = Model.ID, Sal_Year = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Year, Sal_Month = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Month, Sal_Day = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Day}, new { @class = "user_button", @onclick = "return confirm('are you sure?')" })
+                    @Html.ActionLink("Approve", "Employee_Payslip_Approve", new { id = Model.ID, Sal_Year = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Year, Sal_Month = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Month, Sal_Day = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE.Value.Day }, new { @class = "user_button", @onclick = "return confirm('are you sure?')" })
 
                 }
                 else
@@ -183,8 +174,13 @@
                 <a href="@Url.Action("Employee_Individual_Payslip_pdf", "Employee",new { id = Model.ID, salary_date = monthly_payslips.FirstOrDefault().MonthlyPayslipData.SAL_DATE })" class="user_button" target="_blank">pdf Report</a>
             </td>
         </tr>
-    </table>  
+    </table>
 </div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+}
 
 
 

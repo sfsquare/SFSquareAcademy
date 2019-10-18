@@ -78,7 +78,7 @@
         <tr class="tr-head">
             <td class="head-td-name themed_text">Name</td>
             @{DateTime current_day = System.DateTime.Today; DateTime DateVal = System.DateTime.Today;}
-            @for (DateVal = ViewBag.start_date; DateVal < ViewBag.end_date; DateVal = DateVal.AddDays(1))
+            @for (DateVal = ViewBag.start_date; DateVal <= ViewBag.end_date; DateVal = DateVal.AddDays(1))
             {
                 if (current_day == DateVal)
                 {
@@ -112,7 +112,7 @@
                         <div class="themed_text"><span>@item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span></div>
                     </div>
                 </td>
-                @for (DateVal = ViewBag.start_date; DateVal < ViewBag.end_date; DateVal = DateVal.AddDays(1))
+                @for (DateVal = ViewBag.start_date; DateVal <= ViewBag.end_date; DateVal = DateVal.AddDays(1))
                 {
                     var absent = EmployeeAttendance.Where(x => x.EMP_ID == item.EmployeeData.ID && x.ATNDENCE_DATE == DateVal).FirstOrDefault();
                     if (current_day == DateVal)

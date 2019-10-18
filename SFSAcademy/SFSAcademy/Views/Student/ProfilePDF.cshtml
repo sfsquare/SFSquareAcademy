@@ -1,4 +1,11 @@
-﻿@model SFSAcademy.Student
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@model SFSAcademy.Student
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+}
 
 @{
     Layout = null;
@@ -53,10 +60,25 @@
             <tr class="odd left"><td>Country :</td><td class="right">@Model.CountryData.CTRY_NAME</td></tr>
             <tr class="even left"><td>Phone :</td><td class="right">@Model.StudentData.PH1 / @Model.StudentData.PH2</td></tr>
             <tr class="odd left"><td>Email :</td><td class="right">@Model.StudentData.EML</td></tr>
-            @if (Model.EmployeeData != null)
-            {
-                <tr class="odd left"><td>Group Tutor :</td><td class="right">@Model.EmployeeData.FIRST_NAME @Model.EmployeeData.LAST_NAME</td></tr>
-            }
+            <tr class="even">
+                <td>Group Tutor</td>
+                <td class="right">
+                    @if (Model.BatcheData.EMP_ID != null)
+                    {
+                        var assigned_employees_ids = ApplicationHelper.SplitCommaString(Model.BatcheData.EMP_ID).ToList();
+                        var assigned_employees = db.EMPLOYEEs.Include(x => x.USER).Where(x => assigned_employees_ids.Contains(x.ID.ToString())).ToList();
+
+                        foreach (var e in assigned_employees)
+                        {
+                            <span>@e.Full_Name</span>
+                            <br />
+                        }
+
+                    }
+
+                </td>
+            </tr>
+
         </table>
         <div class="buttons">
             <input type="submit" id="submit_button" value="Print" class="submit_button" onclick="window.print()" />

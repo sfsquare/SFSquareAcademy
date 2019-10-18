@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
+using System.Web.UI.WebControls;
+using PagedList;
 using SFSAcademy;
+using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Text.RegularExpressions;
 
 namespace SFSAcademy.Controllers
 {
@@ -18,33 +21,42 @@ namespace SFSAcademy.Controllers
         // GET: Grading_Levels
         public ActionResult Index(string ErrorMessage, string Notice)
         {
+            ViewBag.Notice = Notice;
+            ViewBag.ErrorMessage = ErrorMessage;
             var batches = db.BATCHes.Include(x => x.COURSE).FirstOrDefault().ACTIVE();
             List<SelectListItem> options = new SelectList(batches.OrderBy(x => x.ID), "ID", "Course_full_name").ToList();
-            options.Insert(0, new SelectListItem() { Value = "-1", Text = "Select Batch" });
+            options.Insert(0, new SelectListItem() { Value = null, Text = "Select Batch" });
             ViewBag.BATCH_ID = options;
-            BATCH batch = batches.Where(x => x.ID == -1).FirstOrDefault();
-            ViewData["batch"] = batch;
+            ViewData["batch"] = null;
 
-            var gRADING_LEVEL = db.GRADING_LEVEL.Include(g => g.BATCH);
-
-            return View(gRADING_LEVEL.ToList());
+            var grading_levels = db.GRADING_LEVEL.FirstOrDefault().Default();
+            ViewData["grading_levels"] = grading_levels;
+            return View();
         }
 
         // GET: Employee_Attendances
-        public ActionResult Show(int? batch_id, string ErrorMessage)
+        public ActionResult Show(int? batch_id, string ErrorMessage, string Notice)
         {
             ViewBag.ErrorMessage = ErrorMessage;
-            var grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == batch_id).ToList();
-            ViewData["grading_levels"] = grading_levels;
-            BATCH batch = db.BATCHes.Find(batch_id);
-            ViewData["batch"] = batch;
-
+            ViewBag.Notice = Notice;
+            ViewData["batch"] = null;
+            if(batch_id == null)
+            {
+                var grading_levels = db.GRADING_LEVEL.FirstOrDefault().Default();
+                ViewData["grading_levels"] = grading_levels;
+            }
+            else
+            {
+                var grading_levels = db.GRADING_LEVEL.FirstOrDefault().For_Batch((int)batch_id);
+                ViewData["grading_levels"] = grading_levels;
+                BATCH batch = db.BATCHes.Find(batch_id);
+                ViewData["batch"] = batch;
+            }
             return PartialView("_Grading_Levels");
         }
 
         public ActionResult New(int? id)
         {
-            var Configuration = new Configuration();
             BATCH batch = db.BATCHes.Where(x => x.ID == -1).FirstOrDefault();
             if (id != null)
             {
@@ -53,7 +65,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                ViewBag.credit = (Configuration.find_by_config_key("CCE") == "1" || Configuration.find_by_config_key("CWA") == "1" || Configuration.find_by_config_key("GPA") == "1") ? true : false;
+                ViewBag.credit = (db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CCE").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CWA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "GPA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1") ? true : false;
             }
             ViewData["batch"] = batch;
 
@@ -65,37 +77,50 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,NAME,BTCH_ID,MIN_SCORE,ORD,IS_DEL,CREATED_AT,UPDATED_AT,CRED_PT,DESCR")] GRADING_LEVEL gRADING_LEVEL, int? batch_id)
         {
-            BATCH batch = db.BATCHes.Where(x => x.ID == -1).FirstOrDefault();
-            var grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == -1).DefaultIfEmpty().ToList();
-
+            BATCH batch = db.BATCHes.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
+            var grading_levels = db.GRADING_LEVEL.Where(x => x.ID == -1).DefaultIfEmpty().ToList();
+            if (batch_id != null)
+            {
+                batch = db.BATCHes.Find(batch_id);
+            }
+            ViewData["batch"] = batch;
             if (ModelState.IsValid)
             {
-                if(batch_id != null)
-                {
-                    batch = db.BATCHes.Find(batch_id);
-                    grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == batch_id).ToList();
-                    gRADING_LEVEL.BTCH_ID = batch_id;
-                }
+                gRADING_LEVEL.BTCH_ID = batch_id;
                 db.GRADING_LEVEL.Add(gRADING_LEVEL);
-                try { db.SaveChanges(); }
+                try { 
+                    db.SaveChanges();
+                    if (batch_id == null)
+                    {
+                        grading_levels = db.GRADING_LEVEL.FirstOrDefault().Default().ToList();
+                    }
+                    else
+                    {
+                        grading_levels = db.GRADING_LEVEL.FirstOrDefault().For_Batch((int)batch_id).ToList();
+                    }
+                    ViewBag.Notice = "Grading level created sucessfully.";
+                    ViewData["grading_levels"] = grading_levels;
+                    return PartialView("_Grading_Levels");
+                }
                 catch (DbEntityValidationException e)
                 {
                     foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                    return PartialView("_Grading_Levels");
+                    return View(gRADING_LEVEL);
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
-                    return PartialView("_Grading_Levels");
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return View(gRADING_LEVEL);
                 }
             }
-            ViewData["grading_levels"] = grading_levels;
-            ViewData["batch"] = batch;
-            return PartialView("_Grading_Levels");
+            else
+            {
+                return View(gRADING_LEVEL);
+            }
         }
 
         // GET: Grading_Levels/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, int? batch_id)
         {
             if (id == null)
             {
@@ -106,16 +131,15 @@ namespace SFSAcademy.Controllers
             {
                 return HttpNotFound();
             }
-            var Configuration = new Configuration();
             BATCH batch = db.BATCHes.Where(x => x.ID == -1).FirstOrDefault();
-            if (id != null)
+            if (batch_id != null)
             {
-                batch = db.BATCHes.Find(id);
+                batch = db.BATCHes.Find(batch_id);
                 ViewBag.credit = (batch.GPA_Enabled() || batch.CCE_Enabled()) ? true : false;
             }
             else
             {
-                ViewBag.credit = (Configuration.find_by_config_key("CCE") == "1" || Configuration.find_by_config_key("CWA") == "1" || Configuration.find_by_config_key("GPA") == "1") ? true : false;
+                ViewBag.credit = (db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CCE").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CWA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "GPA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1") ? true : false;
             }
             ViewData["batch"] = batch;
 
@@ -127,20 +151,19 @@ namespace SFSAcademy.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Update([Bind(Include = "ID,NAME,BTCH_ID,MIN_SCORE,ORD,IS_DEL,CREATED_AT,UPDATED_AT,CRED_PT,DESCR")] GRADING_LEVEL gRADING_LEVEL, int? batch_id)
         {
-            BATCH batch = db.BATCHes.Where(x => x.ID == -1).FirstOrDefault();
-            var grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == -1).DefaultIfEmpty().ToList();
+            BATCH batch = db.BATCHes.Where(x => x.ID == -1).DefaultIfEmpty().FirstOrDefault();
+            var grading_levels = db.GRADING_LEVEL.Where(x => x.ID == -1).DefaultIfEmpty().ToList();
+            if (batch_id != null)
+            {
+                batch = db.BATCHes.Find(batch_id);
+            }
+            ViewData["batch"] = batch;
 
             if (ModelState.IsValid)
             {
-                if (batch_id != null)
-                {
-                    batch = db.BATCHes.Find(batch_id);
-                    grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == batch_id).ToList();
-                    gRADING_LEVEL.BTCH_ID = batch_id;
-                }
                 var GR_Update = db.GRADING_LEVEL.Find(gRADING_LEVEL.ID);
                 GR_Update.NAME = gRADING_LEVEL.NAME;
-                GR_Update.BTCH_ID = gRADING_LEVEL.BTCH_ID;
+                GR_Update.BTCH_ID = batch_id;
                 GR_Update.MIN_SCORE = gRADING_LEVEL.MIN_SCORE;
                 GR_Update.ORD = gRADING_LEVEL.ORD;
                 GR_Update.DESCR = gRADING_LEVEL.DESCR;
@@ -148,7 +171,20 @@ namespace SFSAcademy.Controllers
                 GR_Update.IS_DEL = gRADING_LEVEL.IS_DEL;
                 GR_Update.UPDATED_AT = DateTime.Now;
                 db.Entry(GR_Update).State = EntityState.Modified;
-                try { db.SaveChanges(); }
+                try { 
+                    db.SaveChanges();
+                    if (batch_id == null)
+                    {
+                        grading_levels = db.GRADING_LEVEL.FirstOrDefault().Default().ToList();
+                    }
+                    else
+                    {
+                        grading_levels = db.GRADING_LEVEL.FirstOrDefault().For_Batch((int)batch_id).ToList();
+                    }
+                    ViewBag.Notice = "Grading level updated sucessfully.";
+                    ViewData["grading_levels"] = grading_levels;
+                    return PartialView("_Grading_Levels");
+                }
                 catch (DbEntityValidationException e)
                 {
                     foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
@@ -156,41 +192,58 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return PartialView("_Grading_Levels");
                 }
             }
-            ViewData["grading_levels"] = grading_levels;
-            ViewData["batch"] = batch;
-            return PartialView("_Grading_Levels");
+            else
+            {
+                return View(gRADING_LEVEL);
+            }
         }
 
         // GET: Grading_Levels/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, int? batch_id)
         {
+            BATCH batch = db.BATCHes.Where(x => x.ID == -1).FirstOrDefault();
+            var grading_levels = db.GRADING_LEVEL.Where(x => x.BTCH_ID == -1).DefaultIfEmpty().ToList();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            GRADING_LEVEL gRADING_LEVEL = db.GRADING_LEVEL.Find(id);
-            if (gRADING_LEVEL == null)
+            GRADING_LEVEL grading_level = db.GRADING_LEVEL.Find(id);
+            if (grading_level == null)
             {
                 return HttpNotFound();
             }
-            return View(gRADING_LEVEL);
+            grading_level.Inactivate();
+            if (batch_id == null)
+            {
+                grading_levels = db.GRADING_LEVEL.FirstOrDefault().Default().ToList();
+            }
+            else
+            {
+                grading_levels = db.GRADING_LEVEL.FirstOrDefault().For_Batch((int)batch_id).ToList();
+                batch = db.BATCHes.Find(batch_id);
+            }
+            ViewBag.Notice = "Grading level deleted sucessfully.";
+            ViewData["grading_levels"] = grading_levels;
+            ViewData["batch"] = batch;
+            return RedirectToAction("Index", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
         }
 
-        // POST: Grading_Levels/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        [AllowAnonymous]
+        public JsonResult GradeExists([Bind(Prefix = "NAME")] string NAME)
+        {   
+            return Json(!db.GRADING_LEVEL.Any(x => x.NAME.ToUpper() == NAME.ToUpper() && x.IS_DEL == false), JsonRequestBehavior.AllowGet);
+        }
+
+        [AllowAnonymous]
+        public JsonResult CreditPointRequired([Bind(Prefix = "CRED_PT")] decimal? CRED_PT, [Bind(Prefix = "BTCH_ID")] int? BTCH_ID)
         {
-            GRADING_LEVEL gRADING_LEVEL = db.GRADING_LEVEL.Find(id);
-            db.GRADING_LEVEL.Remove(gRADING_LEVEL);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var batch = db.BATCHes.Find(BTCH_ID);
+            return Json(!(BTCH_ID != null && CRED_PT == null && batch.GPA_Enabled() == true), JsonRequestBehavior.AllowGet);
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

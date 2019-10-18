@@ -17,7 +17,19 @@ namespace SFSAcademy.Controllers
         // GET: CCE_Settings
         public ActionResult Index()
         {
-            return View(db.CCE_EXAM_CATEGORY.ToList());
+            return View();
+        }
+        public ActionResult Basic()
+        {
+            return View();
+        }
+        public ActionResult Co_Scholastic()
+        {
+            return View();
+        }
+        public ActionResult Scholastic()
+        {
+            return View();
         }
 
         protected override void Dispose(bool disposing)

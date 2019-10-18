@@ -14,7 +14,7 @@
                 autoOpen: false,
                 draggable: true,
                 resizable: true,
-                width: 500,
+                width: 'auto',
                 height: 'auto',
                 dialogClass: "alert",
                 cache: false,
@@ -44,24 +44,28 @@
     <button id="btnCreateFine" class="pay_fees_buttons">Due date has been exceeded. Please collect fine amount.</button>
 }
 
-<div id="resultFine" style="display:none" class="form" title="Fine Details">
+<div id="resultFine" style="display:none" class="fine_info" title="Fine Details">
     @using (Ajax.BeginForm("Update_Fine_Ajax", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "modal-box", InsertionMode = InsertionMode.Replace, OnSuccess = "CloseFineDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
     {
         @Html.AntiForgeryToken()
 
-        <div class="label-field-pair label">
-            <div class="label-container label">@Html.LabelFor(model => model.Fine, "Fine Amount", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-            <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">@Html.TextBoxFor(model => model.Fine, null, new { @class = "form-control", @id = "Fine" })</div>
-            @Html.ValidationMessageFor(model => model.Fine, "", new { @class = "text-danger" })
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.Fine, "Fine Amount", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.TextBoxFor(model => model.Fine, null, new { @class = "form-control", @id = "Fine", required = "required" })
+                @Html.ValidationMessageFor(model => model.Fine, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                <span class="necessary-field" style="font-size:small">*</span>
+            </div>
         </div>
-        <div class="label-field-pair label">
-            <div class="label-container label">@Html.LabelFor(model => model.Fine_Desc, "Fine Description", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-            <span class="necessary-field" style="font-size:small">* Required Field</span>
-            <div class="text-input-bg">@Html.TextBoxFor(model => model.Fine_Desc, null, new { @class = "form-control", @id = "Fine_Desc" })</div>
-            @Html.ValidationMessageFor(model => model.Fine_Desc, "", new { @class = "text-danger" })
+        <div class="label-field-pair">
+            @Html.LabelFor(model => model.Fine_Desc, "Fine Description", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.TextBoxFor(model => model.Fine_Desc, null, new { @class = "form-control", @id = "Fine_Desc", required = "required" })
+                @Html.ValidationMessageFor(model => model.Fine_Desc, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                <span class="necessary-field" style="font-size:small">*</span>
+            </div>
         </div>
-
+        <div class="extender"></div>
         <input type="submit" value="Add Fine" id="submit-button4" class="submit-button" />
         <div class="LoaderBox4"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
 
@@ -69,5 +73,4 @@
         @Html.HiddenFor(model => model.Batch_id, new { id = "batch_id", Value = @batch.FirstOrDefault().BatchData.ID })
         @Html.HiddenFor(model => model.Date, new { id = "date", Value = @date.ID })
     }
-
 </div>

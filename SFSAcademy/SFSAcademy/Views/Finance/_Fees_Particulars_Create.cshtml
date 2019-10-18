@@ -1,10 +1,5 @@
 ﻿@model SFSAcademy.FINANCE_FEE_PARTICULAR
 @{    Layout = null;}
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
 
     $(document).ready(function () {
@@ -56,14 +51,14 @@
         @Html.RadioButton("radioName", "All", true, new { id = "id1", @onclick = "radiobuttontest('All');" }) All <br />
         @Html.RadioButton("radioName", "Admission No.", false, new { id = "id2", @onclick = "radiobuttontest('Admission No');" }) Admission No.<br />
         @Html.RadioButton("radioName", "Student Category", false, new { name = "radioName", id = "id3", @onclick = "radiobuttontest('Student Category');" }) Student Category<br />
-        @Html.Hidden("FeePartOption")
     </div>
 </div>
 <div id="AdmForm1">
     <div class="label-field-pair label">
-        <div class="label-container label">@Html.LabelFor(model => model.ADMSN_NO, "Admission Number (Comma Seprated)", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+        <div class="label-container label">@Html.LabelFor(model => model.ADMSN_NO, "Admission Numbers", htmlAttributes: new { @class = "control-label col-md-2" })</div>
         <div class="input-container">
             @Html.EditorFor(model => model.ADMSN_NO, new { htmlAttributes = new { @class = "form-control" } })
+            <span class="necessary-field" style="font-size:small">* Comma Seprated</span>
             @Html.ValidationMessageFor(model => model.ADMSN_NO, "", new { @class = "text-danger" })
         </div>
     </div>

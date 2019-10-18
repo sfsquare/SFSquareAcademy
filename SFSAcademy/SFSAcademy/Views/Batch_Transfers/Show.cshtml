@@ -1,0 +1,113 @@
+﻿@{
+    IEnumerable<STUDENT> Students = (IEnumerable<STUDENT>)ViewData["Students"];
+    COURSE course = (COURSE)ViewData["course"];
+    BATCH batch = (BATCH)ViewData["batch"];
+}
+@{
+    ViewBag.Title = "Show";
+}
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Batch Transfer</h1>
+    <h3>Transfer</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("Manage_Batches", "Courses")">Manage Batch</a> &raquo;
+        <a href="@Url.Action("Index", "Batch_Transfers")">Batch Transfer</a> &raquo;
+        @batch.Full_Name
+    </div>
+    <div class="transfer_batch_details">
+        <div class="label-field-pair"><label>Transferring batch:</label> <div class="text-input-bg themed_text">@batch.Full_Name</div></div>
+    </div>
+    @using (Html.BeginForm("Transfer", "Batch_Transfers", FormMethod.Post, new { @encType = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
+        @Html.Hidden("id", batch.ID)
+        <div class="label-field-pair">
+            <label for="subject_id">Transfer To</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("Transfer_To", null, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <p>Uncheck Message.</p>
+
+        <ul id="category-list">
+            <li class="listheading">
+                <div class="heading-no">Adm no.</div>
+                <div class="category-name">Name</div>
+                <div class="sel-list">
+                    <a href="javascript:$('input.right').each(function() { this.checked = true; });">All</a>,
+                    <a href="javascript:$('input.right').each(function() { this.checked = false; });">None</a>
+                </div>
+            </li>
+            @{int i = 1; }
+            @for (var j = 0; j < Students.Count(); j++)
+            {
+                string cycle = "listeven";
+                if (i % 2 == 0)
+                {
+                    cycle = "listodd";
+                }
+                <li class="@cycle">
+                    <div class="category-number">@Students.ElementAt(j).ADMSN_NO</div>
+                    <div class="category-name">@Students.ElementAt(j).Full_Name</div>
+                    <div class="category-edit">
+                        @Html.CheckBox("[" + j + "].Select", Students.ElementAt(j).Select, new { @class = "right" })
+                        @foreach (var props in Students.ElementAt(j).GetType().GetProperties().ToList())
+                        {
+                            string PropsName = props.Name;
+                            var PropsValue = props.GetValue(Students.ElementAt(j));
+                            @Html.Hidden("[" + j + "]." + PropsName, PropsValue)
+                        }
+                        @Html.Hidden("[" + j + "].ID", Students.ElementAt(j).ID)
+                    </div>
+                </li>
+                i += 1;
+            }
+        </ul>
+        <input type="submit" value="► Save" class="submit_button" onclick="if (confirm_show()) return true; else return false;" />
+    }
+
+    <div class="extender"></div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript">
+        function confirm_show() {
+            var elt = $('#Transfer_To');
+            if (elt.val() == "Select Batch") {
+                alert('Select a batch in Transfer-To to proceed.');
+                return false;
+            }
+            else {
+                if (confirm('Are you sure to transfer to ' + $("#Transfer_To option:selected").text())) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+    </script>
+}
+

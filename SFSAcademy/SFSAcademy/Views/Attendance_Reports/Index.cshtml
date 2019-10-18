@@ -2,64 +2,7 @@
 @{
     ViewBag.Title = "Index";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $.ajaxSetup({ cache: false });
-    $(document).ready(function () {
-        $(".LoaderBox").hide();
-        $('#BatchDropDown').change(function () {
-            $(".LoaderBox").show();
-            var selectedID = $(this).val();
-            var subject_id = $(subject_id).val();
-            $.ajax({
-                type: 'GET',
-                url: "/Attendance_Reports/Mode",
-                dataType: 'json',
-                data: {
-                    batch_id: selectedID,
-                    subject_id: subject_id
-                },
-                success: function (result) {
-                    if (result != null) {
-                        $(".LoaderBox").hide();
-                        $("#mode").html(result.ModePartialView);
-                        $('#mode').fadeIn('fast');
-                        $("#month").html(result.MonthPartialView);
-                        $('#month').fadeIn('fast');
-                        $("#year").html(result.YearPartialView);
-                        $('#year').fadeIn('fast');
-                    } else {
-                        alert('Null data returned.');
-                        $(".LoaderBox").hide();
-                    }
-                },
-                error: function () {
-                    alert('Error getting data.');
-                    $(".LoaderBox").hide();
-                }
-            });
-        });
-        $('#SubBatchDropDown').change(function () {
-            var selectedID = $(this).val();
-            $(".LoaderBox").show();
-            $.get('/Attendance_Reports/Subject?batch_id=' + selectedID, function (data) {
-                $('#subject').html(data);
-                $('#subject').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
 
-        });
-    });
-</script>
 <div id="content-header">
     <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
     <h1>Attendance</h1>
@@ -110,3 +53,57 @@
     <div id="modal-box" style="display:none;"></div>
 </div>
 <input type="hidden" value="@ViewBag.subject_id" id="subject_id" name="subject_id" />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#BatchDropDown').change(function () {
+                $(".LoaderBox").show();
+                var selectedID = $(this).val();
+                var subject_id = $(subject_id).val();
+                $.ajax({
+                    type: 'GET',
+                    url: "/Attendance_Reports/Mode",
+                    dataType: 'json',
+                    data: {
+                        batch_id: selectedID,
+                        subject_id: subject_id
+                    },
+                    success: function (result) {
+                        if (result != null) {
+                            $(".LoaderBox").hide();
+                            $("#mode").html(result.ModePartialView);
+                            $('#mode').fadeIn('fast');
+                            $("#month").html(result.MonthPartialView);
+                            $('#month').fadeIn('fast');
+                            $("#year").html(result.YearPartialView);
+                            $('#year').fadeIn('fast');
+                        } else {
+                            alert('Null data returned.');
+                            $(".LoaderBox").hide();
+                        }
+                    },
+                    error: function () {
+                        alert('Error getting data.');
+                        $(".LoaderBox").hide();
+                    }
+                });
+            });
+            $('#SubBatchDropDown').change(function () {
+                var selectedID = $(this).val();
+                $(".LoaderBox").show();
+                $.get('/Attendance_Reports/Subject?batch_id=' + selectedID, function (data) {
+                    $('#subject').html(data);
+                    $('#subject').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

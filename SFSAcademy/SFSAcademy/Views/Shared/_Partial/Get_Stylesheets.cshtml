@@ -2,26 +2,14 @@
 @{
     string CSSDirection = "~/Content/stylesheets/";
     string JSDirection = "~/Content/javascripts/tiny_mce/plugins/";
-    bool CSSAll = true;
 }
 
-@if (CSSAll)
-{
-    DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/style.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/pdf.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "_styles/ui.all.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "modalbox.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "calendar.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "autosuggest-menu.css");
-}
-
-
-@if (LocationHelper.IsCurrentControllerAndAction("User", "Dashboard", ViewContext))
+@if (ApplicationHelper.IsCurrentControllerAndAction("User", "Dashboard", ViewContext))
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/dashboard.css");
 
 }
-else if (LocationHelper.IsCurrentControllerAndAction("User", "Login", ViewContext) || LocationHelper.IsCurrentControllerAndAction("User", "Set_New_Password", ViewContext))
+else if (ApplicationHelper.IsCurrentControllerAndAction("User", "Login", ViewContext) || ApplicationHelper.IsCurrentControllerAndAction("User", "Set_New_Password", ViewContext))
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/login.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "_layouts/forgotpw.css");
@@ -30,9 +18,14 @@ else
 {
     DynamicHeader.AddStyleSheet(CSSDirection + "application.css");
     DynamicHeader.AddStyleSheet(CSSDirection + "popup.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "redbox.css");
-    DynamicHeader.AddStyleSheet(CSSDirection + "error_page.css");
 }
+@{ 
+    DynamicHeader.AddStyleSheet(CSSDirection + "_styles/jquery.ui.all.css");
+    DynamicHeader.AddStyleSheet(CSSDirection + "_styles/jquery-ui.css");
+    DynamicHeader.AddStyleSheet(CSSDirection + "modalbox.css");
+    DynamicHeader.AddStyleSheet(CSSDirection + "autosuggest-menu.css"); 
+    DynamicHeader.AddStyleSheet(CSSDirection + "calendar.css");
+    }
 
 @{
     string ApplicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;

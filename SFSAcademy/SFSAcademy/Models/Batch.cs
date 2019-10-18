@@ -27,17 +27,40 @@ namespace SFSAcademy
         string course_full_name { get; set; }
 */
     }
-    public enum GradingType
+
+    public enum BatchGradingTypes
     {
-        Normal,
-        GPA,
-        CWA,
-        CCE
+        Normal = 0,
+        GPA = 1,
+        CWA = 2,
+        CCE = 3
     }
-    public partial class BATCH
+    public class BatchSelect
+    {
+        public BATCH BatchData { get; set; }
+        public COURSE CourseData { get; set; }
+        public bool Select { get; set; }
+    }
+
+    [MetadataType(typeof(BatchMetadata))]
+    public partial class BATCH : IValidatableObject
     {
         private SFSAcademyEntities db = new SFSAcademyEntities();
+        internal sealed class BatchMetadata
+        {
+            [Required]
+            public string NAME { get; set; }
 
+            [Remote("StGraterThenEnd", "BATCH", AdditionalFields = "END_DATE", ErrorMessage = "Start Date should be before End Date")]
+            [Required]
+            public DateTime? START_DATE { get; set; }
+            [Required]
+            public DateTime? END_DATE { get; set; }
+
+        }
+        public bool IMPORT_FEES { get; set; }
+        public bool IMPORT_SUBJECTS { get; set; }
+        public bool Select { get; set; }
         public IEnumerable<BATCH> ACTIVE()
         {
             var ActiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == false && x.IS_ACT == true).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
@@ -46,37 +69,40 @@ namespace SFSAcademy
 
         public IEnumerable<BATCH> INACTIVE()
         {
-            var ActiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == false && x.IS_ACT == false).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
-            return (IEnumerable<BATCH>)ActiveBatch;
+            var InactiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == false && x.IS_ACT == false).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
+            return (IEnumerable<BATCH>)InactiveBatch;
         }
 
         public IEnumerable<BATCH> DELETED()
         {
-            var ActiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == true).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
-            return (IEnumerable<BATCH>)ActiveBatch;
+            var DeletedBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.IS_DEL == true).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
+            return (IEnumerable<BATCH>)DeletedBatch;
         }
 
         public IEnumerable<BATCH> CCE()
         {
-            var ActiveBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.COURSE.GRADING_TYPE.Contains("CCE")).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
-            return (IEnumerable<BATCH>)ActiveBatch;
+            var CCEBatch = db.BATCHes.Include(x => x.COURSE).Where(x => x.COURSE.GRADING_TYPE == 3).OrderBy(x => x.COURSE.CODE).OrderBy(x => x.NAME);
+            return (IEnumerable<BATCH>)CCEBatch;
         }
         public string Course_full_name
         {
             get { return COURSE.CODE + "-" + NAME; }
         }
-        public string Validate()
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            string Message = "";
-            if(START_DATE == null || END_DATE == null)
+            if (string.IsNullOrEmpty(NAME))
             {
-                Message = "Start Date or End Date canot be null. ";
+                //yield return new ValidationResult($"Classic movies must have a release year earlier than {_classicYear}.", new[] { "ReleaseDate" });
+                yield return new ValidationResult($"Batch Name is mandatory.", new[] { "NAME" });
+            }
+            if (START_DATE == null || END_DATE == null)
+            {             
+                yield return new ValidationResult($"Start Date or End Date canot be null.", new[] { "START_DATE" });
             }
             if (START_DATE > END_DATE)
             {
-                Message = string.Concat(Message, START_DATE, " should be before End Date");
+                yield return new ValidationResult($"Start Date should be before End Date", new[] { "END_DATE" });
             }
-            return Message;
         }
 
         public List<DateTime> Holiday_Event_Dates()
@@ -220,9 +246,8 @@ namespace SFSAcademy
         }
         public bool GPA_Enabled()
         {
-            var Config_Val = new Configuration();
-            var gpa_Enabled = Config_Val.find_by_config_key("GPA");
-            if (gpa_Enabled == "1" && GRADING_TYPE == "GPA")
+            var gpa_Enabled = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "GPA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            if (gpa_Enabled == "1" && GRADING_TYPE == 1)
             {
                 return true;
             }
@@ -234,9 +259,8 @@ namespace SFSAcademy
         }
         public bool CWA_Enabled()
         {
-            var Config_Val = new Configuration();
-            var cwa_Enabled = Config_Val.find_by_config_key("CWA");
-            if (cwa_Enabled == "1" && GRADING_TYPE == "CWA")
+            var cwa_Enabled = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CWA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            if (cwa_Enabled == "1" && GRADING_TYPE == 2)
             {
                 return true;
             }
@@ -248,9 +272,8 @@ namespace SFSAcademy
         }
         public bool CCE_Enabled()
         {
-            var Config_Val = new Configuration();
-            var cce_Enabled = Config_Val.find_by_config_key("CCE");
-            if (cce_Enabled == "1" && GRADING_TYPE == "CCE")
+            var cce_Enabled = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CCE").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
+            if (cce_Enabled == "1" && GRADING_TYPE == 3)
             {
                 return true;
             }
@@ -262,7 +285,7 @@ namespace SFSAcademy
         }
         public bool Normal_Enabled()
         {
-            if (GRADING_TYPE == null || GRADING_TYPE == "Normal")
+            if (GRADING_TYPE == null || GRADING_TYPE == 0)
             {
                 return true;
             }
@@ -271,6 +294,69 @@ namespace SFSAcademy
                 return false;
             }
 
+        }
+        public bool Allow_Exam_Acess(USER user)
+        {
+            var flag = true;
+            if (user.EMP_IND == true && user.GetUserPrivilage(user.ID).Select(x=>x.NAME).ToList().Contains("ExaminationControl"))
+            {
+                var EmpSubjs = db.EMPLOYEES_SUBJECT.Include(x=>x.SUBJECT).Where(x => x.EMP_ID == user.EMPLOYEEs.FirstOrDefault().ID).ToList();
+                if(EmpSubjs.Select(x=>x.SUBJECT.BTCH_ID).ToList().Contains(ID))
+                {
+                    flag = false;
+                }
+            }
+            return flag;
+
+        }
+        public IEnumerable<EMPLOYEE> Employees()
+        {
+            var Employee = db.EMPLOYEEs.Where(x => x.ID == -1).DefaultIfEmpty().AsEnumerable();
+            if(EMP_ID != null)
+            {
+                var employee_ids = HtmlHelpers.ApplicationHelper.SplitCommaString(EMP_ID);
+                Employee = db.EMPLOYEEs.Where(x => employee_ids.Contains(x.ID.ToString()));
+            }
+            return Employee;
+        }
+        public void Inactivate()
+        {
+            this.IS_DEL = true;
+            db.Entry(this).State = EntityState.Modified;
+            var EmpSubToUpdate = db.EMPLOYEES_SUBJECT.Include(x=>x.SUBJECT).Where(x => x.SUBJECT.BTCH_ID == this.ID);
+            foreach (var es in EmpSubToUpdate)
+            {
+                db.EMPLOYEES_SUBJECT.Remove(es);
+            }
+            db.SaveChanges();
+        }
+        public string Full_Name
+        {
+            get { return COURSE.CODE + "-" + NAME; }
+        }
+        public string Course_Section_Name
+        {
+            get { return COURSE.CRS_NAME + "-" + COURSE.SECTN_NAME; }
+        }
+        public IEnumerable<GRADING_LEVEL> Grading_Level_List()
+        {
+            return db.GRADING_LEVEL.Where(x => x.BTCH_ID == this.ID).ToList();
+        }
+        public IEnumerable<FINANCE_FEE_COLLECTION> Fee_Collection_Dates()
+        {
+            return db.FINANCE_FEE_COLLECTION.Where(x => x.BTCH_ID == this.ID && x.IS_DEL == false).AsEnumerable();
+        }
+        public IEnumerable<STUDENT> All_Students()
+        {
+            return db.STUDENTs.Where(x => x.BTCH_ID == this.ID).AsEnumerable();
+        }
+        public IEnumerable<SUBJECT> Normal_Batch_Subject()
+        {
+            return db.SUBJECTs.Where(x => x.BTCH_ID == this.ID && x.ELECTIVE_GRP_ID == null && x.IS_DEL == false).AsEnumerable();
+        }
+        public IEnumerable<SUBJECT> Elective_Batch_Subject(int? elect_group)
+        {
+            return db.SUBJECTs.Where(x => x.BTCH_ID == this.ID && x.ELECTIVE_GRP_ID == elect_group && x.ELECTIVE_GRP_ID != null && x.IS_DEL == false).AsEnumerable();
         }
 
     }

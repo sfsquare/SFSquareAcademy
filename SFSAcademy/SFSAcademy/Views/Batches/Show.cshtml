@@ -1,0 +1,94 @@
+﻿@{
+    IEnumerable<STUDENT> students = (IEnumerable<STUDENT>)ViewData["students"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    USER current_user = (USER)ViewData["current_user"];
+}
+@{
+    ViewBag.Title = "Show";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Courses</h1>
+    <h3>Batches</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (Html.Permitted_To("Index", "Exam_Groups") && batch.Allow_Exam_Acess(current_user))
+        {
+            <li><a href="@Url.Action("Index", "Exam_Groups",new { id = batch.ID})">Exam</a> </li>
+        }
+        <li><a href="@Url.Action("Edit", "Batches",new { id = batch.ID})">Edit</a> </li>
+        <li><a href="@Url.Action("Delete", "Batches",new { id = batch.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a> </li>
+
+        <li>
+            <a href="#" class="drops" id="link_one" onclick="OpenBox()">Manage &#9660;</a>
+            <ul id="box_one" class="scriptaculously" style="display:none;">
+                <li><a href="@Url.Action("Subject_Transfer", "Batch_Transfers",new { id = batch.ID})">Subject</a> </li>
+                <li><a href="@Url.Action("Index", "Elective_Groups",new { BatchId = batch.ID})">Electives</a> </li>
+                <li><a href="@Url.Action("Assign_Tutor", "Batches",new { id = batch.ID})">Assign Tutor</a> </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+
+    <div class="box">
+        <div class="bread_crumb">
+            <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+            <a href="@Url.Action("Show", "Courses",new { id = batch.CRS_ID})">@batch.COURSE.Full_Name</a> &raquo;
+            Batch @batch.Course_full_name
+        </div>
+
+        <table id="listing" width="100%">
+            <tr class="tr-head">
+                <td>Sl. No.</td>
+                <td>Name</td>
+                <td>Admission Number</td>
+            </tr>
+            @{int slno = 1; }
+            @foreach (var student in students)
+            {
+                string cycle = "tr-even";
+                if (slno % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+                <tr class="@cycle">
+                    <td class="col-1">@slno</td>
+                    <td class="col-2"><a href="@Url.Action("Profiles", "Student",new { id = student.ID})">@student.Full_Name</a> </td>
+                    <td class="col-3">@student.ADMSN_NO </td>
+                </tr>
+                slno += 1;
+            }
+        </table>
+
+        <div id="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        function OpenBox() {
+            $("#box_one").show();
+        }
+    </script>
+}
+
+

@@ -6,16 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Data.Entity;
-using System.Net;
 using System.Web.Mvc;
-using PagedList;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using iTextSharp.tool.xml;
-using System.Text;
 using System.Data.Entity.Validation;
-using SFSAcademy.Helpers;
 
 namespace SFSAcademy
 {
@@ -175,7 +167,7 @@ namespace SFSAcademy
             if (Role == null)
             {
                 //yield return new ValidationResult($"Classic movies must have a release year earlier than {_classicYear}.", new[] { "ReleaseDate" });
-                yield return new ValidationResult($"Role must be provided for the new User.");
+                yield return new ValidationResult($"Role must be provided for the new User.", new[] { "Role" });
             }
         }
 
@@ -227,63 +219,25 @@ namespace SFSAcademy
     public partial class USER : IValidatableObject, IHasTimeStamp, IHasBeforeSave
     {
         private SFSAcademyEntities db = new SFSAcademyEntities();
+        internal sealed class StudentMetadata
+        {
+            [Required]
+            public string USRNAME { get; set; }
+            [Required]
+            public string HASHED_PSWRD { get; set; }
+
+        }
         private string LoginErrorMessage { get; set; }
-        public IEnumerable<BATCH> Active()
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            var ActiveUsers = db.USERS.Include(x => x.STUDENTs).Include(x => x.EMPLOYEEs).Where(x => x.IS_DEL == false).OrderBy(x => x.USRNAME);
-            return (IEnumerable<BATCH>)ActiveUsers;
-        }
-
-        public IEnumerable<BATCH> Inactive()
-        {
-            var ActiveUsers = db.USERS.Include(x => x.STUDENTs).Include(x => x.EMPLOYEEs).Where(x => x.IS_DEL == true).OrderBy(x => x.USRNAME);
-            return (IEnumerable<BATCH>)ActiveUsers;
-        }
-
-        public string Full_Name
-        {
-            get { return FIRST_NAME + " " + LAST_NAME; }
-        }
-
-        private string Random_String(int SALTLength)
-        {
-            string allowedChars = "";
-            allowedChars = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,";
-            allowedChars += "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,";
-            allowedChars += "1,2,3,4,5,6,7,8,9,0,!,@,#,$,%,&,?";
-            char[] sep = { ',' };
-            string[] arr = allowedChars.Split(sep);
-            string SALT = "";
-            string temp = "";
-            Random rand = new Random();
-            for (int i = 0; i < SALTLength; i++)
+            if (!string.IsNullOrEmpty(LoginErrorMessage))
             {
-                temp = arr[rand.Next(0, arr.Length)];
-                SALT += temp;
-            }
-            return SALT;
-        }
-
-        public void DoTimeStamp(string EntityStateVal)
-        {
-
-            if (EntityStateVal.Equals("Added"))
-            {
-                //add creation date_time            
-                CREATED_AT = DateTime.Now;
-                UPDATED_AT = DateTime.Now;
-            }
-
-            if (EntityStateVal.Equals("Modified"))
-            {
-                //update Updation time            
-                UPDATED_AT = DateTime.Now;
+                yield return new ValidationResult($"*", new[] { LoginErrorMessage });
             }
         }
-
         public void Before_Save()
         {
-            if(SALT == null)
+            if (SALT == null)
             {
                 SALT = Random_String(8);
             }
@@ -319,6 +273,59 @@ namespace SFSAcademy
                     break;
             }
         }
+        public void DoTimeStamp(string EntityStateVal)
+        {
+
+            if (EntityStateVal.Equals("Added"))
+            {
+                //add creation date_time            
+                CREATED_AT = DateTime.Now;
+                UPDATED_AT = DateTime.Now;
+            }
+
+            if (EntityStateVal.Equals("Modified"))
+            {
+                //update Updation time            
+                UPDATED_AT = DateTime.Now;
+            }
+        }
+        public IEnumerable<USER> Active()
+        {
+            return db.USERS.Where(x => x.IS_DEL == false).AsEnumerable();
+        }
+
+        public IEnumerable<USER> Inactive()
+        {
+            return db.USERS.Where(x => x.IS_DEL == true).AsEnumerable();
+        }
+
+        public string Full_Name
+        {
+            get { return FIRST_NAME + " " + LAST_NAME; }
+        }
+
+        private string Random_String(int SALTLength)
+        {
+            string allowedChars = "";
+            allowedChars = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,";
+            allowedChars += "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,";
+            allowedChars += "1,2,3,4,5,6,7,8,9,0,!,@,#,$,%,&,?";
+            char[] sep = { ',' };
+            string[] arr = allowedChars.Split(sep);
+            string SALT = "";
+            string temp = "";
+            Random rand = new Random();
+            for (int i = 0; i < SALTLength; i++)
+            {
+                temp = arr[rand.Next(0, arr.Length)];
+                SALT += temp;
+            }
+            return SALT;
+        }
+
+        
+
+        
 
         public int Check_Reminders()
         {
@@ -445,15 +452,6 @@ namespace SFSAcademy
                 return false;
             }
 
-        }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (!string.IsNullOrEmpty(LoginErrorMessage))
-            {
-                //yield return new ValidationResult($"Classic movies must have a release year earlier than {_classicYear}.", new[] { "ReleaseDate" });
-                yield return new ValidationResult($"*", new[] { LoginErrorMessage });
-            }
         }
 
         public List<PRIVILEGE> GetUserPrivilage(int UserId)

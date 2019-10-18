@@ -1,0 +1,73 @@
+﻿@{
+    IEnumerable<BATCH_GROUP> batch_groups = (IEnumerable<BATCH_GROUP>)ViewData["batch_groups"];
+    COURSE course = (COURSE)ViewData["course"];
+    IEnumerable<BatchSelect> batches = (IEnumerable<BatchSelect>)ViewData["batches"];
+}
+<script type="text/javascript" language="javascript">
+    function EditBatchGroup(sender) {
+        $(".LoaderBox2").show();
+        $.get(sender, function (data) {
+            $('#class_form').empty();
+            $('#class_form').html(data);
+            $('#class_form').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox2").hide();
+        });
+    }
+    function DeleteBatchGroup(sender) {
+        $(".LoaderBox2").show();
+        if (confirm("Are you sure you want to delete this ?")) {
+            $.get(sender, function (data) {
+                $('#category-list').html(data);
+                $('#category-list').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox2").hide();
+            });
+        } else {
+            $(".LoaderBox2").hide()
+            return false;
+        }
+    }
+</script>
+<div class="LoaderBox2" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+<ul class="category-list">
+    @if (batch_groups != null && batch_groups.Count() != 0)
+    {
+        <li class="heading">Grouped Batches</li>
+        int i = 1;
+        foreach (var batch_group in batch_groups)
+        {
+            string cycle = "listeven";
+            if (i % 2 == 0)
+            {
+                cycle = "listodd";
+            }
+            <li class="@cycle">
+                <div class="category-name">@batch_group.NAME</div>
+                <div class="category-name">
+                    @foreach (var b in batch_group.GROUPED_BATCH)
+                    {
+                        <div class="category-name">@b.BATCH.Course_full_name</div>
+                    }
+                </div>
+                <div class="category-edit">
+                    @if (Html.Permitted_To("Edit_Batch_Group", "Courses"))
+                    {
+                        <a href="@Url.Action("Edit_Batch_Group", "Courses",new { id = batch_group.ID})" onclick='EditBatchGroup(this.href); return false;'>Edit</a>
+                    }
+                </div>
+                <div class="category-delete">
+                    @if (Html.Permitted_To("Delete_Batch_Group", "Courses"))
+                    {
+                        <a href="@Url.Action("Delete_Batch_Group", "Courses",new { id = batch_group.ID})" onclick="DeleteBatchGroup(this.href); return false;">Delete</a>
+                    }
+                </div>
+            </li>
+        }
+
+    }
+    else
+    {
+        <p class="flash-msg">No Grouped Batches found.</p>
+    }
+</ul>

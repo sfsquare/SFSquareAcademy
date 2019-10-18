@@ -200,7 +200,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                     }
                     ViewBag.Notice = string.Concat("Employee ", eMPLOYEE.FIRST_NAME, "'s general information updated.");
@@ -276,7 +276,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = string.Concat("Employee ", eMPLOYEE.FIRST_NAME, "'s personal information updated.");
@@ -335,7 +335,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = string.Concat("Employee contact details saved for ", eMPLOYEE.FIRST_NAME);
@@ -383,7 +383,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Profiles", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = string.Concat("Contact details updated for ", eMPLOYEE.FIRST_NAME);
@@ -445,7 +445,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                         }
 
@@ -462,7 +462,7 @@ namespace SFSAcademy.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                             return RedirectToAction("Profiles", new { id = item.EMPLOYEE_ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                         }
                     }
@@ -548,7 +548,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View();
             }
             EMPLOYEE employee = db.EMPLOYEEs.Find(leave.EMP_ID);
@@ -655,7 +655,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Category", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Category added in system successfully!";
@@ -698,7 +698,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Add_Category", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                     }
                     if(eMPLOYEEcTAGORY.STAT == false)
@@ -762,7 +762,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Category", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Category deleted fom system successfully!";
@@ -861,7 +861,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Position", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Position added in system successfully!";
@@ -918,7 +918,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Add_Position", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                     }
                     ViewBag.Notice = "Employee Position updated in system successfully!";
@@ -964,7 +964,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Position", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Position deleted fom system successfully!";
@@ -1032,7 +1032,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Department", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Department added in system successfully!";
@@ -1075,7 +1075,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Add_Department", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                     }
                     ViewBag.Notice = "Employee Department updated in system successfully!";
@@ -1121,7 +1121,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Department", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Department deleted fom system successfully!";
@@ -1189,7 +1189,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Grade", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Grade added in system successfully!";
@@ -1232,7 +1232,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return RedirectToAction("Add_Grade", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                     }
                     ViewBag.Notice = "Employee Grade updated in system successfully!";
@@ -1278,7 +1278,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Grade", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Employee Grade deleted fom system successfully!";
@@ -1345,7 +1345,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Bank_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Bank Field added in system successfully!";
@@ -1383,7 +1383,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Bank_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Bank Field updated in system successfully!";
@@ -1419,7 +1419,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Bank_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Bank Field deleted fom system successfully!";
@@ -1486,7 +1486,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Addional Field added in system successfully!";
@@ -1524,7 +1524,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Additional Field updated in system successfully!";
@@ -1560,7 +1560,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Add_Additional_Details", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
                 }
                 ViewBag.Notice = "Additional Field deleted fom system successfully!";
@@ -1693,7 +1693,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(eMPLOYEE);
                 }
 
@@ -1713,7 +1713,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(eMPLOYEE);
                 }
                 // some code 
@@ -1780,7 +1780,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(eMPLOYEE);
                 } 
                 return RedirectToAction("Admission3", "Employee", new { Emp_id = EmpToUpdate.ID });
@@ -1830,7 +1830,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View(EmpDet);
                     }                   
                 }
@@ -1884,7 +1884,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View(EmpAddDet);
                     }
                 }
@@ -1983,7 +1983,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(EmployeeDetail);
                 }
                 return RedirectToAction("Manage_Payroll", "Payroll", new { id = EmpToUpdate.ID });
@@ -2577,12 +2577,11 @@ namespace SFSAcademy.Controllers
         {
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var finance_manager = db.PRIVILEGES.Include(x => x.PRIVILEGE_TAG).Where(x => x.PRIVILEGE_TAG == "Finance Control").ToList();
+            var finance_manager = db.PRIVILEGES.Where(x => x.PRIVILEGE_TAG == "Finance Control").ToList();
             /*var finance_manager = (from pv in db.PRIVILEGES
                                    where pv.PRIVILEGE_TAG == "Finance Control"
                                    select pv).ToList();*/
-            var Config = new Configuration();
-            string finance = Config.find_by_config_value("Finance");
+            string finance = db.CONFIGURATIONs.Where(x => x.CONFIG_VAL == "Finance").Select(x => x.CONFIG_KEY).FirstOrDefault().ToString();
             DateTime SALARY_DATE2 = Convert.ToDateTime(SALARY_DATE);
             ViewBag.SALARY_DATE = SALARY_DATE2.ToShortDateString();
             DateTime start_date = SALARY_DATE2.AddDays(-SALARY_DATE2.AddDays(-1).Day);
@@ -2608,7 +2607,7 @@ namespace SFSAcademy.Controllers
                 foreach (var item2 in db.EMPLOYEEs.Where(x=>x.STAT==true).ToList())
                 {
                     var payslip_exists = (from mp in db.MONTHLY_PAYSLIP
-                                          where mp.EMP_ID == item2.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date
+                                          where mp.EMP_ID == item2.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date
                                           select mp).ToList();
                     if(payslip_exists == null || payslip_exists.Count() == 0)
                     {
@@ -2631,7 +2630,7 @@ namespace SFSAcademy.Controllers
                 foreach (var item4 in db.EMPLOYEEs.Where(x => x.STAT == true).ToList())
                 {
                     var payslip_exists = (from mp in db.MONTHLY_PAYSLIP
-                                          where mp.EMP_ID == item4.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date
+                                          where mp.EMP_ID == item4.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date
                                           select mp).ToList();
                     if (payslip_exists == null || payslip_exists.Count() == 0)
                     {
@@ -2683,7 +2682,7 @@ namespace SFSAcademy.Controllers
                 foreach (var item in db.EMPLOYEEs.Where(x => x.STAT == true).ToList())
                 {
                     var payslip_record = (from mp in db.MONTHLY_PAYSLIP
-                                          where mp.EMP_ID == item.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date && mp.IS_APPR == false
+                                          where mp.EMP_ID == item.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date && mp.IS_APPR == false
                                           select mp).ToList();
                     foreach(var item2 in payslip_record)
                     {
@@ -2692,12 +2691,12 @@ namespace SFSAcademy.Controllers
                         db.SaveChanges();
                     }
                     var payslip_record_Approved = (from mp in db.MONTHLY_PAYSLIP
-                                          where mp.EMP_ID == item.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date && mp.IS_APPR == true
+                                          where mp.EMP_ID == item.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date && mp.IS_APPR == true
                                           select mp).ToList();
 
                     if (payslip_record_Approved != null && payslip_record_Approved.Count() != 0)
                     {
-                        var individual_payslip_record = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && x.EMP_ID == item.ID).ToList();
+                        var individual_payslip_record = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.SAL_DATE >= start_date && x.SAL_DATE < end_date && x.EMP_ID == item.ID).ToList();
                         if (individual_payslip_record != null && individual_payslip_record.Count() != 0)
                         {
                             foreach (var item3 in individual_payslip_record)
@@ -2811,7 +2810,7 @@ namespace SFSAcademy.Controllers
                 DateTime start_date = salary_date.AddDays(-salary_date.AddDays(-1).Day);
                 DateTime end_date = start_date.AddMonths(1);
                 var payslip_exists = (from mp in db.MONTHLY_PAYSLIP
-                                      where mp.EMP_ID == employee.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date
+                                      where mp.EMP_ID == employee.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date
                                       select mp).ToList();
                 if (payslip_exists == null || payslip_exists.Count() == 0)
                 {
@@ -2902,7 +2901,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.Warn_Notice = string.Concat(ViewBag.Warn_Notice, "|", e.InnerException.InnerException.Message);
+                    ViewBag.Warn_Notice = string.Concat(ViewBag.Warn_Notice, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(employee);
                 }
                 return RedirectToAction("Select_Department_Employee", new { Notice = ViewBag.Notice });
@@ -2961,7 +2960,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Payslip_Category_Form");
             }
         }
@@ -3066,8 +3065,7 @@ namespace SFSAcademy.Controllers
             ViewBag.salary_date = SAL_DATE;
             var employee = db.EMPLOYEEs.Find(emp_id);
             ViewData["employee"] = employee;
-            var Config = new Configuration();
-            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            ViewBag.currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             if(salary_date == null)
             {
                 return PartialView("_Rejected_Payslip");
@@ -3196,7 +3194,7 @@ namespace SFSAcademy.Controllers
             DateTime start_date = salary_date.AddDays(-salary_date.AddDays(-1).Day);
             DateTime end_date = start_date.AddMonths(1);
             var payslip_exists = (from mp in db.MONTHLY_PAYSLIP
-                                  where mp.EMP_ID == employee.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE <= end_date
+                                  where mp.EMP_ID == employee.ID && mp.SAL_DATE >= start_date && mp.SAL_DATE < end_date
                                   select mp).ToList();
             foreach(var item in payslip_exists)
             {
@@ -3273,7 +3271,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.Notice = string.Concat(ViewBag.Notice, "|", e.InnerException.InnerException.Message);
+                ViewBag.Notice = string.Concat(ViewBag.Notice, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(employee);
             }
             return RedirectToAction("Profiles", new { id = employee.ID, Notice = ViewBag.Notice });
@@ -3403,8 +3401,7 @@ namespace SFSAcademy.Controllers
             ViewBag.Salary_Date = salary_date;
             ViewBag.Selected_Salary_Date = salary_date.Value.ToShortDateString();
             EMPLOYEE Employee = db.EMPLOYEEs.Find(id);
-            var Config = new Configuration();
-            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            ViewBag.currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
@@ -3480,8 +3477,7 @@ namespace SFSAcademy.Controllers
                                   from subgeg in geg.DefaultIfEmpty()
                                   where emp.ID == id
                                   select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged), CategoryData = (subgec == null ? null : subgec), PositionData = (subgep == null ? null : subgep), GradeData = (subgeg == null ? null : subgeg)}).OrderBy(x => x.EmployeeData.FIRST_NAME).FirstOrDefault();
-            var Config = new Configuration();
-            ViewBag.currency_type = Config.find_by_config_key("CurrencyType");
+            ViewBag.currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString();
             var monthly_payslips = (from emp in db.EMPLOYEEs
                                     join mp in db.MONTHLY_PAYSLIP on emp.ID equals mp.EMP_ID
                                     join pc in db.PAYROLL_CATEGORY on mp.PYRL_CAT_ID equals pc.ID
@@ -3611,7 +3607,7 @@ namespace SFSAcademy.Controllers
         public ActionResult Subject_Assignment(string Notice)
         {
             ViewBag.Notice = Notice;
-            DateTime StartDate = HtmlHelpers.ApplicationHelper.AcademicYearStartDate();
+            DateTime StartDate = ApplicationHelper.AcademicYearStartDate();
             var queryCourceBatch = (from cs in db.COURSEs
                                     join bt in db.BATCHes on cs.ID equals bt.CRS_ID
                                     where cs.IS_DEL == false && bt.END_DATE >= StartDate
@@ -3793,7 +3789,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return RedirectToAction("Remove", new { id = employee_id, ErrorMessage = ViewBag.ErrorMessage});
                 }
             }
@@ -3834,7 +3830,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(eMPLOYEE);
             }
 
@@ -3900,7 +3896,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(eMPLOYEE);
             }
 
@@ -3986,7 +3982,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(EmployeeDetail);
                 }                
                 return RedirectToAction("Profiles", new { id = EmpToUpdate.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
@@ -4057,7 +4053,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return RedirectToAction("Remove", new { id = eMPLOYEE.ID, ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             return RedirectToAction("HR", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -4160,7 +4156,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View();
                 }
                 ViewBag.Notice = "Leave applied successfully.";

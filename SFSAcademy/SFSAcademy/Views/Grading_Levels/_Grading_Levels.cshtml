@@ -1,54 +1,64 @@
-﻿@model IEnumerable<GRADING_LEVEL>
-@{
+﻿@{
     SFSAcademyEntities db = new SFSAcademyEntities();
-    var Configuration = new Configuration();
     BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<GRADING_LEVEL> grading_levels = (IEnumerable<GRADING_LEVEL>)ViewData["grading_levels"];
 }
-    <script>
-        function LoadEditModelPage(sender) {
-            $(".LoaderBox").show();
-            $.get(sender, function (data) {
-                $('#modal-box').html(data);
-                $('#modal-box').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-                $('#modal-box').dialog('open');
-            });
-        }
-        function LoadNewModelPage(sender) {
-            $(".LoaderBox").show();
-            $.get(sender, function (data) {
-                $('#modal-box').html(data);
-                $('#modal-box').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-                $('#modal-box').dialog('open');
-            });
-        }
-        function LoadDeletePartialPage(sender) {
-            $(".LoaderBox").show();
-            $.get(sender, function (data) {
-                $('#register').html(data);
-                $('#register').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-        }
-    </script>
-<div class="add_grade">
-    <a href="@Url.Action("New", "Grading_Levels",new {id =batch.ID})" onclick='LoadNewModelPage(this.href); return false;'>Add Grades</a>
-</div>
+<script>
+    function LoadEditModelPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function LoadNewModelPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function LoadDeletePartialPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#register').html(data);
+            $('#register').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+        });
+    }
+</script>
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 @{ var credit = false;}
 @if (batch != null)
 {
     credit = (batch.GPA_Enabled() == true || batch.CCE_Enabled() == true) ? true : false;
+    <div class="add_grade">
+        <a href="@Url.Action("New", "Grading_Levels",new {id =batch.ID})" onclick='LoadNewModelPage(this.href); return false;'>Add Grades</a>
+    </div>
 }
 else
 {
-    credit = (Configuration.find_by_config_key("CCE") == "1" || Configuration.find_by_config_key("CWA") == "1" || Configuration.find_by_config_key("GPA") == "1") ? true : false;
+    credit = (db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CCE").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CWA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1" || db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "GPA").Select(x => x.CONFIG_VAL).FirstOrDefault().ToString() == "1") ? true : false;
+    <div class="add_grade">
+        <a href="@Url.Action("New", "Grading_Levels")" onclick='LoadNewModelPage(this.href); return false;'>Add Grades</a>
+    </div>
 }
 
-@if (Model != null)
+@if (grading_levels != null)
 {
     <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
         <tr class="tr-head">
@@ -62,7 +72,7 @@ else
             <td></td>
         </tr>
         @{int i = 1; }
-        @foreach (var grade in Model)
+        @foreach (var grade in grading_levels)
         {
             string cycle = "tr-even";
             if (i % 2 == 0)
@@ -78,12 +88,25 @@ else
                 }
                 @{ string Description = grade.DESCR != null ? grade.DESCR : "-";}
                 <td class="col-2">@Description</td>
-                <td class="col-1">
-                    <small>
-                        <a href="@Url.Action("Edit", "Grading_Levels",new {id =batch.ID})" onclick='LoadEditModelPage(this.href); return false;'>Edit</a> |
-                        <a href="@Url.Action("Delete", "Grading_Levels",new {id =batch.ID})" onclick='LoadDeletePartialPage(this.href); return confirm('are you sure?');'>Delete</a>
-                    </small>
-                </td>
+                @if (batch != null)
+                {
+                    <td class="col-1">
+                        <small>
+                            <a href="@Url.Action("Edit", "Grading_Levels",new {id =grade.ID, batch_id = batch.ID})" onclick='LoadEditModelPage(this.href); return false;'>Edit</a> |
+                            <a href="@Url.Action("Delete", "Grading_Levels",new {id =grade.ID, batch_id = batch.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
+                        </small>
+                    </td>
+                }
+                else
+                {
+                    <td class="col-1">
+                        <small>
+                            <a href="@Url.Action("Edit", "Grading_Levels",new {id =grade.ID})" onclick='LoadEditModelPage(this.href); return false;'>Edit</a> |
+                            <a href="@Url.Action("Delete", "Grading_Levels",new {id =grade.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
+                        </small>
+                    </td>
+                }
+
             </tr>
         }
     </table>

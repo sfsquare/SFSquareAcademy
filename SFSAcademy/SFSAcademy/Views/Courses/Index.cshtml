@@ -13,13 +13,19 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 
 <div id="page-yield">
+    <div id="flash-box">
+        @if (ViewBag.Notice != null)
+        {
+            <p class="flash-msg"> @ViewBag.Notice </p>
+        }
+    </div>
     <div class="box">
         <div class="link-box">
-            <div class="link-heading">@Html.ActionLink("Manage Course", "ManageCourse")</div>
+            <div class="link-heading">@Html.ActionLink("Manage Course", "Manage_Course")</div>
             <div class="link-descr">Manage Course and create batches</div>
         </div>
         <div class="link-box">
-            <div class="link-heading"><a href="@Url.Action("ManageBatches", "BATCH")">Manage Batch </a></div>
+            <div class="link-heading"><a href="@Url.Action("Manage_Batches", "Courses")">Manage Batch </a></div>
             <div class="link-descr">Manage active batches</div>
         </div>
         <div class="extender"></div>

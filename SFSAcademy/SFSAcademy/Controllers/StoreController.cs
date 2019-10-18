@@ -131,7 +131,7 @@ namespace SFSAcademy.Controllers
                 catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
                     return View();
                 }
-                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View();
                 }
                 return RedirectToAction("Product", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -235,7 +235,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTORE_PRODUCTS);
                 }
                 return RedirectToAction("Product", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -259,7 +259,7 @@ namespace SFSAcademy.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return View(sTORE_PRODUCTS);
             }
 
@@ -528,7 +528,7 @@ namespace SFSAcademy.Controllers
             STORE_CATEGORY sTOREcATEGORY = db.STORE_CATEGORY.Find(id);
             db.STORE_CATEGORY.Remove(sTOREcATEGORY);
             try { db.SaveChanges(); ViewBag.CatDeleteMessage = "Store Category deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.CatDeleteMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.CatDeleteMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return View(sTOREcATEGORY);
         }
 
@@ -561,7 +561,7 @@ namespace SFSAcademy.Controllers
                 sTOREcATEGORY_UPD.IS_ACT = sTOREcATEGORY.IS_ACT;
                 db.Entry(sTOREcATEGORY_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.CatEditMessage = "Store Category edited successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.CatEditMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.CatEditMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return View(sTOREcATEGORY);
             }
             return View(sTOREcATEGORY);
@@ -581,7 +581,7 @@ namespace SFSAcademy.Controllers
                 sTOREcATEGORY.UPDATED_AT = System.DateTime.Now;
                 db.STORE_CATEGORY.Add(sTOREcATEGORY);
                 try { db.SaveChanges(); ViewBag.CatCreateMessage = "Store Category created successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.CatCreateMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.CatCreateMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Categories");
             }
 
@@ -632,7 +632,7 @@ namespace SFSAcademy.Controllers
             STORE_SUB_CATEGORY sTOREsUBcATEGORY = db.STORE_SUB_CATEGORY.Find(id);
             db.STORE_SUB_CATEGORY.Remove(sTOREsUBcATEGORY);
             try { db.SaveChanges(); ViewBag.SubCatDeteleMessage = "Store Sub Category deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatDeteleMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatDeteleMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return View(sTOREsUBcATEGORY);
         }
 
@@ -665,7 +665,7 @@ namespace SFSAcademy.Controllers
                 sTOREsUBcATEGORY_UPD.IS_ACT = sTOREsUBcATEGORY.IS_ACT;
                 db.Entry(sTOREsUBcATEGORY_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.SubCatEditMessage = "Store Sub Category edited successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatEditMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatEditMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return View(sTOREsUBcATEGORY);
             }
             return View(sTOREsUBcATEGORY);
@@ -686,7 +686,7 @@ namespace SFSAcademy.Controllers
                 sTOREsUBcATEGORY.UPDATED_AT = System.DateTime.Now;
                 db.STORE_SUB_CATEGORY.Add(sTOREsUBcATEGORY);
                 try { db.SaveChanges(); ViewBag.SubCatCreateMessage = "Sub Category created successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatCreateMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.SubCatCreateMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("SubCategories", new { Category_Id = sTOREsUBcATEGORY.STORE_CATEGORY_ID });
             }
 
@@ -758,7 +758,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View(sTORE_PROCUREMENT);
                 }               
                 return RedirectToAction("Procurement", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
@@ -841,7 +841,7 @@ namespace SFSAcademy.Controllers
                 sTORE_PROCUREMENT_UPD.UPDATED_AT = DateTime.Now;
                 db.Entry(sTORE_PROCUREMENT_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Selling Details are updated successfully."; }
-                catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Procurement", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid";
@@ -882,7 +882,7 @@ namespace SFSAcademy.Controllers
                 }
                 catch (Exception e)
                 {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                     return View();
                 }
             }
@@ -1574,7 +1574,7 @@ namespace SFSAcademy.Controllers
                 sTORE_SELLING_UPD.UPDATED_AT = DateTime.Now;
                 db.Entry(sTORE_SELLING_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Selling Details are updated successfully."; }
-                catch (Exception e) { ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Sell", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid";
@@ -1751,7 +1751,7 @@ namespace SFSAcademy.Controllers
                     }
                 }
                 try { db.SaveChanges(); ViewBag.PaymentMessage = "Payment Done Successfully."; }
-                catch (Exception e) { ViewBag.PaymentMessage = e.InnerException.InnerException.Message; return View("_ListPurchagedProducts"); }
+                catch (Exception e) { ViewBag.PaymentMessage = string.Concat(e.GetType().FullName, ":", e.Message); return View("_ListPurchagedProducts"); }
                 IDList[i] = StorePur.ID;
                 i++;
 
@@ -1773,7 +1773,7 @@ namespace SFSAcademy.Controllers
                             select new SellingCart { ProductData = pd, CategoryData = ct, UNIT_SOLD = pct.UNIT_SOLD, SOLD_AMNT = pct.AMNT, PUR_DATE = pct.PUR_DATE }).Distinct();
 
             try { db.Database.ExecuteSqlCommand("DELETE FROM STORE_SELLING_CART"); ViewBag.PaymentMessage = string.Concat(ViewBag.PaymentMessage," Cart cleared now."); }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.StoreDeleteMessage = string.Concat(ViewBag.PaymentMessage, e.InnerException.InnerException.Message); }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.StoreDeleteMessage = string.Concat(ViewBag.PaymentMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
           
             return View("_ListPurchagedProducts", ProductS.ToList());
 
@@ -1840,7 +1840,7 @@ namespace SFSAcademy.Controllers
                     }
                     catch (Exception e)
                     {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", e.InnerException.InnerException.Message);
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                         return View(sTORE_SELLING_CART);
                     }
                 }
@@ -1873,10 +1873,10 @@ namespace SFSAcademy.Controllers
             sTOREInventory.UNIT_LEFT = sTOREInventory.UNIT_LEFT + sTORE_SELLING_CART_Item.UNIT_SOLD;
             db.Entry(sTOREInventory).State = EntityState.Modified;
             try { db.SaveChanges(); ViewBag.Notice = "Product Details Updated."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
 
             try { db.Database.ExecuteSqlCommand(string.Concat("DELETE FROM STORE_SELLING_CART WHERE ID =",id)); ViewBag.Notice = string.Concat(ViewBag.Notice, " Transaction Deleted Successfully."); }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
             return RedirectToAction("ViewCart", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
@@ -1894,11 +1894,11 @@ namespace SFSAcademy.Controllers
                 sTOREiNVENTORY.UNIT_LEFT = sTOREiNVENTORY.UNIT_LEFT + SellCarList.UNIT_SOLD;
                 db.Entry(sTOREiNVENTORY).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Product Details Updated."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
 
             }
             try { db.Database.ExecuteSqlCommand("TRUNCATE TABLE STORE_SELLING_CART"); ViewBag.Notice = string.Concat(ViewBag.Notice," Transaction Cancelled Successfully."); }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
             return RedirectToAction("Sell", new { ErrorMessage = ViewBag.ErrorMessage , Notice = ViewBag.Notice });
         }
 
@@ -2131,7 +2131,7 @@ namespace SFSAcademy.Controllers
                 db.STORE_SELLING.Remove(sPURCHAGE);
             }
             try { db.SaveChanges(); ViewBag.Notice = "Selected Data is backed up successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, e.InnerException.InnerException.Message); }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, string.Concat(e.GetType().FullName, ":", e.Message)); }
 
             return RedirectToAction("BackupTransaction", "Store", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
 
@@ -2197,7 +2197,7 @@ namespace SFSAcademy.Controllers
             STORE_PURCHAGE_ORDER sTOREpURCHAGEoRDER = db.STORE_PURCHAGE_ORDER.Find(id);
             db.STORE_PURCHAGE_ORDER.Remove(sTOREpURCHAGEoRDER);
             try { db.SaveChanges(); ViewBag.Notice = "Purchage Order deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return RedirectToAction("PurchageOrder", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
@@ -2339,7 +2339,7 @@ namespace SFSAcademy.Controllers
                 {
                     db.Entry(sTOREpURCHAGEoRDER_UPD).State = EntityState.Modified;
                     try { db.SaveChanges(); ViewBag.Notice = "Purchage Order edited successfully."; }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                     if (sTOREpURCHAGEoRDER_UPD.STATUS_ID == 4)
                     {
                         STORE_PRODUCTS NewProd = db.STORE_PRODUCTS.Include(x=>x.STORE_INVENTORY).Where(x=>x.PRODUCT_ID == sTOREpURCHAGEoRDER_UPD.PRODUCT_ID).FirstOrDefault();
@@ -2363,7 +2363,7 @@ namespace SFSAcademy.Controllers
                         STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTOREpURCHAGEoRDER_UPD.PRODUCT_ID).FirstOrDefault();
                         InvUpd.UNIT_LEFT = InvUpd.UNIT_LEFT +   sTOREpURCHAGEoRDER_UPD.ORDER_QUANTITY;
                         try { db.SaveChanges();}
-                        catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                        catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                     }
                 }                                
                 return RedirectToAction("PurchageOrder", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage});
@@ -2409,7 +2409,7 @@ namespace SFSAcademy.Controllers
                     sTOREpURCHAGEoRDER.UPDATED_AT = System.DateTime.Now;
                     db.STORE_PURCHAGE_ORDER.Add(sTOREpURCHAGEoRDER);
                     try { db.SaveChanges(); ViewBag.Notice = "Purchage Order created successfully."; }
-                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                    catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                     return RedirectToAction("PurchageOrder", new { Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
                 }               
             }
@@ -2465,7 +2465,7 @@ namespace SFSAcademy.Controllers
             STORE_PURCHAGE_VENDOR StoreVendor = db.STORE_PURCHAGE_VENDOR.Find(id);
             db.STORE_PURCHAGE_VENDOR.Remove(StoreVendor);
             try { db.SaveChanges(); ViewBag.Notice = "Vendor details deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return RedirectToAction("Vendor", new { ErrorMessage = ViewBag.ErrorMessage , Notice = ViewBag.Notice } );
         }
 
@@ -2498,7 +2498,7 @@ namespace SFSAcademy.Controllers
                 StoreVendor_UPD.DESCRIPTION = StoreVendor.DESCRIPTION;
                 db.Entry(StoreVendor_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Store Vendor Details edited successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Vendor", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2522,7 +2522,7 @@ namespace SFSAcademy.Controllers
                 
                 db.STORE_PURCHAGE_VENDOR.Add(StoreVendor);
                 try { db.SaveChanges(); ViewBag.Notice = "Store Category created successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Vendor", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2551,7 +2551,7 @@ namespace SFSAcademy.Controllers
             STORE_BRAND StoreBrand = db.STORE_BRAND.Find(id);
             db.STORE_BRAND.Remove(StoreBrand);
             try { db.SaveChanges(); ViewBag.Notice = "Brand details deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return RedirectToAction("Brand", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
@@ -2584,7 +2584,7 @@ namespace SFSAcademy.Controllers
                 StoreBrand_UPD.DESCRIPTION = StoreBrand.DESCRIPTION;
                 db.Entry(StoreBrand_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Store Brand Details edited successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Brand", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2608,7 +2608,7 @@ namespace SFSAcademy.Controllers
 
                 db.STORE_BRAND.Add(StoreBrand);
                 try { db.SaveChanges(); ViewBag.Notice = "Store Brand created successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("Brand", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2637,7 +2637,7 @@ namespace SFSAcademy.Controllers
             STORE_PURCHAGE_STATUS PurchageStatus = db.STORE_PURCHAGE_STATUS.Find(id);
             db.STORE_PURCHAGE_STATUS.Remove(PurchageStatus);
             try { db.SaveChanges(); ViewBag.Notice = "Brand details deleted successfully."; }
-            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+            catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
             return RedirectToAction("PurchageStatus", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
         }
 
@@ -2670,7 +2670,7 @@ namespace SFSAcademy.Controllers
                 PurchageStatus_UPD.DESCRIPTION = PurchageStatus.DESCRIPTION;
                 db.Entry(PurchageStatus_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Store Brand Details edited successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("PurchageStatus", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2694,7 +2694,7 @@ namespace SFSAcademy.Controllers
 
                 db.STORE_PURCHAGE_STATUS.Add(PurchageStatus);
                 try { db.SaveChanges(); ViewBag.Notice = "Store Brand created successfully."; }
-                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = e.InnerException.InnerException.Message; }
+                catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); }
                 return RedirectToAction("PurchageStatus", new { ErrorMessage = ViewBag.ErrorMessage, Notice = ViewBag.Notice });
             }
             ViewBag.ErrorMessage = "Model State does not seems to be valid. Please try again.";
@@ -2779,7 +2779,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
             var ConsolidateTransactions = DetailedTransactions
@@ -2869,7 +2869,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
             var ConsolidateTransactions = DetailedTransactions
@@ -2954,7 +2954,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
                 ConsolidateTransactions = DetailedTransactions
@@ -3021,7 +3021,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
                 ConsolidateTransactions = DetailedTransactions
@@ -3197,7 +3197,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
             decimal salary = 0;
@@ -3276,7 +3276,7 @@ namespace SFSAcademy.Controllers
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_PROCURED),
                     transactions_income = 0,
-                    transactions_expense = g.Sum(p => p.UNIT_PROCURED) * g.Max(q => q.COST_PER_UNIT)
+                    transactions_expense = g.Sum(p => p.TOTAL_COST)
                 }));
 
             decimal salary2 = 0;

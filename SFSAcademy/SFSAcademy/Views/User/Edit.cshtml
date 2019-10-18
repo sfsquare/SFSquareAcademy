@@ -66,29 +66,33 @@
             <div class="label-field-pair">
                 <label for="user_username">Username<span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.UserName)
                 </div>
             </div>
             <div class="label-field-pair">
                 <label for="user_first_name">First Name<span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model=>model.FirstName)
                 </div>
             </div>
             <div class="label-field-pair">
                 <label for="user_last_name">Last Name</label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.LastName)
                 </div>
             </div>
             <div class="label-field-pair">
                 <label for="user_email">Email <span class="necessary-field">*</span></label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Email)
                 </div>
             </div>
             <div class="label-field-pair">

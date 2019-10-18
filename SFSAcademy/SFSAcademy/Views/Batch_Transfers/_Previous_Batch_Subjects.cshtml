@@ -1,0 +1,60 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    BATCH previous_batch = (BATCH)ViewData["previous_batch"];
+    IEnumerable<SUBJECT> previous_batch_normal_subject = (IEnumerable<SUBJECT>)ViewData["previous_batch_normal_subject"];
+    IEnumerable<ELECTIVE_GROUP> elective_groups = (IEnumerable<ELECTIVE_GROUP>)ViewData["elective_groups"];
+    IEnumerable<SUBJECT> previous_batch_electives = (IEnumerable<SUBJECT>)ViewData["previous_batch_electives"];
+}
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox").hide();
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+</script>
+
+<h4 style="text-align: center;">Previous Batch : @previous_batch.NAME </h4>
+@if (previous_batch_normal_subject != null && previous_batch_normal_subject.Count() != 0)
+{
+    <ul id="category-list">
+        <div class="linker2">
+            <a href="@Url.Action("Assign_All_Previous_Batch_Subjects", "Batch_Transfers",new { id = batch.ID})">Select All</a>
+        </div>
+        <h4 style="width:300px;">Normal Subjects</h4>
+        @{int i = 1; }
+        @foreach (var sub in previous_batch_normal_subject)
+        {
+            string cycle = "listeven";
+            if (i % 2 == 0)
+            {
+                cycle = "listodd";
+            }
+            <li id="prev-subject-name-@sub.ID" class="@cycle">
+                <div class="category-name"> @sub.NAME </div>
+                <div class="category-sel">
+                    <a href="@Url.Action("Assign_Previous_Batch_Subject", "Batch_Transfers",new { id = sub.ID, id2 = batch.ID})">Select</a>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+

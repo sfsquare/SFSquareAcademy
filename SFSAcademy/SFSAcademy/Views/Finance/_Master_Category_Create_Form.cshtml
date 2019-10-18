@@ -1,26 +1,17 @@
-﻿
-@model IList<SelectCourseBatch>
-@{    Layout = null;}
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
+﻿@model IEnumerable<BATCH>
+@{ Layout = null;}
+
 <script>
     $(document).ready(function () {
         $("#AdmForm1").hide();
         $("input[Value='No']").click(function () {
-            var test = $(this).val();
             $("#AdmForm1").show();
         });
         $("input[Value='Yes']").click(function () {
-            var test = $(this).val();
             $("#AdmForm1").hide();
         });
 
     });
-    $$('input.category_select').each(function (checkbox) { checkbox.checked = true; });
-    $$('input.category_select').each(function (checkbox) { checkbox.checked = false; });
 </script>
 <div class="label-field-pair2">
     <div class="label-container"><label>Is this Master Category?</label></div>
@@ -34,10 +25,9 @@
 </div>
 <div id="AdmForm1">
     <div class="label-field-pair label">
-        <div class="label-container label">@Html.LabelFor(x => x[0].FeeCategoryData.MSTR_CATGRY_ID, "Select Master Category", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+        <div class="label-container label">@Html.Label("MSTR_CATGRY_ID", "Select Master Category", htmlAttributes: new { @class = "control-label col-md-2" })</div>
         <div class="text-input-bg">
             @Html.DropDownList("MSTR_CATGRY_ID", null, htmlAttributes: new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x[0].FeeCategoryData.MSTR_CATGRY_ID, "", new { @class = "text-danger" })
         </div>
     </div>
     <div id="right-side-inputs">
@@ -46,24 +36,20 @@
                 <label>
                     Select a Batch:
                     <b class="sel-list">
-                        <a href="javascript:void(0);" onclick="$$('input.category_select').each(function (checkbox) { checkbox.checked = true; });">All</a>
-                        <a href="javascript:void(0);" onclick="$$('input.category_select').each(function (checkbox) { checkbox.checked = false; });">None</a>
+                        <a href="javascript:void(0);" onclick="$('input.category_select').each(function() { this.checked = true; });">All</a>
+                        <a href="javascript:void(0);" onclick="$('input.category_select').each(function() { this.checked = false; });">None</a>
                     </b>
                 </label>
             </div>
             <div class="categories">
                 <div class="batches" style="overflow-y: scroll; height:150px; width:200px;">
                     @for (var j = 0; j < Model.Count(); j++)
-            {
-                        <div class="each_batch">
-                            <label> @Html.CheckBoxFor(x => x[j].Selected, new { @class = "category_select", @id = "category_select" }) @Model[j].CourseData.CODE - @Model[j].BatchData.NAME</label>
-                        </div>
-                        <div class="each_batch">
-                            @Html.HiddenFor(x => x[j].BatchData.ID)
-                        </div>
-                        <div class="each_batch">
-                            @Html.HiddenFor(x => x[j].BatchData.ID)
-                        </div>
+                    {
+                    <div class="each_batch">
+                        @Html.CheckBox("[" + j + "].Select", Model.ElementAt(j).Select, new { @class = "category_select", @id = "category_select" }) <label>@Model.ElementAt(j).Full_Name </label>
+                        @Html.Hidden("[" + j + "].ID", Model.ElementAt(j).ID)
+                        @Html.Hidden("[" + j + "].NAME", Model.ElementAt(j).NAME)
+                    </div>
                     }
                 </div>
             </div>
@@ -71,8 +57,3 @@
     </div>
 </div>
 <br />
-
-
-
-
-

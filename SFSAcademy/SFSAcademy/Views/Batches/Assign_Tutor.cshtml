@@ -1,0 +1,66 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<string> assigned_employee = (IEnumerable<string>)ViewData["assigned_employee"];
+}
+@{
+    ViewBag.Title = "Assign_Tutor";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_settings.png" alt="Settings Logo">
+    <h1>Batch</h1>
+    <h3>Assign Tutor</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div class="bread_crumb">
+    <a href="@Url.Action("Index", "Configuration")">Configuration</a> &raquo;
+    <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+    <a href="@Url.Action("Manage_Batches", "Courses")">Manage Batches</a> &raquo;
+    <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">@batch.Course_full_name</a> &raquo;
+    Assign Tutor
+</div>
+<div id="page-yield">
+
+    <ul id="tutor-list">
+        @Html.Partial("_Assigned_Tutor_List")
+    </ul>
+
+    <div class="label-field-pair">
+        <label for="student_course">Department</label>
+        <div class="text-input-bg">
+            @Html.DropDownList("DEPT_ID", null, htmlAttributes: new { @class = "form-control", @id = "DeptDropDown" })
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+        </div>
+    </div>
+    <div id="employee-list"></div>
+    <div class="extender"></div>
+
+</div>
+<input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        /* This is change event for your dropdownlist */
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#DeptDropDown').change(function () {
+                var selectedID = $(this).val();
+                var SelectedBatch = $('#batch_id').val();
+                $(".LoaderBox").show();
+                $.get('/Batches/Update_Employees?department_id=' + selectedID + "&batch_id=" + SelectedBatch, function (data) {
+                    $('#employee-list').html(data);
+                    $('#employee-list').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}

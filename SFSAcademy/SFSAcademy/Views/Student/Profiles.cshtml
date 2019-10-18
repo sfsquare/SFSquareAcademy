@@ -1,5 +1,11 @@
-﻿@model SFSAcademy.Student
-
+﻿@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.Entity;
+@model SFSAcademy.Student
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+}
 @{
     ViewBag.Title = "Profiles";
 }
@@ -31,10 +37,6 @@
         @if (Html.Permitted_To("Fees", "Finance") || Html.CurrentUser_UserType().Equals("Admin"))
         {
             <li class="a"><a href="@Url.Action("Fees", "Student", new { id =Model.StudentData.ID })">Fees</a></li>
-        }
-        @if (Html.Permitted_To("BatchTransfer", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
-        {
-            <li class="a"><a href="@Url.Action("BatchTransfer_Index", "Student")">Batch Transfer</a></li>
         }
         @if (Html.Permitted_To("Reports", "Student") || Html.CurrentUser_UserType().Equals("Admin"))
         {
@@ -105,9 +107,23 @@
             <tr class="even left"><td>Phone :</td><td class="right">@Model.StudentData.PH1</td></tr>
             <tr class="odd left"><td>Mobile :</td><td class="right">@Model.StudentData.PH2</td></tr>
             <tr class="even left"><td>Email :</td><td class="right">@Model.StudentData.EML</td></tr>
-            @if (Model.EmployeeData != null)
+            @if (Model.BatcheData != null)
             {
-                <tr class="odd left"><td>Group Tutor :</td><td class="right">@Model.EmployeeData.FIRST_NAME @Model.EmployeeData.LAST_NAME</td></tr>
+                var assigned_employees_ids = ApplicationHelper.SplitCommaString(Model.BatcheData.EMP_ID).ToList();
+                var assigned_employees = db.EMPLOYEEs.Include(x=>x.USER).Where(x => assigned_employees_ids.Contains(x.ID.ToString())).ToList();
+                <tr class="even left">
+                    <td>Group Tutor(s) :</td>
+                    <td class="right">
+                        @{ string tutors = ""; string tutor_ids = "";}
+                        @foreach (var employee in assigned_employees)
+                        {
+                            tutors = tutors == "" ? employee.Full_Name : string.Concat(tutors, ",", employee.Full_Name);
+                            tutor_ids = tutors == "" ? employee.USER.ID.ToString() : string.Concat(tutor_ids, ",", employee.USER.ID.ToString());
+                        }
+                        <a href="@Url.Action("Create_Reminder", "Reminder",new { employee_ids = tutor_ids})">@tutors</a>
+                    </td>
+                </tr>
+
             }
             <tr class="even left"><td>Contact Details :</td><td class="right">@Html.ActionLink("Click Here", "Guardians", new { id = Model.StudentData.ID })</td></tr>
             <tr class="even left"><td>Previous Details :</td><td class="right">@Html.ActionLink("Click Here", "ShowPreviousDetails", new { id = Model.StudentData.ID })</td></tr>
