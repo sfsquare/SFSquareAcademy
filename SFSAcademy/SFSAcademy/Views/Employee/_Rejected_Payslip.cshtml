@@ -129,5 +129,5 @@
     </li>
 </ul>
 <div class="approve">
-    @Html.ActionLink("Edit", "Edit_Rejected_Payslip", new { id = employee.ID, id2 = ViewBag.salary_date }, new {@class = "user_button" })
+    @Html.ActionLink("Edit", "Edit_Rejected_Payslip", new { id = employee.ID, id2 = monthly_payslips.FirstOrDefault().SAL_DATE }, new {@class = "user_button" })
 </div>

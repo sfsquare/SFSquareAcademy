@@ -2764,7 +2764,7 @@ namespace SFSAcademy.Controllers
             ViewData["dependent_categories"] = dependent_categories;
             //var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.INCL_EVRY_MONTH == true).ToList();
             //ViewData["employee_additional_categories"] = employee_additional_categories;
-            var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && System.Data.Entity.DbFunctions.TruncateTime(x.SAL_DATE.Value) == System.Data.Entity.DbFunctions.TruncateTime(System.DateTime.Now) && x.INCL_EVRY_MONTH == false).ToList();
+            var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE.Value.Month == DateTime.Today.Month && x.SAL_DATE.Value.Year == DateTime.Today.Year && x.INCL_EVRY_MONTH == false).ToList();
             ViewData["new_payslip_category"] = new_payslip_category;
             var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["individual"] = individual;
@@ -2773,7 +2773,7 @@ namespace SFSAcademy.Controllers
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             var EmployeeSalaryStructure = db.EMPLOYEE_SALARY_STRUCTURE.ToList();
             ViewData["EmployeeSalaryStructure"] = EmployeeSalaryStructure;
-            ViewBag.CallingAction = "Create";
+            ViewData["salary_date"] = null;
             return View(employee);
         }
 
@@ -2796,7 +2796,7 @@ namespace SFSAcademy.Controllers
             ViewData["dependent_categories"] = dependent_categories_val;
             //var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
             //ViewData["employee_additional_categories"] = employee_additional_categories;
-            var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && System.Data.Entity.DbFunctions.TruncateTime(x.SAL_DATE.Value) == System.Data.Entity.DbFunctions.TruncateTime(System.DateTime.Now) && x.INCL_EVRY_MONTH == false).ToList();
+            var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE.Value.Month == DateTime.Today.Month && x.SAL_DATE.Value.Year == DateTime.Today.Year && x.INCL_EVRY_MONTH == false).ToList();
             ViewData["new_payslip_category"] = new_payslip_category;
             var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
             ViewData["individual"] = individual;
@@ -2913,24 +2913,22 @@ namespace SFSAcademy.Controllers
             }
         }
 
-        public ActionResult Add_Payslip_Category(int? emp_id, DateTime? salary_date, string CallingAction)
+        public ActionResult Add_Payslip_Category(int? emp_id, DateTime? salary_date)
         {
             ViewBag.salary_date = salary_date;
             var employee = db.EMPLOYEEs.Find(emp_id);
             ViewData["employee"] = employee;
-            ViewBag.CallingAction = CallingAction;
             return PartialView("_Payslip_Category_Form");
         }
 
 
-        public ActionResult Create_Payslip_Category(int? employee_id, DateTime? salary_date, string Name, decimal? Amount, bool include_every_month, bool Is_Deduction, string CallingAction)
+        public ActionResult Create_Payslip_Category(int? employee_id, DateTime? salary_date, string Name, decimal? Amount, bool include_every_month, bool Is_Deduction)
         {
 
             ViewBag.salary_date = salary_date;
             //DateTime? salary_date2 = salary_date == null ? System.DateTime.Now : salary_date;
             var employee = db.EMPLOYEEs.Find(employee_id);
             ViewData["employee"] = employee;
-            ViewBag.CallingAction = CallingAction;
             var created_category = new INDIVIDUAL_PAYSLIP_CATGEORY() { EMP_ID = employee.ID, NAME = Name, AMT = Amount, SAL_DATE = salary_date };
             db.INDIVIDUAL_PAYSLIP_CATGEORY.Add(created_category);
             try
@@ -2956,7 +2954,7 @@ namespace SFSAcademy.Controllers
                         ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
                     }
                 }
-                return PartialView("_Payslip_Category_Form"); ;
+                return PartialView("_Payslip_Category_Form");
             }
             catch (Exception e)
             {
@@ -2965,34 +2963,41 @@ namespace SFSAcademy.Controllers
             }
         }
 
-        public ActionResult Remove_New_Paylist_Category(int? id, DateTime? id3, string CallingAction)
+        public ActionResult Remove_New_Paylist_Category(int? id, DateTime? id3)
         {
             INDIVIDUAL_PAYSLIP_CATGEORY removal_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Find(id);
             var employee = db.EMPLOYEEs.Find(removal_category.EMP_ID);
             ViewData["employee"] = employee;
             DateTime? salary_date = id3 == null ? System.DateTime.Now : id3;
-            ViewBag.salary_date = id3;
+            //ViewBag.salary_date = id3;
+            ViewData["salary_date"] = id3;
 
-            db.INDIVIDUAL_PAYSLIP_CATGEORY.Remove(removal_category);
-            db.SaveChanges();
-            var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == null).ToList();
-            ViewData["new_payslip_category"] = new_payslip_category;
-            var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == salary_date).ToList();
-            ViewData["individual"] = individual;
-
-            if(CallingAction == "Edit")
+            db.INDIVIDUAL_PAYSLIP_CATGEORY.Remove(removal_category);           
+            try
             {
-                return RedirectToAction("Edit_Rejected_Payslip", new { id = employee.ID, id2 = id3 });
+                db.SaveChanges();
+                var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == null).ToList();
+                ViewData["new_payslip_category"] = new_payslip_category;
+                var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == salary_date).ToList();
+                ViewData["individual"] = individual;
+                return PartialView("_Payslip_Category_List");
             }
-            else if (CallingAction == "Create")
+            catch (DbEntityValidationException e)
             {
-                return RedirectToAction("Create_Monthly_Payslip", new { id = employee.ID });
+                foreach (var eve in e.EntityValidationErrors)
+                {
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
+                    }
+                }
+                return PartialView("_Payslip_Category_List");
             }
-            else
+            catch (Exception e)
             {
-                return RedirectToAction("Create_Monthly_Payslip", new { id = employee.ID });
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                return PartialView("_Payslip_Category_Form");
             }
-            //return PartialView("_List_Payslip_Category");
         }
 
         public ActionResult Rejected_Payslip(string Notice)
@@ -3129,12 +3134,12 @@ namespace SFSAcademy.Controllers
         {
             DateTime PDate = Convert.ToDateTime(id2);
             ViewBag.salary_date = PDate.ToShortDateString();
-
-           var employee = db.EMPLOYEEs.Find(id);
+            ViewData["salary_date"] = PDate;
+            var employee = db.EMPLOYEEs.Find(id);
             ViewData["employee"] = employee;
             var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == id && x.SAL_DATE == PDate).ToList();
             ViewData["monthly_payslips"] = monthly_payslips;
-            var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && System.Data.Entity.DbFunctions.TruncateTime(x.SAL_DATE.Value) == System.Data.Entity.DbFunctions.TruncateTime(PDate) && x.INCL_EVRY_MONTH == false).ToList();
+            var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == PDate && x.INCL_EVRY_MONTH == false).ToList();
             ViewData["individual"] = individual;
             var independent_categories = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
@@ -3152,9 +3157,6 @@ namespace SFSAcademy.Controllers
             var user = this.Session["CurrentUser"] as UserDetails;
             ViewData["user"] = user;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
-            var MonthlyPayslip = db.MONTHLY_PAYSLIP.ToList();
-            ViewData["MonthlyPayslip"] = MonthlyPayslip;
-            ViewBag.CallingAction = "Edit";
 
             return View(employee);
         }
@@ -3169,7 +3171,7 @@ namespace SFSAcademy.Controllers
             ViewBag.salary_date = salary_date;
             var monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == salary_date).ToList();
             ViewData["monthly_payslips"] = monthly_payslips;
-            var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && System.Data.Entity.DbFunctions.TruncateTime(x.SAL_DATE.Value) == System.Data.Entity.DbFunctions.TruncateTime(salary_date) && x.INCL_EVRY_MONTH == false).ToList();
+            var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == salary_date && x.INCL_EVRY_MONTH == false).ToList();
             ViewData["individual"] = individual;
             var independent_categories_val = (from pc in db.PAYROLL_CATEGORY
                                           where pc.PYRL_CAT_ID == null && pc.STAT == true
@@ -3189,7 +3191,6 @@ namespace SFSAcademy.Controllers
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             var MonthlyPayslip = db.MONTHLY_PAYSLIP.ToList();
             ViewData["MonthlyPayslip"] = MonthlyPayslip;
-            ViewBag.CallingAction = "Edit";
 
             DateTime start_date = salary_date.AddDays(-salary_date.AddDays(-1).Day);
             DateTime end_date = start_date.AddMonths(1);
