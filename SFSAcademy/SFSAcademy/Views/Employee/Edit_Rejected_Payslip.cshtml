@@ -1,10 +1,12 @@
 ﻿@model SFSAcademy.EMPLOYEE
-
+@using System.Data.Entity;
+@using System.Linq;
 @{
+    SFSAcademyEntities db = new SFSAcademyEntities();
     IEnumerable<SFSAcademy.EmployeePayroll> independent_categories = (IEnumerable<SFSAcademy.EmployeePayroll>)ViewData["independent_categories"];
     IEnumerable<SFSAcademy.EmployeeDependentPayroll> dependent_categories = (IEnumerable<SFSAcademy.EmployeeDependentPayroll>)ViewData["dependent_categories"];
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
-    IEnumerable<MONTHLY_PAYSLIP> MonthlyPayslip = (IEnumerable<MONTHLY_PAYSLIP>)ViewData["MonthlyPayslip"];
+    IEnumerable<MONTHLY_PAYSLIP> monthly_payslips = (IEnumerable<MONTHLY_PAYSLIP>)ViewData["monthly_payslips"];
 }
 @{
     ViewBag.Title = "Edit_Rejected_Payslip";
@@ -26,25 +28,27 @@
     <div class="bread_crumb">
         @Html.ActionLink("HR", "HR") &raquo;
         @Html.ActionLink("Create Payslip", "Payslip") &raquo;
-        @Html.ActionLink("Rejected Payslip", "Rejected_Payslip") &raquo;
-        @Html.ActionLink("Rejected Payslip", "Rejected_Payslip") &raquo;
+        @Html.ActionLink("Rejected Payslips", "Rejected_Payslip") &raquo;
+        @Html.ActionLink("Rejected Payslips of " + employee.Full_Name, "View_Rejected_Payslip", new { id = employee.ID }) &raquo;
         Edit Rejected Payslip
     </div>
     <div id="form-content">
         @using (Html.BeginForm())
         {
             @Html.AntiForgeryToken()
+            DateTime salary_date = (DateTime)monthly_payslips.FirstOrDefault().SAL_DATE;
             <div class="payslip-field-pair">
                 <label for="salary_date">Salary Date</label>
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="payslip-input-bg">
-                    @Html.Editor("SAL_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker", required = "required", @Value = ViewBag.salary_date } })
+                    @Html.Editor("SAL_DATE", new { htmlAttributes = new { @class = "m -wrap  datepicker", @id = "datepicker", required = "required", @Value = salary_date } })
                 </div>
             </div>
             @Html.Hidden("EMP_ID", employee.ID)
             for (int i = 0; i < independent_categories.Count(); i++)
             {
-                var val = MonthlyPayslip.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == independent_categories.ElementAt(i).PayrollCatData.ID && x.SAL_DATE == DateTime.Parse(ViewBag.salary_date)).FirstOrDefault();
+                var PayrollCatId = independent_categories.ElementAt(i).PayrollCatData.ID;
+                var val = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == PayrollCatId && x.SAL_DATE == salary_date).FirstOrDefault();
                 decimal AmtValue = val == null ? 0 : (decimal)val.AMT;
                 <div class="payslip-field-pair">
                     @Html.Label("[" + i + "].PayrollCatData.NAME", independent_categories.ElementAt(i).PayrollCatData.NAME)
@@ -57,7 +61,8 @@
             }
             for (int j = 0; j < dependent_categories.Count(); j++)
             {
-                var val = MonthlyPayslip.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == dependent_categories.ElementAt(j).DependentPayrollCatData.ID && x.SAL_DATE == DateTime.Parse(ViewBag.salary_date)).FirstOrDefault();
+                var PayrollCatId = dependent_categories.ElementAt(j).PayrollCatData.ID;
+                var val = db.MONTHLY_PAYSLIP.Where(x => x.EMP_ID == employee.ID && x.PYRL_CAT_ID == PayrollCatId && x.SAL_DATE == salary_date).FirstOrDefault();
                 decimal AmtValue = val == null ? 0 : (decimal)val.AMT;
                 <div class="payslip-field-pair">
                     @Html.Label("[" + j + "].DependentPayrollCatData.NAME", dependent_categories.ElementAt(j).DependentPayrollCatData.NAME)

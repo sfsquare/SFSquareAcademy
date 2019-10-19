@@ -6,27 +6,16 @@
 @{
     ViewBag.Title = "View_Rejected_Payslip";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     /* This is change event for your dropdownlist */
     $(document).ready(function () {
         $(".LoaderBox").hide();
         $('#SalDateDropDown').change(function () {
-
-        /* Get the selected value of dropdownlist */
         var selectedID = $(this).val();
         var SelectedEmp = $('#EmployeeID').val();
         $(".LoaderBox").show();
-        /* Request the partial view with .get request. */
         $.get('/Employee/Update_Rejected_Payslip?emp_id=' + SelectedEmp + "&salary_date=" + selectedID , function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
             $('#rejected_payslip').html(data);
-            /* little fade in effect */
             $('#rejected_payslip').fadeIn('fast');
         }).success(function (status) {
             $(".LoaderBox").hide();
