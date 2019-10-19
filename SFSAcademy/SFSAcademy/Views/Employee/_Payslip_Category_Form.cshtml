@@ -1,5 +1,6 @@
 ﻿@{
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
+    DateTime? salary_date_inner = (DateTime?)ViewData["salary_date"];
 }
 <script type="text/javascript" language="javascript">
     function CloseLoader() {
@@ -37,8 +38,7 @@
         <input type="submit" value="► Create" class="submit_button" />
         <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
     </div>
-    string CallingAction = ViewBag.CallingAction; int? employee_id = employee.ID; DateTime? salary_date = ViewBag.salary_date;
-    @Html.Hidden("CallingAction", CallingAction)
+    int? employee_id = employee.ID; DateTime? salary_date = salary_date_inner;
     @Html.Hidden("employee_id", employee_id)
     @Html.Hidden("salary_date", salary_date)
 }

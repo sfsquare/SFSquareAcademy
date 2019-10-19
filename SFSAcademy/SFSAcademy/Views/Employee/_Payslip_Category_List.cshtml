@@ -3,17 +3,13 @@
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
     IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> new_payslip_category = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["new_payslip_category"];
     IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY> individual = (IEnumerable<INDIVIDUAL_PAYSLIP_CATGEORY>)ViewData["individual"];
+    DateTime? salary_date = (DateTime?)ViewData["salary_date"];
 }
 <script type="text/javascript" language="javascript">
-    //Very similar function as before (except this time with an argument)
     function LoadUserEditPartialPage(sender) {
         $(".LoaderBox").show();
-        /* Request the partial view with .get request. */
         $.get(sender, function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
             $('#payslip-category-form').html(data);
-            /* little fade in effect */
             $('#payslip-category-form').fadeIn('fast');
         }).success(function (status) {
             $(".LoaderBox").hide();
@@ -32,7 +28,7 @@
 
 <div class="extender"></div>
 <div id="add-payslip-category-link">
-    <a href="@Url.Action("Add_Payslip_Category", "Employee", new { emp_id = employee.ID, salary_date = ViewBag.salary_date, CallingAction = ViewBag.CallingAction })" class="user_button" id="General" onclick='LoadUserEditPartialPage(this.href); return false;'>Add New Category</a>
+    <a href="@Url.Action("Add_Payslip_Category", "Employee", new { emp_id = employee.ID, salary_date = ViewData["salary_date"]})" class="user_button" id="General" onclick='LoadUserEditPartialPage(this.href); return false;'>Add New Category</a>
     <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
 </div>
 
