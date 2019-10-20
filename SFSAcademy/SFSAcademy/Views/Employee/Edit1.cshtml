@@ -13,7 +13,7 @@
         $("#datepicker").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
+            dateFormat: 'dd/mm/yy',
             buttonImageOnly: true
         });
     });
@@ -51,6 +51,8 @@
         </div>
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.ID)
+        @Html.HiddenFor(model => model.EMP_NUM)
+        @Html.HiddenFor(model => model.DOB)
         <div id="admission1_form">
             <div id="necessary-field-notification"> Fields marked with  <span class="necessary-field">*</span> must be filled.</div>
             <span class="span-sub-heading">General Details</span>

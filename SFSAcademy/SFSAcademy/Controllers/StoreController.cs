@@ -780,11 +780,11 @@ namespace SFSAcademy.Controllers
                 return HttpNotFound();
             }
             ViewBag.PRODUCT_ID = id;
-            List<SelectListItem> options = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            List<SelectListItem> options = new SelectList(db.STORE_PURCHAGE_VENDOR.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.VENDOR_ID).ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Vendor" });
             ViewBag.VENDOR_ID = options;
 
-            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME").ToList();
+            List<SelectListItem> options2 = new SelectList(db.STORE_BRAND.Where(x => x.IS_DEL == false).OrderBy(x => x.NAME), "ID", "NAME", sTORE_PROCUREMENT.BRAND_ID).ToList();
             options2.Insert(0, new SelectListItem() { Value = null, Text = "Select Brand" });
             ViewBag.BRAND_ID = options2;
 

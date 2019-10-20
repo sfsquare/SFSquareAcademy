@@ -116,35 +116,46 @@ namespace SFSAcademy
         [Display(Name = "3")]
         Simple
     }
+    public enum Marital_Status
+    {
+        [Display(Name = "Single")]
+        Single,
+        [Display(Name = "Married")]
+        Married,
+        [Display(Name = "Divorced")]
+        Divorced
+    }
 
-    public partial class EMPLOYEE : IValidatableObject, IHasTimeStamp, IHasBeforeSave
+    [MetadataType(typeof(EmployeeMetadata))]
+    public partial class EMPLOYEE : IHasTimeStamp, IHasBeforeSave
     {
         private SFSAcademyEntities db = new SFSAcademyEntities();
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        internal sealed class EmployeeMetadata
         {
-            string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
-            + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
-            + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+            [Required]
+            public string EMP_NUM { get; set; }
+            [Required]
+            public string FIRST_NAME { get; set; }
+            [Required]
+            public string GNDR { get; set; }
 
-            Regex ValidEmailRegex = new Regex(validEmailPattern, RegexOptions.IgnoreCase);
-            bool isValid = ValidEmailRegex.IsMatch(EML);
+            [Required]
+            public int? EMP_CAT_ID { get; set; }
 
-            if (!isValid)
-            {
-                //yield return new ValidationResult($"Classic movies must have a release year earlier than {_classicYear}.", new[] { "ReleaseDate" });
-                yield return new ValidationResult($"*", new[] { "Must be a valid email address." });
-            }
+            [Required(ErrorMessage = "Enter Joining Date.")]
+            public DateTime? JOINING_DATE { get; set; }
 
-            bool NotNullFields = false;
-            if(EMP_CAT_ID == null || EMP_NUM == null || FIRST_NAME == null || EMP_POS_ID == null || EMP_DEPT_ID == null || DOB == null || JOINING_DATE == null)
-            {
-                NotNullFields = true;
-            }
-            if (NotNullFields)
-            {
-                //yield return new ValidationResult($"Classic movies must have a release year earlier than {_classicYear}.", new[] { "ReleaseDate" });
-                yield return new ValidationResult($"*", new[] { "Employee Number, First Name,Category, Position, Department, Date of Birth and Joining Date must be set for empoyee." });
-            }
+            [Required(ErrorMessage = "Date of birth is required.")]
+            public DateTime? DOB { get; set; }
+
+            [EmailAddress(ErrorMessage = "Invalid Email Address")]
+            public string EML { get; set; }
+
+            [Required]
+            public int? EMP_POS_ID { get; set; }
+            [Required]
+            public int? EMP_DEPT_ID { get; set; }
+
         }
         public void DoTimeStamp(string EntityStateVal)
         {

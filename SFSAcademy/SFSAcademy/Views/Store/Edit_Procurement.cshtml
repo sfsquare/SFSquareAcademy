@@ -7,17 +7,12 @@
 @{
     IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(function () {
         $("#datepicker").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
+            dateFormat: 'dd/mm/yy',
             buttonImageOnly: true
         });
     });
@@ -72,14 +67,14 @@
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.DESCR, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.DESCR, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.BRAND_ID, "Product Brand", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.DropDownList("BRAND_ID", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.BRAND_ID, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
 
@@ -90,21 +85,21 @@
                     @Html.LabelFor(model => model.UNIT_PROCURED, "Units Purchased", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.UNIT_PROCURED, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                        @Html.ValidationMessageFor(model => model.UNIT_PROCURED, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.UNIT_PROCURED, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.COST_PER_UNIT, "Cost Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.COST_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.COST_PER_UNIT, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.COST_PER_UNIT, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.TOTAL_COST, "Total Cost", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.TOTAL_COST, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.TOTAL_COST, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.TOTAL_COST, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
 
@@ -112,7 +107,7 @@
                     @Html.LabelFor(model => model.SELL_PRICE_PER_UNIT, "Selling Price Per Unit", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.SELL_PRICE_PER_UNIT, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.SELL_PRICE_PER_UNIT, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.SELL_PRICE_PER_UNIT, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
 
@@ -120,7 +115,7 @@
                     @Html.LabelFor(model => model.PROCURED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PROCURED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
-                        @Html.ValidationMessageFor(model => model.PROCURED_ON, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.PROCURED_ON, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <div class="label-field-pair label">

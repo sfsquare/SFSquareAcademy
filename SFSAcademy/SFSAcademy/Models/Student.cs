@@ -118,9 +118,10 @@ namespace SFSAcademy
             [Required]
             public int? BTCH_ID { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Enter the Admission Date.")]
             public DateTime? ADMSN_DATE { get; set; }
-            [Required]
+
+            [Required(ErrorMessage = "Date of birth is required.")]
             public DateTime? DOB { get; set; }
 
             [EmailAddress(ErrorMessage = "Invalid Email Address")]

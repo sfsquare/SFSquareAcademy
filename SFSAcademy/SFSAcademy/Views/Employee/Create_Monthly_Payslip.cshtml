@@ -9,33 +9,6 @@
 @{
     ViewBag.Title = "Create_Monthly_Payslip";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    $(function () {
-        $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-    });
-
-    function remote_function(cat_id) {
-        var amount = $(this).val();
-        $.post('@Url.Action("Update_Dependent_Fields", "Payroll")', { id: cat_id, AMT: amount }, function (data) {
-            //do whatever with the result.
-        });
-    }
-</script>
 <div id="content-header">
     <img src="~/Content/images/HR/show_hr.png" alt="HR Logo">
     <h1>Monthly Payslip</h1>
@@ -128,4 +101,25 @@
     <div class="extender"></div>
 </div>
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
 
+    <script type="text/javascript" language="javascript">
+    $(function () {
+        $("#datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd/mm/yy',
+            buttonImageOnly: true
+        });
+    });
+
+    function remote_function(cat_id) {
+        var amount = $(this).val();
+        $.post('@Url.Action("Update_Dependent_Fields", "Payroll")', { id: cat_id, AMT: amount }, function (data) {
+            //do whatever with the result.
+        });
+    }
+    </script>
+}
