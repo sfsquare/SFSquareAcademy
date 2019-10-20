@@ -36,6 +36,14 @@
             <span class="span-sub-heading">Home Address</span>
             <hr class="sub-heading" />
             @Html.HiddenFor(model => model.ID)
+            @Html.HiddenFor(model => model.EMP_NUM)
+            @Html.HiddenFor(model => model.FIRST_NAME)
+            @Html.HiddenFor(model => model.GNDR)
+            @Html.HiddenFor(model => model.EMP_CAT_ID)
+            @Html.HiddenFor(model => model.JOINING_DATE)
+            @Html.HiddenFor(model => model.DOB)
+            @Html.HiddenFor(model => model.EMP_POS_ID)
+            @Html.HiddenFor(model => model.EMP_DEPT_ID)
             <div class="label-field-pair label">
                 @Html.LabelFor(model => model.HOME_ADDR_LINE1, "Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">

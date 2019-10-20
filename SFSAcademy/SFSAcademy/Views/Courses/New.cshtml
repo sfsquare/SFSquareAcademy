@@ -3,34 +3,8 @@
 @{
     ViewBag.Title = "Course_New";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
 
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery.ui.all.css" />
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 
-<script>
-    $(function () {
-        $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-        $("#datepicker2").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-    });
-
-</script>
 <div id="content-header">
     <img src="~/Content/images/examination/show_exam.png" alt="Settings Logo">
     <h1>Courses</h1>
@@ -102,7 +76,7 @@
             <div class="label-field-pair label">
                 <div class="label-container label">@Html.LabelFor(model => model.INIT_BATCH_NAME, "Name", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
-                    @Html.EditorFor(model => model.INIT_BATCH_NAME, new { htmlAttributes = new { @class = "form-control" , required = "required"} })
+                    @Html.EditorFor(model => model.INIT_BATCH_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                     <span class="necessary-field" style="font-size:small">*</span>
                     @Html.ValidationMessageFor(model => model.INIT_BATCH_NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
@@ -111,13 +85,13 @@
             <div class="label-field-pair label">
                 <div class="label-container label">@Html.Label("ReturnDate", "Start Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
-                    @Html.Editor("ReturnDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.ReturnDate, @readonly = "readonly" } })
+                    @Html.Editor("ReturnDate", new { htmlAttributes = new { @class = "datepicker", @Value = ViewBag.ReturnDate, @readonly = "readonly" } })
                 </div>
             </div>
             <div class="label-field-pair label">
                 <div class="label-container label">@Html.Label("ReturnDate2", "End Date", htmlAttributes: new { @class = "control-label col-md-2" })</div>
                 <div class="input-container">
-                    @Html.Editor("ReturnDate2", new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @Value = ViewBag.ReturnDate2, @readonly = "readonly" } })
+                    @Html.Editor("ReturnDate2", new { htmlAttributes = new { @class = "datepicker", @Value = ViewBag.ReturnDate2, @readonly = "readonly" } })
                 </div>
             </div>
             <div id="submit_area">
@@ -128,30 +102,44 @@
 
     </div>
 </div>
-
-@Scripts.Render("~/bundles/jqueryval")
-<script src="~/Scripts/dropzone.js"></script>
-
-<script type="text/javascript">
-    function toggle_grading() {
-        if ($('course_cce_enabled').checked) {
-            $("grading").hide();
-            $('course_grading_type').value = "Normal"
-        }
-        else {
-            $("grading").show();
-        }
-        return true;
-    };
-
-    $(document).ready(function () {
-        $("#preview").fadeOut(15);
-        $("#refreshButton").click(function () {
-            var imageToLoad = $("#imageId").val();
-            if (imageToLoad.length > 0) {
-                $("#preview").attr("src", "/Document/Show/" + imageToLoad);
-                $("#preview").fadeIn();
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+    <script src="~/Scripts/dropzone.js"></script>
+    <script type="text/javascript" language="javascript">
+        function toggle_grading() {
+            if ($('course_cce_enabled').checked) {
+                $("grading").hide();
+                $('course_grading_type').value = "Normal"
             }
+            else {
+                $("grading").show();
+            }
+            return true;
+        };
+
+        $(document).ready(function () {
+            $("#preview").fadeOut(15);
+            $("#refreshButton").click(function () {
+                var imageToLoad = $("#imageId").val();
+                if (imageToLoad.length > 0) {
+                    $("#preview").attr("src", "/Document/Show/" + imageToLoad);
+                    $("#preview").fadeIn();
+                }
+            });
         });
-    });
-</script>
+    </script>
+
+
+    <script>
+        $(function () {
+            $(".datepicker").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd/mm/yy',
+                buttonImageOnly: true
+            });
+        });
+
+    </script>
+}

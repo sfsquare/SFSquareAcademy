@@ -10,23 +10,12 @@
 @{
     ViewBag.Title = "AdvancedSellingReport";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(function () {
-        $("#datepicker").datepicker({
+        $(".datepicker").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-        $("#datepicker2").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
+            dateFormat: 'dd/mm/yy',
             buttonImageOnly: true
         });
     });
@@ -131,7 +120,7 @@
                                     <div class="label-field-pair label">
                                         <label for="DOB">Sold From Date:</label>
                                         <div class="text-input-bg">
-                                            @Html.Editor("SoldFromDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @Value = ViewBag.CurrentFilter9 } })
+                                            @Html.Editor("SoldFromDate", new { htmlAttributes = new { @class = "datepicker", @Value = ViewBag.CurrentFilter9 } })
                                         </div>
                                     </div>
                                 </td>
@@ -139,7 +128,7 @@
                                     <div class="label-field-pair label">
                                         <label for="DOB">Sold To Date:</label>
                                         <div class="text-input-bg">
-                                            @Html.Editor("SoldToDate", new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", @Value = ViewBag.CurrentFilter10 } })
+                                            @Html.Editor("SoldToDate", new { htmlAttributes = new { @class = "datepicker", @Value = ViewBag.CurrentFilter10 } })
                                         </div>
                                     </div>
                                 </td>

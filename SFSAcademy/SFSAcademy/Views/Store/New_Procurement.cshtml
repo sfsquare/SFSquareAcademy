@@ -7,18 +7,13 @@
 @{
     IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(function () {
-        $("#datepicker").datepicker({
+        $(".datepicker").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
+            dateFormat: 'dd/mm/yy',
+            buttonImageOnly: true,
         });
     });
 </script>
@@ -118,7 +113,7 @@
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.PROCURED_ON, "Date of Purchase", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
-                        @Html.EditorFor(model => model.PROCURED_ON, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @readonly = "readonly" } })
+                        @Html.EditorFor(model => model.PROCURED_ON, new { htmlAttributes = new { @class = "datepicker", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.PROCURED_ON, "", new { @class = "text-danger" })
                     </div>
                 </div>

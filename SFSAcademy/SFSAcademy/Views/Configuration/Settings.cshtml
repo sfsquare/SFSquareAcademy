@@ -102,7 +102,7 @@
                     <div class="label-field-pair label">
                         @Html.Label("[" + i + "].CONFIG_KEY", "Financial year start date", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
-                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = FinYearStartDate.ToString("dd-MMM") } })
+                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @Value = FinYearStartDate.ToString("dd-MMM") } })
                             @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
                             @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
                         </div>
@@ -121,7 +121,7 @@
                     <div class="label-field-pair label">
                         @Html.Label("[" + i + "].CONFIG_KEY", "Financial year end date", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
-                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker2", @Value = FinYearEndDate.ToString("dd-MMM") } })
+                            @Html.Editor("[" + i + "].CONFIG_VAL", config.ElementAt(i).CONFIG_VAL, new { htmlAttributes = new { @class = "m-wrap  datepicker", @Value = FinYearEndDate.ToString("dd-MMM") } })
                             @Html.Hidden("[" + i + "].CONFIG_KEY", config.ElementAt(i).CONFIG_KEY)
                             @Html.Hidden("[" + i + "].ID", config.ElementAt(i).ID)
                         </div>
@@ -273,13 +273,7 @@
 
     <script>
         $(function () {
-            $("#datepicker").datepicker({
-                showOn: "button",
-                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-                dateFormat: 'dd-MM',
-                buttonImageOnly: true
-            });
-            $("#datepicker2").datepicker({
+            $(".datepicker").datepicker({
                 showOn: "button",
                 buttonImage: "/Content/images/calendar_date_select/calendar.gif",
                 dateFormat: 'dd-MM',
