@@ -3,27 +3,15 @@
 @{
     ViewBag.Title = "Admission1";
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(function () {
-        $("#datepicker").datepicker({
+        $(".datepicker").datepicker({
             showOn: "button",
             buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
-        });
-        $("#datepicker2").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
+            dateFormat: 'dd/mm/yy',
+            buttonImageOnly: true,
         });
     });
-
 </script>
 
 <div id="content-header">
@@ -66,14 +54,14 @@
                     <div class="text-input-bg-admission">
                         @Html.EditorFor(model => model.ADMSN_NO, new { htmlAttributes = new { @class = "form-control", @Value = ViewBag.NewAdmissionNumber, @readonly = "readonly" } })
                         <span class="necessary-field">*</span>
-                        @Html.ValidationMessageFor(model => model.ADMSN_NO, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.ADMSN_NO, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <div class="student_admission_date">
                     @Html.LabelFor(model => model.ADMSN_DATE, "Admission Date", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg-admission">
-                        @Html.EditorFor(model => model.ADMSN_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker", @id = "datepicker", @Value = ViewBag.ReturnDate } })
-                        @Html.ValidationMessageFor(model => model.ADMSN_DATE, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => model.ADMSN_DATE, new { htmlAttributes = new { @class = "m-wrap  datepicker" } })
+                        @Html.ValidationMessageFor(model => model.ADMSN_DATE, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
             </div>
@@ -85,7 +73,7 @@
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.FIRST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.FIRST_NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
             <hr class="label-underline label">
@@ -94,7 +82,7 @@
                 @Html.LabelFor(model => model.MID_NAME, "Middle Name", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.MID_NAME, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.MID_NAME, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.MID_NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
             <hr class="label-underline label">
@@ -104,7 +92,7 @@
                 <span class="necessary-field" style="font-size:small">* Required Field</span>
                 <div class="text-input-bg">
                     @Html.EditorFor(model => model.LAST_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                    @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.LAST_NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
             <hr class="label-underline label">
@@ -115,7 +103,7 @@
                     <span class="necessary-field" style="font-size:small">* Required Field</span>
                     <div class="text-input-bg">
                         @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.BTCH_ID, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.BTCH_ID, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -123,9 +111,9 @@
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.DOB, "Date Of Birth", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control", @id = "datepicker2", required = "required" } })
+                        @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "m-wrap  datepicker", required = "required" } })
                         <span class="necessary-field" style="font-size:small">* Required Field</span>
-                        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -152,7 +140,7 @@
                     @Html.LabelFor(model => model.BIRTH_PLACE, "Birth Place", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.BIRTH_PLACE, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.BIRTH_PLACE, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.BIRTH_PLACE, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -161,7 +149,7 @@
                     @Html.LabelFor(model => model.NTLTY_ID, "Nationality", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("NTLTY_ID", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.NTLTY_ID, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.NTLTY_ID, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -170,7 +158,7 @@
                     @Html.LabelFor(model => model.LANG, "Mother Tongue", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.LANG, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.LANG, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.LANG, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -179,7 +167,7 @@
                     @Html.LabelFor(model => model.STDNT_CAT_ID, "Category", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("STDNT_CAT_ID", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.STDNT_CAT_ID, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.STDNT_CAT_ID, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -188,7 +176,7 @@
                     @Html.LabelFor(model => model.RLGN, "Religion", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.RLGN, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.RLGN, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.RLGN, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
             </div>
@@ -199,7 +187,7 @@
                     @Html.LabelFor(model => model.ADDR_LINE1, "Address Line 1", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADDR_LINE1, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.ADDR_LINE1, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.ADDR_LINE1, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -208,7 +196,7 @@
                     @Html.LabelFor(model => model.ADDR_LINE2, "Address Line 2", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.ADDR_LINE2, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.ADDR_LINE2, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.ADDR_LINE2, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -217,7 +205,7 @@
                     @Html.LabelFor(model => model.CITY, "City", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.CITY, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.CITY, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.CITY, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -226,7 +214,7 @@
                     @Html.LabelFor(model => model.STATE, "State", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.STATE, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.STATE, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.STATE, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -235,7 +223,7 @@
                     @Html.LabelFor(model => model.PIN_CODE, "Zip", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PIN_CODE, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.PIN_CODE, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.PIN_CODE, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -244,7 +232,7 @@
                     @Html.LabelFor(model => model.CTRY_ID, "Country", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.DropDownList("CTRY_ID", null, htmlAttributes: new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.CTRY_ID, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.CTRY_ID, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -253,7 +241,7 @@
                     @Html.LabelFor(model => model.PH1, "Phone", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PH1, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.PH1, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.PH1, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -262,7 +250,7 @@
                     @Html.LabelFor(model => model.PH2, "Mobile", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.PH2, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.PH2, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.PH2, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <hr class="label-underline label">
@@ -271,14 +259,14 @@
                     @Html.LabelFor(model => model.EML, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.EML, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.EML, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.EML, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 <div class="label-field-pair label">
                     @Html.LabelFor(model => model.CLS_ROLL_NO, "Roll Number", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         @Html.EditorFor(model => model.CLS_ROLL_NO, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.CLS_ROLL_NO, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.CLS_ROLL_NO, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
                 </div>
                 @if (Html.Configuration_Value("ApplicationSmsEnabled").Equals("True"))
@@ -303,7 +291,7 @@
                     @Html.LabelFor(model => model.PHTO_FILENAME, "Upload Photo (Maximum Size 2 MB)", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="text-input-bg">
                         <input id="PHTO_FILENAME" title="Upload Photo (Maximum Size 2 MB)" type="file" name="PHTO_FILENAME" />
-                        @Html.ValidationMessageFor(model => model.PHTO_FILENAME, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.PHTO_FILENAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                     </div>
 
                 </div>
@@ -314,26 +302,3 @@
         <input type="submit" value="► Save And Proceed" class="submit_button" />
     }
 </div>
-
-
-@section scripts{
-
-    @Scripts.Render("~/bundles/jqueryval")
-
-    <script src="~/Scripts/dropzone.js"></script>
-
-    <script type="text/javascript">
-
-        $(document).ready(function () {
-            $("#preview").fadeOut(15);
-            $("#refreshButton").click(function () {
-                var imageToLoad = $("#imageId").val();
-                if (imageToLoad.length > 0) {
-                    $("#preview").attr("src", "/Document/Show/" + imageToLoad);
-                    $("#preview").fadeIn();
-                }
-            });
-        });
-
-    </script>
-}

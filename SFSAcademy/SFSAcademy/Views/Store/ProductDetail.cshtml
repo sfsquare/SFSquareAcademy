@@ -7,11 +7,6 @@
     IEnumerable<SFSAcademy.STORE_BRAND> product_brands = (IEnumerable<SFSAcademy.STORE_BRAND>)ViewData["product_brands"];
     IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR> product_vendor = (IEnumerable<SFSAcademy.STORE_PURCHAGE_VENDOR>)ViewData["product_vendor"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script type="text/javascript" language="javascript">
     $.ajaxSetup({ cache: false });
     /* This is change event for your dropdownlist */
@@ -27,16 +22,6 @@
                 $(".LoaderBox1").hide();
             });
 
-        });
-    });
-</script>
-<script>
-    $(function () {
-        $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd-mm-yy',
-            buttonImageOnly: true
         });
     });
 </script>
