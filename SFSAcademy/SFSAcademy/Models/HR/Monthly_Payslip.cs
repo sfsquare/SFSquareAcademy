@@ -158,7 +158,7 @@ namespace SFSAcademy
         {
             var total_monthly_payslips = db.MONTHLY_PAYSLIP.Where(x => x.ID == -1).DefaultIfEmpty().ToList();
 
-            if (dept_id != -1)
+            if (dept_id != -1 && dept_id != null)
             {
                 var active_employees_in_dept = db.EMPLOYEEs.Where(x => x.EMP_DEPT_ID == dept_id).ToList();
                 var archived_employees_in_dept = db.ARCHIVED_EMPLOYEE.Where(x => x.EMP_DEPT_ID == dept_id).ToList();
@@ -171,11 +171,11 @@ namespace SFSAcademy
                 {
                     all_employees_in_dept.Add(Convert.ToInt32(item.FRMR_ID));
                 }
-                total_monthly_payslips = db.MONTHLY_PAYSLIP.Include(x => x.PAYROLL_CATEGORY).Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && x.IS_APPR == true && all_employees_in_dept.Contains((int)x.EMP_ID)).OrderByDescending(x => x.SAL_DATE).ToList();                
+                total_monthly_payslips = db.MONTHLY_PAYSLIP.Include(x => x.PAYROLL_CATEGORY).Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && x.IS_APPR == true && x.RMRK != "" && all_employees_in_dept.Contains((int)x.EMP_ID)).OrderByDescending(x => x.SAL_DATE).ToList();                
             }
             else
             {
-                total_monthly_payslips = db.MONTHLY_PAYSLIP.Include(x => x.PAYROLL_CATEGORY).Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && x.IS_APPR == true && x.EMP_ID == ID).OrderByDescending(x => x.SAL_DATE).ToList();
+                total_monthly_payslips = db.MONTHLY_PAYSLIP.Include(x => x.PAYROLL_CATEGORY).Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && x.IS_APPR == true && x.RMRK != "" && x.EMP_ID == this.ID).OrderByDescending(x => x.SAL_DATE).ToList();
             }
             List<int> employee_ids = new List<int>();
             foreach(var item in total_monthly_payslips)
@@ -189,7 +189,7 @@ namespace SFSAcademy
                 total_individual_payslips = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.SAL_DATE >= start_date && x.SAL_DATE <= end_date && employee_ids.Contains((int)x.EMP_ID)).OrderBy(x => x.ID).ToList();
             }
             decimal? total_salary = 0;
-            if(total_monthly_payslips != null && total_monthly_payslips.Count() != 0)
+            if(total_monthly_payslips != null && total_monthly_payslips.Count() != 0 && total_monthly_payslips.ElementAt(0) != null)
             {
                 foreach(var item in total_monthly_payslips)
                 {
@@ -203,7 +203,7 @@ namespace SFSAcademy
                     }
                 }
             }
-            if (total_individual_payslips != null && total_individual_payslips.Count() != 0)
+            if (total_individual_payslips != null && total_individual_payslips.Count() != 0 && total_individual_payslips.ElementAt(0) != null)
             {
                 foreach (var item in total_individual_payslips)
                 {
@@ -218,10 +218,31 @@ namespace SFSAcademy
                 }
             }
             var hash = (from mp in total_monthly_payslips
+                        select new SFSAcademy.TotalSalary { MonthlyPayslipData = mp, IndividualPayrollCategoryData = null, TotalSalaryAmount = total_salary }).Distinct();
+
+            if (total_individual_payslips != null && total_individual_payslips.Count() != 0 && total_individual_payslips.ElementAt(0) != null)
+            {
+                hash = (from mp in total_monthly_payslips
                         join ipc in total_individual_payslips on mp.EMP_ID equals ipc.EMP_ID into ggipc
                         from subgipc in ggipc.DefaultIfEmpty()
                         select new SFSAcademy.TotalSalary { MonthlyPayslipData = mp, IndividualPayrollCategoryData = (subgipc == null ? null : subgipc), TotalSalaryAmount = total_salary }).Distinct();
+            }
             return hash;
+        }
+
+        public ActiveOrArchiveEmployee Active_Or_Archived_Employee()
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(this.EMP_ID);
+            ARCHIVED_EMPLOYEE archived_employee = db.ARCHIVED_EMPLOYEE.Find(-1);
+            if(employee == null)
+            {
+                archived_employee = db.ARCHIVED_EMPLOYEE.Where(x => Convert.ToInt32(x.FRMR_ID) == this.EMP_ID).FirstOrDefault();
+            }
+
+            ActiveOrArchiveEmployee AcArEmp = new ActiveOrArchiveEmployee();
+            AcArEmp.Employee = employee;
+            AcArEmp.ArchivedEmployee = archived_employee;
+            return AcArEmp;
         }
     }
 }

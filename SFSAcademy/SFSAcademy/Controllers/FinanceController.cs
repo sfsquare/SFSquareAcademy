@@ -4995,16 +4995,8 @@ namespace SFSAcademy.Controllers
                                   select new FinanceTransaction { FinanceTransactionData = tr, TransactionCategoryData = tc }).OrderBy(x => x.FinanceTransactionData.CRETAED_AT).Distinct();
 
             ViewData["transactions"] = TransactionVal;
-            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
-            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
-
-            /*int grand_total = 0;
-            foreach (var item in TransactionVal)
-            {
-                grand_total = grand_total + Convert.ToInt32(item.FinanceTransactionData.AMT);
-            }
-
-            ViewBag.grand_total = grand_total;*/
+            ViewData["start_date"] = START_TRAN_DATE;
+            ViewData["end_date"] = END_TRAN_DATE;
 
             ViewBag.hr = null;
             var configValue = (from C in db.CONFIGURATIONs
@@ -5214,11 +5206,39 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Finance
-        public ActionResult Salary_Department(DateTime START_TRAN_DATE, DateTime END_TRAN_DATE)
+        public ActionResult Salary_Department(DateTime start_date, DateTime end_date)
         {
-            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
-            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
-            ViewBag.ErrorMessage = "HR System is not set-up yet for this intitution.";
+            ViewData["start_date"] = start_date;
+            ViewData["end_date"] = end_date;
+            ViewData["departments"] = db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true).ToList();
+            return View();
+        }
+        public ActionResult Salary_Employee(DateTime start, DateTime end, int? id)
+        {
+            ViewData["start_date"] = start;
+            ViewData["end_date"] = end;
+            EMPLOYEE_DEPARTMENT department = db.EMPLOYEE_DEPARTMENT.Find(id);
+            ViewData["department"] = department;
+            ViewData["employees"] = department.EMPLOYEEs.ToList();
+            ViewData["payslips"] = db.MONTHLY_PAYSLIP.FirstOrDefault().Total_Employees_Salary(start, end, id); 
+            return View();
+        }
+        public ActionResult Employee_Payslip_Monthly_Report(DateTime? id2, int? id)
+        {
+            ViewData["salary_date"] = id2;
+            ActiveOrArchiveEmployee employee = db.EMPLOYEEs.FirstOrDefault().Find_In_Active_Or_Archived((int)id);
+            ViewData["employee"] = employee;
+            var currency_type = db.CONFIGURATIONs.Where(x => x.CONFIG_KEY == "CurrencyType").FirstOrDefault().CONFIG_VAL;
+            ViewBag.currency_type = currency_type;
+            if (id2 == null)
+            {
+                return RedirectToAction("View_Employee_Payslip", new { id = id, salary_date = id2 });
+            }
+            var monthly_payslips = db.MONTHLY_PAYSLIP.Include(x => x.PAYROLL_CATEGORY).Where(x => x.EMP_ID == id && x.SAL_DATE == id2).ToList();
+            ViewData["monthly_payslips"] = monthly_payslips;
+            var individual_payslips = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == id && x.SAL_DATE == id2).ToList();
+            ViewData["individual_payslips"] = individual_payslips;
+            ViewData["salary"] = db.EMPLOYEEs.FirstOrDefault().Calculate_Salary(monthly_payslips, individual_payslips);
             return View();
         }
 

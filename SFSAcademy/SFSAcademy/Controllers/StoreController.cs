@@ -749,6 +749,8 @@ namespace SFSAcademy.Controllers
                 STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTORE_PROCUREMENT.PRODUCT_ID).FirstOrDefault();
                 InvUpd.UNIT_LEFT = InvUpd.UNIT_LEFT + sTORE_PROCUREMENT.UNIT_PROCURED;
                 InvUpd.COST_PER_UNIT = sTORE_PROCUREMENT.COST_PER_UNIT;
+                //InvUpd.SELL_PRICE_PER_UNIT = ((InvUpd.UNIT_LEFT * InvUpd.SELL_PRICE_PER_UNIT) + (sTORE_PROCUREMENT.UNIT_PROCURED * sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT)) / (InvUpd.UNIT_LEFT + sTORE_PROCUREMENT.UNIT_PROCURED);
+                InvUpd.SELL_PRICE_PER_UNIT = sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT;
                 db.Entry(InvUpd).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = string.Concat(ViewBag.Notice, "Procurement details added successfully."); }
                 catch (DbEntityValidationException e)

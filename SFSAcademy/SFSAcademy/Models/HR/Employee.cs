@@ -125,6 +125,11 @@ namespace SFSAcademy
         [Display(Name = "Divorced")]
         Divorced
     }
+    public class ActiveOrArchiveEmployee
+    {
+        public EMPLOYEE Employee { get; set; }
+        public ARCHIVED_EMPLOYEE ArchivedEmployee { get; set; }
+    }
 
     [MetadataType(typeof(EmployeeMetadata))]
     public partial class EMPLOYEE : IHasTimeStamp, IHasBeforeSave
@@ -391,7 +396,7 @@ namespace SFSAcademy
         {
             decimal? individual_category_non_deductionable = 0;
             decimal? individual_category_deductionable = 0;
-            if(individual_payslip_category != null && individual_payslip_category.Count() != 0)
+            if(individual_payslip_category != null && individual_payslip_category.Count() != 0 && individual_payslip_category.ElementAt(0) != null)
             {
                 foreach(var pc in individual_payslip_category)
                 {
@@ -433,6 +438,20 @@ namespace SFSAcademy
 
             return cs;
 
+        }
+        public ActiveOrArchiveEmployee Find_In_Active_Or_Archived(int id)
+        {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            ARCHIVED_EMPLOYEE archived_employee = db.ARCHIVED_EMPLOYEE.Find(-1);
+            if (employee == null)
+            {
+                archived_employee = db.ARCHIVED_EMPLOYEE.Where(x => Convert.ToInt32(x.FRMR_ID) == id).FirstOrDefault();
+            }
+
+            ActiveOrArchiveEmployee AcArEmp = new ActiveOrArchiveEmployee();
+            AcArEmp.Employee = employee;
+            AcArEmp.ArchivedEmployee = archived_employee;
+            return AcArEmp;
         }
     }
  }
