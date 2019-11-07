@@ -1,0 +1,116 @@
+﻿@using System.Data;
+@using System.Data.Entity;
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    EMPLOYEE_DEPARTMENT department = (EMPLOYEE_DEPARTMENT)ViewData["department"];
+    IEnumerable<EMPLOYEE> employees = (IEnumerable<EMPLOYEE>)ViewData["employees"];
+    IEnumerable<TotalSalary> payslips = (IEnumerable<TotalSalary>)ViewData["payslips"];
+    DateTime end_date = (DateTime)ViewData["end_date"];
+    DateTime start_date = (DateTime)ViewData["start_date"];
+}
+@{
+    ViewBag.Title = "Salary_Employee";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/show_finance.png" alt="Finance Logo">
+    <h1>@department.NAMES Department Salary Report</h1>
+    <h3>Finance Transactions</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+    <div class="bread_crumb">
+        @Html.ActionLink("Finance", "Index") &raquo;
+        @Html.ActionLink("Transactions", "Transactions") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date }) &raquo;
+        @Html.ActionLink("Salary Account", "Salary_Department", new { start_date = start_date, end_date = end_date }) &raquo;
+        Department: @department.NAMES
+    </div>
+    @{ decimal? total = 0;}
+    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>Sl. No.</td>
+            <td>Employee Name</td>
+            <td>Salary</td>
+            <td>Salary Date</td>
+        </tr>
+        <tr class="tr-blank"></tr>
+        @{
+            decimal? amount = 0;
+            var monthly_payslips = payslips.Select(x => x.MonthlyPayslipData).GroupBy(x => x.SAL_DATE).Select(g=> new {
+                SalaryDate = g.Key,
+                MonthPayslips = g.ToList()
+            });
+            var individual_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.ID == -1).GroupBy(x => x.EMP_ID).Select(g=> new {
+                EmployeeId = g.Key,
+                IndividualCategories = g.ToList()
+            }).DefaultIfEmpty().AsEnumerable();
+            bool IndividualCategoryExists = false;
+            foreach(var item in payslips)
+            {
+                if(item.IndividualPayrollCategoryData != null)
+                {
+                    IndividualCategoryExists = true;
+                    break;
+                }
+            }
+            if (IndividualCategoryExists)
+            {
+                var IndividualPayslip = payslips.Where(x => x.IndividualPayrollCategoryData != null);
+                individual_categories = IndividualPayslip.Select(x => x.IndividualPayrollCategoryData).Distinct().GroupBy(x => x.EMP_ID).Select(g=> new {
+                    EmployeeId = g.Key,
+                    IndividualCategories = g.ToList()
+                });
+            }
+            int i = 1;
+        }
+        @foreach (var payslip in monthly_payslips)
+        {
+            var emp_payslip = payslip.MonthPayslips.GroupBy(x => x.EMP_ID).Select(g=> new {
+                EmployeeId = g.Key,
+                Payslips = g.ToList()
+            });
+            foreach (var eps in emp_payslip)
+            {
+                string cycle = "tr-even";
+
+                if (i % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+                var individual_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.ID == -1).DefaultIfEmpty().AsEnumerable();
+                if (individual_categories != null && individual_categories.Count() != 0 && individual_categories.ElementAt(0) != null)
+                {
+                    if (individual_categories.Where(x => x.EmployeeId == eps.EmployeeId) != null && individual_categories.Where(x => x.EmployeeId == eps.EmployeeId).Count() != 0)
+                    {
+                        individual_payslip_category = individual_categories.Where(x => x.EmployeeId == eps.EmployeeId).FirstOrDefault().IndividualCategories.Where(x => x.EMP_ID == eps.EmployeeId);                       
+                    }
+
+                }
+                var employee_id = eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().ArchivedEmployee != null ? Convert.ToInt32(eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().ArchivedEmployee.FRMR_ID) : eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().Employee.ID;
+                string FullName = eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().ArchivedEmployee != null ? eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().ArchivedEmployee.Full_Name : eps.Payslips.FirstOrDefault().Active_Or_Archived_Employee().Employee.Full_Name;
+                <tr class="@cycle">
+                    <td class="col-1">@i</td>
+                    <td class="col-2">@Html.ActionLink(FullName, "Employee_Payslip_Monthly_Report", new { id2 = eps.Payslips.FirstOrDefault().SAL_DATE, id = employee_id }, new { @target = "_blank" }) </td>
+                    @{ amount = db.EMPLOYEEs.FirstOrDefault().Calculate_Salary(eps.Payslips, individual_payslip_category).net_amount;}
+                    <td class="col-3" align="right">@amount</td>
+                    <td class="col-3"> @eps.Payslips.FirstOrDefault().SAL_DATE.Value.ToShortDateString() </td>
+                </tr>
+                total += amount; amount = 0; i += 1;
+            }
+        }
+        <tr class="tr-blank"></tr>
+        <tr class="tr-head">
+            <td></td>
+            <td align="right">Total Salary</td>
+            <td align="right">@total</td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+

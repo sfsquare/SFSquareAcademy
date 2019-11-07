@@ -2827,6 +2827,8 @@
     <Content Include="Views\Exam_Groups\Edit.cshtml" />
     <Content Include="Views\Exam_Groups\Index.cshtml" />
     <Content Include="Views\Exam_Groups\Show.cshtml" />
+    <Content Include="Views\Finance\Salary_Employee.cshtml" />
+    <Content Include="Views\Finance\Employee_Payslip_Monthly_Report.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3140,6 +3142,7 @@
     </Compile>
     <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\Batch.cs" />
+    <Compile Include="Models\Archived_Employee.cs" />
     <Compile Include="Models\Exam_Group.cs" />
     <Compile Include="Models\Guardian.cs" />
     <Compile Include="Models\Grouped_Batch.cs" />

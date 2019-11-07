@@ -5,6 +5,8 @@
 @{
     IEnumerable<SFSAcademy.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.CategoryTransactions>)ViewData["other_transaction_categories"];
     IEnumerable<SFSAcademy.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions"];
+    DateTime start_date = (DateTime)ViewData["start_date"];
+    DateTime end_date = (DateTime)ViewData["end_date"];
 }
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
@@ -17,7 +19,7 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
-        <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE }, new { @target = "_blank" })</li>
+        <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date }, new { @target = "_blank" })</li>
     </ul>
 </div>
 <div id="page-yield">
@@ -44,7 +46,7 @@
                 <td class="col-1">@index</td>
                 @if (ViewBag.salary != 0)
                 {
-                    <td class="col-2">@Html.ActionLink("Salary Account", "Salary_Department", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE })</td>
+                    <td class="col-2">@Html.ActionLink("Salary Account", "Salary_Department", new { start_date = start_date, end_date = end_date })</td>
                 }
                 else
                 {
@@ -59,7 +61,7 @@
             <td class="col-1">@index</td>
             @if (ViewBag.donations_total != 0)
             {
-                <td class="col-2">@Html.ActionLink("Donations", "Donations_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE })</td>
+                <td class="col-2">@Html.ActionLink("Donations", "Donations_Report", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date })</td>
             }
             else
             {
@@ -74,7 +76,7 @@
             <td class="col-1">@index</td>
             @if (ViewBag.transactions_fees != 0)
             {
-                <td class="col-2">@Html.ActionLink("Fees Account", "Fees_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE })</td>
+                <td class="col-2">@Html.ActionLink("Fees Account", "Fees_Report", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date })</td>
             }
             else
             {
@@ -97,7 +99,7 @@
             }
             <tr class="@selectedRow">
                 <td class="col-1">@index</td>
-                <td class="col-2">@Html.ActionLink(item.TransactionCategoryData.NAME, "Income_Details", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, id = item.TransactionCategoryData.ID })</td>
+                <td class="col-2">@Html.ActionLink(item.TransactionCategoryData.NAME, "Income_Details", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date, id = item.TransactionCategoryData.ID })</td>
                 @if (expense != 0)
                 {
                 <td class="col-3" align="right">@expense</td>
