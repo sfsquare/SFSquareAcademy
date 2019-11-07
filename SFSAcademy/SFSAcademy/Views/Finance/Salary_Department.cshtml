@@ -1,4 +1,11 @@
-﻿
+﻿@using System.Data;
+@using System.Data.Entity;
+@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    IEnumerable<EMPLOYEE_DEPARTMENT> departments = (IEnumerable<EMPLOYEE_DEPARTMENT>)ViewData["departments"];
+    DateTime end_date = (DateTime)ViewData["end_date"];
+    DateTime start_date = (DateTime)ViewData["start_date"];
+}
 @{
     ViewBag.Title = "Salary_Department";
 }
@@ -11,17 +18,55 @@
     </div>
 </div>
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
-<div class="bread_crumb">
-    @Html.ActionLink("Finance", "Index") &raquo;
-    @Html.ActionLink("Transactions", "Transactions") &raquo;
-    @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
-    @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE }) &raquo;
-    Salary Account
-</div>
+
 <div id="page-yield">
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-    }
+    <div class="bread_crumb">
+        @Html.ActionLink("Finance", "Index") &raquo;
+        @Html.ActionLink("Transactions", "Transactions") &raquo;
+        @Html.ActionLink("Monthly Transactions", "Monthly_Report") &raquo;
+        @Html.ActionLink("Finance Transactions View", "Update_Monthly_Report", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date }) &raquo;
+        Salary Account
+    </div>
+    @{decimal? total = 0; }
+    <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+        <tr class="tr-head">
+            <td>Sl. No.</td>
+            <td>Particulars</td>
+            <td>Amount</td>
+        </tr>
+        <tr class="tr-blank"></tr>
+        @{ decimal? department_total_amount = 0; int i = 1;}
+        @foreach (var d in departments)
+        {
+            string cycle = "tr-even";
+
+            if (i % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+    <tr class="@cycle">
+        <td class="col-1">@i</td>
+        <td class="col-2">@Html.ActionLink(d.NAMES, "Salary_Employee", new { start = start_date, end = end_date, id = d.ID }) </td>
+        @{ department_total_amount = db.MONTHLY_PAYSLIP.FirstOrDefault().Total_Employees_Salary(start_date, end_date, d.ID).Select(x => x.TotalSalaryAmount).FirstOrDefault(); }
+        @if (department_total_amount != null)
+        {
+            <td class="col-3" align="right">@department_total_amount</td>
+        }
+        else
+        {
+            <td class="col-3" align="right">0</td>
+        }
+        @{total += department_total_amount; department_total_amount = 0; }
+    </tr>
+            i += 1;
+        }
+        <tr class="tr-blank"></tr>
+        <tr class="tr-head">
+            <td>Total</td>
+            <td></td>
+            <td align="right">@total</td>
+        </tr>
+    </table>
 </div>
+
 

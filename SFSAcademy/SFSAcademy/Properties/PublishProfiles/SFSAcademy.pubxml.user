@@ -154,10 +154,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 21:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>10/19/2019 19:21:12</publishTime>
+      <publishTime>11/08/2019 00:35:19</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>10/19/2019 19:21:12</publishTime>
+      <publishTime>11/08/2019 00:35:19</publishTime>
     </File>
     <File Include="bin/System.Buffers.dll">
       <publishTime>05/15/2018 13:29:34</publishTime>
@@ -6733,13 +6733,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/18/2019 18:20:10</publishTime>
     </File>
     <File Include="Views/Batches/Edit.cshtml">
-      <publishTime>10/18/2019 18:21:53</publishTime>
+      <publishTime>10/20/2019 19:46:14</publishTime>
     </File>
     <File Include="Views/Batches/Index.cshtml">
       <publishTime>10/02/2019 22:28:16</publishTime>
     </File>
     <File Include="Views/Batches/New.cshtml">
-      <publishTime>10/18/2019 18:23:13</publishTime>
+      <publishTime>10/20/2019 22:25:59</publishTime>
     </File>
     <File Include="Views/Batches/Show.cshtml">
       <publishTime>10/18/2019 18:24:55</publishTime>
@@ -6886,7 +6886,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Configuration/Settings.cshtml">
-      <publishTime>10/18/2019 19:41:40</publishTime>
+      <publishTime>10/20/2019 22:24:43</publishTime>
     </File>
     <File Include="Views/Courses/Create.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -6898,7 +6898,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/Courses/Edit.cshtml">
-      <publishTime>10/14/2019 19:55:59</publishTime>
+      <publishTime>10/20/2019 22:22:41</publishTime>
     </File>
     <File Include="Views/Courses/Grouped_Batches.cshtml">
       <publishTime>10/10/2019 16:12:45</publishTime>
@@ -6916,7 +6916,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/07/2019 19:58:40</publishTime>
     </File>
     <File Include="Views/Courses/New.cshtml">
-      <publishTime>10/14/2019 19:55:59</publishTime>
+      <publishTime>10/20/2019 22:21:39</publishTime>
     </File>
     <File Include="Views/Courses/Show.cshtml">
       <publishTime>10/07/2019 19:58:51</publishTime>
@@ -6961,10 +6961,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee/Admission1.cshtml">
-      <publishTime>09/14/2019 17:30:21</publishTime>
+      <publishTime>10/20/2019 19:26:29</publishTime>
     </File>
     <File Include="Views/Employee/Admission2.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 19:33:30</publishTime>
     </File>
     <File Include="Views/Employee/Admission3.cshtml">
       <publishTime>05/08/2019 20:21:58</publishTime>
@@ -6976,7 +6976,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/09/2019 19:57:34</publishTime>
     </File>
     <File Include="Views/Employee/Advanced_Search.cshtml">
-      <publishTime>05/08/2019 20:21:58</publishTime>
+      <publishTime>10/20/2019 22:14:40</publishTime>
     </File>
     <File Include="Views/Employee/Change_Reporting_Manager.cshtml">
       <publishTime>05/08/2019 20:21:58</publishTime>
@@ -6988,7 +6988,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee/Create_Monthly_Payslip.cshtml">
-      <publishTime>10/19/2019 17:22:47</publishTime>
+      <publishTime>10/20/2019 22:13:14</publishTime>
     </File>
     <File Include="Views/Employee/Delete.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7003,7 +7003,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:02</publishTime>
     </File>
     <File Include="Views/Employee/Edit1.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 22:11:21</publishTime>
     </File>
     <File Include="Views/Employee/Edit2.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7030,13 +7030,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:21:58</publishTime>
     </File>
     <File Include="Views/Employee/Edit_Personal.cshtml">
-      <publishTime>05/08/2019 20:21:59</publishTime>
+      <publishTime>10/20/2019 22:05:11</publishTime>
     </File>
     <File Include="Views/Employee/Edit_Position.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee/Edit_Rejected_Payslip.cshtml">
-      <publishTime>10/19/2019 18:03:58</publishTime>
+      <publishTime>10/20/2019 19:52:25</publishTime>
     </File>
     <File Include="Views/Employee/Employee_Attendance.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7054,7 +7054,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee/Leave_Management.cshtml">
-      <publishTime>08/01/2019 13:21:00</publishTime>
+      <publishTime>10/20/2019 21:58:50</publishTime>
     </File>
     <File Include="Views/Employee/Payslip.cshtml">
       <publishTime>10/16/2019 13:43:28</publishTime>
@@ -7150,7 +7150,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/18/2019 18:08:44</publishTime>
     </File>
     <File Include="Views/Employee/_One_Click_Payslip_Date.cshtml">
-      <publishTime>10/16/2019 13:44:14</publishTime>
+      <publishTime>10/20/2019 19:52:26</publishTime>
     </File>
     <File Include="Views/Employee/_One_Click_Payslip_Generation.cshtml">
       <publishTime>09/13/2019 14:47:02</publishTime>
@@ -7159,7 +7159,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee/_One_Click_Payslip_Revert_Date.cshtml">
-      <publishTime>10/16/2019 13:46:04</publishTime>
+      <publishTime>10/20/2019 19:52:25</publishTime>
     </File>
     <File Include="Views/Employee/_Payroll_Details.cshtml">
       <publishTime>05/08/2019 20:21:58</publishTime>
@@ -7237,10 +7237,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Employee_Attendance/Leave_History.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:56:51</publishTime>
     </File>
     <File Include="Views/Employee_Attendance/Leave_Reset_Settings.cshtml">
-      <publishTime>05/08/2019 20:11:15</publishTime>
+      <publishTime>10/20/2019 21:54:47</publishTime>
     </File>
     <File Include="Views/Employee_Attendance/Manual_Reset.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7342,7 +7342,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Compare_Report.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:30:56</publishTime>
     </File>
     <File Include="Views/Finance/Create.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7360,13 +7360,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Donation.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:28:57</publishTime>
     </File>
     <File Include="Views/Finance/Donations_Report.cshtml">
       <publishTime>05/08/2019 20:11:16</publishTime>
     </File>
     <File Include="Views/Finance/Donation_Edit.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:26:40</publishTime>
     </File>
     <File Include="Views/Finance/Donation_Receipt.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7381,10 +7381,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Edit_Fee_Discount.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:26:24</publishTime>
     </File>
     <File Include="Views/Finance/Edit_Fee_Fine.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:23:32</publishTime>
+    </File>
+    <File Include="Views/Finance/Employee_Payslip_Monthly_Report.cshtml">
+      <publishTime>10/23/2019 10:09:54</publishTime>
     </File>
     <File Include="Views/Finance/Expense_Create.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7393,7 +7396,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Expense_List.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:22:54</publishTime>
     </File>
     <File Include="Views/Finance/Expense_List_pdf.cshtml">
       <publishTime>05/08/2019 20:11:16</publishTime>
@@ -7480,7 +7483,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Income_List.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:20:35</publishTime>
     </File>
     <File Include="Views/Finance/Income_List_pdf.cshtml">
       <publishTime>05/08/2019 20:11:17</publishTime>
@@ -7513,7 +7516,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Monthly_Report.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:19:24</publishTime>
     </File>
     <File Include="Views/Finance/Payslip_Index.cshtml">
       <publishTime>09/18/2019 17:44:27</publishTime>
@@ -7525,7 +7528,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/20/2019 18:42:48</publishTime>
     </File>
     <File Include="Views/Finance/Salary_Department.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>11/07/2019 21:46:56</publishTime>
+    </File>
+    <File Include="Views/Finance/Salary_Employee.cshtml">
+      <publishTime>11/08/2019 00:08:15</publishTime>
     </File>
     <File Include="Views/Finance/student_fee_receipt_pdf.cshtml">
       <publishTime>05/08/2019 20:11:17</publishTime>
@@ -7540,7 +7546,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Finance/Update_Monthly_Report.cshtml">
-      <publishTime>05/08/2019 20:22:01</publishTime>
+      <publishTime>10/23/2019 14:18:34</publishTime>
     </File>
     <File Include="Views/Finance/View_Employee_Payslip.cshtml">
       <publishTime>10/18/2019 20:49:58</publishTime>
@@ -7576,7 +7582,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/18/2019 13:28:45</publishTime>
     </File>
     <File Include="Views/Finance/_Fees_Structure.cshtml">
-      <publishTime>05/08/2019 20:22:00</publishTime>
+      <publishTime>10/20/2019 19:52:25</publishTime>
     </File>
     <File Include="Views/Finance/_fees_student_dates.cshtml">
       <publishTime>05/08/2019 20:11:16</publishTime>
@@ -7585,7 +7591,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:11:16</publishTime>
     </File>
     <File Include="Views/Finance/_Fee_Collection_Create.cshtml">
-      <publishTime>10/18/2019 13:45:06</publishTime>
+      <publishTime>10/20/2019 21:36:17</publishTime>
     </File>
     <File Include="Views/Finance/_fine_submission.cshtml">
       <publishTime>10/14/2019 14:58:38</publishTime>
@@ -7627,16 +7633,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:22:00</publishTime>
     </File>
     <File Include="Views/Finance/_student_fees_submission.cshtml">
-      <publishTime>05/08/2019 20:22:00</publishTime>
+      <publishTime>10/20/2019 19:52:25</publishTime>
     </File>
     <File Include="Views/Finance/_student_select.cshtml">
       <publishTime>09/01/2019 17:47:44</publishTime>
     </File>
     <File Include="Views/Finance/_Transaction_Create_Form.cshtml">
-      <publishTime>09/18/2019 18:32:27</publishTime>
+      <publishTime>10/20/2019 21:33:03</publishTime>
     </File>
     <File Include="Views/Finance/_Transaction_Edit_Form.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 21:32:08</publishTime>
     </File>
     <File Include="Views/Finance/_Transaction_Triggers_List.cshtml">
       <publishTime>05/08/2019 20:11:16</publishTime>
@@ -7798,7 +7804,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Shared/_Partial/Get_Javascript.cshtml">
-      <publishTime>10/13/2019 21:17:54</publishTime>
+      <publishTime>10/20/2019 18:10:32</publishTime>
     </File>
     <File Include="Views/Shared/_Partial/Get_Pdf_Stylesheets.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7813,10 +7819,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:11:18</publishTime>
     </File>
     <File Include="Views/Store/AdvancedSellingReport.cshtml">
-      <publishTime>07/21/2019 14:25:28</publishTime>
+      <publishTime>10/20/2019 21:15:42</publishTime>
     </File>
     <File Include="Views/Store/BackupTransaction.cshtml">
-      <publishTime>07/19/2019 22:02:34</publishTime>
+      <publishTime>10/20/2019 21:13:38</publishTime>
     </File>
     <File Include="Views/Store/Batch_Fees_Report.cshtml">
       <publishTime>07/19/2019 22:36:32</publishTime>
@@ -7834,7 +7840,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Store/Compare_Report.cshtml">
-      <publishTime>07/20/2019 19:18:05</publishTime>
+      <publishTime>10/20/2019 19:53:16</publishTime>
     </File>
     <File Include="Views/Store/Create.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
@@ -7852,13 +7858,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Store/EditSelling.cshtml">
-      <publishTime>07/17/2019 10:49:04</publishTime>
+      <publishTime>10/20/2019 21:04:58</publishTime>
     </File>
     <File Include="Views/Store/EditSellingCart.cshtml">
-      <publishTime>07/17/2019 10:48:01</publishTime>
+      <publishTime>10/20/2019 21:03:37</publishTime>
     </File>
     <File Include="Views/Store/Edit_Procurement.cshtml">
-      <publishTime>09/18/2019 18:41:47</publishTime>
+      <publishTime>10/20/2019 21:11:29</publishTime>
     </File>
     <File Include="Views/Store/Fees_Report.cshtml">
       <publishTime>07/19/2019 22:35:44</publishTime>
@@ -7882,10 +7888,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/28/2019 18:06:19</publishTime>
     </File>
     <File Include="Views/Store/Monthly_Report.cshtml">
-      <publishTime>07/19/2019 22:54:55</publishTime>
+      <publishTime>10/20/2019 21:02:27</publishTime>
     </File>
     <File Include="Views/Store/New_Procurement.cshtml">
-      <publishTime>08/12/2019 21:53:01</publishTime>
+      <publishTime>10/20/2019 19:41:33</publishTime>
     </File>
     <File Include="Views/Store/Procurement.cshtml">
       <publishTime>07/20/2019 21:27:23</publishTime>
@@ -7897,13 +7903,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/19/2019 13:39:30</publishTime>
     </File>
     <File Include="Views/Store/ProductCreate.cshtml">
-      <publishTime>07/19/2019 17:17:39</publishTime>
+      <publishTime>10/20/2019 21:01:01</publishTime>
     </File>
     <File Include="Views/Store/ProductDetail.cshtml">
-      <publishTime>07/19/2019 17:19:04</publishTime>
+      <publishTime>10/20/2019 20:59:57</publishTime>
     </File>
     <File Include="Views/Store/ProductEdit.cshtml">
-      <publishTime>07/19/2019 17:18:21</publishTime>
+      <publishTime>10/20/2019 20:58:45</publishTime>
     </File>
     <File Include="Views/Store/Products_pdf.cshtml">
       <publishTime>07/21/2019 17:56:05</publishTime>
@@ -7915,7 +7921,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/05/2018 17:27:03</publishTime>
     </File>
     <File Include="Views/Store/PurchageOrderEdit.cshtml">
-      <publishTime>07/19/2019 16:47:26</publishTime>
+      <publishTime>10/20/2019 20:55:26</publishTime>
     </File>
     <File Include="Views/Store/PurchageOrderList.cshtml">
       <publishTime>05/08/2019 20:11:18</publishTime>
@@ -7942,7 +7948,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/16/2019 13:49:23</publishTime>
     </File>
     <File Include="Views/Store/SellingHistory.cshtml">
-      <publishTime>07/17/2019 19:45:28</publishTime>
+      <publishTime>10/20/2019 16:31:05</publishTime>
     </File>
     <File Include="Views/Store/Selling_pdf.cshtml">
       <publishTime>07/21/2019 17:56:30</publishTime>
@@ -8002,7 +8008,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>07/21/2019 17:42:08</publishTime>
     </File>
     <File Include="Views/Store/_ListPurchagedProducts.cshtml">
-      <publishTime>07/18/2019 13:35:23</publishTime>
+      <publishTime>10/20/2019 19:52:24</publishTime>
     </File>
     <File Include="Views/Store/_ListShortageProducts.cshtml">
       <publishTime>07/19/2019 21:46:36</publishTime>
@@ -8065,13 +8071,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:11:18</publishTime>
     </File>
     <File Include="Views/Student/Add_Guardian.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 20:54:13</publishTime>
     </File>
     <File Include="Views/Student/Admission1.cshtml">
-      <publishTime>05/08/2019 20:22:02</publishTime>
+      <publishTime>10/20/2019 18:47:08</publishTime>
     </File>
     <File Include="Views/Student/Admission2.cshtml">
-      <publishTime>05/09/2019 21:37:41</publishTime>
+      <publishTime>10/20/2019 18:48:54</publishTime>
     </File>
     <File Include="Views/Student/Admission3.cshtml">
       <publishTime>05/08/2019 20:22:02</publishTime>
@@ -8080,7 +8086,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:22:02</publishTime>
     </File>
     <File Include="Views/Student/AdvancedSearch.cshtml">
-      <publishTime>05/08/2019 20:22:02</publishTime>
+      <publishTime>10/20/2019 18:52:12</publishTime>
     </File>
     <File Include="Views/Student/AdvancedSearchPdf.cshtml">
       <publishTime>05/08/2019 20:22:02</publishTime>
@@ -8113,13 +8119,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Student/Edit.cshtml">
-      <publishTime>05/08/2019 20:22:02</publishTime>
+      <publishTime>10/20/2019 20:51:37</publishTime>
     </File>
     <File Include="Views/Student/Edit_Additional_Details.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Student/Edit_Guardian.cshtml">
-      <publishTime>05/09/2019 21:38:26</publishTime>
+      <publishTime>10/20/2019 20:47:09</publishTime>
     </File>
     <File Include="Views/Student/Electives.cshtml">
       <publishTime>05/08/2019 20:22:02</publishTime>
@@ -8215,7 +8221,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Timetable/New_Timetable.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 20:36:55</publishTime>
     </File>
     <File Include="Views/Timetable/Teachers_Timetable.cshtml">
       <publishTime>05/08/2019 20:22:03</publishTime>
@@ -8227,7 +8233,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:22:03</publishTime>
     </File>
     <File Include="Views/Timetable/Update_Timetable.cshtml">
-      <publishTime>05/08/2019 20:22:03</publishTime>
+      <publishTime>10/20/2019 20:34:55</publishTime>
     </File>
     <File Include="Views/Timetable/ViewTimetable.cshtml">
       <publishTime>05/08/2019 18:35:58</publishTime>
@@ -8269,7 +8275,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/Timetable_Entries/New.cshtml">
-      <publishTime>05/02/2019 13:15:29</publishTime>
+      <publishTime>10/20/2019 20:28:33</publishTime>
     </File>
     <File Include="Views/Timetable_Entries/_Employee_List.cshtml">
       <publishTime>05/08/2019 20:22:03</publishTime>
@@ -8299,7 +8305,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:29</publishTime>
     </File>
     <File Include="Views/User/Edit.cshtml">
-      <publishTime>10/04/2019 13:19:20</publishTime>
+      <publishTime>10/20/2019 19:58:10</publishTime>
     </File>
     <File Include="Views/User/Edit_Privilege.cshtml">
       <publishTime>05/08/2019 20:22:03</publishTime>
@@ -8362,7 +8368,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:30</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>10/18/2019 20:55:09</publishTime>
+      <publishTime>11/08/2019 00:35:26</publishTime>
     </File>
   </ItemGroup>
 </Project>
