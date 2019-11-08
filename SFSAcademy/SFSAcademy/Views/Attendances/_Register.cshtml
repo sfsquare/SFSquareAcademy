@@ -1,4 +1,5 @@
 ﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
     List<DateTime> dates = (List<DateTime>)ViewData["dates"];
     IEnumerable<STUDENT> Students = (IEnumerable<STUDENT>)ViewData["Students"];
     SUBJECT sub = (SUBJECT)ViewData["sub"];
@@ -130,7 +131,6 @@
                 {
                     foreach (var date in dates)
                     {
-                        SFSAcademyEntities db = new SFSAcademyEntities();
                         var absetNotNull = db.ATTENDENCEs.Where(x => x.MONTH_DATE != null).ToList();
                         var absent = absetNotNull.Where(x => x.STDNT_ID == student.ID && x.MONTH_DATE.Value.ToShortDateString() == date.ToShortDateString()).FirstOrDefault();
                         if (current_day.ToShortDateString() == date.ToShortDateString())
@@ -173,7 +173,6 @@
                 {
                     foreach (var date in dates)
                     {
-                        SFSAcademyEntities db = new SFSAcademyEntities();
                         var absent = db.SUBJECT_LEAVE.Where(x => x.STDNT_ID == student.ID && x.MONTH_DATE == date && x.SUBJECT_ID == sub.ID).FirstOrDefault();
                         if (current_day.ToShortDateString() == date.ToShortDateString())
                         {

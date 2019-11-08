@@ -107,7 +107,6 @@ namespace SFSAcademy
                     Olduser.IS_DEL = true;
                     db.Entry(Olduser).State = EntityState.Modified;
                 }
-                db.GUARDIANs.Remove(this);
                 db.SaveChanges();
                 return true;
             }

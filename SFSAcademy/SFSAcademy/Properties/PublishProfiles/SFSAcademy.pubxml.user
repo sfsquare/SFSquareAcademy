@@ -154,10 +154,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/27/2016 21:50:24</publishTime>
     </File>
     <File Include="bin/SFSAcademy.dll">
-      <publishTime>11/08/2019 00:35:19</publishTime>
+      <publishTime>11/08/2019 16:14:07</publishTime>
     </File>
     <File Include="bin/SFSAcademy.pdb">
-      <publishTime>11/08/2019 00:35:19</publishTime>
+      <publishTime>11/08/2019 16:14:07</publishTime>
     </File>
     <File Include="bin/System.Buffers.dll">
       <publishTime>05/15/2018 13:29:34</publishTime>
@@ -4417,7 +4417,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2019 13:15:27</publishTime>
     </File>
     <File Include="Content/stylesheets/finance/batch_fees_report.css">
-      <publishTime>05/02/2019 13:15:27</publishTime>
+      <publishTime>11/08/2019 12:24:33</publishTime>
     </File>
     <File Include="Content/stylesheets/finance/categories.css">
       <publishTime>05/02/2019 13:15:27</publishTime>
@@ -6679,7 +6679,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/29/2019 22:10:50</publishTime>
     </File>
     <File Include="Views/Attendances/_Register.cshtml">
-      <publishTime>07/07/2019 12:34:50</publishTime>
+      <publishTime>11/08/2019 16:07:09</publishTime>
     </File>
     <File Include="Views/Attendances/_Subjects.cshtml">
       <publishTime>10/18/2019 18:07:52</publishTime>
@@ -6754,13 +6754,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/05/2019 22:09:52</publishTime>
     </File>
     <File Include="Views/Batch_Transfers/Graduation.cshtml">
-      <publishTime>10/18/2019 18:14:11</publishTime>
+      <publishTime>11/08/2019 12:52:25</publishTime>
     </File>
     <File Include="Views/Batch_Transfers/Index.cshtml">
       <publishTime>10/18/2019 18:17:08</publishTime>
     </File>
     <File Include="Views/Batch_Transfers/Show.cshtml">
-      <publishTime>10/18/2019 18:18:40</publishTime>
+      <publishTime>11/08/2019 12:37:49</publishTime>
     </File>
     <File Include="Views/Batch_Transfers/Subject_Transfer.cshtml">
       <publishTime>10/14/2019 14:02:03</publishTime>
@@ -7336,7 +7336,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/08/2019 20:11:16</publishTime>
     </File>
     <File Include="Views/Finance/Batch_Fees_Report.cshtml">
-      <publishTime>05/08/2019 20:11:16</publishTime>
+      <publishTime>11/08/2019 12:26:54</publishTime>
     </File>
     <File Include="Views/Finance/Categories.cshtml">
       <publishTime>05/02/2019 13:15:29</publishTime>

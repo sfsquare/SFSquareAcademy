@@ -25,12 +25,12 @@
     <b id="transaction-report-title">@Model.FirstOrDefault().CourseData.CODE-@Model.FirstOrDefault().BatchData.NAME-@Model.FirstOrDefault().FeeCollectionData.NAME Transaction Report </b>
     <div id="fees-table">
         <div class="fees-th">
-            <div class="fees-table-description"><p> Student Name </p></div>
+            <div class="fees-table-description"><p> Student Name - Admission No. </p></div>
             <div class="fees-table-income"> Amount </div>
             <div class="fees-table-receipt-no"> Receipt No. </div>
             <div class="fees-table-date"> Date </div>
         </div>
-        @{ int index = 0; }
+        @{ int index = 1; }
         @foreach (var item in Model)
         {
             string selectedRow = "listeven";
@@ -38,13 +38,14 @@
             {
                 selectedRow = "listodd";
             }
-            <div class="@selectedRow">
-                <div class="fees-table-description">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME</div>
-                <div class="fees-table-income"> @item.FinanceTransactionData.AMT </div>
-                <div class="fees-table-receipt-no"> @item.FinanceTransactionData.RCPT_NO </div>
-                <div class="fees-table-date"> @item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString() </div>
-            </div>
+    <div class="@selectedRow">
+        <div class="fees-table-description">@item.StudentData.FIRST_NAME @item.StudentData.MID_NAME @item.StudentData.LAST_NAME   -  @item.StudentData.ADMSN_NO</div>
+        <div class="fees-table-income"> @item.FinanceTransactionData.AMT </div>
+        <div class="fees-table-receipt-no"> @item.FinanceTransactionData.ID </div>
+        <div class="fees-table-date"> @item.FinanceTransactionData.TRAN_DATE.Value.ToShortDateString() </div>
+    </div>
             total += (decimal)item.FinanceTransactionData.AMT;
+            index += 1;
         }
         <div class="fees-th">
             <div class="fees-table-description">Total Fees</div>

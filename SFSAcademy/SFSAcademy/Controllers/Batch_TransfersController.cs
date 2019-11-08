@@ -74,12 +74,26 @@ namespace SFSAcademy.Controllers
                 {
                     foreach(var s in Students)
                     {
-                        STUDENT student = db.STUDENTs.Find(s.ID);
-                        BATCH_STUDENT NewBs = new BATCH_STUDENT() { STDNT_ID = student.ID, BTCH_ID = student.BTCH_ID };
-                        db.BATCH_STUDENT.Add(NewBs);
-                        student.BTCH_ID = Transfer_To;
-                        student.HAS_PD_FE = false;
-                        db.Entry(student).State = EntityState.Modified;
+                        var paid_fees_val = (from ff in db.FINANCE_FEE
+                                             join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                             join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                             where ff.STDNT_ID == s.ID && ff.IS_PD == false
+                                             select new StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                        if (paid_fees_val != null && paid_fees_val.Count() != 0)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, s.Full_Name, " with Admission Number ", s.ADMSN_NO," has fees due which need to be cleared before transfer. ");
+                        }
+                        else
+                        {
+
+                            STUDENT student = db.STUDENTs.Find(s.ID);
+                            BATCH_STUDENT NewBs = new BATCH_STUDENT() { STDNT_ID = student.ID, BTCH_ID = student.BTCH_ID };
+                            db.BATCH_STUDENT.Add(NewBs);
+                            student.BTCH_ID = Transfer_To;
+                            student.HAS_PD_FE = false;
+                            db.Entry(student).State = EntityState.Modified;
+                            ViewBag.Notice = string.Concat(ViewBag.Notice, s.Full_Name, " with Admission Number ", s.ADMSN_NO, " is Trasferred successfully. ");
+                        }
                     }
                     try { db.SaveChanges(); }
                     catch (DbEntityValidationException e)
@@ -107,8 +121,7 @@ namespace SFSAcademy.Controllers
                         }
                     }
                 }
-                ViewBag.Notice = "Trasferred students successfully";
-                return RedirectToAction("Index", new { Notice = ViewBag.Notice });
+                return RedirectToAction("Show", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }
             else
             {
@@ -148,32 +161,49 @@ namespace SFSAcademy.Controllers
             students = students.Where(x => x.Select == true);
             foreach (var s in students)
             {
-                admission_list.Add(s.ADMSN_NO);
-            }
-            foreach (var s in students)
-            {
-                s.Archive_Student(Status_Description);
-            }
-            var stu = db.STUDENTs.Where(x => x.BTCH_ID == batch.ID).ToList();
-            if(stu == null || stu.Count() == 0)
-            {
-                batch.IS_ACT = false;
-                db.Entry(batch).State = EntityState.Modified;
-                foreach(var es in db.EMPLOYEES_SUBJECT.Include(x=>x.SUBJECT).Where(x=>x.SUBJECT.BTCH_ID == batch.ID))
+                var paid_fees_val = (from ff in db.FINANCE_FEE
+                                     join st in db.STUDENTs on ff.STDNT_ID equals st.ID
+                                     join fc in db.FINANCE_FEE_COLLECTION on ff.FEE_CLCT_ID equals fc.ID
+                                     where ff.STDNT_ID == s.ID && ff.IS_PD == false
+                                     select new StundentFee { FeeCollectionData = fc, StudentData = st, FinanceFeeData = ff }).OrderBy(x => x.FeeCollectionData.DUE_DATE).Distinct();
+                if (paid_fees_val != null && paid_fees_val.Count() != 0)
                 {
-                    db.EMPLOYEES_SUBJECT.Remove(es);
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, s.Full_Name, " with Admission Number ", s.ADMSN_NO, " has fees due which need to be cleared before Graduation. ");
                 }
-                try { 
-                    db.SaveChanges();
-                }
-                catch (Exception e) { 
-                    ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
-                    return View();
+                else
+                {
+                    admission_list.Add(s.ADMSN_NO);
+                    if(s.Archive_Student(Status_Description))
+                    {
+                        var stu = db.STUDENTs.Where(x => x.BTCH_ID == batch.ID).ToList();
+                        if (stu == null || stu.Count() == 0)
+                        {
+                            batch.IS_ACT = false;
+                            db.Entry(batch).State = EntityState.Modified;
+                            foreach (var es in db.EMPLOYEES_SUBJECT.Include(x => x.SUBJECT).Where(x => x.SUBJECT.BTCH_ID == batch.ID))
+                            {
+                                db.EMPLOYEES_SUBJECT.Remove(es);
+                            }
+                        }
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (Exception e)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message);
+                            return View();
+                        }
+                        ViewBag.Notice = string.Concat(ViewBag.Notice, s.Full_Name, " with Admission Number ", s.ADMSN_NO, " is Graduated successfully. ");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, s.Full_Name, " with Admission Number ", s.ADMSN_NO, " could not be Graduated. Contact administrator. ");
+                    }                  
                 }
             }
             TempData["admission_list"] = admission_list;
-            ViewBag.Notice = "Graduated selected students successfully";
-            return RedirectToAction("Graduation", new {id = id, Notice = ViewBag.Notice });
+            return RedirectToAction("Graduation", new {id = id, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
         }
         public ActionResult Subject_Transfer(int? id, string Notice, string ErrorMessage)
         {

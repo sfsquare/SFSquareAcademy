@@ -1109,69 +1109,19 @@ namespace SFSAcademy.Controllers
         public ActionResult Student_TC_Generate(string id)
         {
             STUDENT sTUDENT = db.STUDENTs.Find(Convert.ToInt32(this.Session["STD_ID_FOR_TC"]));
+            BATCH batch = db.BATCHes.Find(sTUDENT.BTCH_ID);
             Session.Remove("STD_ID_FOR_TC");
             ViewBag.ADMSN_NO = sTUDENT.ADMSN_NO;
             ViewBag.Status_Id = id;
-            var query = from m in db.GUARDIANs
-                        where m.WARD_ID == sTUDENT.ID
-                        select m;
-            foreach (var entity in query.ToList())
+
+            if (sTUDENT.Archive_Student(id))
             {
-                db.GUARDIANs.Remove(entity);
-                try { db.SaveChanges(); }
-                catch (Exception e)
-                {
-                    ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                    return PartialView("_Student_TC_Generate");
-                }
-
+                ViewBag.Notice = "Student removed successfully";
             }
-
-            var aRCHIVEDsTD = new ARCHIVED_STUDENT() { ADMSN_NO = sTUDENT.ADMSN_NO, CLS_ROLL_NO = sTUDENT.CLS_ROLL_NO, ADMSN_DATE = sTUDENT.ADMSN_DATE, FIRST_NAME = sTUDENT.FIRST_NAME, MID_NAME = sTUDENT.MID_NAME, LAST_NAME = sTUDENT.LAST_NAME, BTCH_ID = sTUDENT.BTCH_ID, DOB = sTUDENT.DOB, GNDR = sTUDENT.GNDR, BLOOD_GRP = sTUDENT.BLOOD_GRP, BIRTH_PLACE = sTUDENT.BIRTH_PLACE, NTLTY_ID = sTUDENT.NTLTY_ID, LANG = sTUDENT.LANG, RLGN= sTUDENT.RLGN, ADDR_LINE1= sTUDENT.ADDR_LINE1, ADDR_LINE2= sTUDENT.ADDR_LINE2, CITY= sTUDENT.CITY, STATE= sTUDENT.STATE, PIN_CODE= sTUDENT.PIN_CODE, CTRY_ID= sTUDENT.CTRY_ID, PH1= sTUDENT.PH1.ToString(), PH2= sTUDENT.PH2.ToString(), EML= sTUDENT.EML, PHTO_FILENAME= sTUDENT.PHTO_FILENAME, PHTO_CNTNT_TYPE= sTUDENT.PHTO_CNTNT_TYPE, PHTO_DATA= sTUDENT.PHTO_DATA.ToString(), STAT_DESCR= id.ToString(), IS_ACT= sTUDENT.IS_ACT, IS_DEL= sTUDENT.IS_DEL, IMMDT_CNTCT_ID= sTUDENT.IMMDT_CNTCT_ID, IS_SMS_ENABL= sTUDENT.IS_SMS_ENABL, CREATED_AT= sTUDENT.CREATED_AT, UPDATED_AT= sTUDENT.UPDATED_AT, PHTO_FILE_SIZE= sTUDENT.PHTO_FILE_SIZE, FRM_ID= sTUDENT.ID, STDNT_CAT_ID = sTUDENT.STDNT_CAT_ID};
-            db.ARCHIVED_STUDENT.Add(aRCHIVEDsTD);
-            try { db.SaveChanges(); }
-            catch (DbEntityValidationException e)
+            else
             {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        ViewBag.TCErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
-                    }
-                }
-                return PartialView("_Student_TC_Generate");
+                ViewBag.ErrorMessage = "Student could not be removed. Contact administrator.";
             }
-            catch (Exception e)
-            {
-                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                return PartialView("_Student_TC_Generate");
-            }
-
-
-            sTUDENT.IS_ACT = false;
-            sTUDENT.IS_DEL = true;
-            sTUDENT.STAT_DESCR = id.ToString();
-            sTUDENT.UPDATED_AT = System.DateTime.Now;
-            db.Entry(sTUDENT).State = EntityState.Modified;
-            try { db.SaveChanges(); }
-            catch (DbEntityValidationException e)
-            {
-                foreach (var eve in e.EntityValidationErrors)
-                {
-                    foreach (var ve in eve.ValidationErrors)
-                    {
-                        ViewBag.TCErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);
-                    }
-                }
-                return PartialView("_Student_TC_Generate");
-            }
-            catch (Exception e)
-            {
-                ViewBag.TCErrorMessage = string.Concat(ViewBag.TCErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                return PartialView("_Student_TC_Generate");
-            }
-
-
             return PartialView("_Student_TC_Generate");
         }
 
