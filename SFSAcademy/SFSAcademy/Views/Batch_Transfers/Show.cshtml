@@ -2,6 +2,7 @@
     IEnumerable<STUDENT> Students = (IEnumerable<STUDENT>)ViewData["Students"];
     COURSE course = (COURSE)ViewData["course"];
     BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<SFSAcademy.StundentFee> paid_fees = (IEnumerable<SFSAcademy.StundentFee>)ViewData["paid_fees"];
 }
 @{
     ViewBag.Title = "Show";
@@ -34,10 +35,6 @@
     @using (Html.BeginForm("Transfer", "Batch_Transfers", FormMethod.Post, new { @encType = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
-        if (ViewBag.ErrorMessage != null)
-        {
-            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-        }
         @Html.Hidden("id", batch.ID)
         <div class="label-field-pair">
             <label for="subject_id">Transfer To</label>
@@ -45,8 +42,11 @@
                 @Html.DropDownList("Transfer_To", null, htmlAttributes: new { @class = "form-control" })
             </div>
         </div>
-        <p>Uncheck Message.</p>
-
+        <p>Uncheck Messages:</p>
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
         <ul id="category-list">
             <li class="listheading">
                 <div class="heading-no">Adm no.</div>
