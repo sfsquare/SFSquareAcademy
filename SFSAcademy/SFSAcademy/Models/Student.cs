@@ -103,6 +103,7 @@ namespace SFSAcademy
 
     }
 
+
     [MetadataType(typeof(StudentMetadata))]
     public partial class STUDENT : IValidatableObject, IHasTimeStamp, IHasBeforeSave
     {
@@ -346,7 +347,12 @@ namespace SFSAcademy
                 db.SaveChanges();
                 foreach (var g in guardians)
                 {
-                    g.Archive_Guardian(archived_student.ID);
+                    if(g.Archive_Guardian(archived_student.ID) == false)
+                    {
+                        return false;
+                    }
+                    var GuardianToremove = db.GUARDIANs.Find(g.ID);
+                    db.GUARDIANs.Remove(GuardianToremove);
                 }
                 var student_exam_scores = db.EXAM_SCORE.Where(x => x.STDNT_ID == this.ID);
                 foreach (var s in student_exam_scores)
@@ -355,7 +361,9 @@ namespace SFSAcademy
                     db.ARCHIVED_EXAM_SCORE.Add(ArchivedExamScore);
                     db.EXAM_SCORE.Remove(s);
                 }
-                db.STUDENTs.Remove(this);
+                this.IS_DEL = true;
+                this.IS_ACT = false;
+                db.Entry(this).State = EntityState.Modified;
                 db.SaveChanges();
                 return true;
             }

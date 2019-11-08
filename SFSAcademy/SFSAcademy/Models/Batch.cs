@@ -348,7 +348,7 @@ namespace SFSAcademy
         }
         public IEnumerable<STUDENT> All_Students()
         {
-            return db.STUDENTs.Where(x => x.BTCH_ID == this.ID).AsEnumerable();
+            return db.STUDENTs.Where(x => x.BTCH_ID == this.ID && x.IS_DEL == false).AsEnumerable();
         }
         public IEnumerable<SUBJECT> Normal_Batch_Subject()
         {

@@ -24,10 +24,6 @@
     Greduation from @batch.Full_Name
 </div>
 <div id="page-yield">
-    @if (ViewBag.Notice != null)
-    {
-        <p class="flash-msg"> @ViewBag.Notice </p>
-    }
     @if (id_lists != null && id_lists.Count() != 0)
     {
         <a href="@Url.Action("Generate_All_TC_Pdf", "Student",new { stud = id_lists})" class="user_button" target="_blank">Generate TC for ALL</a>
@@ -38,20 +34,22 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
-        if (ViewBag.ErrorMessage != null)
+        <p>Graduation Messages:</p>
+        if (ViewBag.Notice != null)
         {
-            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            <p class="flash-msg"> @ViewBag.Notice </p>
         }
-        <p>Graduation Message</p>
         <div class="label-field-pair">
             <label for="subject_id">Status Description : </label>
             <div class="text-input-bg">
                 @Html.Editor("Status_Description", new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
-
-
-        <p>Uncheck Message.</p>
+        <p>Uncheck Messages:</p>
+        if (ViewBag.ErrorMessage != null)
+        {
+            <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+        }
         <ul id="category-list">
             <li class="listheading">
                 <div class="heading-no">Adm no.</div>
@@ -85,11 +83,32 @@
                 i += 1;
             }
         </ul>
-        <input type="submit" value="► Save" class="submit_button" />
+        <input type="submit" value="► Save" class="submit_button" onclick="if (confirm_show()) return true; else return false;" />
 
     }
 
     <div class="extender"></div>
 </div>
+@section Scripts {
+
+    <script type="text/javascript">
+        function confirm_show() {
+            var elt = $('#Status_Description');
+            if (elt.val() == "") {
+                alert('Status description must be entered in order to proceed.');
+                return false;
+            }
+            else {
+                if (confirm('Are you sure to greduate selected students?')) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+    </script>
+}
 
 
