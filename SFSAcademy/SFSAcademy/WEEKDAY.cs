@@ -29,9 +29,9 @@ namespace SFSAcademy
         public bool IS_DEL { get; set; }
         public Nullable<int> CLASS_TIMING_SET_ID { get; set; }
     
+        public virtual BATCH BATCH { get; set; }
         public virtual CLASS_TIMING_SET CLASS_TIMING_SET { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
-        public virtual BATCH BATCH { get; set; }
     }
 }

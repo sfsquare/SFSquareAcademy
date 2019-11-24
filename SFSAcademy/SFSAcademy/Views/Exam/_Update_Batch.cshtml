@@ -1,0 +1,10 @@
+﻿@{
+    IEnumerable<BATCH> batch = (IEnumerable<BATCH>)ViewData["batch"];
+}
+
+@foreach (var bt in batch)
+{
+    <div class="link-box">
+        <div class="link-heading"><a href="@Url.Action("Index", "Exam_Groups",new { id = bt.ID})">@bt.COURSE.Full_Name: @bt.Full_Name</a> </div>
+    </div>
+}

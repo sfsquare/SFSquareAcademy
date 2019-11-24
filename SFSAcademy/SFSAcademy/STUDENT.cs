@@ -20,6 +20,7 @@ namespace SFSAcademy
             this.ARCHIVED_STUDENT = new HashSet<ARCHIVED_STUDENT>();
             this.ASSESSMENT_SCORE = new HashSet<ASSESSMENT_SCORE>();
             this.ATTENDENCEs = new HashSet<ATTENDENCE>();
+            this.BATCH_STUDENT = new HashSet<BATCH_STUDENT>();
             this.CCE_REPORTS = new HashSet<CCE_REPORTS>();
             this.EXAM_SCORE = new HashSet<EXAM_SCORE>();
             this.FEE_COLLECTION_DISCOUNT = new HashSet<FEE_COLLECTION_DISCOUNT>();
@@ -28,6 +29,7 @@ namespace SFSAcademy
             this.FINANCE_FEE_PARTICULAR = new HashSet<FINANCE_FEE_PARTICULAR>();
             this.FINANCE_FEE_STRUCTURE_ELEMENT = new HashSet<FINANCE_FEE_STRUCTURE_ELEMENT>();
             this.FINANCE_TRANSACTION = new HashSet<FINANCE_TRANSACTION>();
+            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
             this.GUARDIANs = new HashSet<GUARDIAN>();
             this.STORE_SELLING = new HashSet<STORE_SELLING>();
             this.STORE_SELLING_BACKUP = new HashSet<STORE_SELLING_BACKUP>();
@@ -37,8 +39,6 @@ namespace SFSAcademy
             this.STUDENT_PREVIOUS_SUBJECT_MARK = new HashSet<STUDENT_PREVIOUS_SUBJECT_MARK>();
             this.STUDENT_SUBJECT = new HashSet<STUDENT_SUBJECT>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
-            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
-            this.BATCH_STUDENT = new HashSet<BATCH_STUDENT>();
         }
     
         public int ID { get; set; }
@@ -93,6 +93,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ATTENDENCE> ATTENDENCEs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BATCH_STUDENT> BATCH_STUDENT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CCE_REPORTS> CCE_REPORTS { get; set; }
         public virtual COUNTRY COUNTRY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -109,6 +111,8 @@ namespace SFSAcademy
         public virtual ICollection<FINANCE_FEE_STRUCTURE_ELEMENT> FINANCE_FEE_STRUCTURE_ELEMENT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_TRANSACTION> FINANCE_TRANSACTION { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GUARDIAN> GUARDIANs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -129,9 +133,5 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SUBJECT_LEAVE> SUBJECT_LEAVE { get; set; }
         public virtual USER USER { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BATCH_STUDENT> BATCH_STUDENT { get; set; }
     }
 }

@@ -1,0 +1,151 @@
+﻿@model IEnumerable<ExamFormDetails>
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    COURSE course = (COURSE)ViewData["course"];
+}
+<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+         $(".LoaderBox").hide();
+    });
+
+    function NewBatchExamGroupPath() {
+        var id = $('#batch_id').val();
+        var ename = $('#name').val();
+        $(".LoaderBox").show();
+        var url = "/Exam_Groups/New?id=" + id  + "&ename=" + ename; 
+        window.location.href = url;
+    }
+    $(function () {
+        $(".datepicker").datepicker({
+            showOn: "button",
+            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+            dateFormat: 'dd/mm/yy 00:00',
+            buttonImageOnly: true,
+            changeMonth: true,
+            changeYear: true,
+            showAnim: 'slideDown',
+        });
+    });
+    $('#maximum_marks').blur(function () { var Marks = $('#maximum_marks').val(); $('.max_marks').each(function () { this.value = Marks; }); });
+    $('#minimum_marks').blur(function (){var Marks = $('#minimum_marks').val(); $('.min_marks').each(function (){this.value = Marks;});});
+</script>
+@using (Ajax.BeginForm("Create", "Exam_Groups", null, new AjaxOptions { HttpMethod = "POST" }, htmlAttributes: new { @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("BTCH_ID", batch.ID)
+    <div class="exam-basic-details">
+
+        <div class="label-field-pair">
+            @Html.Label("NAME", "Name", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.Editor("NAME", new { htmlAttributes = new { @class = "form-control", required = "required", @Value = ViewBag.name } })
+                <span class="necessary-field" style="font-size:small">*</span>
+                @Html.ValidationMessage("NAME", "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+            </div>
+        </div>
+        @{ string type = ViewBag.type; string cce_exam_category_id = ViewBag.cce_exam_category_id;}
+        @Html.Hidden("EXAM_TYPE", type)
+        @if (batch.CCE_Enabled() == false)
+        {
+    <div class="label-field-pair">
+        @Html.Label("ExamType", "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="text-input-bg">
+            @Html.Editor("ExamType", new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @Value = (type == "Marks" ? "Marks" : "Marks and Grades") } })
+        </div>
+        <a href="#" onclick="NewBatchExamGroupPath()" class="type_link">Change Type</a>
+        <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+    </div>
+        }
+        else
+        {
+            <div class="label-field-pair">
+                @Html.Label("CCE_EXAM_CAT_ID", "CCE Exam Category", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.DropDownList("CCE_EXAM_CAT_ID", null, htmlAttributes: new { @class = "form-control", @Value = cce_exam_category_id })
+                    @Html.ValidationMessage("CCE_EXAM_CAT_ID", "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                </div>
+            </div>
+        }
+        <div class="label-field-pair">
+            @Html.Label("maximum_marks_label", "Maximum Marks", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.Editor("maximum_marks", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="label-field-pair">
+            @Html.Label("minimum_marks_label", "Minimum Marks", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="text-input-bg">
+                @Html.Editor("minimum_marks", new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+    </div>
+    <h4> Enter exam related details here:</h4>
+
+    <table width="100%" id="listing">
+        <tr class="tr-head">
+            <td>Subject Name</td>
+            <td>Max</td>
+            <td>Min</td>
+            <td>Start Time</td>
+            <td>End Time</td>
+            <td>Do not create</td>
+        </tr>
+        @{int j = 1;}
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            string cycle = "tr-even";
+            if (j % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            <tr class="@cycle">
+                <td class="col-2">
+                    @Html.LabelFor(X => X.ElementAt(i).SubjectData.NAME, Model.ElementAt(i).SubjectData.NAME, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.Hidden("[" + i + "].Subject_Id", Model.ElementAt(i).Subject_Id)
+                </td>
+                <td class="col-1">
+                    <div class="label-field-pair2">
+                        <div class="text-input-bg2">
+                            @Html.TextBox("[" + i + "].Maximum_Marks", null, new { @class = "max_marks" })
+                        </div>
+                    </div>
+                </td>
+                <td class="col-1">
+                    <div class="label-field-pair2">
+                        <div class="text-input-bg2">
+                            @Html.TextBox("[" + i + "].Minimum_Marks", null, new { @class = "min_marks" })
+                        </div>
+                    </div>
+                </td>
+                <td class="col-1">
+                    <div class="label-field-pair3">
+                        <div class="text-input-bg3">
+                            @Html.TextBox("[" + i + "].Start_Time", null, new { @class = "m-wrap  datepicker", required = "required" })
+                            <span class="necessary-field" style="font-size:small">*</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="col-1">
+                    <div class="label-field-pair3">
+                        <div class="text-input-bg3">
+                            @Html.TextBox("[" + i + "].End_Time", null, new { @class = "m-wrap  datepicker", required = "required" })
+                            <span class="necessary-field" style="font-size:small">*</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="col-1">
+                    <div class="label-field-pair2">
+                        <div class="text-input-bg2">
+                            @Html.CheckBox("[" + i + "].Deleted", Model.ElementAt(i).Deleted)
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            j += 1;
+        }
+
+    </table>
+    <input type="submit" value="► Save Changes" class="submit_button2" />
+    <input type="hidden" value="@batch.ID" id="batch_id" name="batch_id" />
+    <input type="hidden" value='@ViewBag.name' name="name" id="name" />
+}

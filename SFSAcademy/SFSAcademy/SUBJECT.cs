@@ -19,13 +19,13 @@ namespace SFSAcademy
         {
             this.EMPLOYEES_SUBJECT = new HashSet<EMPLOYEES_SUBJECT>();
             this.EXAMs = new HashSet<EXAM>();
+            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
             this.PERIOD_ENTRIES = new HashSet<PERIOD_ENTRIES>();
             this.STUDENT_PREVIOUS_SUBJECT_MARK = new HashSet<STUDENT_PREVIOUS_SUBJECT_MARK>();
             this.STUDENT_SUBJECT = new HashSet<STUDENT_SUBJECT>();
             this.SUBJECT_LEAVE = new HashSet<SUBJECT_LEAVE>();
             this.TIMETABLE_ENTRY = new HashSet<TIMETABLE_ENTRY>();
             this.FA_GROUP = new HashSet<FA_GROUP>();
-            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
         }
     
         public int ID { get; set; }
@@ -43,11 +43,14 @@ namespace SFSAcademy
         public Nullable<int> BTCH_ID { get; set; }
         public bool LANG { get; set; }
     
+        public virtual BATCH BATCH { get; set; }
         public virtual ELECTIVE_GROUP ELECTIVE_GROUP { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EXAM> EXAMs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PERIOD_ENTRIES> PERIOD_ENTRIES { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -60,8 +63,5 @@ namespace SFSAcademy
         public virtual ICollection<TIMETABLE_ENTRY> TIMETABLE_ENTRY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FA_GROUP> FA_GROUP { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
-        public virtual BATCH BATCH { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -15,7 +16,7 @@ namespace SFSAcademy.Controllers
         private SFSAcademyEntities db = new SFSAcademyEntities();
 
         // GET: Exam_Groups
-        public ActionResult Index(int? id, string Notice, string ErrorMessage)
+        public ActionResult Index(int? id, string ename, string Notice, string ErrorMessage)
         {
             ViewBag.Notice = Notice;
             ViewBag.ErrorMessage = ErrorMessage;
@@ -25,24 +26,27 @@ namespace SFSAcademy.Controllers
             ViewData["exam_groups"] = exam_groups;
             var current_user = this.Session["CurrentUser"] as UserDetails;
             ViewData["current_user"] = current_user;
+            ViewBag.ename = ename;
             if (current_user.User.EMP_IND == true)
             {
                 var user_privileges = current_user.privilage_list;
                 ViewData["user_privileges"] = user_privileges;
-                var employee_subjects = db.EMPLOYEES_SUBJECT.Include(x=>x.SUBJECT).Where(x => x.EMP_ID == db.EMPLOYEEs.Where(p => p.USRID == current_user.User.ID).FirstOrDefault().ID).ToList();
+                var employee_subjects = db.EMPLOYEES_SUBJECT.Include(x => x.SUBJECT).Where(x => x.EMP_ID == db.EMPLOYEEs.Where(p => p.USRID == current_user.User.ID).FirstOrDefault().ID).ToList();
                 ViewData["employee_subjects"] = employee_subjects;
-                if((employee_subjects == null || employee_subjects.Count() == 0) && !user_privileges.Select(x => x.NAME).Contains("ExaminationControl") && !user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                if ((employee_subjects == null || employee_subjects.Count() == 0) && !user_privileges.Select(x => x.NAME).Contains("ExaminationControl") && !user_privileges.Select(x => x.NAME).Contains("EnterResults"))
                 {
                     ViewBag.ErrorMessage = "Sorry, you are not allowed to access that page.";
-                    return RedirectToAction("Dashboard", "User",new { id  = current_user.User.ID, ErrorMessage = ViewBag.ErrorMessage });
+                    return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID, ErrorMessage = ViewBag.ErrorMessage });
                 }
             }
             return View();
         }
 
         // GET: Exam_Groups/Create
-        public ActionResult New(int? id, int? exam_group_id, string ename)
+        public ActionResult New(int? id, int? exam_group_id, string ename, string ErrorMessage, string Notice)
         {
+            ViewBag.ErrorMessage = ErrorMessage;
+            ViewBag.Notice = Notice;
             BATCH batch = db.BATCHes.Find(id);
             ViewData["batch"] = batch;
             COURSE course = db.COURSEs.Find(batch.CRS_ID);
@@ -61,47 +65,109 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorMessage = "Sorry, you are not allowed to access that page.";
                 return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID });
             }
-            if(exam_group_id != null)
-            {
-
-                ViewData["exam_group"] = db.EXAM_GROUP.Find(exam_group_id);
-            }
             ViewBag.CCE_EXAM_CAT_ID = new SelectList(db.CCE_EXAM_CATEGORY, "ID", "NAME");
+            if (exam_group_id != null)
+            {
+                var exam_group = db.EXAM_GROUP.Include(x => x.EXAMs).Where(x => x.ID == exam_group_id).FirstOrDefault();
+                ViewData["exam_group"] = exam_group;
+                var exams = db.EXAM_GROUP.Where(x => x.ID == exam_group_id).Select(x => x.EXAMs).ToList();
+                ViewData["exams"] = exams;
+                ViewBag.CCE_EXAM_CAT_ID = new SelectList(db.CCE_EXAM_CATEGORY, "ID", "NAME", exam_group.CCE_EXAM_CAT_ID);
+            }
+
             return View();
         }
 
-        // POST: Exam_Groups/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,NAME,BTCH_ID,EXAM_TYPE,IS_PUB,RSULT_PUB,EXAM_DATE,IS_FINAL_EXAM,CCE_EXAM_CAT_ID")] EXAM_GROUP eXAM_GROUP)
+        public ActionResult Create(IEnumerable<ExamFormDetails> examDtList, int? BTCH_ID, string NAME, string EXAM_TYPE, int? CCE_EXAM_CAT_ID, int? maximum_marks, int? minimum_marks)
         {
-            if (ModelState.IsValid)
+            EXAM_GROUP exam_group = new EXAM_GROUP() { NAME = NAME, BTCH_ID = BTCH_ID, EXAM_TYPE = EXAM_TYPE, CCE_EXAM_CAT_ID = CCE_EXAM_CAT_ID };
+            var type = EXAM_TYPE;
+            ViewBag.type = type;
+            var error = false;
+            BATCH batch = db.BATCHes.Find(BTCH_ID);
+            ViewBag.maximum_marks = maximum_marks;
+            ViewBag.minimum_marks = minimum_marks;
+            if (type != "Grades")
             {
-                db.EXAM_GROUP.Add(eXAM_GROUP);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                foreach (var exam in examDtList)
+                {
+                    SUBJECT sub = db.SUBJECTs.Find(exam.Subject_Id);
+                    if (exam.Deleted == false && error == false)
+                    {
+                        if (exam.Maximum_Marks == null)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", sub.NAME, "-Maximum Marks can't be blank.");
+                            error = true;
+                        }
+                        if (exam.Minimum_Marks == null)
+                        {
+                            ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", sub.NAME, "-Minimum Marks can't be blank.");
+                            error = true;
+                        }
+                    }
+                }
             }
-
-            ViewBag.CCE_EXAM_CAT_ID = new SelectList(db.CCE_EXAM_CATEGORY, "ID", "NAME", eXAM_GROUP.CCE_EXAM_CAT_ID);
-            ViewBag.BTCH_ID = new SelectList(db.BATCHes, "ID", "NAME", eXAM_GROUP.BTCH_ID);
-            return View(eXAM_GROUP);
+            if (error == false)
+            {
+                db.EXAM_GROUP.Add(exam_group);
+                db.SaveChanges();               
+                foreach (var exam in examDtList)
+                {
+                    if (exam.Deleted == false)
+                    {
+                        EXAM NewExam = new EXAM() { EXAM_GRP_ID = exam_group.ID, MAX_MKS = exam.Maximum_Marks, MIN_MKS = exam.Minimum_Marks, START_TIME = exam.Start_Time, END_TIME = exam.End_Time, SUBJ_ID = exam.Subject_Id };
+                        db.EXAMs.Add(NewExam);
+                    }
+                }
+                try
+                {
+                    db.SaveChanges();
+                    foreach(var exam in db.EXAMs.Where(x=>x.EXAM_GRP_ID == exam_group.ID).ToList())
+                    {
+                        exam.Create_Exam_Event();
+                    }
+                    //db.SaveChanges();
+                    ViewBag.Notice = "Exam group created successfully.";
+                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return RedirectToAction("New", new { id = batch.ID, ename = exam_group.NAME, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
+            else
+            {
+                if (batch.CCE_Enabled())
+                {
+                    ViewData["cce_exam_categories"] = db.CCE_EXAM_CATEGORY.ToList();
+                }
+                return RedirectToAction("New", new { id = batch.ID, ename = exam_group.NAME, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+            }
         }
 
-        public ActionResult Show(int? id)
+        public ActionResult Show(int? id, string ErrorMesasge, string Notice)
         {
-            EXAM_GROUP exam_group = db.EXAM_GROUP.Include(x=>x.EXAMs).Where(x=>x.ID == id).FirstOrDefault();
+            ViewBag.ErroMessage = ErrorMesasge;
+            ViewBag.Notice = Notice;
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Include(x => x.EXAMs).Where(x => x.ID == id).FirstOrDefault();
             ViewData["exam_group"] = exam_group;
-
+            var exam_list = (from ex in db.EXAMs
+                             join sub in db.SUBJECTs on ex.SUBJ_ID equals sub.ID
+                             where ex.EXAM_GRP_ID == id
+                             select new ExamFormDetails { SubjectData = sub, ExamData = ex, Subject_Id = sub.ID, Deleted = false, End_Time = ex.END_TIME, Start_Time = ex.START_TIME, Maximum_Marks = ex.MAX_MKS, Minimum_Marks = ex.MIN_MKS })
+                 .OrderBy(x => x.SubjectData.NAME).ToList();
+            ViewData["exams"] = exam_list;
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
             ViewData["batch"] = batch;
             var current_user = this.Session["CurrentUser"] as UserDetails;
             ViewData["current_user"] = current_user;
+            var user_privileges = current_user.privilage_list;
+            ViewData["user_privileges"] = user_privileges;
             if (current_user.User.EMP_IND == true)
             {
-                var user_privileges = current_user.privilage_list;
-                ViewData["user_privileges"] = user_privileges;
                 var employee_subjects = db.EMPLOYEES_SUBJECT.Include(x => x.SUBJECT).Where(x => x.EMP_ID == db.EMPLOYEEs.Where(p => p.USRID == current_user.User.ID).FirstOrDefault().ID).ToList();
                 ViewData["employee_subjects"] = employee_subjects;
                 if ((employee_subjects == null || employee_subjects.Count() == 0) && !user_privileges.Select(x => x.NAME).Contains("ExaminationControl") && !user_privileges.Select(x => x.NAME).Contains("EnterResults"))
@@ -114,18 +180,36 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Exam_Groups/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, string ename, int? MaxMarks, int? MinMarks)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(id);
-            ViewData["exam_group"] = exam_group;
+            EXAM exam = db.EXAMs.Find(id);
+            ViewData["ExamId"] = exam.ID;
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(exam.EXAM_GRP_ID);
+            ViewData["exam_group"] = exam_group;           
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
             ViewData["batch"] = batch;
             COURSE course = db.COURSEs.Find(batch.CRS_ID);
             ViewData["course"] = course;
+            ViewBag.ename = ename;
+            ViewBag.MaxMarks = MaxMarks;
+            ViewBag.MinMarks = MinMarks;
+            if (exam_group.EXAM_TYPE != "Grades")
+            {
+                if (MaxMarks == null)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", exam.SUBJECT.NAME, "-Maximum Marks can't be blank.");
+                    return RedirectToAction("Show", new { id = exam_group.ID, ErrorMessage = ViewBag.ErrorMessage });
+                }
+                if (MinMarks == null)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", exam.SUBJECT.NAME, "-Minimum Marks can't be blank.");
+                    return RedirectToAction("Show", new { id = exam_group.ID, ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
             if (exam_group == null)
             {
                 return HttpNotFound();
@@ -135,7 +219,7 @@ namespace SFSAcademy.Controllers
                 ViewData["cce_exam_categories"] = db.CCE_EXAM_CATEGORY.ToList();
             }
 
-            return View(exam_group);
+            return View();
         }
 
         // POST: Exam_Groups/Edit/5
@@ -143,40 +227,52 @@ namespace SFSAcademy.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,NAME,BTCH_ID,EXAM_TYPE,IS_PUB,RSULT_PUB,EXAM_DATE,IS_FINAL_EXAM,CCE_EXAM_CAT_ID")] EXAM_GROUP exam_group)
+        public ActionResult Edit(int? ExamGroupId, int? ExamId, int? MaxMarks, int? MinMarks, string NAME)
         {
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(ExamGroupId);
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
-            EXAM_GROUP exam_group_upd = db.EXAM_GROUP.Find(exam_group.ID);
-            if (ModelState.IsValid)
-            {               
-                exam_group_upd.NAME = exam_group.NAME;
-                db.Entry(exam_group_upd).State = EntityState.Modified;
+            EXAM exam = db.EXAMs.Find(ExamId);
+            if(MaxMarks != null && MinMarks != null)
+            {
+                exam.MAX_MKS = MaxMarks;
+                exam.MIN_MKS = MinMarks;
+                db.Entry(exam).State = EntityState.Modified;
+            }
+            exam_group.NAME = NAME;
+            db.Entry(exam_group).State = EntityState.Modified;
+            try
+            {
                 db.SaveChanges();
                 ViewBag.Notice = "Updated exam group successfully.";
-                return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice });
+                return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }
-            if (batch.CCE_Enabled())
+            catch (Exception e)
             {
-                ViewData["cce_exam_categories"] = db.CCE_EXAM_CATEGORY.ToList();
+                if (batch.CCE_Enabled())
+                {
+                    ViewData["cce_exam_categories"] = db.CCE_EXAM_CATEGORY.ToList();
+                }
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                return View();
             }
-            return View(exam_group_upd);
         }
 
         // GET: Exam_Groups/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Delete(int? id, int? ExamId)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EXAM_GROUP eXAM_GROUP = db.EXAM_GROUP.Find(id);
-            if (eXAM_GROUP == null)
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(id);
+            BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
+            if (exam_group == null)
             {
                 return HttpNotFound();
             }
             var current_user = this.Session["CurrentUser"] as UserDetails;
             ViewData["current_user"] = current_user;
-            if(current_user.User.EMP_IND == true)
+            if (current_user.User.EMP_IND == true)
             {
                 var user_privileges = current_user.privilage_list;
                 var employee_subjects = db.EMPLOYEES_SUBJECT.Include(x => x.SUBJECT).Where(x => x.EMP_ID == db.EMPLOYEEs.Where(p => p.USRID == current_user.User.ID).FirstOrDefault().ID).ToList();
@@ -187,10 +283,44 @@ namespace SFSAcademy.Controllers
                     return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID, ErrorMessage = ViewBag.ErrorMessage });
                 }
             }
-            ViewBag.Notice = "Exam group deleted successfully";
-            db.EXAM_GROUP.Remove(eXAM_GROUP);
-            db.SaveChanges();
-            return RedirectToAction("Index", new { Notice = ViewBag.Notice});
+            if(ExamId == null)
+            {
+                foreach (var exams in db.EXAMs.Where(x => x.EXAM_GRP_ID == exam_group.ID).ToList())
+                {
+                    db.EXAMs.Remove(exams);
+                }
+                db.EXAM_GROUP.Remove(exam_group);
+                try
+                {
+                    db.SaveChanges();
+                    ViewBag.Notice = "Exam group deleted successfully";
+                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
+            else
+            {
+                EXAM Exam = db.EXAMs.Find(ExamId);
+                db.EXAMs.Remove(Exam);
+                //db.EXAM_GROUP.Remove(exam_group);
+                try
+                {
+                    db.SaveChanges();
+                    ViewBag.Notice = "Exam deleted successfully";
+                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+                catch (Exception e)
+                {
+                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+                }
+            }
+            
+            
         }
 
         [AllowAnonymous]

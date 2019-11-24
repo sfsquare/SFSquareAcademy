@@ -35,6 +35,7 @@ namespace SFSAcademy
         public Nullable<int> MSTR_CATGRY_ID { get; set; }
         public string FEE_FREQ { get; set; }
     
+        public virtual BATCH BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FEE_COLLECTION_DISCOUNT> FEE_COLLECTION_DISCOUNT { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -45,6 +46,5 @@ namespace SFSAcademy
         public virtual ICollection<FINANCE_FEE_COLLECTION> FINANCE_FEE_COLLECTION { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<FINANCE_FEE_PARTICULAR> FINANCE_FEE_PARTICULAR { get; set; }
-        public virtual BATCH BATCH { get; set; }
     }
 }

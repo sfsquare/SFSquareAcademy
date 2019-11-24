@@ -17,7 +17,7 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public CCE_WEIGHTAGE()
         {
-            this.CCE_WEIGHTAGES_COURSE = new HashSet<CCE_WEIGHTAGES_COURSE>();
+            this.COURSEs = new HashSet<COURSE>();
         }
     
         public int ID { get; set; }
@@ -29,6 +29,6 @@ namespace SFSAcademy
     
         public virtual CCE_EXAM_CATEGORY CCE_EXAM_CATEGORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CCE_WEIGHTAGES_COURSE> CCE_WEIGHTAGES_COURSE { get; set; }
+        public virtual ICollection<COURSE> COURSEs { get; set; }
     }
 }

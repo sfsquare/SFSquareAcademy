@@ -21,27 +21,34 @@ namespace SFSAcademy
     {
         IEnumerable<ValidationResult> Before_Destroy(ValidationContext validationContext);
     }
+    public interface IHasAfterCreate
+    {
+        void After_Create();
+    }
+    public interface IHasAfterUpdate
+    {
+        void After_Update();
+    }
 
     public partial class SFSAcademyEntities : DbContext
     {
-
+        private int SaveChangeReturn { get; set; }
         public override int SaveChanges()
         {
             var TimeStampchangeSet = ChangeTracker.Entries<IHasTimeStamp>();
 
             if (TimeStampchangeSet != null)
             {
-                foreach (var entry in TimeStampchangeSet.Where(c => c.State != EntityState.Unchanged))
+                foreach (var entry in TimeStampchangeSet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified))
                 {
                     (entry.Entity as IHasTimeStamp).DoTimeStamp(entry.State.ToString());
                 }
             }
 
             var BeforeSavechangeSet = ChangeTracker.Entries<IHasBeforeSave>();
-
             if (BeforeSavechangeSet != null)
             {
-                foreach (var entry in BeforeSavechangeSet.Where(c => c.State != EntityState.Unchanged))
+                foreach (var entry in BeforeSavechangeSet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified))
                 {
                     (entry.Entity as IHasBeforeSave).Before_Save();
                 }
@@ -56,7 +63,30 @@ namespace SFSAcademy
                 }
             }
 
-            return base.SaveChanges();
+            //return base.SaveChanges();
+
+
+            SaveChangeReturn = base.SaveChanges();
+
+            var AfterCreatechangeSet = ChangeTracker.Entries<IHasAfterCreate>();
+            if (AfterCreatechangeSet != null)
+            {
+                foreach (var entry in AfterCreatechangeSet.Where(c => c.State == EntityState.Unchanged))
+                {
+                    (entry.Entity as IHasAfterCreate).After_Create();
+                }
+            }
+
+            var AfterUpdatechangeSet = ChangeTracker.Entries<IHasAfterUpdate>();
+            if (AfterUpdatechangeSet != null)
+            {
+                foreach (var entry in AfterUpdatechangeSet.Where(c => c.State == EntityState.Unchanged))
+                {
+                    (entry.Entity as IHasAfterUpdate).After_Update();
+                }
+            }
+
+            return SaveChangeReturn;
 
         }
 

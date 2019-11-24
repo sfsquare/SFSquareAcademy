@@ -125,7 +125,7 @@ namespace SFSAcademy
             decimal weight = 0;
             if (grp != null)
             {
-                weight = (decimal)grp.WEIGHTAGE;
+                weight = (decimal)grp.WTAGE;
             }
             return weight;
         }
