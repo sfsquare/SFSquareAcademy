@@ -41,13 +41,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
@@ -2746,13 +2747,6 @@
     <Content Include="Views\CCE_Settings\Index.cshtml" />
     <Content Include="Views\Grading_Levels\_New.cshtml" />
     <Content Include="Views\Student\_FeeSelect.cshtml" />
-    <EntityDeploy Include="SFSAcademyModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="SFSAcademyModel.edmx.diagram">
-      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
-    </Content>
     <Content Include="Views\Reminder\Create.cshtml" />
     <Content Include="Views\Reminder\Delete.cshtml" />
     <Content Include="Views\Reminder\Details.cshtml" />
@@ -2829,6 +2823,16 @@
     <Content Include="Views\Exam_Groups\Show.cshtml" />
     <Content Include="Views\Finance\Salary_Employee.cshtml" />
     <Content Include="Views\Finance\Employee_Payslip_Monthly_Report.cshtml" />
+    <EntityDeploy Include="SFSAcademyModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SFSAcademyModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="SFSAcademyModel.edmx.diagram">
+      <DependentUpon>SFSAcademyModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Views\Exam\_Exam_Grade_Form.cshtml" />
+    <Content Include="Views\Exam\_Exam_Marks_Form.cshtml" />
+    <Content Include="Views\Exam\_Update_Batch.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2908,9 +2912,6 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="CCE_WEIGHTAGE.cs">
-      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="CCE_WEIGHTAGES_COURSE.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="CLASS_DESIGNATION.cs">
@@ -3128,21 +3129,22 @@
     <Compile Include="Helpers\ActionHelper.cs" />
     <Compile Include="Helpers\ControllerExtentions.cs" />
     <Compile Include="Helpers\ReportConfiguration.cs" />
+    <Compile Include="Helpers\ApplicationHelper.cs" />
+    <Compile Include="Helpers\PdfTabularReport.cs" />
+    <Compile Include="Helpers\HandleErrorAttribute.cs" />
     <Compile Include="IMAGE_DOCUMENTS.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="INDIVIDUAL_PAYSLIP_CATGEORY.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ApplicationHelper.cs" />
-    <Compile Include="Helpers\PdfTabularReport.cs" />
-    <Compile Include="Helpers\HandleErrorAttribute.cs" />
     <Compile Include="LIABILITY.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\Batch.cs" />
     <Compile Include="Models\Archived_Employee.cs" />
+    <Compile Include="Models\Exam.cs" />
     <Compile Include="Models\Exam_Group.cs" />
     <Compile Include="Models\Guardian.cs" />
     <Compile Include="Models\Grouped_Batch.cs" />

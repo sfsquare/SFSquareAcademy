@@ -37,8 +37,8 @@ namespace SFSAcademy
             this.BATCH_SEAT = new HashSet<BATCH_SEAT>();
             this.BATCH_STUDENT = new HashSet<BATCH_STUDENT>();
             this.GROUPED_BATCH = new HashSet<GROUPED_BATCH>();
-            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
             this.GROUPED_EXAM = new HashSet<GROUPED_EXAM>();
+            this.GROUPED_EXAM_REPORT = new HashSet<GROUPED_EXAM_REPORT>();
         }
     
         public int ID { get; set; }
@@ -93,8 +93,8 @@ namespace SFSAcademy
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GROUPED_BATCH> GROUPED_BATCH { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GROUPED_EXAM> GROUPED_EXAM { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GROUPED_EXAM_REPORT> GROUPED_EXAM_REPORT { get; set; }
     }
 }

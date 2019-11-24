@@ -6,35 +6,6 @@
 @{
     IEnumerable<SFSAcademy.StundentFee> paid_fees = (IEnumerable<SFSAcademy.StundentFee>)ViewData["paid_fees"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
-<script type="text/javascript" language="javascript">
-    /* This is change event for your dropdownlist */
-    $(document.forms[0]).ready(function () {
-        $(".LoaderBox1").hide();
-        $('#submit-button11').click(function () {
-
-        /* Get the selected value of dropdownlist */
-            var selectedID = $('#STUDENT_ADDNUM').val();
-            var selectedSTS = $('#Status_Descrition').val();
-            $(".LoaderBox1").show();
-        /* Request the partial view with .get request. */
-            $.get('/Student/Student_TC_Generate/' + selectedSTS, function (data) {
-            /* data is the pure html returned from action method, load it to your page */
-            $('#tc-generate').html(data);
-            /* little fade in effect */
-            $('#tc-generate').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox1").hide();
-            $("#submit-button").hide();
-        });
-
-    });
-   });
-</script>
 
 <div id="content-header">
     <img src="~/Content/images/student_details/student_details_logo.jpg" alt="Student Details Logo">
@@ -60,7 +31,7 @@
     @if (paid_fees != null && paid_fees.Count() != 0)
     {
         <div class="label-field-pair label">
-            @Html.Label("remove_descr", "Following fees are pending to be paid by stundent:", htmlAttributes: new { @class = "control-label col-md-2", @style ="width:100%;" })
+            @Html.Label("remove_descr", "Following fees are pending to be paid by stundent:", htmlAttributes: new { @class = "control-label col-md-2", @style = "width:100%;" })
         </div>
         <table id="listing" align="center" style="width:100%;" cellpadding="1" cellspacing="1">
             <tr class="tr-head">
@@ -87,46 +58,60 @@
                 i = i + 1;
             }
         </table>
-                }
-                else
-                {
-                    <div id="remove-student">
-                        @if (ViewBag.TCErrorMessage != null)
-                        {
-                            <p class="flash-msg"> @ViewBag.TCErrorMessage </p>
-                        }
-                        <p>Please provide below details for leaving schools:</p>
-                        @using (Html.BeginForm())
-                        {
-                            @Html.AntiForgeryToken()
-                            <div class="label-field-pair label">
-                                <div class="label-container label">@Html.Label("Status_Descrition", "Reason for leaving:", htmlAttributes: new { @class = "control-label col-md-2" })</div>
-                                <div class="text-input-bg">
-                                    @Html.DropDownList("Status_Descrition", new List<SelectListItem>
-                        { new SelectListItem{Text="Not happy with studies", Value="1"},
-                          new SelectListItem{Text="Not happy with environment", Value="2"},
-                          new SelectListItem { Text = "Cannot afford fee", Value = "3" },
-                          new SelectListItem { Text = "Family moving to other place", Value = "4" },
-                          new SelectListItem{Text="Have concerns with teaching faculties", Value="5"},
-                          new SelectListItem{Text="No transport facility from my place", Value="6"},
-                          new SelectListItem{Text="Getting better options in other school", Value="7"},
-                          new SelectListItem{Text="Have completed all the classes school offers", Value="8"},
-                          new SelectListItem{Text="Others", Value="9"}}, "Select Reason for leaving")
-                                    <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
-                                    @Html.ValidationMessage("Status_Descrition", "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div id="submit-button">
-                                <input type="button" value="Delete" id="submit-button11" class="submit_button" />
-                            </div>
-                            <br />
-                            <br />
-                            <div id="tc-generate" style="display:none;"> </div>
-                        }
+    }
+    else
+    {
+        <div id="remove-student">
+            @if (ViewBag.TCErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.TCErrorMessage </p>
+            }
+            <p>Please provide below details for leaving schools:</p>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.ID)
+                @Html.HiddenFor(model => model.ADMSN_NO)
+                <div class="label-field-pair label">
+                    <div class="label-container label">@Html.Label("Status_Descrition", "Reason for leaving:", htmlAttributes: new { @class = "control-label col-md-2" })</div>
+                    <div class="text-input-bg">
+                        @Html.DropDownList("Status_Descrition", new SelectList(Enum.GetValues(typeof(Status_Descrition))), "Select Reason for Leaving", new { @class = "form-control" })
+                        <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
                     </div>
+                </div>
+                <div id="submit-button">
+                    <input type="button" value="► Delete" id="submit-button11" />
+                </div>
+                <br />
+                <br />
+                <div id="tc-generate" style="display:none;"> </div>
+            }
+        </div>
 
-                }
-    
+    }
     <div class="extender"></div>
 </div>
-<input type="hidden" value="@Model.ADMSN_NO" id="STUDENT_ADDNUM" name="STUDENT_ADDNUM" />
+<input type="hidden" value="@Model.ID" id="Student_id" name="Student_id" />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#submit-button11').click(function () {
+                var selectedID = $('#Student_id').val();
+                var selectedSTS = $('#Status_Descrition').val();
+                $(".LoaderBox").show();
+                $.get('/Student/Student_TC_Generate?Student_id=' + selectedID + "&Status_Descrition=" + selectedSTS, function (data) {
+                    $('#tc-generate').html(data);
+                    $('#tc-generate').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                    $("#submit-button").hide();
+                });
+
+            });
+        });
+    </script>
+}

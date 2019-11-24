@@ -17,7 +17,7 @@ namespace SFSAcademy
         public int ID { get; set; }
         public Nullable<int> EXAM_GROUP_ID { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
-        public Nullable<decimal> WEIGHTAGE { get; set; }
+        public Nullable<decimal> WTAGE { get; set; }
     
         public virtual BATCH BATCH { get; set; }
         public virtual EXAM_GROUP EXAM_GROUP { get; set; }
