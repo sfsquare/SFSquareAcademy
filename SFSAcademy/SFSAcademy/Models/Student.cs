@@ -103,6 +103,27 @@ namespace SFSAcademy
 
     }
 
+    public enum Status_Descrition
+    {
+        [Display(Name = "Not happy with studies")]
+        STUDIES,
+        [Display(Name = "Not happy with environment")]
+        ENVIRONMENT,
+        [Display(Name = "Cannot afford fee")]
+        FEE,
+        [Display(Name = "Family moving to other place")]
+        FAMILY,
+        [Display(Name = "Have concerns with teaching faculties")]
+        TEACHER,
+        [Display(Name = "No transport facility from my place")]
+        TRANSPORT,
+        [Display(Name = "Getting better options in other school")]
+        OTHERGOODSCHOOL,
+        [Display(Name = "Have completed all the classes school offers")]
+        PASSOUT,
+        [Display(Name = "Others")]
+        OTHERS
+    }
 
     [MetadataType(typeof(StudentMetadata))]
     public partial class STUDENT : IValidatableObject, IHasTimeStamp, IHasBeforeSave
@@ -157,11 +178,14 @@ namespace SFSAcademy
         }
         public void Before_Save()
         {
-            IS_ACT = true;
+            if(db.Entry(this).State == EntityState.Added)
+            {
+                IS_ACT = true;
+            }
         }
         public void Is_Active_True()
         {
-            if(IS_ACT != true)
+            if (IS_ACT != true)
             {
                 IS_ACT = true;
             }
@@ -176,7 +200,7 @@ namespace SFSAcademy
         }
         public string Gender_As_Text()
         {
-            if(GNDR == "M" || GNDR == "m")
+            if (GNDR == "M" || GNDR == "m")
             {
                 return "Male";
             }
@@ -204,7 +228,7 @@ namespace SFSAcademy
         }
         public GUARDIAN Immediate_Contact()
         {
-            if(IMMDT_CNTCT_ID != null)
+            if (IMMDT_CNTCT_ID != null)
             {
                 return db.GUARDIANs.Find(IMMDT_CNTCT_ID);
             }
@@ -217,7 +241,7 @@ namespace SFSAcademy
         {
             if (ID != -1)
             {
-                return db.STUDENTs.Where(x=>x.BTCH_ID == BTCH_ID && x.ID > ID).OrderBy(x=>x.ID).FirstOrDefault();
+                return db.STUDENTs.Where(x => x.BTCH_ID == BTCH_ID && x.ID > ID).OrderBy(x => x.ID).FirstOrDefault();
             }
             else
             {
@@ -347,7 +371,7 @@ namespace SFSAcademy
                 db.SaveChanges();
                 foreach (var g in guardians)
                 {
-                    if(g.Archive_Guardian(archived_student.ID) == false)
+                    if (g.Archive_Guardian(archived_student.ID) == false)
                     {
                         return false;
                     }
@@ -361,14 +385,16 @@ namespace SFSAcademy
                     db.ARCHIVED_EXAM_SCORE.Add(ArchivedExamScore);
                     db.EXAM_SCORE.Remove(s);
                 }
-                this.IS_DEL = true;
-                this.IS_ACT = false;
-                db.Entry(this).State = EntityState.Modified;
+                STUDENT StdToDelete = db.STUDENTs.Find(this.ID);
+                StdToDelete.IS_DEL = true;
+                StdToDelete.IS_ACT = false;
+                db.Entry(StdToDelete).State = EntityState.Modified;
                 db.SaveChanges();
                 return true;
             }
-            catch 
+            catch (Exception e)
             {
+                archived_student.STAT_DESCR = string.Concat(e.GetType().FullName, ":", e.Message);
                 return false;
             }
         }

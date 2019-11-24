@@ -276,8 +276,11 @@
             $(".datepicker").datepicker({
                 showOn: "button",
                 buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-                dateFormat: 'dd-MM',
-                buttonImageOnly: true
+                dateFormat: 'dd/mm/yy',
+                buttonImageOnly: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: 'slideDown'
             });
         });
 

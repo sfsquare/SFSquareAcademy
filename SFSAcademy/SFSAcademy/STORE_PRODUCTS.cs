@@ -29,6 +29,7 @@ namespace SFSAcademy
         public string NAME { get; set; }
         public Nullable<int> CATEGORY_ID { get; set; }
         public Nullable<int> BRAND_ID { get; set; }
+        public Nullable<decimal> CURRENT_PRICE { get; set; }
         public Nullable<int> VENDOR_ID { get; set; }
         public string BAR_CODE { get; set; }
         public bool IS_ACT { get; set; }
@@ -36,7 +37,6 @@ namespace SFSAcademy
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> SUB_CATEGORY_ID { get; set; }
-        public Nullable<decimal> CURRENT_PRICE { get; set; }
         public string PRODUCT_CD { get; set; }
         public string DESCR { get; set; }
         public string DEFAULT_UOM { get; set; }

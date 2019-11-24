@@ -5,6 +5,7 @@
     BATCH batch = (BATCH)ViewData["batch"];
     EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
     List<PRIVILEGE> user_privileges = (List<PRIVILEGE>)ViewData["user_privileges"];
+    IEnumerable<ExamFormDetails> exams = (IEnumerable<ExamFormDetails>)ViewData["exams"];
     IEnumerable<EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
 }
 @{
@@ -41,6 +42,10 @@
     {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
     <div class="bread_crumb">
         <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
         <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
@@ -53,9 +58,9 @@
             @if (Html.Permitted_To("Edit", "Exams"))
             {
                 <h4>
-                    @exam_group.NAME
                     <div id="@string.Concat("exam_group_name_", exam_group.ID, "_edit")">
-                        <a href="@Url.Action("Edit", "Exam_Group",new {id = exam_group.ID })">Edit</a>
+                        @Html.Editor("NAME", new { htmlAttributes = new { @class = "form-control", required = "required", @Value = exam_group.NAME } })
+                        <span class="necessary-field" style="font-size:small">*</span>
                     </div>
                 </h4>
             }
@@ -87,30 +92,34 @@
                     }
                 </tr>
                 @{int j = 1; }
-                @for (int i = 0; i < exam_group.EXAMs.Count(); i++)
+                @for (int i = 0; i < exams.Count(); i++)
                 {
                     string cycle = "tr-even";
                     if (j % 2 == 0)
                     {
                         cycle = "tr-odd";
                     }
-                    EXAM exam = (EXAM)exam_group.EXAMs.ElementAt(i);
-                    if ((employee_subjects.Where(x => x.SUBJ_ID == exam.SUBJ_ID).FirstOrDefault() != null) || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    bool EmpSub = false;
+                    if (employee_subjects != null)
+                    {
+                        if (employee_subjects.Where(x => x.SUBJ_ID == exams.ElementAt(i).Subject_Id).FirstOrDefault() != null)
+                        {
+                            EmpSub = true;
+                        }
+                    }
+                    if (EmpSub == true || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
                     {
                         <tr class="@cycle">
-                            <td class="col-2"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exam.SUBJECT.NAME</a></td>
+                            <td class="col-2"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exams.ElementAt(i).SubjectData.NAME</a></td>
                             @if (Html.Permitted_To("Edit", "Exams"))
                             {
                                 <td class="col-1">
-                                    <div id="@string.Concat("exam_maximum_marks_",exam.ID,"_edit")">
-                                        @Html.TextBox("[" + i + "].MAX_MKS", exam_group.EXAMs.ElementAt(i).MAX_MKS, new { @cols = 1 })
-                                    </div>
+                                    @Html.TextBox("[" + i + "].Maximum_Marks", exams.ElementAt(i).Maximum_Marks, new { @cols = 1, @id = string.Concat("exam_maximum_marks_", exams.ElementAt(i).ExamData.ID, "_edit") })
                                 </td>
                                 <td class="col-1">
-                                    <div id="@string.Concat("exam_minimum_marks_",exam.ID,"_edit")">
-                                        @Html.TextBox("[" + i + "].MIN_MKS", exam_group.EXAMs.ElementAt(i).MIN_MKS, new { @cols = 1 })
-                                    </div>
+                                    @Html.TextBox("[" + i + "].Minimum_Marks", exams.ElementAt(i).Minimum_Marks, new { @cols = 1, @id = string.Concat("exam_minimum_marks_", exams.ElementAt(i).ExamData.ID, "_edit") })
                                 </td>
+                                string EditFunction = string.Concat("EditExams(", exams.ElementAt(i).ExamData.ID, ")");
                                 <td class="col-1">
                                     @if (exam_group.RSULT_PUB)
                                     {
@@ -118,22 +127,23 @@
                                     }
                                     else
                                     {
-                                        <small><a href="@Url.Action("Edit", "Exam_Group",new {id = exam.EXAM_GROUP.ID })">Edit</a></small>
+                                        <small><a href="#" onclick="@EditFunction">Edit</a></small>
                                     }
-                                    @if (exam.EXAM_GROUP.Removable())
+
+                                    @if (exams.ElementAt(i).ExamData.Removable())
                                     {
-                                        <small><a href="@Url.Action("Delete", "Exam_Group",new {id = exam.EXAM_GROUP.ID })" onclick="return confirm('are you sure?')">Delete</a></small>
+                                        <small><a href="@Url.Action("Delete", "Exam_Groups",new {id = exam_group.ID, ExamId = exams.ElementAt(i).ExamData.ID })" onclick="return confirm('are you sure?')"> | Delete</a></small>
                                     }
                                     else
                                     {
-                                        <small><s>Delete</s></small>
+                                        <small><s> | Delete</s></small>
                                     }
                                 </td>
                             }
                             else
                             {
-                                <td class="col-1"><span>@exam.MAX_MKS</span></td>
-                                <td class="col-1"><span>@exam.MIN_MKS</span></td>
+                                <td class="col-1"><span>@exams.ElementAt(i).Minimum_Marks</span></td>
+                                <td class="col-1"><span>@exams.ElementAt(i).Minimum_Marks</span></td>
                             }
                         </tr>
                     }
@@ -153,29 +163,37 @@
                     }
                 </tr>
                 @{int k = 1; }
-                @for (int i = 0; i < exam_group.EXAMs.Count(); i++)
+                @for (int i = 0; i < exams.Count(); i++)
                 {
                     string cycle = "tr-even";
                     if (k % 2 == 0)
                     {
                         cycle = "tr-odd";
                     }
-                    EXAM exam = (EXAM)exam_group.EXAMs.ElementAt(i);
-                    if ((employee_subjects.Where(x => x.SUBJ_ID == exam.SUBJ_ID).FirstOrDefault() != null) || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    bool EmpSub = false;
+                    if (employee_subjects != null)
                     {
+                        if (employee_subjects.Where(x => x.SUBJ_ID == exams.ElementAt(i).Subject_Id).FirstOrDefault() != null)
+                        {
+                            EmpSub = true;
+                        }
+                    }
+                    if (EmpSub == true || current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
+                    {
+                        string EditFunction = string.Concat("EditExams(", exams.ElementAt(i).ExamData.ID, ")");
                         <tr class="@cycle">
-                            <td class="col-3"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exam.SUBJECT.NAME</a></td>
+                            <td class="col-3"><a href="@Url.Action("Index", "Exam",new {id = exam_group.ID })">@exams.ElementAt(i).SubjectData.NAME</a></td>
                             @if (Html.Permitted_To("Edit", "Exams"))
                             {
                                 <td class="col-1">
-                                    <small><a href="@Url.Action("Edit", "Exam_Group",new {id = exam.EXAM_GROUP.ID })">Edit</a></small>
-                                    @if (exam.EXAM_GROUP.Removable())
+                                    <small><a href="#" onclick="@EditFunction">Edit</a></small>
+                                    @if (exams.ElementAt(i).ExamData.Removable())
                                     {
-                                        <small><a href="@Url.Action("Delete", "Exam_Group",new {id = exam.EXAM_GROUP.ID })" onclick="return confirm('are you sure?')">Delete</a></small>
+                                        <small><a href="@Url.Action("Delete", "Exam_Groups",new {id = exam_group.ID, ExamId = exams.ElementAt(i).ExamData.ID })" onclick="return confirm('are you sure?')"> | Delete</a></small>
                                     }
                                     else
                                     {
-                                        <small><s>Delete</s></small>
+                                        <small><s> | Delete</s></small>
                                     }
                                 </td>
                             }
@@ -214,6 +232,15 @@
                     $(".LoaderBox").hide();
                 });
             }
+        }
+        function EditExams(ExamId) {
+            var id = ExamId;
+            var Name = $('#NAME').val();
+            var MaxMarks = $('#exam_maximum_marks_' + ExamId + '_edit').val();
+            var MinMarks = $('#exam_minimum_marks_' + ExamId + '_edit').val();
+            $(".LoaderBox").show();
+            var url = "/Exam_Groups/Edit?id=" + id  + "&ename=" + Name  + "&MaxMarks=" + MaxMarks  + "&MinMarks=" + MinMarks; 
+            window.location.href = url;
         }
     </script>
 }

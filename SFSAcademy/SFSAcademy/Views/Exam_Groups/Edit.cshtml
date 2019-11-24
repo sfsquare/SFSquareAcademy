@@ -1,9 +1,9 @@
-﻿@model SFSAcademy.EXAM_GROUP
-@{
+﻿@{
     BATCH batch = (BATCH)ViewData["batch"];
     COURSE course = (COURSE)ViewData["course"];
     UserDetails current_user = (UserDetails)ViewData["current_user"];
     List<PRIVILEGE> user_privileges = (List<PRIVILEGE>)ViewData["user_privileges"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
 }
 
 @{
@@ -40,15 +40,16 @@
             {
                 <p class="flash-msg"> @ViewBag.ErrorMessage </p>
             }
-            @Html.HiddenFor(model=>model.ID)
-            @Html.HiddenFor(model=>model.BTCH_ID)
-
+            int? MaxMarks = ViewBag.MaxMarks; int? MinMarks = ViewBag.MinMarks; int? ExamId = ViewBag.ExamId;
+            @Html.Hidden("ExamGroupId",exam_group.ID)
+            @Html.Hidden("ExamId", ExamId)
+            @Html.Hidden("MaxMarks", MaxMarks)
+            @Html.Hidden("MinMarks", MinMarks)
             <div class="label-field-pair">
-                <label for="exam_name">New</label>
+                <label for="exam_name">New Exam Name</label>
                 <div class="text-input-bg">
-                    @Html.EditorFor(model => model.NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                    @Html.Editor("NAME", new { htmlAttributes = new { @class = "form-control", required = "required", @Value = ViewBag.ename } })
                     <span class="necessary-field" style="font-size:small">*</span>
-                    @Html.ValidationMessageFor(model => model.NAME, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
                 </div>
             </div>
             <div id="sub_button"><input type="submit" value="► Save" class="submit_button" /></div>

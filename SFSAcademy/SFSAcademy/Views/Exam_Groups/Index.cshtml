@@ -71,14 +71,14 @@
                 }
                 <tr class="@cycle">
                     <td class="col-2">
-                        <a href="@Url.Action("Show", "Exam_Group", new { id=exam_group.ID})">@exam_group.NAME</a>
+                        <a href="@Url.Action("Show", "Exam_Groups", new { id=exam_group.ID})">@exam_group.NAME</a>
                         @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
                         {
                             <span>
                                 <small>
                                     @if (exam_group.Removable() == true)
                                     {
-                                        <a href="@Url.Action("Delete", "Exam_Group", new { id=batch.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
+                                        <a href="@Url.Action("Delete", "Exam_Groups", new { id = exam_group.ID})" onclick="return confirm('are you sure you want to delete this?')">Delete</a>
                                     }
                                     else
                                     {

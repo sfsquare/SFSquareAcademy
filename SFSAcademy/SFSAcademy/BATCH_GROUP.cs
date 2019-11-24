@@ -26,8 +26,8 @@ namespace SFSAcademy
         public Nullable<System.DateTime> CREATED_AT { get; set; }
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
     
+        public virtual COURSE COURSE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GROUPED_BATCH> GROUPED_BATCH { get; set; }
-        public virtual COURSE COURSE { get; set; }
     }
 }

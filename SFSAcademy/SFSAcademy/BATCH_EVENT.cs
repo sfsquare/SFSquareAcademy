@@ -20,7 +20,7 @@ namespace SFSAcademy
         public Nullable<System.DateTime> UPDATED_AT { get; set; }
         public Nullable<int> BTCH_ID { get; set; }
     
-        public virtual EVENT EVENT { get; set; }
         public virtual BATCH BATCH { get; set; }
+        public virtual EVENT EVENT { get; set; }
     }
 }

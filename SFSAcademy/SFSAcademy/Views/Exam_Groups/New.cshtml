@@ -38,11 +38,11 @@
             {
                 if (exam_group.EXAM_TYPE == "Marks" || exam_group.EXAM_TYPE == "MarksAndGrades")
                 {
-                    @Html.Partial("Exam/_Exam_Marks_Form");
+                    @Html.Partial("Exam/_Exam_Marks_Form", Model);
                 }
                 else
                 {
-                    @Html.Partial("Exam/_Exam_Grade_Form");
+                    @Html.Partial("Exam/_Exam_Grade_Form", Model);
                 }
             }
             else
@@ -54,11 +54,6 @@
                 using (Html.BeginForm("Update_Exam_Form", "Exam", FormMethod.Post, new { @encType = "multipart/form-data" }))
                 {
                     @Html.AntiForgeryToken()
-                    if (ViewBag.ErrorMessage != null)
-                    {
-                        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-                    }
-                    @Html.Hidden("BTCH_ID", batch.ID)
                     <div class="label-field-pair">
                         @Html.LabelFor(model => model.NAME, "Exam Name", htmlAttributes: new { @class = "control-label col-md-2" })
                         <div class="text-input-bg">
@@ -72,7 +67,7 @@
                         <div class="label-field-pair">
                             @Html.LabelFor(model => model.EXAM_TYPE, "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="text-input-bg">
-                                @Html.DropDownList("EXAM_TYPE", EnumHelper.GetSelectList(typeof(ExamType)), "Select Exam Type", new { @class = "form-control", @Value = "MarksAndGrades" })
+                                @Html.DropDownList("EXAM_TYPE", new SelectList(Enum.GetValues(typeof(ExamType))), "Select Exam Type", new { @class = "form-control", @Value = "MarksAndGrades" })
                                 @Html.ValidationMessageFor(model => model.EXAM_TYPE, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -93,18 +88,39 @@
                         <div class="label-field-pair">
                             @Html.LabelFor(model => model.EXAM_TYPE, "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
                             <div class="text-input-bg">
-                                @Html.DropDownList("EXAM_TYPE", EnumHelper.GetSelectList(typeof(ExamType)), "Select Exam Type", new { @class = "form-control" })
+                                @Html.DropDownList("EXAM_TYPE", new SelectList(Enum.GetValues(typeof(ExamType))), "Select Exam Type", new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.EXAM_TYPE, "", new { @class = "text-danger" })
                             </div>
                         </div>
                     }
-                    <input type="submit" value="► Save" class="submit_button" />
+                    <input type="button" value="► Save" id="submit-button11" class="submit_button" />
                     <div class="extender"></div>
                 }
             }
         </div>
-
-
     </div>
 </div>
+<input type="hidden" value="@batch.ID" id="Batch_id" name="Batch_id" />
+<div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#submit-button11').click(function () {
+                var Batch_id = $('#Batch_id').val();
+                var Name = $('#NAME').val();
+                var Type = $('#EXAM_TYPE').val();
+                var CCE_Exam_Category_Id = $('#CCE_EXAM_CAT_ID').val();
+                $(".LoaderBox").show();
+                $.get('/Exam/Update_Exam_Form?Batch_id=' + Batch_id + "&Name=" + Name + "&Type=" + Type + "&CCE_Exam_Category_Id=" + CCE_Exam_Category_Id, function (data) {
+                    $('#exam-form').html(data);
+                    $('#exam-form').fadeIn('fast');
+                }).success(function () {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+    </script>
+}
 
