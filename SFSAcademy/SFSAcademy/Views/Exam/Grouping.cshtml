@@ -1,0 +1,218 @@
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<GroupedExamSelect> exam_grouping = (IEnumerable<GroupedExamSelect>)ViewData["exam_grouping"];
+}
+@{
+    ViewBag.Title = "Grouping";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>Grouping</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+        <a href="@Url.Action("Show", "Courses", new { id = batch.CRS_ID })">@batch.Course_full_name</a> &raquo;
+        <a href="@Url.Action("Show", "Batches", new { id = batch.ID })">Batch: @batch.Full_Name</a> &raquo;
+        <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
+        <a href="@Url.Action("Index", "Exam_Groups", new { id = batch.ID })">Exam Groups</a> &raquo;
+        Connect Exams
+    </div>
+    <div id="application-list">
+        @if (exam_grouping != null && exam_grouping.Count() != 0)
+        {
+            <h4>Connect Exams</h4>
+            using (Html.BeginForm("Grouping", "Exam", FormMethod.Post, new { @encType = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("batch_id", batch.ID)
+                <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+                    @{ var count = exam_grouping.Count() - 1; string OnClickFunction = string.Concat("check_all_or_none(", count, ")");}
+                    <tr class="tr-head">
+                        <td class="col-1">
+                            @Html.CheckBox("chck1", false, new { onchange = OnClickFunction })
+                        </td>
+                        <td class="col-2">
+                            Exam Group
+                        </td>
+                        <td class="col-3">
+                            Weightage(%)
+                        </td>
+                    </tr>
+                    <tr class="tr-blank"></tr>
+                    @{ int i = 0; decimal? total = 0;}
+                    @for (var j = 0; j < exam_grouping.Count(); j++)
+                    {
+                        string cycle = "tr-even";
+                        if (i % 2 == 0)
+                        {
+                            cycle = "tr-odd";
+                        }
+                        <tr class="@cycle">
+                            @{
+                                int? exam_group_id = exam_grouping.ElementAt(j).ExamGroupData.ID;
+                                var already_grouped = db.GROUPED_EXAM.Where(x => x.BTCH_ID == batch.ID && x.EXAM_GROUP_ID == exam_group_id).FirstOrDefault();
+                                bool is_already_grouped = false;
+                                string GroupingClick = string.Concat("set_weightage('check'+",i,",", count, ")");
+                                string GroupingId = string.Concat("check", i);
+                                string WeitageId = string.Concat("weightage", i);
+                                string WeitageOnChange = string.Concat("check_weightage(this,", count, ")");
+                            }
+                            @if (already_grouped != null)
+                            {
+                                is_already_grouped = true;
+                            }
+                            <td class="col-1">
+                                @Html.CheckBox("[" + j + "].Select", is_already_grouped, new { @class = "right", @id = GroupingId, onchange = GroupingClick })
+                                @Html.Hidden("[" + i + "].Exam_Group_Id", exam_grouping.ElementAt(j).Exam_Group_Id)
+                                @Html.Hidden("[" + i + "].Batch_Id", exam_grouping.ElementAt(j).Batch_Id)
+                            </td>
+                            <td class="col-2">@exam_grouping.ElementAt(j).ExamGroupData.NAME</td>
+                            @if (is_already_grouped == true)
+                            {
+                                <td class="col-3">
+                                    @Html.TextBox("[" + i + "].Weightage", already_grouped.WTAGE, htmlAttributes: new { @class = "total-box", @id = WeitageId, @onchange = WeitageOnChange })
+                                </td>
+                                if (already_grouped.WTAGE != null)
+                                {
+                                    total += already_grouped.WTAGE;
+                                }
+
+                            }
+                            else
+                            {
+                                <td class="col-3">
+                                    @Html.TextBox("[" + i + "].Weightage", 0, htmlAttributes: new { @class = "total-box", @disabled = true, @id = WeitageId, @onchange = WeitageOnChange })
+                                </td>
+                            }
+
+                        </tr>
+                        i += 1;
+                    }
+
+                    <tr class="tr-blank"></tr>
+                    <tr class="tr-head">
+                        <td class="col-4" colspan="2">
+                            Total Weightage
+                        </td>
+                        <td class="col-3">
+                            @Html.Label("total", total.ToString(), htmlAttributes: new { @id = "tot" })
+                        </td>
+                    </tr>
+                </table>
+                <ul class="category-list">
+                    <li class="heading">Grouped Exams</li>
+                    @{ int k = 1;}
+                    @foreach (var e in exam_grouping)
+                    {
+                        string cycle = "name_listeven";
+                        if (k % 2 == 0)
+                        {
+                            cycle = "name_listodd";
+                        }
+                        bool is_already_grouped = false;
+                        var already_grouped = db.GROUPED_EXAM.Where(x => x.BTCH_ID == batch.ID && x.EXAM_GROUP_ID == e.ExamGroupData.ID).FirstOrDefault();
+                        if (already_grouped != null)
+                        {
+                            is_already_grouped = true;
+                        }
+                        if (is_already_grouped)
+                        {
+                            <li class="@cycle">
+                                <div class="att_list_names"> @e.ExamGroupData.NAME</div>
+                            </li>
+                        }
+                        k += 1;
+                    }
+                </ul>
+                <input type="submit" value="► Save" class="submit_button" />
+            }
+        }
+        else
+        {
+            <p class="flash-msg">No valid exams available to connect.</p>
+        }
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        function check_all_or_none(c) {
+            if ((document.getElementById('chck1')).checked == true) {
+                $('input.right').each(function () { this.checked = true; });
+                total = 0;
+                for (i = 0; i <= c; i++) {
+                    box = "check" + i;
+                    set_weightage(box, i - 1);
+                }
+
+            }
+            else {
+                $('input.right').each(function () { this.checked = false; });
+                for (i = 0; i <= c; i++) {
+                    box = "check" + i;
+                    set_weightage(box, i - 1);
+                }
+            }
+            make_total(c);
+        }
+
+        function set_weightage(val, cnt) {
+            var c = document.getElementById(val);
+            var newval = val.replace("check", "weightage");
+            var d = document.getElementById(newval);
+            if (c.checked == true) {
+                d.disabled = false;
+            }
+            else {
+                document.getElementById('chck1').checked = false;
+                d.value = "0";
+                d.disabled = true
+            }
+            make_total(cnt);
+
+        }
+        function make_total(val) {
+            value = parseInt(val);
+            var total = 0;
+            for (i = 0; i <= value; i++) {
+                weightage = $("#weightage" + i).val();
+                weight = parseFloat(weightage);
+                total = total + weight;
+            }
+            $("#tot").text(total);
+        }
+        function check_weightage(val, cnt) {
+            if (val.value == "") {
+                val.value = "0";
+            }
+            if (isNaN(val.value)) {
+                alert("Please enter a valid weightage");
+                val.value = "0";
+            }
+            if (parseFloat(val.value) > 100) {
+                alert("Weightage cannot be greater than 100%");
+                val.value = "0";
+            }
+            make_total(cnt);
+        }
+    </script>
+}
+
+

@@ -119,15 +119,17 @@ namespace SFSAcademy
             // }
             else { return null; }
         }
-        public decimal Weightage()
+        public decimal Weightage
         {
-            GROUPED_EXAM grp = db.GROUPED_EXAM.Where(x => x.BTCH_ID == this.BTCH_ID && x.EXAM_GROUP_ID == this.ID).FirstOrDefault();
-            decimal weight = 0;
-            if (grp != null)
-            {
-                weight = (decimal)grp.WTAGE;
+            get {
+                GROUPED_EXAM grp = db.GROUPED_EXAM.Where(x => x.BTCH_ID == this.BTCH_ID && x.EXAM_GROUP_ID == this.ID).FirstOrDefault();
+                decimal weight = 0;
+                if (grp != null)
+                {
+                    weight = (decimal)grp.WTAGE;
+                }
+                return weight;
             }
-            return weight;
         }
         public decimal? Archived_Batch_Average_Marks(string marks)
         {

@@ -3,6 +3,40 @@
 @{
     EMPLOYEE employee = (EMPLOYEE)ViewData["employee"];
 }
+<link href="~/Content/stylesheets/modalbox.css" rel="stylesheet" />
+<script type="text/javascript" language="javascript">
+    /* This is change event for your dropdownlist */
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $(function () {
+            $("#modal-box").dialog({
+                autoOpen: false,
+                draggable: true,
+                resizable: true,
+                width: 600,
+                height: 'auto',
+                dialogClass: "alert",
+                cache: false,
+                buttons: {
+                    Cancel: function () {
+                        $("#modal-box").dialog("close");
+                    }
+                },
+                modal: true
+            });
+
+        });
+
+    });
+
+    function CloseAttendanceDialog() {
+        $('#modal-box').dialog("close");
+    }
+    function OpenLoader() {
+        $(".LoaderBox2").show();
+    }
+
+</script>
 <label class="head_label">Attendance for: <span>
     @if (employee.FIRST_NAME.Contains("MD") || employee.FIRST_NAME.Contains("Md") || employee.FIRST_NAME.Contains("md"))
     {
@@ -15,9 +49,11 @@
 </span></label>
 <div id="ajax-edit">
     <div id="form-errors"></div>
-    @using (Html.BeginForm())
+    @using (Ajax.BeginForm("Create", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "register", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseAttendanceDialog()" }, htmlAttributes: new { @class = "form-horizontal" }))
     {
+        string next = ViewBag.today;
         @Html.AntiForgeryToken()
+        @Html.Hidden("next", next)
         <br />
         <div class="label-field-pair label">
             <label for="leave_type">Leave Type:</label>
@@ -38,8 +74,7 @@
             @Html.CheckBoxFor(model => model.IS_HALF_DAY) <label>Is half day? </label>
         </div>
         <div class="extender"></div>
-            <input type="submit" value="Submit" class="submit-button" onclick="return confirm('are you sure?')" />
+        <input type="submit" value="Submit" class="submit-button" onclick="return confirm('are you sure?')" />
+        <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
     }
-
-    <div id="form-errors"></div>
 </div>

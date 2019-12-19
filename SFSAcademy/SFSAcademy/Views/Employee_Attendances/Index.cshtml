@@ -20,14 +20,6 @@
         <a href="@Url.Action("Employee_Attendance", "Employee")">Employee Leave Management</a> &raquo;
         Attendance Register
     </div>
-    @if (ViewBag.Notice != null)
-    {
-        <p class="flash-msg"> @ViewBag.Notice </p>
-    }
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-    }
     <div class="label-field-pair label">
         <div class="label-container label">@Html.Label("EMP_DEPT_ID", "Select The Department :", htmlAttributes: new { @class = "control-label col-md-2" })</div>
         <div class="text-input-bg">
@@ -37,7 +29,7 @@
         </div>
     </div>
 
-    <div id="register" style="display:none;"></div>
+    <div id="register"></div>
     <div id="modal-box" style="display:none;"></div>
 </div>
 
@@ -46,22 +38,15 @@
     @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
 
     <script type="text/javascript" language="javascript">
-        /* This is change event for your dropdownlist */
+        $.ajaxSetup({ cache: false });
         $(document).ready(function () {
-            $.ajaxSetup({ cache: false });
             $(".LoaderBox").hide();
             $('#DepDropDown').change(function () {
-
-                /* Get the selected value of dropdownlist */
                 var selectedID = $(this).val();
                 var SelectedNext = null;
                 $(".LoaderBox").show();
-                /* Request the partial view with .get request. */
                 $.get('/Employee_Attendances/Show?dept_id=' + selectedID + "&next=" + SelectedNext, function (data) {
-
-                    /* data is the pure html returned from action method, load it to your page */
                     $('#register').html(data);
-                    /* little fade in effect */
                     $('#register').fadeIn('fast');
                 }).success(function (status) {
                     $(".LoaderBox").hide();

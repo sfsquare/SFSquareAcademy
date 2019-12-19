@@ -1,0 +1,12 @@
+﻿@if(ViewBag.no_exam_notice != "" && ViewBag.no_exam_notice != null)
+{
+    <span>@ViewBag.no_exam_notice</span>
+}
+else if(ViewBag.sms_setting_notice != "" && ViewBag.sms_setting_notice != null)
+{
+    <span>@ViewBag.sms_setting_notice</span>
+}
+else
+{
+    <span>@ViewBag.message</span>
+}

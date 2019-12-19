@@ -1,0 +1,83 @@
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+}
+@{
+    ViewBag.Title = "Report_Center";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Exams</h1>
+    <h3>Report Center</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+
+    <div class="box">
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Exam_Wise_Report", "Exam")">Exam Wise Report</a></div>
+            <div class="link-descr">Generates exam wise reports</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Subject_Wise_Report", "Exam")">Subject Wise Report</a></div>
+            <div class="link-descr">Generates subject wise reports</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Grouped_Exam_Report", "Exam")">Grouped Exam Reports</a></div>
+            <div class="link-descr">Group up exams for specific reports</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Archived_Exam_Wise_Report", "Exam_Reports")">Archived Student Reports</a></div>
+            <div class="link-descr">Generates Grouped Exam reports for Archived Students</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Subject_Rank", "Exam")">Student Ranking per Subject</a></div>
+            <div class="link-descr">Generates reports for Subject wise Student Rank</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Batch_Rank", "Exam")">Student Ranking per Batch</a></div>
+            <div class="link-descr">Generates reports for Batch wise Overall Student Rank</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Course_Rank", "Exam")">Student Ranking per Course</a></div>
+            <div class="link-descr">Generates reports for Course wise Overall Student Rank</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Student_School_Rank", "Exam")">Student Ranking per School</a></div>
+            <div class="link-descr">Generates reports for Overall Student Rank for this School</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Attendance_Rank", "Exam")">Student Ranking per Attendance</a></div>
+            <div class="link-descr">Generates reports for Batch wise Student Rank per Attendance</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Ranking_Level_Report", "Exam")">Ranking Level Report</a></div>
+            <div class="link-descr">Generates reports based on different Ranking Levels</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Transcript", "Exam")">View Transcripts</a></div>
+            <div class="link-descr">Generates Student Transcripts</div>
+        </div>
+        <div class="link-box">
+            <div class="link-heading"><a href="@Url.Action("Combined_Report", "Exam")">Combined Reports</a></div>
+            <div class="link-descr">Generates Combined Student Reports</div>
+        </div>
+        @if (Html.Permitted_To("Index", "CCE_Reports") && db.CONFIGURATIONs.FirstOrDefault().CCE_Enabled)
+        {
+            <div class="link-box">
+                <div class="link-heading"><a href="@Url.Action("Index", "CCE_Reports")">CCE Reports</a></div>
+                <div class="link-descr">Generates Combined Student Reports</div>
+            </div>
+        }
+    </div>
+</div>
+
+

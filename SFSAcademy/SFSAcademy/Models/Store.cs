@@ -131,7 +131,9 @@ namespace SFSAcademy
         [Display(Name = "ea")]
         Each,
         [Display(Name = "pk")]
-        Packet
+        Packet, 
+        [Display(Name = "100Gr")]
+        Hundred_Grams
 
     }
 }

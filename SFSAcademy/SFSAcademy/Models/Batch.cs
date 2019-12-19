@@ -340,7 +340,12 @@ namespace SFSAcademy
         }
         public IEnumerable<GRADING_LEVEL> Grading_Level_List()
         {
-            return db.GRADING_LEVEL.Where(x => x.BTCH_ID == this.ID).ToList();
+            var levels = this.GRADING_LEVEL.Where(x => x.IS_DEL == false).AsEnumerable();
+            if(levels == null || levels.Count() == 0)
+            {
+                levels = db.GRADING_LEVEL.FirstOrDefault().Default();
+            }
+            return levels;
         }
         public IEnumerable<FINANCE_FEE_COLLECTION> Fee_Collection_Dates()
         {
@@ -357,6 +362,483 @@ namespace SFSAcademy
         public IEnumerable<SUBJECT> Elective_Batch_Subject(int? elect_group)
         {
             return db.SUBJECTs.Where(x => x.BTCH_ID == this.ID && x.ELECTIVE_GRP_ID == elect_group && x.ELECTIVE_GRP_ID != null && x.IS_DEL == false).AsEnumerable();
+        }
+
+        //Below 3 functions should be called through scheduled job in future state 
+        //They are refered in Exam Controller
+        //job_name = "Batch - Generate Reports" if @job_type=="Batch/1" 
+        //job_name = "Batch - Generate Previous Reports" if @job_type=="Batch/2" 
+        //job_name = "Batch - Generate CCE Reports" if @job_type=="Batch/3"
+        public void Generate_Batch_Reports()
+        {
+            var grading_type = this.GRADING_TYPE;
+            var students = this.All_Students();
+            var grouped_exam_ids = db.GROUPED_EXAM.Where(x => x.BTCH_ID == this.ID).Select(x => x.EXAM_GROUP_ID).ToList();
+            var grouped_exams = db.EXAM_GROUP.Where(x => x.BTCH_ID == this.ID && grouped_exam_ids.Contains(x.ID)).ToList();
+            if(grouped_exams != null && grouped_exams.Count() != 0)
+            {
+                var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == this.ID && x.IS_DEL == false).ToList();
+                if(students != null && students.Count() != 0)
+                {
+                    var std_ids = students.Select(x => x.ID).ToList();
+                    var st_scores = db.GROUPED_EXAM_REPORT.Where(x => x.BTCH_ID == this.ID && std_ids.Contains((int)x.STDNT_ID)).ToList();
+                    if(st_scores != null && st_scores.Count() != 0)
+                    {
+                        foreach(var sc in st_scores)
+                        {
+                            db.GROUPED_EXAM_REPORT.Remove(sc);
+                        }
+                        db.SaveChanges();
+                    }
+                    //List<int?> subject_marks = new List<int?>();
+                    DataTable subject_marks = new DataTable();
+                    subject_marks.Columns.Add("Student_Id", typeof(int));
+                    subject_marks.Columns.Add("Subject_Id", typeof(int));
+                    subject_marks.Columns.Add("Percentage", typeof(decimal));
+                    //List<int?> exam_marks = new List<int?>();
+                    DataTable exam_marks = new DataTable();
+                    exam_marks.Columns.Add("Student_Id", typeof(int));
+                    exam_marks.Columns.Add("Exam_Group_Id", typeof(int));
+                    exam_marks.Columns.Add("Marks", typeof(decimal));
+                    exam_marks.Columns.Add("Max_Marks", typeof(decimal));
+                    foreach (var exam_group in grouped_exams)
+                    {
+                        foreach(var subject in subjects)
+                        {
+                            EXAM exam = db.EXAMs.Where(x => x.EXAM_GRP_ID == exam_group.ID && x.SUBJ_ID == subject.ID).FirstOrDefault();
+                            if(exam != null)
+                            {
+                                foreach(var student in students)
+                                {
+                                    var is_assigned_elective = 1;
+                                    if(subject.ELECTIVE_GRP_ID != null)
+                                    {
+                                        var assigned = db.STUDENT_SUBJECT.Where(x => x.SUBJ_ID == subject.ID && x.STDNT_ID == student.ID).ToList();
+                                        if(assigned == null || assigned.Count() == 0)
+                                        {
+                                            is_assigned_elective = 0;
+                                        }
+                                    }
+                                    if(is_assigned_elective != 0)
+                                    {
+                                        decimal? percentage = 0;
+                                        decimal? marks = 0;
+                                        EXAM_SCORE score = db.EXAM_SCORE.Include(x=>x.GRADING_LEVEL).Where(x => x.EXAM_ID == exam.ID && x.STDNT_ID == student.ID).FirstOrDefault();
+                                        if(grading_type == null || this.Normal_Enabled())
+                                        {
+                                            if(score != null && score.MKS != null)
+                                            {
+                                                percentage = (((score.MKS) / exam.MAX_MKS) * 100) * ((exam_group.Weightage) / 100);
+                                                marks = (decimal)score.MKS;
+                                            }
+                                        }
+                                        else if(this.GPA_Enabled())
+                                        {
+                                            if(score != null && score.GRADING_LVL_ID != null)
+                                            {
+                                                percentage = (score.GRADING_LEVEL.CRED_PT) * ((exam_group.Weightage) / 100);
+                                                marks = (score.GRADING_LEVEL.CRED_PT) * (subject.CR_HRS);
+                                            }
+                                        }
+                                        else if(this.CWA_Enabled())
+                                        {
+                                            if(score != null && score.MKS != null)
+                                            {
+                                                percentage = (((score.MKS) / exam.MAX_MKS) * 100) * ((exam_group.Weightage) / 100);
+                                                marks = (((score.MKS) / exam.MAX_MKS) * 100) * (subject.CR_HRS);
+                                            }
+                                        }
+                                        var flag = 0;
+                                        foreach(var s in subject_marks.AsEnumerable())
+                                        {
+                                            if((int)s["Student_Id"] == student.ID && (int)s["Subject_Id"] == subject.ID)
+                                            {
+                                                s["Percentage"] = (decimal)s["Percentage"] + percentage;
+                                                flag = 1;
+                                            }
+                                        }
+                                        if(flag != 1)
+                                        {
+                                            var row = subject_marks.NewRow();
+                                            row["Student_Id"] = student.ID;
+                                            row["Subject_Id"] = subject.ID;
+                                            row["Percentage"] = percentage;
+                                            subject_marks.Rows.Add(row);
+                                        }
+                                        var e_flag = 0;
+                                        foreach(var e in exam_marks.AsEnumerable())
+                                        {
+                                            if((int)e["Student_Id"] == student.ID && (int)e["Exam_Group_Id"] == exam_group.ID)
+                                            {
+                                                e["Marks"] = (decimal)e["Marks"] + marks;
+                                                if(grading_type == null || this.Normal_Enabled())
+                                                {
+                                                    e["Max_Marks"] = (decimal)e["Max_Marks"] + exam.MAX_MKS;
+                                                }
+                                                else if (this.GPA_Enabled() || this.CWA_Enabled())
+                                                {
+                                                    e["Max_Marks"] = (decimal)e["Max_Marks"] + subject.CR_HRS;
+                                                }
+                                                e_flag = 1;
+                                            }
+                                        }
+                                        if(e_flag != 1)
+                                        {
+                                            if(grading_type == null || this.Normal_Enabled())
+                                            {
+                                                var row = exam_marks.NewRow();
+                                                row["Student_Id"] = student.ID;
+                                                row["Exam_Group_Id"] = exam_group.ID;
+                                                row["Marks"] = marks;
+                                                row["Max_Marks"] = exam.MAX_MKS;
+                                                exam_marks.Rows.Add(row);
+                                            }
+                                            else if(this.GPA_Enabled() || this.CWA_Enabled())
+                                            {
+                                                var row = exam_marks.NewRow();
+                                                row["Student_Id"] = student.ID;
+                                                row["Exam_Group_Id"] = exam_group.ID;
+                                                row["Marks"] = marks;
+                                                row["Max_Marks"] = subject.CR_HRS;
+                                                exam_marks.Rows.Add(row);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach(var subject_mark in subject_marks.AsEnumerable())
+                    {
+                        var student_id = (int)subject_mark["Student_Id"];
+                        var subject_id = (int)subject_mark["Subject_Id"];
+                        var marks = (decimal)subject_mark["Percentage"];
+                        GROUPED_EXAM_REPORT prev_marks = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.SUBJ_ID == subject_id && x.BTCH_ID == this.ID && x.SCORE_TYPE == "s").FirstOrDefault();
+                        if(prev_marks != null)
+                        {
+                            prev_marks.MARKS = marks;
+                            db.Entry(prev_marks).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Marks = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, SUBJ_ID = subject_id, BTCH_ID = this.ID, SCORE_TYPE = "s", MARKS = marks };
+                            db.GROUPED_EXAM_REPORT.Add(New_Marks);
+                        }
+                    }
+                    DataTable exam_totals = new DataTable();
+                    exam_totals.Columns.Add("Student_Id", typeof(int));
+                    exam_totals.Columns.Add("Percentage", typeof(decimal));
+                    foreach(var exam_mark in exam_marks.AsEnumerable())
+                    {
+                        var student_id = (int)exam_mark["Student_Id"];
+                        var exam_group = db.EXAM_GROUP.Find((int)exam_mark["Exam_Group_Id"]);
+                        var score = (decimal)exam_mark["Marks"];
+                        var max_marks = (decimal)exam_mark["Max_Marks"];
+                        decimal tot_score = 0;
+                        decimal percent = 0;
+                        if(max_marks != 0)
+                        {
+                            if(grading_type == null || this.Normal_Enabled())
+                            {
+                                tot_score = (((score) / max_marks) * 100);
+                                percent = (((score) / max_marks) * 100) * ((exam_group.Weightage) / 100);
+                            }
+                            else if (this.GPA_Enabled() || this.CWA_Enabled())
+                            {
+                                tot_score = ((score) / max_marks);
+                                percent = ((score) / max_marks) * ((exam_group.Weightage) / 100);
+                            }
+                        }
+                        GROUPED_EXAM_REPORT prev_exam_score = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.EXAM_GROUP_ID == exam_group.ID && x.BTCH_ID == this.ID && x.SCORE_TYPE == "e").FirstOrDefault();
+                        if (prev_exam_score != null)
+                        {
+                            prev_exam_score.MARKS = tot_score;
+                            db.Entry(prev_exam_score).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Exam_Score = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, EXAM_GROUP_ID = exam_group.ID, BTCH_ID = this.ID, SCORE_TYPE = "e", MARKS = tot_score };
+                            db.GROUPED_EXAM_REPORT.Add(New_Exam_Score);
+                        }
+                        var exam_flag = 0;
+                        foreach (var total in exam_totals.AsEnumerable())
+                        { 
+                            if((int)total["Student_Id"] == student_id)
+                            {
+                                total["Percentage"] = (decimal)total["Percentage"] + percent;
+                                exam_flag = 1;
+                            }
+                        }
+                        if(exam_flag != 1)
+                        {
+                            var row = exam_totals.NewRow();
+                            row["Student_Id"] = student_id;
+                            row["Percentage"] = percent;
+                            exam_totals.Rows.Add(row);
+                        }
+                    }
+                    foreach(var exam_total in exam_totals.AsEnumerable())
+                    {
+                        var student_id = (int)exam_total["Student_Id"];
+                        var total = (decimal)exam_total["Percentage"];
+                        GROUPED_EXAM_REPORT prev_total_score = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.BTCH_ID == this.ID && x.SCORE_TYPE == "c").FirstOrDefault();
+                        if(prev_total_score != null)
+                        {
+                            prev_total_score.MARKS = total;
+                            db.Entry(prev_total_score).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Total_Score = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, BTCH_ID = this.ID, MARKS = total, SCORE_TYPE = "c" };
+                            db.GROUPED_EXAM_REPORT.Add(New_Total_Score);
+                        }
+                    }
+                    db.SaveChanges();
+                }
+            }
+        }
+        public void Generate_Previous_Batch_Reports()
+        {
+            var grading_type = this.GRADING_TYPE;
+            //var students = this.All_Students();
+            var students = db.STUDENTs.Where(x => x.ID == -1).AsEnumerable();
+            var batch_students = db.BATCH_STUDENT.Where(x => x.BTCH_ID == this.ID).ToList();
+            foreach(var bs in batch_students)
+            {
+                var stu = db.STUDENTs.Where(x=>x.ID == bs.STDNT_ID);
+                if(stu != null)
+                {
+                    students = students.Union(stu);
+                }
+            }
+            students = students.ToList();
+            var grouped_exam_ids = db.GROUPED_EXAM.Where(x => x.BTCH_ID == this.ID).Select(x => x.EXAM_GROUP_ID).ToList();
+            var grouped_exams = db.EXAM_GROUP.Where(x => x.BTCH_ID == this.ID && grouped_exam_ids.Contains(x.ID)).ToList();
+            if (grouped_exams != null && grouped_exams.Count() != 0)
+            {
+                var subjects = db.SUBJECTs.Where(x => x.BTCH_ID == this.ID && x.IS_DEL == false).ToList();
+                if (students != null && students.Count() != 0)
+                {
+                    var std_ids = students.Select(x => x.ID).ToList();
+                    var st_scores = db.GROUPED_EXAM_REPORT.Where(x => x.BTCH_ID == this.ID && std_ids.Contains((int)x.STDNT_ID)).ToList();
+                    if (st_scores != null && st_scores.Count() != 0)
+                    {
+                        foreach (var sc in st_scores)
+                        {
+                            db.GROUPED_EXAM_REPORT.Remove(sc);
+                        }
+                        db.SaveChanges();
+                    }
+                    //List<int?> subject_marks = new List<int?>();
+                    DataTable subject_marks = new DataTable();
+                    subject_marks.Columns.Add("Student_Id", typeof(int));
+                    subject_marks.Columns.Add("Subject_Id", typeof(int));
+                    subject_marks.Columns.Add("Percentage", typeof(decimal));
+                    //List<int?> exam_marks = new List<int?>();
+                    DataTable exam_marks = new DataTable();
+                    exam_marks.Columns.Add("Student_Id", typeof(int));
+                    exam_marks.Columns.Add("Exam_Group_Id", typeof(int));
+                    exam_marks.Columns.Add("Marks", typeof(decimal));
+                    exam_marks.Columns.Add("Max_Marks", typeof(decimal));
+                    foreach (var exam_group in grouped_exams)
+                    {
+                        foreach (var subject in subjects)
+                        {
+                            EXAM exam = db.EXAMs.Where(x => x.EXAM_GRP_ID == exam_group.ID && x.SUBJ_ID == subject.ID).FirstOrDefault();
+                            if (exam != null)
+                            {
+                                foreach (var student in students)
+                                {
+                                    var is_assigned_elective = 1;
+                                    if (subject.ELECTIVE_GRP_ID != null)
+                                    {
+                                        var assigned = db.STUDENT_SUBJECT.Where(x => x.SUBJ_ID == subject.ID && x.STDNT_ID == student.ID).ToList();
+                                        if (assigned == null || assigned.Count() == 0)
+                                        {
+                                            is_assigned_elective = 0;
+                                        }
+                                    }
+                                    if (is_assigned_elective != 0)
+                                    {
+                                        decimal? percentage = 0;
+                                        decimal? marks = 0;
+                                        EXAM_SCORE score = db.EXAM_SCORE.Include(x => x.GRADING_LEVEL).Where(x => x.EXAM_ID == exam.ID && x.STDNT_ID == student.ID).FirstOrDefault();
+                                        if (grading_type == null || this.Normal_Enabled())
+                                        {
+                                            if (score != null && score.MKS != null)
+                                            {
+                                                percentage = (((score.MKS) / exam.MAX_MKS) * 100) * ((exam_group.Weightage) / 100);
+                                                marks = (decimal)score.MKS;
+                                            }
+                                        }
+                                        else if (this.GPA_Enabled())
+                                        {
+                                            if (score != null && score.GRADING_LVL_ID != null)
+                                            {
+                                                percentage = (score.GRADING_LEVEL.CRED_PT) * ((exam_group.Weightage) / 100);
+                                                marks = (score.GRADING_LEVEL.CRED_PT) * (subject.CR_HRS);
+                                            }
+                                        }
+                                        else if (this.CWA_Enabled())
+                                        {
+                                            if (score != null && score.MKS != null)
+                                            {
+                                                percentage = (((score.MKS) / exam.MAX_MKS) * 100) * ((exam_group.Weightage) / 100);
+                                                marks = (((score.MKS) / exam.MAX_MKS) * 100) * (subject.CR_HRS);
+                                            }
+                                        }
+                                        var flag = 0;
+                                        foreach (var s in subject_marks.AsEnumerable())
+                                        {
+                                            if ((int)s["Student_Id"] == student.ID && (int)s["Subject_Id"] == subject.ID)
+                                            {
+                                                s["Percentage"] = (decimal)s["Percentage"] + percentage;
+                                                flag = 1;
+                                            }
+                                        }
+                                        if (flag != 1)
+                                        {
+                                            var row = subject_marks.NewRow();
+                                            row["Student_Id"] = student.ID;
+                                            row["Subject_Id"] = subject.ID;
+                                            row["Percentage"] = percentage;
+                                            subject_marks.Rows.Add(row);
+                                        }
+                                        var e_flag = 0;
+                                        foreach (var e in exam_marks.AsEnumerable())
+                                        {
+                                            if ((int)e["Student_Id"] == student.ID && (int)e["Exam_Group_Id"] == exam_group.ID)
+                                            {
+                                                e["Marks"] = (decimal)e["Marks"] + marks;
+                                                if (grading_type == null || this.Normal_Enabled())
+                                                {
+                                                    e["Max_Marks"] = (decimal)e["Max_Marks"] + exam.MAX_MKS;
+                                                }
+                                                else if (this.GPA_Enabled() || this.CWA_Enabled())
+                                                {
+                                                    e["Max_Marks"] = (decimal)e["Max_Marks"] + subject.CR_HRS;
+                                                }
+                                                e_flag = 1;
+                                            }
+                                        }
+                                        if (e_flag != 1)
+                                        {
+                                            if (grading_type == null || this.Normal_Enabled())
+                                            {
+                                                var row = exam_marks.NewRow();
+                                                row["Student_Id"] = student.ID;
+                                                row["Exam_Group_Id"] = exam_group.ID;
+                                                row["Marks"] = marks;
+                                                row["Max_Marks"] = exam.MAX_MKS;
+                                                exam_marks.Rows.Add(row);
+                                            }
+                                            else if (this.GPA_Enabled() || this.CWA_Enabled())
+                                            {
+                                                var row = exam_marks.NewRow();
+                                                row["Student_Id"] = student.ID;
+                                                row["Exam_Group_Id"] = exam_group.ID;
+                                                row["Marks"] = marks;
+                                                row["Max_Marks"] = subject.CR_HRS;
+                                                exam_marks.Rows.Add(row);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach (var subject_mark in subject_marks.AsEnumerable())
+                    {
+                        var student_id = (int)subject_mark["Student_Id"];
+                        var subject_id = (int)subject_mark["Subject_Id"];
+                        var marks = (decimal)subject_mark["Percentage"];
+                        GROUPED_EXAM_REPORT prev_marks = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.SUBJ_ID == subject_id && x.BTCH_ID == this.ID && x.SCORE_TYPE == "s").FirstOrDefault();
+                        if (prev_marks != null)
+                        {
+                            prev_marks.MARKS = marks;
+                            db.Entry(prev_marks).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Marks = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, SUBJ_ID = subject_id, BTCH_ID = this.ID, SCORE_TYPE = "s", MARKS = marks };
+                            db.GROUPED_EXAM_REPORT.Add(New_Marks);
+                        }
+                    }
+                    DataTable exam_totals = new DataTable();
+                    exam_totals.Columns.Add("Student_Id", typeof(int));
+                    exam_totals.Columns.Add("Percentage", typeof(decimal));
+                    foreach (var exam_mark in exam_marks.AsEnumerable())
+                    {
+                        var student_id = (int)exam_mark["Student_Id"];
+                        var exam_group = db.EXAM_GROUP.Find((int)exam_mark["Exam_Group_Id"]);
+                        var score = (decimal)exam_mark["Marks"];
+                        var max_marks = (decimal)exam_mark["Max_Marks"];
+                        decimal tot_score = 0;
+                        decimal percent = 0;
+                        if (max_marks != 0)
+                        {
+                            if (grading_type == null || this.Normal_Enabled())
+                            {
+                                tot_score = (((score) / max_marks) * 100);
+                                percent = (((score) / max_marks) * 100) * ((exam_group.Weightage) / 100);
+                            }
+                            else if (this.GPA_Enabled() || this.CWA_Enabled())
+                            {
+                                tot_score = ((score) / max_marks);
+                                percent = ((score) / max_marks) * ((exam_group.Weightage) / 100);
+                            }
+                        }
+                        GROUPED_EXAM_REPORT prev_exam_score = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.EXAM_GROUP_ID == exam_group.ID && x.BTCH_ID == this.ID && x.SCORE_TYPE == "e").FirstOrDefault();
+                        if (prev_exam_score != null)
+                        {
+                            prev_exam_score.MARKS = tot_score;
+                            db.Entry(prev_exam_score).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Exam_Score = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, EXAM_GROUP_ID = exam_group.ID, BTCH_ID = this.ID, SCORE_TYPE = "e", MARKS = tot_score };
+                            db.GROUPED_EXAM_REPORT.Add(New_Exam_Score);
+                        }
+                        var exam_flag = 0;
+                        foreach (var total in exam_totals.AsEnumerable())
+                        {
+                            if ((int)total["Student_Id"] == student_id)
+                            {
+                                total["Percentage"] = (decimal)total["Percentage"] + percent;
+                                exam_flag = 1;
+                            }
+                        }
+                        if (exam_flag != 1)
+                        {
+                            var row = exam_totals.NewRow();
+                            row["Student_Id"] = student_id;
+                            row["Percentage"] = percent;
+                            exam_totals.Rows.Add(row);
+                        }
+                    }
+                    foreach (var exam_total in exam_totals.AsEnumerable())
+                    {
+                        var student_id = (int)exam_total["Student_Id"];
+                        var total = (decimal)exam_total["Percentage"];
+                        GROUPED_EXAM_REPORT prev_total_score = db.GROUPED_EXAM_REPORT.Where(x => x.STDNT_ID == student_id && x.BTCH_ID == this.ID && x.SCORE_TYPE == "c").FirstOrDefault();
+                        if (prev_total_score != null)
+                        {
+                            prev_total_score.MARKS = total;
+                            db.Entry(prev_total_score).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            GROUPED_EXAM_REPORT New_Total_Score = new GROUPED_EXAM_REPORT() { STDNT_ID = student_id, BTCH_ID = this.ID, MARKS = total, SCORE_TYPE = "c" };
+                            db.GROUPED_EXAM_REPORT.Add(New_Total_Score);
+                        }
+                    }
+                    db.SaveChanges();
+                }
+            }
+        }
+        public void Generate_CCE_Reports()
+        {
+            
         }
 
     }

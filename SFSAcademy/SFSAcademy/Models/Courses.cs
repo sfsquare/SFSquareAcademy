@@ -116,7 +116,7 @@ namespace SFSAcademy
         }
         public bool Has_batch_groups_with_active_batches()
         {
-            var batch_groups = db.BATCH_GROUP.Include(x => x.GROUPED_BATCH).Where(x => x.CRS_ID == ID).ToList();
+            var batch_groups = db.BATCH_GROUP.Where(x => x.CRS_ID == ID).ToList();
             if(batch_groups == null || batch_groups.Count() == 0)
             {
                 return false;

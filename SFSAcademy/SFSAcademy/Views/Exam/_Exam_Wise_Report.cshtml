@@ -1,0 +1,260 @@
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<STUDENT> students = (IEnumerable<STUDENT>)ViewData["students"];
+    STUDENT student = (STUDENT)ViewData["student"];
+    STUDENT prev_student = (STUDENT)ViewData["prev_student"];
+    STUDENT next_student = (STUDENT)ViewData["next_student"];
+    IEnumerable<SUBJECT> subjects = (IEnumerable<SUBJECT>)ViewData["subjects"];
+    IEnumerable<EXAM> exams = (IEnumerable<EXAM>)ViewData["exams"];
+    var graph = ViewData["graph"];
+}
+
+<div id="register">
+    @{ int UserId = Convert.ToInt32(this.Session["UserId"]); USER this_user = db.USERS.Find(UserId);}
+    @if (this_user.STDNT_IND != true)
+    {
+        <div class="header">
+            <div class="prev">
+                <a href="@Url.Action("Generated_Report", "Exam", new { STDNT_ID = prev_student.ID, EXAM_GROUP_ID = exam_group.ID})">◄</a>
+            </div>
+            <div class="month">
+                @student.Full_Name
+
+            </div>
+            <div class="next">
+                <a href="@Url.Action("Generated_Report", "Exam", new { STDNT_ID = next_student.ID, EXAM_GROUP_ID = exam_group.ID})">►</a>
+            </div>
+            <div class="extender"></div>
+        </div>
+    }
+</div>
+@{
+    List<int?> exam_score_ids = new List<int?>();
+    foreach (var exam in exams)
+    {
+        EXAM_SCORE exam_score_val = db.EXAM_SCORE.Where(x => x.EXAM_ID == exam.ID && x.STDNT_ID == student.ID).FirstOrDefault();
+        if (exam_score_val != null)
+        {
+            exam_score_ids.Add(exam_score_val.ID);
+        }
+    }
+    var exam_score = db.EXAM_SCORE.Where(x => exam_score_ids.Contains(x.ID)).ToList();
+}
+@if (batch.CWA_Enabled())
+{
+    decimal total_credits = 0;
+    decimal? total_weighted_marks = 0;
+    <div id="score-table">
+        <div class="custom_header">
+            <span class="student">@student.Full_Name - @student.ADMSN_NO</span>
+        </div>
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+            <tr class="tr-head">
+                <td>Subject Code</td>
+                <td>Title</td>
+                <td>Marks</td>
+                <td>Credit</td>
+                <td>Grade</td>
+                <td>Weighted Marks</td>
+            </tr>
+            @{ int i = 1;}
+            @foreach (var es in exam_score)
+            {
+                string cycle = "tr-even";
+                if (i % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+                var mark = es.MKS != null ? ((es.MKS / es.EXAM.MAX_MKS) * 100).ToString() : "-";
+                total_credits = total_credits + (decimal)es.EXAM.SUBJECT.CR_HRS;
+                var GrLevel = es.GRADING_LVL_ID != null ? es.GRADING_LEVEL.NAME : "-";
+                decimal? weighted_mark = 0;
+                weighted_mark = mark != "-" ? Convert.ToDecimal(mark) * es.EXAM.SUBJECT.CR_HRS : 0;
+                total_weighted_marks = total_weighted_marks + weighted_mark;
+                <tr class="@cycle">
+                    <td class="col-1"> @es.EXAM.SUBJECT.CODE</td>
+                    <td class="col-1"> @es.EXAM.SUBJECT.NAME</td>
+                    <td class="col-2">@mark</td>
+                    <td class="col-2">@es.EXAM.SUBJECT.CR_HRS</td>
+                    <td class="col-2">@GrLevel</td>
+                    <td class="col-1">@weighted_mark</td>
+                </tr>
+            }
+            <tr class="tr-blank"></tr>
+            <tr class="tr-head">
+                <td colspan="3" align="right">Total</td>
+                <td>Total Credits</td>
+                <td>-</td>
+                <td>@total_weighted_marks</td>
+            </tr>
+        </table>
+    </div>
+    var weighted_average = total_credits != 0 ? (total_weighted_marks / total_credits).ToString() : "-";
+    <h5>
+        Weighted Average = @weighted_average
+    </h5>
+}
+else if (batch.GPA_Enabled())
+{
+    decimal? total_credit_points = 0;
+    decimal? total_credit_hours = 0;
+    <div id="score-table">
+        <div class="custom_header">
+            <span class="student">@student.Full_Name - @student.ADMSN_NO</span>
+        </div>
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+            <tr class="tr-head">
+                <td>Subject Code</td>
+                <td>Subject Title</td>
+                <td>Credits</td>
+                <td>Marks</td>
+                <td>Remarks</td>
+            </tr>
+            @{ int i = 1;}
+            @foreach (var es in exam_score)
+            {
+                string cycle = "tr-even";
+                if (i % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+                total_credit_hours = total_credit_hours + (decimal)es.EXAM.SUBJECT.CR_HRS;
+                var GrLevel = (es.GRADING_LVL_ID != null ? es.GRADING_LEVEL.NAME : "-") + "+" + (es.GRADING_LVL_ID != null ? (es.GRADING_LEVEL.CRED_PT != null ? (es.GRADING_LEVEL.CRED_PT).ToString() : "-") : "-");
+                decimal? points = 0;
+                points = es.GRADING_LVL_ID != null ? es.GRADING_LEVEL.CRED_PT * es.EXAM.SUBJECT.CR_HRS : 0;
+                total_credit_points = total_credit_points + points;
+                var GrDes = es.GRADING_LVL_ID != null ? (es.GRADING_LEVEL.DESCR != "" ? es.GRADING_LEVEL.DESCR : "-") : "-";
+                <tr class="@cycle">
+                    <td class="col-1"> @es.EXAM.SUBJECT.CODE</td>
+                    <td class="col-1"> @es.EXAM.SUBJECT.NAME</td>
+                    <td class="col-2">@es.EXAM.SUBJECT.CR_HRS</td>
+                    <td class="col-2">@GrLevel</td>
+                    <td class="col-1">@GrDes</td>
+                </tr>
+            }
+
+            <tr class="tr-blank"></tr>
+            <tr class="tr-head">
+                <td colspan="2" align="right">Total</td>
+                <td>Total Credit Hours</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </div>
+    var grade_point_average_gpa = total_credit_hours != 0 ? (total_credit_points / total_credit_hours).ToString() : "-";
+    <h5>
+        Grade point average gpa = @grade_point_average_gpa
+    </h5>
+
+}
+else
+{
+    decimal? total_marks_attained = 0;
+    decimal? total_max_marks = 0;
+    <div id="score-table">
+        <div class="custom_header">
+            <span class="student">@student.Full_Name - @student.ADMSN_NO</span>
+        </div>
+        <table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+            <tr class="tr-head">
+                <td>Subject</td>
+                @if (exam_group.EXAM_TYPE == "Marks")
+                {
+                    <td>Marks Obtained</td>
+                    <td>Max</td>
+                    <td>Percentage (%)</td>
+                }
+                else if (exam_group.EXAM_TYPE == "Grades")
+                {
+                    <td>Grades</td>
+                }
+                else
+                {
+                    <td>Marks Obtained</td>
+                    <td>Max</td>
+                    <td>Grades</td>
+                    <td>Percentage(%)</td>
+                }
+            </tr>
+            @{ int i = 1;}
+            @foreach (var es in exam_score)
+            {
+                string cycle = "tr-even";
+                if (i % 2 == 0)
+                {
+                    cycle = "tr-odd";
+                }
+
+                <tr class="@cycle">
+                    <td class="col-1"> @es.EXAM.SUBJECT.NAME</td>
+                    @if (exam_group.EXAM_TYPE == "Marks")
+                    {
+                        var marks = es.MKS != null ? es.MKS.ToString() : "-";
+                        <td class="col-1">@marks</td>
+                        total_marks_attained = total_marks_attained + (marks != "-" ? Convert.ToDecimal(marks) : 0);
+                        <td class="col-1">@es.EXAM.MAX_MKS</td>
+                        total_max_marks = total_max_marks + es.EXAM.MAX_MKS;
+                        var calculate_percentage = es.MKS != null ? es.MKS * 100 / es.EXAM.MAX_MKS : null;
+                        <td class="col-1">@calculate_percentage</td>
+                    }
+                    else if (exam_group.EXAM_TYPE == "Grades")
+                    {
+                        var GrLevel = es.GRADING_LVL_ID != null ? es.GRADING_LEVEL.NAME : "-";
+                        <td class="col-1">@GrLevel</td>
+                    }
+                    else
+                    {
+                        var marks = es.MKS != null ? es.MKS.ToString() : "-";
+                        <td class="col-1">@marks</td>
+                        total_marks_attained = total_marks_attained + (marks != "-" ? Convert.ToDecimal(marks) : 0);
+                        <td class="col-1">@es.EXAM.MAX_MKS</td>
+                        var GrLevel = es.GRADING_LVL_ID != null ? es.GRADING_LEVEL.NAME : "-";
+                        total_max_marks = total_max_marks + es.EXAM.MAX_MKS;
+                        var calculate_percentage = es.MKS != null ? es.MKS * 100 / es.EXAM.MAX_MKS : null;
+                        <td class="col-1">@GrLevel</td>
+                        <td class="col-1">@calculate_percentage</td>
+                    }
+                </tr>
+            }
+            @if (exam_group.EXAM_TYPE == "Marks" || exam_group.EXAM_TYPE == "MarksAndGrades")
+            {
+                var total = total_max_marks != 0 ? total_marks_attained * 100 / total_max_marks : 0;
+                <tr class="tr-head">
+                    <td>Total Marks:</td>
+                    <td>@total_marks_attained</td>
+                    <td>@total_max_marks</td>
+                    @if (exam_group.EXAM_TYPE == "MarksAndGrades")
+                    {
+                        <td>-</td>
+                    }
+                    <td>@total</td>
+                </tr>
+            }
+        </table>
+
+        @if (exam_group.EXAM_TYPE == "Marks" || exam_group.EXAM_TYPE == "MarksAndGrades")
+        {
+            var class_average_Marks = total_max_marks != 0 ? exam_group.Batch_Average_Marks("marks").ToString() : "-";
+            var class_average = total_max_marks != 0 ? (exam_group.Batch_Average_Marks("marks") * 100 / total_max_marks).ToString() : "-";
+            <div class="custom_header">
+                Class average marks : @class_average_Marks | Class Average : @class_average
+            </div>
+        }
+
+    </div>
+}
+
+@if (!batch.GPA_Enabled())
+{
+    if (exam_group.EXAM_TYPE == "Marks" || exam_group.EXAM_TYPE == "MarksAndGrades")
+    {
+        <script type="text/javascript" src="/javascripts/swfobject.js"></script>
+        @graph
+    }
+}
+
+<div class="extender"></div>
+

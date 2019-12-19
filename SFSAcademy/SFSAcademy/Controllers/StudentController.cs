@@ -878,7 +878,7 @@ namespace SFSAcademy.Controllers
                 {
                     STUDENT sTUDENT = db.STUDENTs.Find(item.GuardianList.WARD_ID);
                     sTUDENT.IMMDT_CNTCT_ID = item.GuardianList.ID;
-                    //db.SaveChanges();
+                    db.Entry(sTUDENT).State = EntityState.Modified;
                     try { db.SaveChanges(); ViewBag.ErrorMessage = string.Concat("Guardian Details added successfully for Studnet Id:", item.GuardianList.WARD_ID); }
                     catch (Exception e) { Console.WriteLine(e); ViewBag.ErrorMessage = string.Concat(e.GetType().FullName, ":", e.Message); return View(model); }
                     break;

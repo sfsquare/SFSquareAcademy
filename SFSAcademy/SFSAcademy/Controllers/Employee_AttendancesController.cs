@@ -60,7 +60,7 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Employee_Attendances/Create
-        public ActionResult New(string Sel_date, int? id2)
+        public ActionResult New(string Sel_date, int? id2, string next)
         {
             EMPLOYEE employee = db.EMPLOYEEs.Find(id2);
             ViewData["employee"] = employee;
@@ -69,6 +69,7 @@ namespace SFSAcademy.Controllers
             List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME").ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Leave Type" });
             ViewBag.EMP_LEAVE_TYPE_ID = options;
+            ViewBag.today = next;
             return PartialView("_New");
         }
 
@@ -77,51 +78,70 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult New([Bind(Include = "ID,ATNDENCE_DATE,EMP_ID,EMP_LEAVE_TYPE_ID,RSN,IS_HALF_DAY")] EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES)
+        public ActionResult Create([Bind(Include = "ID,ATNDENCE_DATE,EMP_ID,EMP_LEAVE_TYPE_ID,RSN,IS_HALF_DAY")] EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES, string next)
         {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(eMPLOYEE_ATTENDENCES.EMP_ID);
+            EMPLOYEE_DEPARTMENT dept = db.EMPLOYEE_DEPARTMENT.Find(employee.EMP_DEPT_ID);
+            ViewData["dept"] = dept;
+            var EmployeeDetail = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  where emp.EMP_DEPT_ID == employee.EMP_DEPT_ID
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+            ViewData["employees"] = EmployeeDetail;
+            DateTime today = System.DateTime.Today;
+            if (next != "null")
+            {
+                today = Convert.ToDateTime(next);
+            }
+            ViewBag.today = today.ToShortDateString();
+            ViewBag.today_Plus_1Month = today.AddMonths(1).ToShortDateString();
+            ViewBag.today_Minus_1Month = today.AddMonths(-1).ToShortDateString();
+            var start_date = new DateTime(today.Year, today.Month, 1);
+            ViewBag.start_date = start_date;
+            var end_date = start_date.AddMonths(1).AddDays(-1);
+            ViewBag.end_date = end_date;
+
             if (ModelState.IsValid)
             {
                 eMPLOYEE_ATTENDENCES.ATNDENCE_DATE = Convert.ToDateTime(eMPLOYEE_ATTENDENCES.ATNDENCE_DATE);
                 db.EMPLOYEE_ATTENDENCES.Add(eMPLOYEE_ATTENDENCES);
                 EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == eMPLOYEE_ATTENDENCES.EMP_ID && x.EMP_LEAVE_TYPE_ID == eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID).FirstOrDefault();
+                decimal? leaves_taken = reset_count.LEAVE_TAKE;
+                if (eMPLOYEE_ATTENDENCES.IS_HALF_DAY)
+                {
+                    leaves_taken = leaves_taken + (decimal)0.5;
+                }
+                else
+                {
+                    leaves_taken = leaves_taken + (decimal)1.0;
+                }
+                reset_count.LEAVE_TAKE = leaves_taken;
+                db.Entry(reset_count).State = EntityState.Modified;
                 try {
                     db.SaveChanges();
-                    decimal? leaves_taken = reset_count.LEAVE_TAKE;
-                    if (eMPLOYEE_ATTENDENCES.IS_HALF_DAY)
-                    {
-                        leaves_taken = leaves_taken + (decimal)0.5;
-                    }
-                    else
-                    {
-                        leaves_taken = leaves_taken + (decimal)1.0;
-                    }
-                    reset_count.LEAVE_TAKE = leaves_taken;
-                    db.Entry(reset_count).State = EntityState.Modified;
-                    try { db.SaveChanges(); }
-                    catch (Exception e)
-                    {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                        return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
-                    }
+                    ViewBag.Notice = "Leave details added sucessfully.";
+                    return PartialView("_Register");
                 }
                 catch (DbEntityValidationException e) {foreach (var eve in e.EntityValidationErrors){foreach (var ve in eve.ValidationErrors){ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage);}}
-                    return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage});
+                    return PartialView("_Register");
                 }
                 catch (Exception e)
                 {
                     ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                    return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage});
+                    return PartialView("_Register");
                 }
-                ViewBag.Notice = "Leave details added sucessfully.";
-                return RedirectToAction("Index", new { Notice = ViewBag.Notice });
             }
-            ViewBag.ErrorMessage = "There seems to be some issue with model state.";
-            return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+            else
+            {
+                ViewBag.ErrorMessage = "There seems to be some issue with model state.";
+                return PartialView("_Register");
+            }
         }
 
 
         // GET: Employee_Attendances/Edit/5
-        public ActionResult Edit(int? Abs_Id, int? id2)
+        public ActionResult Edit(int? Abs_Id, int? id2, string next)
         {
             if (Abs_Id == null)
             {
@@ -138,6 +158,7 @@ namespace SFSAcademy.Controllers
             List<SelectListItem> options = new SelectList(db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).OrderBy(x => x.NAME), "ID", "NAME", attendance.EMP_LEAVE_TYPE_ID).ToList();
             options.Insert(0, new SelectListItem() { Value = null, Text = "Select Leave Type" });
             ViewBag.EMP_LEAVE_TYPE_ID = options;
+            ViewBag.today = next;
             return PartialView("_Edit", attendance);
         }
 
@@ -146,8 +167,30 @@ namespace SFSAcademy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,ATNDENCE_DATE,EMP_ID,EMP_LEAVE_TYPE_ID,RSN,IS_HALF_DAY")] EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES)
+        public ActionResult Edit([Bind(Include = "ID,ATNDENCE_DATE,EMP_ID,EMP_LEAVE_TYPE_ID,RSN,IS_HALF_DAY")] EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES, string next)
         {
+            EMPLOYEE employee = db.EMPLOYEEs.Find(eMPLOYEE_ATTENDENCES.EMP_ID);
+            EMPLOYEE_DEPARTMENT dept = db.EMPLOYEE_DEPARTMENT.Find(employee.EMP_DEPT_ID);
+            ViewData["dept"] = dept;
+            var EmployeeDetail = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  where emp.EMP_DEPT_ID == employee.EMP_DEPT_ID
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+            ViewData["employees"] = EmployeeDetail;
+            DateTime today = System.DateTime.Today;
+            if (next != "null")
+            {
+                today = Convert.ToDateTime(next);
+            }
+            ViewBag.today = today.ToShortDateString();
+            ViewBag.today_Plus_1Month = today.AddMonths(1).ToShortDateString();
+            ViewBag.today_Minus_1Month = today.AddMonths(-1).ToShortDateString();
+            var start_date = new DateTime(today.Year, today.Month, 1);
+            ViewBag.start_date = start_date;
+            var end_date = start_date.AddMonths(1).AddDays(-1);
+            ViewBag.end_date = end_date;
+
             if (ModelState.IsValid)
             {
                 EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(eMPLOYEE_ATTENDENCES.ID);
@@ -215,35 +258,56 @@ namespace SFSAcademy.Controllers
                             new_reset_count.LEAVE_TAKE = leave;
                             db.Entry(new_reset_count).State = EntityState.Modified;
                         }
-                    }                    
-                    try { db.SaveChanges(); }
-                    catch (Exception e)
-                    {
-                        ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                        return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
                     }
+                    db.SaveChanges();
+                    ViewBag.Notice = "Leave details updated sucessfully.";
+                    return PartialView("_Register");
                 }
                 catch (DbEntityValidationException e)
                 {
                     foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                    return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                    return PartialView("_Register");
                 }
                 catch (Exception e)
                 {
                     ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                    return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
-                }
-                ViewBag.Notice = "Leave details updated sucessfully.";
-                return RedirectToAction("Index", new { Notice = ViewBag.Notice });
+                    return PartialView("_Register");
+                }               
             }
-            ViewBag.ErrorMessage = "There seems to be some issue with model state.";
-            return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+            else
+            {
+                ViewBag.ErrorMessage = "There seems to be some issue with model state.";
+                return PartialView("_Register");
+            }
         }
 
         // GET: Employee_Attendances/Delete/5
-        public ActionResult Delete(int? id)
+        public ActionResult Destroy(int? Abs_Id, string next)
         {
-            EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(id);
+            EMPLOYEE_ATTENDENCES attendance = db.EMPLOYEE_ATTENDENCES.Find(Abs_Id);
+
+            EMPLOYEE employee = db.EMPLOYEEs.Find(attendance.EMP_ID);
+            EMPLOYEE_DEPARTMENT dept = db.EMPLOYEE_DEPARTMENT.Find(employee.EMP_DEPT_ID);
+            ViewData["dept"] = dept;
+            var EmployeeDetail = (from emp in db.EMPLOYEEs
+                                  join ed in db.EMPLOYEE_DEPARTMENT.Where(x => x.STAT == true) on emp.EMP_DEPT_ID equals ed.ID into ged
+                                  from subged in ged.DefaultIfEmpty()
+                                  where emp.EMP_DEPT_ID == employee.EMP_DEPT_ID
+                                  select new SFSAcademy.Employee { EmployeeData = emp, DepartmentData = (subged == null ? null : subged) }).OrderBy(x => x.EmployeeData.FIRST_NAME).ToList();
+            ViewData["employees"] = EmployeeDetail;
+            DateTime today = System.DateTime.Today;
+            if (next != "null")
+            {
+                today = Convert.ToDateTime(next);
+            }
+            ViewBag.today = today.ToShortDateString();
+            ViewBag.today_Plus_1Month = today.AddMonths(1).ToShortDateString();
+            ViewBag.today_Minus_1Month = today.AddMonths(-1).ToShortDateString();
+            var start_date = new DateTime(today.Year, today.Month, 1);
+            ViewBag.start_date = start_date;
+            var end_date = start_date.AddMonths(1).AddDays(-1);
+            ViewBag.end_date = end_date;
+
             EMPLOYEE_LEAVE reset_count = db.EMPLOYEE_LEAVE.Where(x => x.EMP_ID == attendance.EMP_ID && x.EMP_LEAVE_TYPE_ID == attendance.EMP_LEAVE_TYPE_ID).FirstOrDefault();
             decimal? leaves_taken = reset_count.LEAVE_TAKE;
             decimal? leave = 0;
@@ -258,62 +322,22 @@ namespace SFSAcademy.Controllers
             db.EMPLOYEE_ATTENDENCES.Remove(attendance);
             reset_count.LEAVE_TAKE = leave;
             db.Entry(reset_count).State = EntityState.Modified;
-            try { db.SaveChanges(); }
+            try { 
+                db.SaveChanges();
+                ViewBag.Notice = "Leave details deleted sucessfully.";
+                return PartialView("_Register");
+            }
             catch (DbEntityValidationException e)
             {
                 foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
-                return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                return PartialView("_Register");
             }
             catch (Exception e)
             {
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                return RedirectToAction("Index", new { ErrorMessage = ViewBag.ErrorMessage });
+                return PartialView("_Register");
             }
-            ViewBag.Notice = "Leave details deleted sucessfully.";
-            return RedirectToAction("Index", new { Notice = ViewBag.Notice });
         }
-        // GET: Employee_Attendances/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES = db.EMPLOYEE_ATTENDENCES.Find(id);
-            if (eMPLOYEE_ATTENDENCES == null)
-            {
-                return HttpNotFound();
-            }
-            return View(eMPLOYEE_ATTENDENCES);
-        }
-
-        // GET: Employee_Attendances/Create
-        public ActionResult Create()
-        {
-            ViewBag.EMP_LEAVE_TYPE_ID = new SelectList(db.EMPLOYEE_LEAVE_TYPE, "ID", "NAME");
-            ViewBag.EMP_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM");
-            return View();
-        }
-
-        // POST: Employee_Attendances/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,ATNDENCE_DATE,EMP_ID,EMP_LEAVE_TYPE_ID,RSN,IS_HALF_DAY")] EMPLOYEE_ATTENDENCES eMPLOYEE_ATTENDENCES)
-        {
-            if (ModelState.IsValid)
-            {
-                db.EMPLOYEE_ATTENDENCES.Add(eMPLOYEE_ATTENDENCES);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.EMP_LEAVE_TYPE_ID = new SelectList(db.EMPLOYEE_LEAVE_TYPE, "ID", "NAME", eMPLOYEE_ATTENDENCES.EMP_LEAVE_TYPE_ID);
-            ViewBag.EMP_ID = new SelectList(db.EMPLOYEEs, "ID", "EMP_NUM", eMPLOYEE_ATTENDENCES.EMP_ID);
-            return View(eMPLOYEE_ATTENDENCES);
-        }
-
 
         protected override void Dispose(bool disposing)
         {
