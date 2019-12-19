@@ -9,7 +9,6 @@
     $(document).ready(function () {
         $(".LoaderBox").hide();
     });
-    //Very similar function as before (except this time with an argument)
     function LoadPartialPage(sender) {
         $(".LoaderBox").show();
         $.get(sender, function (data) {
@@ -41,15 +40,24 @@
     }
     function LoadDeletePartialPage(sender) {
         $(".LoaderBox").show();
-        $.get(sender, function (data) {
-            $('#register').html(data);
-            $('#register').fadeIn('fast');
-        }).success(function (status) {
-            $(".LoaderBox").hide();
-        });
+        if (confirm('Are you sure to delete this?')) {
+            $.get(sender, function (data) {
+                $('#register').html(data);
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+        }
     }
 </script>
-
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div class="header">
     @if (ViewBag.config == "Daily")
     {

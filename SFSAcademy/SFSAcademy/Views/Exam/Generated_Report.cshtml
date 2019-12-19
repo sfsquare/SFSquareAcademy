@@ -1,0 +1,77 @@
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    BATCH batch = (BATCH)ViewData["batch"];
+    IEnumerable<STUDENT> students = (IEnumerable<STUDENT>)ViewData["students"];
+    STUDENT student = (STUDENT)ViewData["student"];
+    IEnumerable<SUBJECT> subjects = (IEnumerable<SUBJECT>)ViewData["subjects"];
+    IEnumerable<EXAM> exams = (IEnumerable<EXAM>)ViewData["exams"];
+}
+@{
+    ViewBag.Title = "Generated_Report";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Exams</h1>
+    <h3>Generated_Report</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="inner-tab-menu">
+    <ul>
+        @if (Html.Permitted_To("Consolidated_Exam_Report", "Exam"))
+        {
+            <li><a href="@Url.Action("Consolidated_Exam_Report", "Exam", new { exam_group_id = exam_group.ID})">Consolidated Report</a> </li>
+        }
+        @if (Html.Permitted_To("Generated_Report_pdf", "Exam"))
+        {
+            <li><a href="@Url.Action("Generated_Report_pdf", "Exam", new { exam_group_id = exam_group.ID, batch_id = batch.ID})" target="_blank">pdf Report</a> </li>
+        }
+    </ul>
+</div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+        <a href="@Url.Action("Report_Center", "Exam")">Report Center</a> &raquo;
+        <a href="@Url.Action("Exam_Wise_Report", "Exam")">Exam Wise Report</a> &raquo;
+        Generated Report
+    </div>
+    <h3 align="center">@batch.Full_Name - @exam_group.NAME</h3>
+    <div id="student_list">
+        @Html.Partial("_Exam_Wise_Student_List")
+    </div>
+    <div id="exam_wise_report">
+        @Html.Partial("_Exam_Wise_Report")
+    </div>
+    <div class="box">
+
+    </div>
+</div>
+<script type="text/javascript">
+  function set_active(){
+    $('.active-link').each(function(){
+      this.removeClassName('active-link');
+    });
+    this.addClassName('active-link')
+  }
+  function draw_report(){
+    $(".LoaderBox").show();
+    new Ajax.Request('/exam/generated_report',
+    {asynchronous:true, evalScripts:true,
+        parameters: 'student=' + this.id + '&exam_group=@exam_group.ID', onSuccess: function (request) { $(".LoaderBox").hide();}
+    })
+  }
+  $(document).observe("dom:loaded", function() {
+    $('.student-link').invoke('observe','click',draw_report);
+    $('.student-link').invoke('observe','click',set_active);
+  });
+</script>
+
+

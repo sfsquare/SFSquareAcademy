@@ -1,0 +1,12 @@
+﻿@{
+    IEnumerable<BATCH_GROUP> batch_groups = (IEnumerable<BATCH_GROUP>)ViewData["batch_groups"];
+}
+@if(batch_groups != null && batch_groups.Count() != 0)
+{
+    <div class="label-field-pair">
+        <label for="student_course">Select a Batch Group :</label>
+        <div class="text-input-bg">
+            @Html.DropDownList("BTCH_GROUP_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchGroupDropDown" })
+        </div>
+    </div>
+}

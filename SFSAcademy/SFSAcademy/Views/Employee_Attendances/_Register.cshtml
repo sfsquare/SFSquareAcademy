@@ -1,27 +1,17 @@
-﻿
-@{
+﻿@{
+    SFSAcademyEntities db = new SFSAcademyEntities();
     IEnumerable<SFSAcademy.Employee> employees = (IEnumerable<SFSAcademy.Employee>)ViewData["employees"];
-    IEnumerable<EMPLOYEE_ATTENDENCES> EmployeeAttendance = (IEnumerable<EMPLOYEE_ATTENDENCES>)ViewData["EmployeeAttendance"];
     EMPLOYEE_DEPARTMENT dept = (EMPLOYEE_DEPARTMENT)ViewData["dept"];
 }
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.min.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-1.9.1.js")"></script>
-<script type="text/javascript" src="@Url.Content("~/Content/javascripts/jquery/jquery-ui.js")"></script>
-<link rel="stylesheet" href="~/Content/stylesheets/_styles/jquery-ui.css" />
 <script>
     $(document).ready(function () {
-        $(".LoaderBox2").hide();
+        $(".LoaderBox").hide();
         $('#submit-button2').click(function () {
             $(".LoaderBox").show();
             var selectedID = $('#dept_id').val();
             var SelectedNext = $('#next_Minus').val();
-            /* Request the partial view with .get request. */
             $.get('/Employee_Attendances/Show?dept_id=' + selectedID + "&next=" + SelectedNext, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
                 $('#register').html(data);
-                /* little fade in effect */
                 $('#register').fadeIn('fast');
             }).success(function (status) {
                 $(".LoaderBox").hide();
@@ -33,12 +23,8 @@
             $(".LoaderBox").show();
             var selectedID = $('#dept_id').val();
             var SelectedNext = $('#next_Plus').val();
-            /* Request the partial view with .get request. */
             $.get('/Employee_Attendances/Show?dept_id=' + selectedID + "&next=" + SelectedNext, function (data) {
-
-                /* data is the pure html returned from action method, load it to your page */
                 $('#register').html(data);
-                /* little fade in effect */
                 $('#register').fadeIn('fast');
             }).success(function (status) {
                 $(".LoaderBox").hide();
@@ -46,21 +32,46 @@
 
         });
     });
-    //Very similar function as before (except this time with an argument)
-    function LoadPartialPage(sender) {
-        $(".LoaderBox2").show();
-        /* Request the partial view with .get request. */
+    function LoadNewPartialPage(sender) {
+        $(".LoaderBox").show();
         $.get(sender, function (data) {
-
-            /* data is the pure html returned from action method, load it to your page */
             $('#modal-box').html(data);
-            /* little fade in effect */
             $('#modal-box').fadeIn('fast');
         }).success(function (status) {
-            $(".LoaderBox2").hide();
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
         });
     }
+    function LoadEditPartialPage(sender) {
+        $(".LoaderBox").show();
+        $.get(sender, function (data) {
+            $('#modal-box').html(data);
+            $('#modal-box').fadeIn('fast');
+        }).success(function (status) {
+            $(".LoaderBox").hide();
+            $('#modal-box').dialog('open');
+        });
+    }
+    function LoadDeletePartialPage(sender) {
+        $(".LoaderBox").show();
+        if (confirm('Are you sure to delete this?')) {
+            $.get(sender, function (data) {
+                $('#register').html(data);
+                $('#register').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox").hide();
+            });
+        }
+    }
 </script>
+@if (ViewBag.Notice != null)
+{
+    <p class="flash-msg"> @ViewBag.Notice </p>
+}
+@if (ViewBag.ErrorMessage != null)
+{
+    <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+}
 <div class="header">
     <div class="prev">
         <a id="submit-button2">◄</a>
@@ -114,46 +125,48 @@
                 </td>
                 @for (DateVal = ViewBag.start_date; DateVal <= ViewBag.end_date; DateVal = DateVal.AddDays(1))
                 {
-                    var absent = EmployeeAttendance.Where(x => x.EMP_ID == item.EmployeeData.ID && x.ATNDENCE_DATE == DateVal).FirstOrDefault();
+                    var absent = db.EMPLOYEE_ATTENDENCES.Where(x => x.EMP_ID == item.EmployeeData.ID && x.ATNDENCE_DATE == DateVal).FirstOrDefault();
                     if (current_day == DateVal)
                     {
-                        <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark active">
-                            @if (absent != null && absent.ID != 0)
-                            {
-                                <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID })" class="absent themed_text"  onclick='LoadPartialPage(this.href); return false;'>X</a>
-                            }
-                            else
-                            {
-                                <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
-                            }
-                            <div class="date">
-                                <div> <span class="themed_text"> @DateVal.ToShortDateString() @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
-                            </div>
-                        </td>
+            <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark active">
+                @if (absent != null && absent.ID != 0)
+                {
+                    <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID, next = ViewBag.today })" class="absent themed_text" onclick='LoadEditPartialPage(this.href); return false;'>X</a>
+                    <a href="@Url.Action("Destroy", "Employee_Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                }
+                else
+                {
+                    <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID, next = ViewBag.today })" class="present" onclick='LoadNewPartialPage(this.href); return false;'>O</a>
+                }
+                <div class="date">
+                    <div> <span class="themed_text"> @DateVal.ToShortDateString() @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
+                </div>
+            </td>
                     }
                     else
                     {
-                        <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark">
-                            @if (absent != null && absent.ID != 0)
-                            {
-                                <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID })" class="absent themed_text" onclick='LoadPartialPage(this.href); return false;'>X</a>
-                            }
-                            else
-                            {
-                                <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID })" class="present" onclick='LoadPartialPage(this.href); return false;'>O</a>
-                            }
-                            <div class="date">
-                                 <div><span class="themed_text">@DateVal.ToShortDateString()  @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
-                            </div>
-                        </td>
+            <td id="attendance-employee-@item.EmployeeData.ID-day-@DateVal" class="td-mark">
+                @if (absent != null && absent.ID != 0)
+                {
+                    <a href="@Url.Action("Edit", "Employee_Attendances",new {Abs_Id = absent.ID, id2 = @item.EmployeeData.ID, next = ViewBag.today })" class="absent themed_text" onclick='LoadEditPartialPage(this.href); return false;'>X</a>
+                    <a href="@Url.Action("Destroy", "Employee_Attendances",new {Abs_Id = absent.ID, next = ViewBag.today})" style="border:none" class="absent themed_text" onclick='LoadDeletePartialPage(this.href); return false;'><img src="~/Content/images/buttons/delete-new.png"></a>
+                }
+                else
+                {
+                    <a href="@Url.Action("New", "Employee_Attendances",new {Sel_date =DateVal.ToShortDateString(), id2 = @item.EmployeeData.ID, next = ViewBag.today })" class="present" onclick='LoadNewPartialPage(this.href); return false;'>O</a>
+                }
+                <div class="date">
+                    <div><span class="themed_text">@DateVal.ToShortDateString()  @item.EmployeeData.FIRST_NAME @item.EmployeeData.MID_NAME @item.EmployeeData.LAST_NAME</span> </div>
+                </div>
+            </td>
                     }
-                    
+
                 }
             </tr>
         }
     </table>
 </div>
-<div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+<div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
 <input type="hidden" value="@dept.ID" id="dept_id" name="dept_id" />
 <input type="hidden" value="@ViewBag.today_Plus_1Month" id="next_Plus" name="next_Plus" />
 <input type="hidden" value="@ViewBag.today_Minus_1Month" id="next_Minus" name="next_Minus" />

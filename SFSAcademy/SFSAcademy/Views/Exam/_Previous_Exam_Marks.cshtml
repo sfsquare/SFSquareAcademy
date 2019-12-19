@@ -1,0 +1,60 @@
+﻿@{
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    IEnumerable<EXAM> exams = (IEnumerable<EXAM>)ViewData["exams"];
+    IEnumerable<SFSAcademy.PRIVILEGE> privilege = (IEnumerable<SFSAcademy.PRIVILEGE>)ViewData["privilege"];
+    IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT> employee_subjects = (IEnumerable<SFSAcademy.EMPLOYEES_SUBJECT>)ViewData["employee_subjects"];
+}
+@if (exam_group.EXAM_TYPE != "Grades")
+{
+    <table id="listing" width="100%">
+        <tr class="tr-head">
+            <td class="col-2">Subject</td>
+            <td class="col-1">Max Mark</td>
+            <td class="col-1">Min Mark</td>
+        </tr>
+        @{int i = 1;}
+        @foreach (var exam in exams)
+        {
+            string cycle = "tr-even";
+            if (i % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            if ((employee_subjects != null && employee_subjects.Select(x => x.SUBJ_ID).Contains(exam.SUBJ_ID)) || Html.CurrentUser_UserType().Equals("Admin") || privilege.Select(p => p.NAME).Contains("ExaminationControl") || privilege.Select(p => p.NAME).Contains("EnterResults"))
+            {
+                <tr class="@cycle">
+                    <td class="col-2">
+                        <a href="@Url.Action("Edit_Previous_Marks", "Exam", new { exam_id = exam.ID})">@exam.SUBJECT.NAME</a>
+                    </td>
+                    <td class="col-1"><span>@exam.MAX_MKS</span></td>
+                    <td class="col-1"><span>@exam.MIN_MKS</span></td>
+                </tr>
+            }
+        }
+    </table>
+}
+else
+{
+    <table id="listing" width="100%">
+        <tr class="tr-head">
+            <td class="col-3">Subject</td>
+        </tr>
+        @{int j = 1;}
+        @foreach (var exam in exams)
+        {
+            string cycle = "tr-even";
+            if (j % 2 == 0)
+            {
+                cycle = "tr-odd";
+            }
+            if ((employee_subjects != null && employee_subjects.Select(x => x.SUBJ_ID).Contains(exam.SUBJ_ID)) || Html.CurrentUser_UserType().Equals("Admin") || privilege.Select(p => p.NAME).Contains("ExaminationControl") || privilege.Select(p => p.NAME).Contains("EnterResults"))
+            {
+                <tr class="@cycle">
+                    <td class="col-2">
+                        <a href="@Url.Action("Edit_Previous_Marks", "Exam", new { exam_id = exam.ID})">@exam.SUBJECT.NAME</a>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}

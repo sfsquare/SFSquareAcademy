@@ -74,7 +74,6 @@ namespace SFSAcademy
         public virtual DbSet<EMPLOYEE_POSITION> EMPLOYEE_POSITION { get; set; }
         public virtual DbSet<EMPLOYEE_SALARY_STRUCTURE> EMPLOYEE_SALARY_STRUCTURE { get; set; }
         public virtual DbSet<EMPLOYEES_SUBJECT> EMPLOYEES_SUBJECT { get; set; }
-        public virtual DbSet<EVENT> EVENTs { get; set; }
         public virtual DbSet<EXAM> EXAMs { get; set; }
         public virtual DbSet<EXAM_GROUP> EXAM_GROUP { get; set; }
         public virtual DbSet<EXAM_SCORE> EXAM_SCORE { get; set; }
@@ -156,6 +155,8 @@ namespace SFSAcademy
         public virtual DbSet<WEEKDAY> WEEKDAYs { get; set; }
         public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
+        public virtual DbSet<EVENT> EVENTs { get; set; }
+        public virtual DbSet<PREVIOUS_EXAM_SCORE> PREVIOUS_EXAM_SCORE { get; set; }
     
         public virtual int SP_GalleryMaster(string galleryName, Nullable<long> galleryId, string galleryDescription, string imageName, string photoDescription, string thumbPath, string imagePath, Nullable<int> flag, ObjectParameter iD)
         {

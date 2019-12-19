@@ -32,7 +32,7 @@ namespace SFSAcademy
 
     public partial class SFSAcademyEntities : DbContext
     {
-        private int SaveChangeReturn { get; set; }
+        //private int SaveChangeReturn { get; set; }
         public override int SaveChanges()
         {
             var TimeStampchangeSet = ChangeTracker.Entries<IHasTimeStamp>();
@@ -63,9 +63,9 @@ namespace SFSAcademy
                 }
             }
 
-            //return base.SaveChanges();
+            return base.SaveChanges();
 
-
+            /*
             SaveChangeReturn = base.SaveChanges();
 
             var AfterCreatechangeSet = ChangeTracker.Entries<IHasAfterCreate>();
@@ -87,6 +87,7 @@ namespace SFSAcademy
             }
 
             return SaveChangeReturn;
+            */
 
         }
 

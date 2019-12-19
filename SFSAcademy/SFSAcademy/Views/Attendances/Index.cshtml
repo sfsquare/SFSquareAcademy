@@ -19,14 +19,6 @@
         <a href="@Url.Action("Index", "Student_Attendance")">Student Attendance</a> &raquo;
         Attendance Register
     </div>
-    @if (ViewBag.Notice != null)
-    {
-        <p class="flash-msg"> @ViewBag.Notice </p>
-    }
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
-    }
     <div class="label-field-pair">
         <label>Select a Batch</label>
         <div class="text-input-bg">
@@ -51,7 +43,6 @@
 
     <script type="text/javascript" language="javascript">
         $.ajaxSetup({ cache: false });
-        /* This is change event for your dropdownlist */
         $(document).ready(function () {
             $(".LoaderBox").hide();
             $('#BatchDropDown').change(function () {

@@ -63,7 +63,7 @@ namespace SFSAcademy.Controllers
             if (current_user.User.ADMIN_IND == true && !user_privileges.Select(x => x.NAME).Contains("ExaminationControl") && !user_privileges.Select(x => x.NAME).Contains("EnterResults"))
             {
                 ViewBag.ErrorMessage = "Sorry, you are not allowed to access that page.";
-                return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID });
+                return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID, ErrorMessage = ViewBag.ErrorMessage });
             }
             ViewBag.CCE_EXAM_CAT_ID = new SelectList(db.CCE_EXAM_CATEGORY, "ID", "NAME");
             if (exam_group_id != null)
@@ -80,7 +80,7 @@ namespace SFSAcademy.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IEnumerable<ExamFormDetails> examDtList, int? BTCH_ID, string NAME, string EXAM_TYPE, int? CCE_EXAM_CAT_ID, int? maximum_marks, int? minimum_marks)
+        public ActionResult Create(IEnumerable<ExamDetails> examDtList, int? BTCH_ID, string NAME, string EXAM_TYPE, int? CCE_EXAM_CAT_ID, int? maximum_marks, int? minimum_marks)
         {
             EXAM_GROUP exam_group = new EXAM_GROUP() { NAME = NAME, BTCH_ID = BTCH_ID, EXAM_TYPE = EXAM_TYPE, CCE_EXAM_CAT_ID = CCE_EXAM_CAT_ID };
             var type = EXAM_TYPE;
@@ -157,7 +157,7 @@ namespace SFSAcademy.Controllers
             var exam_list = (from ex in db.EXAMs
                              join sub in db.SUBJECTs on ex.SUBJ_ID equals sub.ID
                              where ex.EXAM_GRP_ID == id
-                             select new ExamFormDetails { SubjectData = sub, ExamData = ex, Subject_Id = sub.ID, Deleted = false, End_Time = ex.END_TIME, Start_Time = ex.START_TIME, Maximum_Marks = ex.MAX_MKS, Minimum_Marks = ex.MIN_MKS })
+                             select new ExamDetails { SubjectData = sub, ExamData = ex, Subject_Id = sub.ID, Deleted = false, End_Time = ex.END_TIME, Start_Time = ex.START_TIME, Maximum_Marks = ex.MAX_MKS, Minimum_Marks = ex.MIN_MKS })
                  .OrderBy(x => x.SubjectData.NAME).ToList();
             ViewData["exams"] = exam_list;
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
@@ -180,36 +180,16 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Exam_Groups/Edit/5
-        public ActionResult Edit(int? id, string ename, int? MaxMarks, int? MinMarks)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            EXAM exam = db.EXAMs.Find(id);
-            ViewData["ExamId"] = exam.ID;
-            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(exam.EXAM_GRP_ID);
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(id);
             ViewData["exam_group"] = exam_group;           
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
             ViewData["batch"] = batch;
-            COURSE course = db.COURSEs.Find(batch.CRS_ID);
-            ViewData["course"] = course;
-            ViewBag.ename = ename;
-            ViewBag.MaxMarks = MaxMarks;
-            ViewBag.MinMarks = MinMarks;
-            if (exam_group.EXAM_TYPE != "Grades")
-            {
-                if (MaxMarks == null)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", exam.SUBJECT.NAME, "-Maximum Marks can't be blank.");
-                    return RedirectToAction("Show", new { id = exam_group.ID, ErrorMessage = ViewBag.ErrorMessage });
-                }
-                if (MinMarks == null)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, " ", exam.SUBJECT.NAME, "-Minimum Marks can't be blank.");
-                    return RedirectToAction("Show", new { id = exam_group.ID, ErrorMessage = ViewBag.ErrorMessage });
-                }
-            }
             if (exam_group == null)
             {
                 return HttpNotFound();
@@ -219,7 +199,7 @@ namespace SFSAcademy.Controllers
                 ViewData["cce_exam_categories"] = db.CCE_EXAM_CATEGORY.ToList();
             }
 
-            return View();
+            return View(exam_group);
         }
 
         // POST: Exam_Groups/Edit/5
@@ -227,19 +207,12 @@ namespace SFSAcademy.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int? ExamGroupId, int? ExamId, int? MaxMarks, int? MinMarks, string NAME)
+        public ActionResult Edit([Bind(Include = "ID,NAME,BTCH_ID,EXAM_TYPE,IS_PUB,RSULT_PUB,EXAM_DATE,IS_FINAL_EXAM,CCE_EXAM_CAT_ID")] EXAM_GROUP exam_group)
         {
-            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(ExamGroupId);
+            EXAM_GROUP exam_group_upd = db.EXAM_GROUP.Find(exam_group.ID);
             BATCH batch = db.BATCHes.Find(exam_group.BTCH_ID);
-            EXAM exam = db.EXAMs.Find(ExamId);
-            if(MaxMarks != null && MinMarks != null)
-            {
-                exam.MAX_MKS = MaxMarks;
-                exam.MIN_MKS = MinMarks;
-                db.Entry(exam).State = EntityState.Modified;
-            }
-            exam_group.NAME = NAME;
-            db.Entry(exam_group).State = EntityState.Modified;
+            exam_group_upd.NAME = exam_group.NAME;
+            db.Entry(exam_group_upd).State = EntityState.Modified;
             try
             {
                 db.SaveChanges();
@@ -258,7 +231,7 @@ namespace SFSAcademy.Controllers
         }
 
         // GET: Exam_Groups/Delete/5
-        public ActionResult Delete(int? id, int? ExamId)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -283,44 +256,22 @@ namespace SFSAcademy.Controllers
                     return RedirectToAction("Dashboard", "User", new { id = current_user.User.ID, ErrorMessage = ViewBag.ErrorMessage });
                 }
             }
-            if(ExamId == null)
+            foreach (var exams in db.EXAMs.Where(x => x.EXAM_GRP_ID == exam_group.ID).ToList())
             {
-                foreach (var exams in db.EXAMs.Where(x => x.EXAM_GRP_ID == exam_group.ID).ToList())
-                {
-                    db.EXAMs.Remove(exams);
-                }
-                db.EXAM_GROUP.Remove(exam_group);
-                try
-                {
-                    db.SaveChanges();
-                    ViewBag.Notice = "Exam group deleted successfully";
-                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
-                }
-                catch (Exception e)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
-                }
+                db.EXAMs.Remove(exams);
             }
-            else
+            db.EXAM_GROUP.Remove(exam_group);
+            try
             {
-                EXAM Exam = db.EXAMs.Find(ExamId);
-                db.EXAMs.Remove(Exam);
-                //db.EXAM_GROUP.Remove(exam_group);
-                try
-                {
-                    db.SaveChanges();
-                    ViewBag.Notice = "Exam deleted successfully";
-                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
-                }
-                catch (Exception e)
-                {
-                    ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
-                    return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
-                }
+                db.SaveChanges();
+                ViewBag.Notice = "Exam group deleted successfully";
+                return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
             }
-            
-            
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
+                return RedirectToAction("Index", new { id = batch.ID, Notice = ViewBag.Notice, ErrorMessage = ViewBag.ErrorMessage });
+            }
         }
 
         [AllowAnonymous]

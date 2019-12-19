@@ -820,17 +820,7 @@ namespace SFSAcademy.Controllers
             {
                 STORE_PROCUREMENT sTORE_PROCUREMENT_UPD = db.STORE_PROCUREMENT.Find(sTORE_PROCUREMENT.ID);
                 STORE_INVENTORY InvUpd = db.STORE_INVENTORY.Where(x => x.PRODUCT_ID == sTORE_PROCUREMENT.PRODUCT_ID).FirstOrDefault();
-                if (sTORE_PROCUREMENT.UNIT_PROCURED != sTORE_PROCUREMENT_UPD.UNIT_PROCURED)
-                {
-                    if (sTORE_PROCUREMENT.UNIT_PROCURED <= sTORE_PROCUREMENT_UPD.UNIT_PROCURED)
-                    {
-                        InvUpd.UNIT_LEFT -= (sTORE_PROCUREMENT_UPD.UNIT_PROCURED - sTORE_PROCUREMENT.UNIT_PROCURED);
-                    }
-                    else
-                    {
-                        InvUpd.UNIT_LEFT -= (sTORE_PROCUREMENT.UNIT_PROCURED - sTORE_PROCUREMENT_UPD.UNIT_PROCURED);
-                    }
-                }
+                InvUpd.UNIT_LEFT += (sTORE_PROCUREMENT.UNIT_PROCURED - sTORE_PROCUREMENT_UPD.UNIT_PROCURED);
                 InvUpd.COST_PER_UNIT = sTORE_PROCUREMENT.COST_PER_UNIT;
                 //InvUpd.SELL_PRICE_PER_UNIT = ((InvUpd.UNIT_LEFT * InvUpd.SELL_PRICE_PER_UNIT) + (sTORE_PROCUREMENT.UNIT_PROCURED * sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT)) / (InvUpd.UNIT_LEFT + sTORE_PROCUREMENT.UNIT_PROCURED);
                 InvUpd.SELL_PRICE_PER_UNIT = sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT;
@@ -846,6 +836,7 @@ namespace SFSAcademy.Controllers
                 sTORE_PROCUREMENT_UPD.SELL_PRICE_PER_UNIT = sTORE_PROCUREMENT.SELL_PRICE_PER_UNIT;
                 sTORE_PROCUREMENT_UPD.PAID_BY = sTORE_PROCUREMENT.PAID_BY;
                 sTORE_PROCUREMENT_UPD.IS_ACT = sTORE_PROCUREMENT.IS_ACT;
+                sTORE_PROCUREMENT_UPD.PROCURED_ON = sTORE_PROCUREMENT.PROCURED_ON;
                 sTORE_PROCUREMENT_UPD.UPDATED_AT = DateTime.Now;
                 db.Entry(sTORE_PROCUREMENT_UPD).State = EntityState.Modified;
                 try { db.SaveChanges(); ViewBag.Notice = "Selling Details are updated successfully."; }

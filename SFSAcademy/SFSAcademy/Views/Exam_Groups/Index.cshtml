@@ -43,20 +43,23 @@
     {
         <p class="flash-msg"> @ViewBag.Notice </p>
     }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
     <div class="bread_crumb">
         <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
         <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
         Exam Groups
     </div>
     <div class="box">
-        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
         <table id="listing" width="100%">
             <tr class="tr-head">
                 <td>Exam Name</td>
                 @if (current_user.User.ADMIN_IND == true || user_privileges.Select(x => x.NAME).Contains("ExaminationControl") || user_privileges.Select(x => x.NAME).Contains("EnterResults"))
                 {
                     <td>
-                        <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+                        Actions <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
                     </td>
                 }
             </tr>
@@ -94,14 +97,30 @@
                             <small>
                                 @if (exam_group.IS_PUB == false)
                                 {
-                                    <a href="@Url.Action("Publish", "Exam", new { id=exam_group.ID, status = "schedule"})" onclick='ShowHideLoader(this.href); return false;'>Publish Exam Schedule</a>
+                                    string PublishFunction = string.Concat("PublishResult(", exam_group.ID, ", 'schedule')");
+                                    if (ViewBag.message == null)
+                                    {
+                                        <a href="#" onclick="@PublishFunction">Publish Exam Schedule</a>
+                                    }
+                                    else
+                                    {
+                                        <s>Schedule Published</s>
+                                    }
                                 }
                                 else
                                 {
                                     if (exam_group.RSULT_PUB == false)
                                     {
-                                        <s>Schedule Published</s>
-                                        <a href="@Url.Action("Publish", "Exam", new { id=exam_group.ID, status = "result"})" onclick='PublishResult(this.href); return false;'>Publish Exam Result</a>
+                                        string PublishFunction = string.Concat("PublishResult(", exam_group.ID, ", 'result')");
+                                        if (ViewBag.message == null)
+                                        {
+                                            <s>Schedule Published</s>
+                                            <a href="#" onclick="@PublishFunction">Publish Exam Result</a>
+                                        }
+                                        else
+                                        {
+                                            <s>Result Published</s>
+                                        }
                                     }
                                     else
                                     {
@@ -109,9 +128,8 @@
                                     }
 
                                 }
-                                <span id="publish-notice-@exam_group.ID"></span>
-
                             </small>
+                            <span id="publish-notice-@exam_group.ID"></span>
                         </td>
                     }
                 </tr>
@@ -120,11 +138,11 @@
             @{ string cycle2 = "tr-even"; if (i % 2 == 0) { cycle2 = "tr-odd"; }}
             @if (batch.CCE_Enabled() == true)
             {
-                if (Html.Permitted_To("Assessment_Scores", "Observation_Groups"))
+                if (Html.Permitted_To("Observation_Groups", "Assessment_Scores"))
                 {
                     <tr class="@cycle2">
                         <td colspan="2" class="col-1">
-                            <a href="@Url.Action("Assessment_Scores", "Observation_Groups", new { batch_id=batch.ID})">Co-Scholastic result entry</a>
+                            <a href="@Url.Action("Observation_Groups", "Assessment_Scores", new { batch_id=batch.ID})">Co-Scholastic result entry</a>
                         </td>
                     </tr>
                 }
@@ -142,20 +160,18 @@
         $(document).ready(function () {
             $(".LoaderBox").hide();
         });
-        function ShowHideLoader(sender) {
+        function PublishResult(id, status) {
             $(".LoaderBox").show();
-            $.get(sender, function () {
-            }).success(function () {
-                $(".LoaderBox").hide();
-            });
-        }
-        function PublishResult(sender) {
-            $(".LoaderBox").show();
-            if (confirm('Are you sure to publish result?')) {
-                $.get(sender, function () {
-                }).success(function () {
+            if (confirm('Are you sure to publish ' + status + '?')) {
+                $.get('/Exam/Publish?id=' + id + "&status=" + status, function (data) {
+                    $('#publish-notice-' + id).html(data);
+                    $('#publish-notice-' + id).fadeIn('fast');
+                }).success(function (status) {
                     $(".LoaderBox").hide();
                 });
+            }
+            else {
+                $(".LoaderBox").hide();
             }
         }
     </script>

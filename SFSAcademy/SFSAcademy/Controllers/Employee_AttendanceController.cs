@@ -264,9 +264,11 @@ namespace SFSAcademy.Controllers
             return View(employee);
         }
 
-        public ActionResult Update_Leave_History(int? id, DateTime? START_DATE, DateTime? END_DATE)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Update_Leave_History(int? employee_id, DateTime? START_DATE, DateTime? END_DATE)
         {
-            EMPLOYEE employee = db.EMPLOYEEs.Find(id);
+            EMPLOYEE employee = db.EMPLOYEEs.Find(employee_id);
             ViewData["employee"] = employee;
             var leave_types = db.EMPLOYEE_LEAVE_TYPE.Where(x => x.STAT == true).ToList();
             ViewData["leave_types"] = leave_types;

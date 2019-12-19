@@ -2,37 +2,6 @@
 @{
     ViewBag.Title = "Leave_History";
 }
-<script>
-    $(document.forms[0]).ready(function () {
-        $(".LoaderBox").hide();
-        $('#submit_button').click(function () {
-            var SelectedEmployeeId = $('#employee_id').val();
-            var SelectedStartDate = $('#datepicker').val();
-            var SelectedEndDate = $('#datepicker2').val();
-            $(".LoaderBox").show();
-            $.get('/Employee_Attendance/Update_Leave_History?id=' + SelectedEmployeeId + "&START_DATE=" + SelectedStartDate + "&END_DATE=" + SelectedEndDate, function (data) {
-                $('#attendance-report').html(data);
-                $('#attendance-report').fadeIn('fast');
-            }).success(function (status) {
-                $(".LoaderBox").hide();
-            });
-
-        });
-    });
-
-    $(function () {
-        $(".datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "/Content/images/calendar_date_select/calendar.gif",
-            dateFormat: 'dd/mm/yy',
-            buttonImageOnly: true,
-            changeMonth: true,
-            changeYear: true,
-            showAnim: 'slideDown'
-        });
-    });
-
-</script>
 <div id="content-header">
     <img src="~/Content/images/attendence/attendence.png" alt="Attendence Logo">
     <h1>Employee_Attendance</h1>
@@ -59,28 +28,54 @@
 </div>
 <div id="page-yield">
     <div class="box">
-        @using (Html.BeginForm())
+        @using (Ajax.BeginForm("Update_Leave_History", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "attendance-report", InsertionMode = InsertionMode.Replace, OnBegin = "OpenLoader()", OnSuccess = "CloseLoader()" }, htmlAttributes: new { @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
+            @Html.Hidden("employee_id", Model.ID)
             <div class="label-field-pair label">
                 <label for="reason"> Start Date </label>
                 <div class="text-input-bg">
-                    @Html.Editor("START_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker"} })
+                    @Html.Editor("START_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker" } })
                 </div>
             </div>
             <div class="label-field-pair label">
                 <label for="reason"> End Date </label>
                 <div class="text-input-bg">
-                    @Html.Editor("END_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker"} })
+                    @Html.Editor("END_DATE", new { htmlAttributes = new { @class = "m-wrap  datepicker" } })
                 </div>
             </div>
-            <input type="button" value="► Go" id="submit_button" class="user_button" />
-            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
+            <input type="submit" value="► Go" id="submit_button" class="user_button" />
+            <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
         }
     </div>
+    <br />
+    <div id="attendance-report"> </div>
 </div>
-<div id="attendance-report" style="display:none;">
 
-</div>
-<input type="hidden" value="@Model.ID" id="employee_id" name="employee_id" />
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryunobtrusive") @*For unobtrusive-ajax*@
+    @Scripts.Render("~/bundles/jqueryval") @*For validate and validate-unobtrusive*@
+
+    <script type="text/javascript" language="javascript">
+        function CloseLoader() {
+            $(".LoaderBox").hide();
+        }
+
+        function OpenLoader() {
+            $(".LoaderBox").show();
+        }
+
+        $(function () {
+            $(".datepicker").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd/mm/yy',
+                buttonImageOnly: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: 'slideDown'
+            });
+        });
+    </script>
+}

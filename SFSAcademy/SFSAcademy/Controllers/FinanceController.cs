@@ -1530,7 +1530,7 @@ namespace SFSAcademy.Controllers
                 }
                 if (!FeeCatId.Equals(SelectFeeCatId))
                 {
-                    var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = 1, ORIGIN_TYPE = "Fee Collection", CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
+                    var FF_eVENT = new EVENT() { TTIL = "Fees Due", DESCR = fINANCE_FEE_cOLLECTION.NAME, START_DATE = fINANCE_FEE_cOLLECTION.START_DATE, END_DATE = fINANCE_FEE_cOLLECTION.END_DATE, IS_DUE = true, ORIGIN_ID = FFeeColl.ID, ORIGIN_TYPE = "Finance_Fee_Collection", CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now };
                     db.EVENTs.Add(FF_eVENT);
                     FeeCatId = SelectFeeCatId;
                 }

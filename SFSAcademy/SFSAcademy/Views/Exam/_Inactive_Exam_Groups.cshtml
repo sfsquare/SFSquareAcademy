@@ -1,0 +1,32 @@
+﻿<script type="text/javascript" language="javascript">
+    $.ajaxSetup({ cache: false });
+    $(document).ready(function () {
+        $(".LoaderBox2").hide();
+        $('#ExamGroupDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox2").show();
+            $.get('/Exam/Previous_Exam_Marks?exam_group_id=' + selectedID, function (data) {
+                $('#previous_exam_marks').html(data);
+                $('#previous_exam_marks').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox2").hide();
+            });
+
+        });
+    });
+</script>
+<div class="label-field-pair">
+    <div class="label-field-pair">
+        <div class="label-field-pair">
+            <label for="student_course">Select Exam Group</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("EXAM_GROUP_ID", null, htmlAttributes: new { @class = "form-control", @id = "ExamGroupDropDown" })
+                <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="previous_exam_marks"></div>
+<div class="extender"></div>
+

@@ -1,117 +1,144 @@
-﻿@model SFSAcademy.EXAM
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    EXAM exam = (EXAM)ViewData["exam"];
+    IEnumerable<SFSAcademy.ExamScoreDetails> exam_score = (IEnumerable<SFSAcademy.ExamScoreDetails>)ViewData["exam_score"];
+}
 
 @{
     ViewBag.Title = "Edit";
 }
-
-<h2>Edit</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>EXAM</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EXAM_GRP_ID, "EXAM_GRP_ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("EXAM_GRP_ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EXAM_GRP_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.START_TIME, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.START_TIME, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.START_TIME, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.END_TIME, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.END_TIME, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.END_TIME, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.MAX_MKS, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MAX_MKS, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MAX_MKS, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.MIN_MKS, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.MIN_MKS, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.MIN_MKS, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.GRADING_LVL_ID, "GRADING_LVL_ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("GRADING_LVL_ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.GRADING_LVL_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.WTAGE, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.WTAGE, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.WTAGE, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EV_ID, "EV_ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("EV_ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EV_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CREATED_AT, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CREATED_AT, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CREATED_AT, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UPDATED_AT, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.UPDATED_AT, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.UPDATED_AT, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SUBJ_ID, "SUBJ_ID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SUBJ_ID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SUBJ_ID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>Result Entry</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
+        <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
+        <a href="@Url.Action("Previous_Batch_Exams", "Exam")">Previous Batch Exam</a> &raquo;
+        @exam.SUBJECT.NAME
+    </div>
+    <div class="box">
+        @using (Ajax.BeginForm("Update_Previous_Marks", "Exam", null, new AjaxOptions { HttpMethod = "POST" }, htmlAttributes: new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <table id="listing" width="100%">
+                <tr class="tr-head">
+                    <td>Name</td>
+                    @if (exam_group.EXAM_TYPE != "Grades")
+                    {
+                        <td>Marks</td>
+                    }
+                    else
+                    {
+                        <td>Grades</td>
+                    }
+                    <td>Remarks(Absent/Disqualified etc)</td>
+                    @if (exam_group.EXAM_TYPE != "Marks")
+                    {
+                        <td>Grade</td>
+                    }
+                    <td>Retake?</td>
+                </tr>
+                @{int j = 1;}
+                @for (int i = 0; i < exam_score.Count(); i++)
+                {
+                    string cycle = "tr-even";
+                    if (j % 2 == 0)
+                    {
+                        cycle = "tr-odd";
+                    }
+                    <tr class="@cycle">
+                        @{ string RetakeId = string.Concat("check", exam_score.ElementAt(i).StudentData.ID);}
+                        @Html.Hidden("[" + i + "].Student_Id", exam_score.ElementAt(i).StudentData.ID)
+                        @Html.Hidden("[" + i + "].Exam_Id", exam_score.ElementAt(i).ExamData.ID)
+                        @Html.Hidden("[" + i + "].Subject_Id", exam_score.ElementAt(i).ExamData.SUBJ_ID)
+                        <td class="col-2">@exam_score.ElementAt(i).StudentData.Full_Name</td>
+                        @{var examscore = exam.Score_For(exam_score.ElementAt(i).StudentData.ID); int? marks = null; if (examscore != null) { marks = examscore.MKS; } }
+                        @if (exam_group.EXAM_TYPE != "Grades")
+                        {
+                            <td class="col-1">
+                                <div class="label-field-pair">
+                                    <div class="text-input-bg">
+                                        @Html.TextBox("[" + i + "].Marks", null, new { @class = "marks-box", @Value = marks })
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="col-2">
+                                <div class="label-field-pair">
+                                    <div class="text-input-bg">
+                                        @Html.DropDownList("[" + i + "].Grading_Level_Id", new SelectList(ViewBag.Grading_Level_Id, "Value", "Text"), htmlAttributes: new { @class = "marks-box", @Value = examscore.GRADING_LVL_ID })
+                                    </div>
+                                </div>
+                            </td>
+                        }
+
+                        <td class="col-2">
+                            <div class="label-field-pair2">
+                                <div class="text-input-bg2">
+                                    @Html.TextBox("[" + i + "].Remark", null, new { @Value = examscore.RMK })
+                                </div>
+                            </div>
+                        </td>
+                        @if (exam_group.EXAM_TYPE != "Marks")
+                        {
+                            if (examscore.GRADING_LEVEL != null)
+                            {
+                                <td class="col-1">@examscore.GRADING_LEVEL.NAME</td>
+                            }
+                            else
+                            {
+                                <td class="col-1"> </td>
+                            }
+                        }
+                        <td class="col-1">
+                            @Html.CheckBox("[" + i + "].Is_Fail", false, new { @class = "right", @id = RetakeId })
+                        </td>
+
+                    </tr>
+                    j += 1;
+                }
+
+            </table>
+
+            <div id="sub-button">
+                <input type="submit" value="► Save" class="submit_button" onclick="if(check_blanks()==true) return true; else return false;" />
+            </div>
+        }
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+        });
+        function check_blanks() {
+            var blank_marks = 0;
+            $('.marks-box').each(function () { if (this.value == "" || this.value == null) { blank_marks = 1; } });
+            if (blank_marks == 1) {
+                if (!confirm('Students with no marks will be marked as absent. Do you want to continue?')) return false;
+                else return true;
+            }
+            else return true;
+        }
+    </script>
+}

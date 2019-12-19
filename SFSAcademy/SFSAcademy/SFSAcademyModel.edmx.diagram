@@ -52,7 +52,6 @@
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_POSITION" Width="1.5" PointX="0.75" PointY="113.875" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEE_SALARY_STRUCTURE" Width="1.5" PointX="20.25" PointY="93.125" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EMPLOYEES_SUBJECT" Width="1.5" PointX="20.25" PointY="90.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="SFSAcademyModel.EVENT" Width="1.5" PointX="21.75" PointY="65.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EXAM" Width="1.5" PointX="24" PointY="69.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EXAM_GROUP" Width="1.5" PointX="21.75" PointY="70.75" IsExpanded="true" />
         <EntityTypeShape EntityType="SFSAcademyModel.EXAM_SCORE" Width="1.5" PointX="26.25" PointY="84.5" IsExpanded="true" />
@@ -187,7 +186,6 @@
         <AssociationConnector Association="SFSAcademyModel.GRPD_BTCH_BTCH_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.GRPD_EXAM_BTCH_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.GRPD_EXM_RPT_BTCH_NI" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_BTCH_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.BTCH_GR_CS_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.GRPD_BTCH_BTCH_GR_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.BTCH_STD_STDNT_NI" ManuallyRouted="false" />
@@ -236,12 +234,9 @@
         <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.EMP_C_EMPL_POS_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.EMP_D_EMPL_EMPL_NI2" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EMPL_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.EMP_L_EMPL_EMPL_NI2" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.PYRL__PAYR_EMPL_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.SUBJ__SUBJ_EMPL_NI" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EXAM_NI" ManuallyRouted="false" />
-        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_USR_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.EXAM__EXAM_EXAM_NI" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.EXAM__EXAM_EXAM_NI2" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.GRADI_GRAD_EXAM_NI" ManuallyRouted="false" />
@@ -337,6 +332,15 @@
         <AssociationConnector Association="SFSAcademyModel.USERS_EVE_USR_NI2" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.CCE_WEIGHTAGES_COURSE" ManuallyRouted="false" />
         <AssociationConnector Association="SFSAcademyModel.FA_GROUPS_SUBJECT" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SFSAcademyModel.EVENT" Width="1.5" PointX="0.75" PointY="82.875" />
+        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_BTCH_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EMPL_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_EXAM_NI" />
+        <AssociationConnector Association="SFSAcademyModel.EV_ID_EVEN_USR_NI" />
+        <EntityTypeShape EntityType="SFSAcademyModel.PREVIOUS_EXAM_SCORE" Width="1.5" PointX="31.25" PointY="81" />
+        <AssociationConnector Association="SFSAcademyModel.PREV_EXAM_EXAM_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.GRADI_PREV_EXAM_NI2" />
+        <AssociationConnector Association="SFSAcademyModel.STDNT_PREV_EXAM_NI" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
