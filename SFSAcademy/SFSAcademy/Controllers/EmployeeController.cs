@@ -2578,31 +2578,25 @@ namespace SFSAcademy.Controllers
             var userdetails = this.Session["CurrentUser"] as UserDetails;
             int UserId = Convert.ToInt32(this.Session["UserId"]);
             var finance_manager = db.PRIVILEGES.Where(x => x.PRIVILEGE_TAG == "Finance Control").ToList();
-            /*var finance_manager = (from pv in db.PRIVILEGES
-                                   where pv.PRIVILEGE_TAG == "Finance Control"
-                                   select pv).ToList();*/
             string finance = db.CONFIGURATIONs.Where(x => x.CONFIG_VAL == "Finance").Select(x => x.CONFIG_KEY).FirstOrDefault().ToString();
             DateTime SALARY_DATE2 = Convert.ToDateTime(SALARY_DATE);
             ViewBag.SALARY_DATE = SALARY_DATE2.ToShortDateString();
             DateTime start_date = SALARY_DATE2.AddDays(-SALARY_DATE2.AddDays(-1).Day);
             DateTime end_date = start_date.AddMonths(1);
             var employees = db.EMPLOYEEs.Where(x => x.STAT == true).ToList();
-            if(finance_manager != null && finance_manager.Count() != 0 && finance != null)
+            string subject = "Payslip Generated";
+            string body = "Payslip has been generated for the particular month. Kindly approve this request";
+            if (finance_manager != null && finance_manager.Count() != 0 && finance != null)
             {
                 var finance_manager_ids = (from pr in db.PRIVILEGES.Include(X=>X.PRIVILEGE_TAG)
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
-                                           join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
                                            where pr.PRIVILEGE_TAG == "Finance Control"
-                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
-                var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
-                db.EVENTs.Add(PG_eVENT);
-                db.SaveChanges();
-                foreach(var item in finance_manager_ids)
+                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp}).Select(x=>x.EmployeeData.USRID).Distinct().ToList();
+                foreach (var UsrId in finance_manager_ids)
                 {
-                    var PG_Dep_eVENT = new EMPLOYEE_DEPARTMENT_EVENT() { EV_ID = PG_eVENT.ID, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, EMP_DEPT_ID = item.EmpDepartmentData.ID };
-                    db.EMPLOYEE_DEPARTMENT_EVENT.Add(PG_Dep_eVENT);
-                    db.SaveChanges();
+                    var NewReminder = new REMINDER() { SNDR = UserId, RCPNT = UsrId, SUB = subject, BODY = body };
+                    db.REMINDERs.Add(NewReminder);
                 }
                 foreach (var item2 in db.EMPLOYEEs.Where(x=>x.STAT==true).ToList())
                 {
@@ -2618,12 +2612,10 @@ namespace SFSAcademy.Controllers
                             {
                                 var Month_Pay_Slip = new MONTHLY_PAYSLIP() { SAL_DATE = start_date, EMP_ID = item2.ID, PYRL_CAT_ID = item3.PYRL_CAT_ID, AMT = item3.AMT, IS_APPR = false, APRV_ID = null };
                                 db.MONTHLY_PAYSLIP.Add(Month_Pay_Slip);
-                                db.SaveChanges();
                             }
                         }
                     }
                 }
-
             }
             else
             {
@@ -2641,13 +2633,12 @@ namespace SFSAcademy.Controllers
                             {
                                 var Month_Pay_Slip = new MONTHLY_PAYSLIP() { SAL_DATE = start_date, EMP_ID = item4.ID, PYRL_CAT_ID = item3.PYRL_CAT_ID, AMT = item3.AMT, IS_APPR = true, APRV_ID = UserId };
                                 db.MONTHLY_PAYSLIP.Add(Month_Pay_Slip);
-                                db.SaveChanges();
                             }
                         }
                     }
                 }
             }
-
+            db.SaveChanges();
             return PartialView("_One_Click_Payslip_Generation");
         }
 
@@ -2794,8 +2785,6 @@ namespace SFSAcademy.Controllers
                                         where dpc.PYRL_CAT_ID != null && pc.STAT == true
                                         select new SFSAcademy.EmployeeDependentPayroll { PayrollCatData = pc, DependentPayrollCatData = dpc, DependentEmployeeId = employee.ID }).OrderBy(x => x.PayrollCatData.NAME).ToList();
             ViewData["dependent_categories"] = dependent_categories_val;
-            //var employee_additional_categories = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
-            //ViewData["employee_additional_categories"] = employee_additional_categories;
             var new_payslip_category = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE.Value.Month == DateTime.Today.Month && x.SAL_DATE.Value.Year == DateTime.Today.Year && x.INCL_EVRY_MONTH == false).ToList();
             ViewData["new_payslip_category"] = new_payslip_category;
             var individual = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.INCL_EVRY_MONTH == true).ToList();
@@ -2865,33 +2854,17 @@ namespace SFSAcademy.Controllers
                     }
                     ViewBag.Notice = string.Concat(employee.FIRST_NAME, "'s salary slip generated for: ", salary_date.ToShortDateString());
                 }
-                /*
-                else
-                {
-                    var individual_payslips_generated = db.INDIVIDUAL_PAYSLIP_CATGEORY.Where(x => x.EMP_ID == employee.ID && x.SAL_DATE == null).ToList();
-                    if(individual_payslips_generated != null && individual_payslips_generated.Count()!=0)
-                    {
-                        foreach(var item in individual_payslips_generated)
-                        {
-                            INDIVIDUAL_PAYSLIP_CATGEORY ipc = db.INDIVIDUAL_PAYSLIP_CATGEORY.Find(item.ID);
-                            db.INDIVIDUAL_PAYSLIP_CATGEORY.Remove(ipc);
-                        }
-                    }
-                    ViewBag.Notice = string.Concat(employee.FIRST_NAME, "'s salary slip  already generated for: ", salary_date.ToShortDateString());
-                }
-                */
+                string subject = "Payslip Generated";
+                string body = string.Concat("payslip_generated_for ", employee.FIRST_NAME, " ", employee.LAST_NAME,". Kindly approve.");
                 var finance_manager_ids = (from pr in db.PRIVILEGES.Include(x=>x.PRIVILEGE_TAG)
                                            join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                            join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
-                                           join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
                                            where pr.PRIVILEGE_TAG == "Finance Control"
-                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
-                var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
-                db.EVENTs.Add(PG_eVENT);
-                foreach (var item in finance_manager_ids)
+                                           select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp}).Select(x=>x.EmployeeData.USRID).Distinct().ToList();
+                foreach (var UsrId in finance_manager_ids)
                 {
-                    var PG_Dep_eVENT = new EMPLOYEE_DEPARTMENT_EVENT() { EV_ID = PG_eVENT.ID, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, EMP_DEPT_ID = item.EmpDepartmentData.ID };
-                    db.EMPLOYEE_DEPARTMENT_EVENT.Add(PG_Dep_eVENT);
+                    var NewReminder = new REMINDER() { SNDR = UserId, RCPNT = UsrId, SUB = subject, BODY = body };
+                    db.REMINDERs.Add(NewReminder);
                 }
                 try { db.SaveChanges(); }
                 catch (DbEntityValidationException e)
@@ -3254,15 +3227,14 @@ namespace SFSAcademy.Controllers
             var finance_manager_ids = (from pr in db.PRIVILEGES.Include(x=>x.PRIVILEGE_TAG)
                                        join upr in db.PRIVILEGES_USERS on pr.ID equals upr.PRIVILEGE_ID
                                        join emp in db.EMPLOYEEs on upr.USER_ID equals emp.USRID
-                                       join emp_dep in db.EMPLOYEE_DEPARTMENT on emp.EMP_DEPT_ID equals emp_dep.ID
                                        where pr.PRIVILEGE_TAG == "Finance Control"
-                                       select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp, EmpDepartmentData = emp_dep }).ToList();
-            var PG_eVENT = new EVENT() { TTIL = "Payslip Generated", DESCR = "Payslip Generated. Approval Pending.", START_DATE = start_date, END_DATE = end_date, IS_DUE = true, ORIGIN_ID = 2, ORIGIN_TYPE = "Payslip Approval" };
-            db.EVENTs.Add(PG_eVENT);
-            foreach (var item in finance_manager_ids)
+                                       select new SFSAcademy.FinanceManager { PrivilegeData = pr, PrivilegeUsersData = upr, EmployeeData = emp}).Select(x=>x.EmployeeData.USRID).Distinct().ToList();
+            string subject = "Rejected Payslip re-generated";
+            string body = string.Concat("payslip_generated_for ", employee.FIRST_NAME, " ", employee.LAST_NAME, " Employee Number:",employee.EMP_NUM," for the month", salary_date.ToShortDateString(), ". Kindly approve.");
+            foreach (var UsrId in finance_manager_ids)
             {
-                var PG_Dep_eVENT = new EMPLOYEE_DEPARTMENT_EVENT() { EV_ID = PG_eVENT.ID, CREATED_AT = System.DateTime.Now, UPDATED_AT = System.DateTime.Now, EMP_DEPT_ID = item.EmpDepartmentData.ID };
-                db.EMPLOYEE_DEPARTMENT_EVENT.Add(PG_Dep_eVENT);
+                var NewReminder = new REMINDER() { SNDR = UserId, RCPNT = UsrId, SUB = subject, BODY = body };
+                db.REMINDERs.Add(NewReminder);
             }
             try { db.SaveChanges(); }
             catch (DbEntityValidationException e)

@@ -112,7 +112,7 @@ namespace SFSAcademy.Controllers
             {
                 BATCH batch = db.BATCHes.Find(batch_id);
                 ViewData["batch"] = batch;
-                var Students = db.STUDENTs.Where(x => x.BTCH_ID == batch_id).ToList();
+                var Students = db.STUDENTs.Where(x => x.BTCH_ID == batch_id && x.IS_DEL == false && x.IS_ACT == true).ToList();
                 ViewData["Students"] = Students;
                 dates = batch.Working_Days(today);
                 ViewData["dates"] = dates;
@@ -126,7 +126,7 @@ namespace SFSAcademy.Controllers
                 ViewData["batch"] = batch;
                 if(sub.ELECTIVE_GRP_ID != null)
                 {
-                    var elective_student_ids = (from std in db.STUDENTs
+                    var elective_student_ids = (from std in db.STUDENTs.Where(x=>x.IS_DEL == false && x.IS_ACT == true)
                                             join stdsub in db.STUDENT_SUBJECT on std.ID equals stdsub.STDNT_ID
                                             where stdsub.ID == subject_id
                                             select std).ToList();
@@ -138,7 +138,7 @@ namespace SFSAcademy.Controllers
                 }
                 else
                 {
-                    var students_nonele = db.STUDENTs.Where(x=>x.BTCH_ID == batch_id).ToList();
+                    var students_nonele = db.STUDENTs.Where(x=>x.BTCH_ID == batch_id && x.IS_DEL == false && x.IS_ACT == true).ToList();
                     ViewData["students"] = students_nonele;
                 }
                 dates = db.TIMETABLEs.FirstOrDefault().tte_for_range(batch, today, sub);
@@ -357,7 +357,11 @@ namespace SFSAcademy.Controllers
                 dates = db.TIMETABLEs.FirstOrDefault().tte_for_range(batch, today, sub);
                 ViewData["dates"] = dates;
             }
-            try { db.SaveChanges(); }
+            try { 
+                db.SaveChanges();
+                ViewBag.Notice = "Leave details deleted sucessfully.";
+                return PartialView("_Register");
+            }
             catch (DbEntityValidationException e)
             {
                 foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
@@ -368,8 +372,6 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Register");
             }
-            return PartialView("_Register");
-
         }
 
         // GET: Employee_Attendances
@@ -492,7 +494,11 @@ namespace SFSAcademy.Controllers
                 dates = db.TIMETABLEs.FirstOrDefault().tte_for_range(batch, today, sub);
                 ViewData["dates"] = dates;
             }
-            try { db.SaveChanges(); }
+            try { 
+                db.SaveChanges();
+                ViewBag.Notice = "Leave details added sucessfully.";
+                return PartialView("_Register");
+            }
             catch (DbEntityValidationException e)
             {
                 foreach (var eve in e.EntityValidationErrors) { foreach (var ve in eve.ValidationErrors) { ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", ve.ErrorMessage); } }
@@ -503,7 +509,6 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorMessage = string.Concat(ViewBag.ErrorMessage, "|", string.Concat(e.GetType().FullName, ":", e.Message));
                 return PartialView("_Register");
             }
-            return PartialView("_Register");
         }
 
         protected override void Dispose(bool disposing)

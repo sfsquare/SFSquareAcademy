@@ -1,18 +1,18 @@
-﻿@model IEnumerable<ExamFormDetails>
+﻿@model IEnumerable<ExamDetails>
 @{
     BATCH batch = (BATCH)ViewData["batch"];
     COURSE course = (COURSE)ViewData["course"];
 }
 <script type="text/javascript" language="javascript">
     $(document).ready(function () {
-         $(".LoaderBox").hide();
+        $(".LoaderBox").hide();
     });
 
     function NewBatchExamGroupPath() {
         var id = $('#batch_id').val();
         var ename = $('#name').val();
         $(".LoaderBox").show();
-        var url = "/Exam_Groups/New?id=" + id  + "&ename=" + ename; 
+        var url = "/Exam_Groups/New?id=" + id + "&ename=" + ename;
         window.location.href = url;
     }
     $(function () {
@@ -27,7 +27,7 @@
         });
     });
     $('#maximum_marks').blur(function () { var Marks = $('#maximum_marks').val(); $('.max_marks').each(function () { this.value = Marks; }); });
-    $('#minimum_marks').blur(function (){var Marks = $('#minimum_marks').val(); $('.min_marks').each(function (){this.value = Marks;});});
+    $('#minimum_marks').blur(function () { var Marks = $('#minimum_marks').val(); $('.min_marks').each(function () { this.value = Marks; }); });
 </script>
 @using (Ajax.BeginForm("Create", "Exam_Groups", null, new AjaxOptions { HttpMethod = "POST" }, htmlAttributes: new { @class = "form-horizontal" }))
 {
@@ -47,14 +47,14 @@
         @Html.Hidden("EXAM_TYPE", type)
         @if (batch.CCE_Enabled() == false)
         {
-    <div class="label-field-pair">
-        @Html.Label("ExamType", "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="text-input-bg">
-            @Html.Editor("ExamType", new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @Value = (type == "Marks" ? "Marks" : "Marks and Grades") } })
-        </div>
-        <a href="#" onclick="NewBatchExamGroupPath()" class="type_link">Change Type</a>
-        <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
-    </div>
+            <div class="label-field-pair">
+                @Html.Label("ExamType", "Exam Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="text-input-bg">
+                    @Html.Editor("ExamType", new { htmlAttributes = new { @class = "form-control", @disabled = "disabled", @Value = (type == "Marks" ? "Marks" : "Marks and Grades") } })
+                </div>
+                <a href="#" onclick="NewBatchExamGroupPath()" class="type_link">Change Type</a>
+                <div class="LoaderBox" hidden="hidden"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
         }
         else
         {

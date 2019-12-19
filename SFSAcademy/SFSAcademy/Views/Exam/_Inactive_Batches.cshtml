@@ -1,0 +1,31 @@
+﻿<script type="text/javascript" language="javascript">
+    $(document).ready(function () {
+        $(".LoaderBox1").hide();
+        $('#BatchDropDown').change(function () {
+            var selectedID = $(this).val();
+            $(".LoaderBox1").show();
+            $.get('/Exam/List_Inactive_Exam_Groups?batch_id=' + selectedID, function (data) {
+                $('#inactive_exam_groups').html(data);
+                $('#inactive_exam_groups').fadeIn('fast');
+            }).success(function (status) {
+                $(".LoaderBox1").hide();
+            });
+
+        });
+    });
+</script>
+<div class="label-field-pair">
+    <div class="label-field-pair">
+        <div class="label-field-pair">
+            <label for="student_course">Select a Batch</label>
+            <div class="text-input-bg">
+                @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "BatchDropDown" })
+                <div class="LoaderBox1"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="inactive_exam_groups"></div>
+<div class="extender"></div>
+

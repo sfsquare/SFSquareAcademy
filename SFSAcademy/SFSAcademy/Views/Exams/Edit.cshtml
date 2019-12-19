@@ -1,0 +1,103 @@
+﻿@model ExamDetails
+@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+}
+
+@{
+    ViewBag.Title = "Edit";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>Edit Exam</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="box">
+        <div class="bread_crumb">
+            <a href="@Url.Action("Index", "Courses")">Courses</a> &raquo;
+            <a href="@Url.Action("Show", "Courses",new { id = batch.CRS_ID})">@batch.Course_full_name</a> &raquo;
+            <a href="@Url.Action("Show", "Batches",new { id = batch.ID})">Batch: @batch.Full_Name</a> &raquo;
+            <a href="@Url.Action("Index", "Exam_Groups",new { id = batch.ID})">Exams</a> &raquo;
+            <a href="@Url.Action("Show", "Exam_Groups",new { id = exam_group.ID})">@exam_group.NAME</a> &raquo;
+            Edit
+        </div>
+        <h4>For Exam Group - @exam_group.NAME</h4>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            if (ViewBag.ErrorMessage != null)
+            {
+                <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+            }
+            @Html.HiddenFor(model => model.Exam_Id)
+            @Html.HiddenFor(model => model.Exam_Group_Id)
+            <div class="label-field-pair">
+                <label>Subject</label>
+                <div class="text-input-bg">
+                    @Html.DropDownList("Subject_Id", null, htmlAttributes: new { @class = "form-control", @id = "SubDropDown", required = "required" })
+                    <span class="necessary-field" style="font-size:small">*</span>
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label>Start Time</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.Start_Time, new { htmlAttributes = new { @class = "m-wrap  datepicker" } })
+                    @Html.ValidationMessageFor(model => model.Start_Time, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label>End Time</label>
+                <div class="text-input-bg">
+                    @Html.EditorFor(model => model.End_Time, new { htmlAttributes = new { @class = "m-wrap  datepicker" } })
+                    @Html.ValidationMessageFor(model => model.End_Time, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                </div>
+            </div>
+            if (exam_group.EXAM_TYPE != "Grades")
+            {
+                <div class="label-field-pair">
+                    <label>Maximum Marks</label>
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.Maximum_Marks, new { htmlAttributes = new { @class = "form-control", @Value = ViewBag.MaxMarks } })
+                        @Html.ValidationMessageFor(model => model.Maximum_Marks, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                    </div>
+                </div>
+                <div class="label-field-pair">
+                    <label>Minimum Marks</label>
+                    <div class="text-input-bg">
+                        @Html.EditorFor(model => model.Minimum_Marks, new { htmlAttributes = new { @class = "form-control", @Value = ViewBag.MinMarks } })
+                        @Html.ValidationMessageFor(model => model.Minimum_Marks, "", new { @class = "text-danger", @style = "color:red; font-size:small" })
+                    </div>
+                </div>
+            }
+            <input type="submit" value="► Save" class="submit_button" />
+        }
+        <div class="extender"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $(".datepicker").datepicker({
+                showOn: "button",
+                buttonImage: "/Content/images/calendar_date_select/calendar.gif",
+                dateFormat: 'dd/mm/yy 00:00',
+                buttonImageOnly: true,
+                changeMonth: true,
+                changeYear: true,
+                showAnim: 'slideDown',
+            });
+        });
+    </script>
+}

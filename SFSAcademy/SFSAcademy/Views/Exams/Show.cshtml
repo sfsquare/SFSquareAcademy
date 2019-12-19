@@ -1,0 +1,149 @@
+﻿@{
+    BATCH batch = (BATCH)ViewData["batch"];
+    EXAM_GROUP exam_group = (EXAM_GROUP)ViewData["exam_group"];
+    EXAM exam = (EXAM)ViewData["exam"];
+    IEnumerable<SFSAcademy.ExamScoreDetails> exam_score = (IEnumerable<SFSAcademy.ExamScoreDetails>)ViewData["exam_score"];
+}
+@{
+    ViewBag.Title = "Manage Payroll";
+}
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Show Exam Logo">
+    <h1>Exams</h1>
+    <h3>Result Entry</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="inner-tab-menu">
+    <ul>
+        @if (batch.CCE_Enabled() && Html.Permitted_To("Exam_FA_Groups", "Assessment_Scores") && exam_group.CCE_EXAM_CAT_ID != null)
+        {
+            <li><a href="@Url.Action("Exam_FA_Groups", "Assessment_Scores",new {id = exam.ID })">FA Scores</a></li>
+        }
+    </ul>
+</div>
+
+<div id="page-yield">
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p class="flash-msg"> @ViewBag.ErrorMessage </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exams</a> &raquo;
+        <a href="@Url.Action("Create_Exam", "Exam")">Exam Management</a> &raquo;
+        <a href="@Url.Action("Index", "Exam_Groups",new { id = batch.ID})">Exam Groups</a> &raquo;
+        <a href="@Url.Action("Show", "Exam_Groups",new { id = exam_group.ID})">@exam_group.NAME</a> &raquo;
+        @exam.SUBJECT.NAME
+    </div>
+
+    <div class="box">
+        @using (Ajax.BeginForm("Save_Scores", "Exams", null, new AjaxOptions { HttpMethod = "POST" }, htmlAttributes: new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <table id="listing" width="100%">
+                <tr class="tr-head">
+                    <td>Name</td>
+                    @if (exam_group.EXAM_TYPE != "Grades")
+                    {
+                        <td>Marks</td>
+                    }
+                    else
+                    {
+                        <td>Grades</td>
+                    }
+                    <td>Remarks(Absent/Disqualified etc)</td>
+                    @if (exam_group.EXAM_TYPE != "Marks")
+                    {
+                        <td>Grade</td>
+                    }
+                </tr>
+                @{int j = 1;}
+                @for (int i = 0; i < exam_score.Count(); i++)
+                {
+                    string cycle = "tr-even";
+                    if (j % 2 == 0)
+                    {
+                        cycle = "tr-odd";
+                    }
+                    <tr class="@cycle">
+                        @Html.Hidden("[" + i + "].Student_Id", exam_score.ElementAt(i).StudentData.ID)
+                        @Html.Hidden("[" + i + "].Exam_Id", exam_score.ElementAt(i).ExamData.ID)
+                        @Html.Hidden("[" + i + "].Subject_Id", exam_score.ElementAt(i).ExamData.SUBJ_ID)
+                        <td class="col-2">@exam_score.ElementAt(i).StudentData.FIRST_NAME @exam_score.ElementAt(i).StudentData.MID_NAME @exam_score.ElementAt(i).StudentData.LAST_NAME</td>
+                        @{var examscore = exam.Score_For(exam_score.ElementAt(i).StudentData.ID); int? marks = null; if (examscore != null) { marks = examscore.MKS; } }
+                        @if (exam_group.EXAM_TYPE != "Grades")
+                        {
+                            <td class="col-1">
+                                <div class="label-field-pair">
+                                    <div class="text-input-bg">
+                                        @Html.TextBox("[" + i + "].Marks", null, new { @class = "marks-box", @Value = marks })
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="col-2">
+                                <div class="label-field-pair">
+                                    <div class="text-input-bg">
+                                        @Html.DropDownList("[" + i + "].Grading_Level_Id", new SelectList(ViewBag.Grading_Level_Id, "Value", "Text"), htmlAttributes: new { @class = "marks-box", @Value = examscore.GRADING_LVL_ID })
+                                    </div>
+                                </div>
+                            </td>
+                        }
+
+                        <td class="col-2">
+                            <div class="label-field-pair2">
+                                <div class="text-input-bg2">
+                                    @Html.TextBox("[" + i + "].Remark", null, new { @Value = examscore.RMK })
+                                </div>
+                            </div>
+                        </td>
+                        @if (exam_group.EXAM_TYPE != "Marks")
+                        {
+                            if (examscore.GRADING_LEVEL != null)
+                            {
+                                <td class="col-1">@examscore.GRADING_LEVEL.NAME</td>
+                            }
+                            else
+                            {
+                                <td class="col-1"> </td>
+                            }
+                        }
+
+                    </tr>
+                    j += 1;
+                }
+
+            </table>
+
+            <div id="sub-button">
+                <input type="submit" value="► Save" class="submit_button" onclick="if(check_blanks()==true) return true; else return false;" />
+            </div>
+        }
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+        });
+        function check_blanks() {
+            var blank_marks = 0;
+            $('.marks-box').each(function () { if (this.value == "" || this.value == null) { blank_marks = 1; } });
+            if (blank_marks == 1) {
+                if (!confirm('Students with no marks will be marked as absent. Do you want to continue?')) return false;
+                else return true;
+            }
+            else return true;
+        }
+    </script>
+}

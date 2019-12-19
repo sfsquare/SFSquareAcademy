@@ -2552,8 +2552,6 @@
     <Content Include="Views\Employee_Attendance\Delete.cshtml" />
     <Content Include="Views\Employee_Attendance\Details.cshtml" />
     <Content Include="Views\Employee_Attendance\Index.cshtml" />
-    <Content Include="Views\Employee_Attendances\Create.cshtml" />
-    <Content Include="Views\Employee_Attendances\Details.cshtml" />
     <Content Include="Views\Employee_Attendances\Index.cshtml" />
     <Content Include="Views\Employee_Attendances\_Register.cshtml" />
     <Content Include="Views\Employee_Attendances\_New.cshtml" />
@@ -2833,6 +2831,25 @@
     <Content Include="Views\Exam\_Exam_Grade_Form.cshtml" />
     <Content Include="Views\Exam\_Exam_Marks_Form.cshtml" />
     <Content Include="Views\Exam\_Update_Batch.cshtml" />
+    <Content Include="Views\Exams\New.cshtml" />
+    <Content Include="Views\Exams\Show.cshtml" />
+    <Content Include="Views\Exams\Edit.cshtml" />
+    <Content Include="Views\Exam\_Publish.cshtml" />
+    <Content Include="Views\Exam\Grouping.cshtml" />
+    <Content Include="Views\Exam\Generate_Reports.cshtml" />
+    <Content Include="Views\Exam\_Select_Batch_Group.cshtml" />
+    <Content Include="Views\Exam\Previous_Batch_Exams.cshtml" />
+    <Content Include="Views\Exam\_Inactive_Batches.cshtml" />
+    <Content Include="Views\Exam\_Inactive_Exam_Groups.cshtml" />
+    <Content Include="Views\Exam\_Previous_Exam_Marks.cshtml" />
+    <Content Include="Views\Exam\Generate_Previous_Reports.cshtml" />
+    <Content Include="Views\Exam\_Inactive_Batch_List.cshtml" />
+    <Content Include="Views\Exam\Report_Center.cshtml" />
+    <Content Include="Views\Exam\Exam_Wise_Report.cshtml" />
+    <Content Include="Views\Exam\_Exam_Group_Select.cshtml" />
+    <Content Include="Views\Exam\Generated_Report.cshtml" />
+    <Content Include="Views\Exam\_Exam_Wise_Report.cshtml" />
+    <Content Include="Views\Exam\_Exam_Wise_Student_List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2946,6 +2963,7 @@
     <Compile Include="Controllers\Employee_AttendanceController.cs" />
     <Compile Include="Controllers\Employee_AttendancesController.cs" />
     <Compile Include="Controllers\ExamController.cs" />
+    <Compile Include="Controllers\ExamsController.cs" />
     <Compile Include="Controllers\Exam_GroupsController.cs" />
     <Compile Include="Controllers\FA_GroupsController.cs" />
     <Compile Include="Controllers\FinanceController.cs" />
@@ -3144,7 +3162,13 @@
     <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\Batch.cs" />
     <Compile Include="Models\Archived_Employee.cs" />
+    <Compile Include="Models\Grouped_Exam_Report.cs" />
+    <Compile Include="Models\Batch_Event.cs" />
     <Compile Include="Models\Exam.cs" />
+    <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Previous_Exam_Score.cs" />
+    <Compile Include="Models\Grouped_Exam.cs" />
+    <Compile Include="Models\Exam_Score.cs" />
     <Compile Include="Models\Exam_Group.cs" />
     <Compile Include="Models\Guardian.cs" />
     <Compile Include="Models\Grouped_Batch.cs" />
@@ -3203,6 +3227,9 @@
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PHOTO_MASTER.cs">
+      <DependentUpon>SFSAcademyModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PREVIOUS_EXAM_SCORE.cs">
       <DependentUpon>SFSAcademyModel.tt</DependentUpon>
     </Compile>
     <Compile Include="PRIVILEGE.cs">

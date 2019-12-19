@@ -26,5 +26,28 @@ namespace SFSAcademy
         public REMINDER ReminderData { get; set; }
         public bool Selected { get; set; }
     }
+    [MetadataType(typeof(ReminderMetadata))]
+    public partial class REMINDER : IHasTimeStamp
+    {
+        internal sealed class ReminderMetadata
+        {
+            [Required]
+            public string BODY { get; set; }
 
+        }
+        public void DoTimeStamp(string EntityStateVal)
+        {
+
+            if (EntityStateVal.Equals("Added"))
+            {
+                CREATED_AT = DateTime.Now;
+                UPDATED_AT = DateTime.Now;
+            }
+
+            if (EntityStateVal.Equals("Modified"))
+            {
+                UPDATED_AT = DateTime.Now;
+            }
+        }
+    }
 }

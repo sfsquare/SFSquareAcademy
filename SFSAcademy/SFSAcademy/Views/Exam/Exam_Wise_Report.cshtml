@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Exam_Wise_Report";
+}
+
+<div id="content-header">
+    <img src="~/Content/images/examination/show_exam.png" alt="Timetable Logo">
+    <h1>Exams</h1>
+    <h3>Exam Wise Report</h3>
+    <div id="app-back-button">
+        <a href='javascript:history.back()' onclick="return confirm('are you sure?')"><img src="~/Content/images/buttons/back.png"></a>
+    </div>
+</div>
+<div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
+
+<div id="page-yield">
+
+    @if (ViewBag.Notice != null)
+    {
+        <p class="flash-msg"> @ViewBag.Notice </p>
+    }
+    <div class="bread_crumb">
+        <a href="@Url.Action("Index", "Exam")">Exam</a> &raquo;
+        <a href="@Url.Action("Report_Center", "Exam")">Report Center</a> &raquo;
+        Exam Wise Report
+    </div>
+    <div class="box">
+        @using (Html.BeginForm("Generated_Report", "Exam", FormMethod.Post, new { @encType = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="label-field-pair">
+                <label for="student_course">Select a Batch</label>
+                <div class="text-input-bg">
+                    @Html.DropDownList("BTCH_ID", null, htmlAttributes: new { @class = "form-control", @id = "CourseDropDown" })
+                </div>
+            </div>
+            <div class="label-field-pair">
+                <label for="student_course">Select a Exam Group</label>
+                <div class="text-input-bg" id="exam-group-select">
+                    @Html.DropDownList("EXAM_GROUP_ID", null, htmlAttributes: new { @class = "form-control", @id = "ExamGroupDropDown" })
+                </div>
+            </div>
+
+            <div class="LoaderBox"><img src="~/Content/images/loader.gif" id="loader" alt="Exam Logo" style="align-self:center; border:none"></div>
+            <input type="submit" value="► View" class="submit_button" onclick="OpenLoader(); return true;" />
+        }
+        <div class="extender"></div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        $.ajaxSetup({ cache: false });
+        $(document).ready(function () {
+            $(".LoaderBox").hide();
+            $('#CourseDropDown').change(function () {
+                var selectedID = $(this).val();
+                $(".LoaderBox").show();
+                $.get('/Exam/List_Exam_Types?batch_id=' + selectedID, function (data) {
+                    $('#exam-group-select').html(data);
+                    $('#exam-group-select').fadeIn('fast');
+                }).success(function (status) {
+                    $(".LoaderBox").hide();
+                });
+
+            });
+        });
+        function OpenLoader() {
+            $(".LoaderBox").show();
+        }
+    </script>
+}

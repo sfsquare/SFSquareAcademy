@@ -8,16 +8,17 @@ using System.Web.Mvc;
 
 namespace SFSAcademy
 {
-    public class ExamFormDetails
+    public class ExamDetails
     {
         public int? Subject_Id { get; set; }
         public int? Exam_Group_Id { get; set; }
+        public int? Exam_Id { get; set; }
         public string SUBJ_NAME { get; set; }
         public DateTime? Start_Time { get; set; }
         public DateTime? End_Time { get; set; }
         public int? Maximum_Marks { get; set; }
         public int? Minimum_Marks { get; set; }
-        public bool Deleted { get; set; }
+        public bool? Deleted { get; set; }
         public SUBJECT SubjectData { get; set; }
         public EXAM ExamData { get; set; }
     }
@@ -32,12 +33,6 @@ namespace SFSAcademy
 
             [Required]
             public DateTime END_TIME { get; set; }
-
-            [RegularExpression("^[0-9]*$", ErrorMessage = "Maximum Marks must be numeric")]
-            public int MAX_MKS { get; set; }
-
-            [RegularExpression("^[0-9]*$", ErrorMessage = "Minimum Marks must be numeric")]
-            public int MIN_MKS { get; set; }
         }
         private string ErrorMessage { get; set; }
         private string EntityStateValue { get; set; }
@@ -123,7 +118,8 @@ namespace SFSAcademy
         }
         public bool Validation_Should_Present()
         {
-            if(this.EXAM_GROUP.EXAM_TYPE == "Grades")
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(this.EXAM_GRP_ID);
+            if(exam_group.EXAM_TYPE == "Grades")
             {
                 return false;
             }
@@ -151,7 +147,7 @@ namespace SFSAcademy
         }
         public EXAM_SCORE Score_For(int? student_id)
         {
-            EXAM_SCORE exam_score = db.EXAM_SCORE.Where(x => x.EXAM_ID == this.ID && x.STDNT_ID == student_id).FirstOrDefault();
+            EXAM_SCORE exam_score = db.EXAM_SCORE.Include(x=>x.GRADING_LEVEL).Where(x => x.EXAM_ID == this.ID && x.STDNT_ID == student_id).FirstOrDefault();
             EXAM_SCORE new_score = new EXAM_SCORE() { EXAM_ID = this.ID, STDNT_ID = student_id, GRADING_LVL_ID = this.GRADING_LVL_ID };
             return exam_score == null ? new_score : exam_score;
         }
@@ -170,7 +166,10 @@ namespace SFSAcademy
         }
         public IEnumerable<FA_GROUP> FA_Groups()
         {
-            return this.SUBJECT.FA_GROUP.Where(x => x.CCE_EXAM_CAT_ID == this.EXAM_GROUP.CCE_EXAM_CAT_ID).ToList();
+            EXAM_GROUP exam_group = db.EXAM_GROUP.Find(this.ID);
+            SUBJECT sub = db.SUBJECTs.Find(this.SUBJ_ID);
+            //FA_GROUP fa_group = db.FA_GROUP.Where(x=>x.sub)
+            return sub.FA_GROUP.Where(x => x.CCE_EXAM_CAT_ID == exam_group.CCE_EXAM_CAT_ID).ToList();
         }
 
         private void Update_Exam_Group_Date()

@@ -73,7 +73,7 @@
             <div class="extender"></div>
         }
     </div>
-    <input type="submit" value="► Add" id="submit-button" class="submit-button" />
+    <input type="submit" value="► Add" id="submit-button" class="submit-button" onclick="return confirm('are you sure?')"/>
     <div class="LoaderBox2"><img src="~/Content/images/loader.gif" id="loader" alt="Finance Logo" style="align-self:center; border:none"></div>
     @Html.HiddenFor(model => model.Student_Id)
     @Html.HiddenFor(model => model.Batch_Id)
