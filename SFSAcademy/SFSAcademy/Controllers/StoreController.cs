@@ -2725,8 +2725,8 @@ namespace SFSAcademy.Controllers
                 return View();
             }
 
-            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
-            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewData["start_date"] = START_TRAN_DATE;
+            ViewData["end_date"] = END_TRAN_DATE;
 
             ViewBag.hr = null;
             var configValue = (from C in db.CONFIGURATIONs
@@ -2739,7 +2739,7 @@ namespace SFSAcademy.Controllers
                 }
             }
 
-            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE)
                 .GroupBy(o => new
                 {
@@ -2759,10 +2759,10 @@ namespace SFSAcademy.Controllers
                     PRODUCT_ID = g.Key.PRODUCT_ID,
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_SOLD),
-                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_income = g.Sum(p => p.SOLD_PRICE),
                     transactions_expense = 0
                 })
-                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE)
                 .GroupBy(o => new
                 {
@@ -2814,8 +2814,8 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
                 return View();
             }
-            ViewBag.START_TRAN_DATE = START_TRAN_DATE;
-            ViewBag.END_TRAN_DATE = END_TRAN_DATE;
+            ViewData["start_date"] = START_TRAN_DATE;
+            ViewData["end_date"] = END_TRAN_DATE;
             ViewBag.CATEGORY_ID = id;
 
             ViewBag.hr = null;
@@ -2829,7 +2829,7 @@ namespace SFSAcademy.Controllers
                 }
             }
 
-            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+            var DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == id)
                 .GroupBy(o => new
                 {
@@ -2849,10 +2849,10 @@ namespace SFSAcademy.Controllers
                     PRODUCT_ID = g.Key.PRODUCT_ID,
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_SOLD),
-                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_income = g.Sum(p => p.SOLD_PRICE),
                     transactions_expense = 0
                 })
-                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == id)
                 .GroupBy(o => new
                 {
@@ -2914,7 +2914,7 @@ namespace SFSAcademy.Controllers
             if (CATEGORY_ID != null)
             {
                 ViewBag.CATEGORY_ID = CATEGORY_ID;
-                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == CATEGORY_ID)
                 .GroupBy(o => new
                 {
@@ -2934,10 +2934,10 @@ namespace SFSAcademy.Controllers
                     PRODUCT_ID = g.Key.PRODUCT_ID,
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_SOLD),
-                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_income = g.Sum(p => p.SOLD_PRICE),
                     transactions_expense = 0
                 })
-                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE && x.STORE_PRODUCTS.CATEGORY_ID == CATEGORY_ID)
                 .GroupBy(o => new
                 {
@@ -2981,7 +2981,7 @@ namespace SFSAcademy.Controllers
             }
             else
             {
-                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                DetailedTransactions = db.STORE_SELLING.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.SOLD_ON >= START_TRAN_DATE && x.SOLD_ON <= END_TRAN_DATE)
                 .GroupBy(o => new
                 {
@@ -3001,10 +3001,10 @@ namespace SFSAcademy.Controllers
                     PRODUCT_ID = g.Key.PRODUCT_ID,
                     PRODUCT_NAME = g.Key.PRODUCT_NAME,
                     total_unit_sold = g.Sum(p => p.UNIT_SOLD),
-                    transactions_income = g.Sum(p => p.UNIT_SOLD) * g.Max(r => r.STORE_PRODUCTS.STORE_INVENTORY.FirstOrDefault().SELL_PRICE_PER_UNIT),
+                    transactions_income = g.Sum(p => p.SOLD_PRICE),
                     transactions_expense = 0
                 })
-                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_INVENTORY)
+                .Union(db.STORE_PROCUREMENT.Include(x => x.STORE_PRODUCTS).Include(x => x.STORE_PRODUCTS.STORE_CATEGORY).Include(x => x.STORE_PRODUCTS.STORE_SUB_CATEGORY)
                 .Where(x => x.PROCURED_ON >= START_TRAN_DATE && x.PROCURED_ON <= END_TRAN_DATE)
                 .GroupBy(o => new
                 {
