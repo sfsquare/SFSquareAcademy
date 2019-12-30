@@ -4,6 +4,8 @@
 }
 @{
     IEnumerable<SFSAcademy.ConsolidatedSelling> ConsolidateTransactions = (IEnumerable<SFSAcademy.ConsolidatedSelling>)ViewData["ConsolidateTransactions"];
+    DateTime start_date = (DateTime)ViewData["start_date"];
+    DateTime end_date = (DateTime)ViewData["end_date"];
 }
 <div id="content-header">
     <img src="~/Content/images/show_store.png" alt="Finance Logo">
@@ -16,7 +18,7 @@
 <div><img src="~/Content/images/_global/header_underline_.jpg" style="width:100%"></div>
 <div id="inner-tab-menu">
     <ul>
-        <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = @ViewBag.START_TRAN_DATE, END_TRAN_DATE = @ViewBag.END_TRAN_DATE }, new { @target = "_blank" })</li>
+        <li>@Html.ActionLink("pdf Report", "Transaction_pdf", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date }, new { @target = "_blank" })</li>
     </ul>
 </div>
 <div id="page-yield">
@@ -65,7 +67,7 @@
             }
             <tr class="@selectedRow">
                 <td class="col-1">@index</td>
-                <td class="col-2">@Html.ActionLink(item.CATEGORY_NAME, "Update_Monthly_Report_Sub", new { START_TRAN_DATE = ViewBag.START_TRAN_DATE, END_TRAN_DATE = ViewBag.END_TRAN_DATE, id = item.CATEGORY_ID })</td>
+                <td class="col-2">@Html.ActionLink(item.CATEGORY_NAME, "Update_Monthly_Report_Sub", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date, id = item.CATEGORY_ID })</td>
                 @if (expense != 0)
                 {
                     <td class="col-3" align="right">@expense</td>
