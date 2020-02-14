@@ -4989,6 +4989,10 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
                 return View();
             }
+            var userdetails = this.Session["CurrentUser"] as UserDetails;
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            ViewData["privilege"] = userdetails.privilage_list.ToList();
+
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
@@ -5097,6 +5101,10 @@ namespace SFSAcademy.Controllers
                 ViewBag.ErrorNotice = "End Date should be greater than or equal to Start Date!";
                 return View();
             }
+            var userdetails = this.Session["CurrentUser"] as UserDetails;
+            int UserId = Convert.ToInt32(this.Session["UserId"]);
+            ViewData["privilege"] = userdetails.privilage_list.ToList();
+
             var TransactionVal = (from tr in db.FINANCE_TRANSACTION
                                   join tc in db.FINANCE_TRANSACTION_CATEGORY on tr.CAT_ID equals tc.ID
                                   where tr.TRAN_DATE >= START_TRAN_DATE && tr.TRAN_DATE <= END_TRAN_DATE
