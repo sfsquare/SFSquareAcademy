@@ -7,6 +7,7 @@
     IEnumerable<SFSAcademy.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions"];
     DateTime start_date = (DateTime)ViewData["start_date"];
     DateTime end_date = (DateTime)ViewData["end_date"];
+    IEnumerable<SFSAcademy.PRIVILEGE> privilege = (IEnumerable<SFSAcademy.PRIVILEGE>)ViewData["privilege"];
 }
 <div id="content-header">
     <img src="~/Content/images/show_finance.png" alt="Finance Logo">
@@ -91,34 +92,72 @@
             index += 1;
             selectedRow = "tr-even";
             decimal income = 0; decimal expense = 0;
-            if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
-            if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
-            if (index % 2 == 0)
+            if (privilege.Select(p => p.NAME).Contains("HostelAdmin"))
             {
-                selectedRow = "tr-odd";
+                if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+                if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
+                if (index % 2 == 0)
+                {
+                    selectedRow = "tr-odd";
+                }
+                <tr class="@selectedRow">
+                    <td class="col-1">@index</td>
+                    <td class="col-2">@Html.ActionLink(item.TransactionCategoryData.NAME, "Income_Details", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date, id = item.TransactionCategoryData.ID })</td>
+                    @if (expense != 0)
+                    {
+                        <td class="col-3" align="right">@expense</td>
+                    }
+                    else
+                    {
+                        <td class="col-3" align="right"></td>
+                    }
+                    @if (income != 0)
+                    {
+                        <td class="col-3" align="right">@income</td>
+                    }
+                    else
+                    {
+                        <td class="col-3" align="right"> </td>
+                    }
+                </tr>
+                income_total += income;
+                expenses_total += expense;
             }
-            <tr class="@selectedRow">
-                <td class="col-1">@index</td>
-                <td class="col-2">@Html.ActionLink(item.TransactionCategoryData.NAME, "Income_Details", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date, id = item.TransactionCategoryData.ID })</td>
-                @if (expense != 0)
+            else
+            {
+                if (!item.TransactionCategoryData.NAME.Contains("Hostel"))
                 {
-                <td class="col-3" align="right">@expense</td>
+                    if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+                    if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
+                    if (index % 2 == 0)
+                    {
+                        selectedRow = "tr-odd";
+                    }
+                    <tr class="@selectedRow">
+                        <td class="col-1">@index</td>
+                        <td class="col-2">@Html.ActionLink(item.TransactionCategoryData.NAME, "Income_Details", new { START_TRAN_DATE = start_date, END_TRAN_DATE = end_date, id = item.TransactionCategoryData.ID })</td>
+                        @if (expense != 0)
+                        {
+                            <td class="col-3" align="right">@expense</td>
+                        }
+                        else
+                        {
+                            <td class="col-3" align="right"></td>
+                        }
+                        @if (income != 0)
+                        {
+                            <td class="col-3" align="right">@income</td>
+                        }
+                        else
+                        {
+                            <td class="col-3" align="right"> </td>
+                        }
+                    </tr>
+                    income_total += income;
+                    expenses_total += expense;
                 }
-                else
-                {
-                <td class="col-3" align="right"></td>
-                }
-                @if (income != 0)
-                {
-                    <td class="col-3" align="right">@income</td>
-                }
-                else
-                {
-                    <td class="col-3" align="right"> </td>
-                }
-            </tr>
-            income_total += income;
-            expenses_total += expense;
+            }
+
         }
         @{expenses_total += (decimal)ViewBag.salary; income_total += (decimal)ViewBag.donations_total; income_total += (decimal)ViewBag.transactions_fees;}
         <tr class="tr-blank"></tr>

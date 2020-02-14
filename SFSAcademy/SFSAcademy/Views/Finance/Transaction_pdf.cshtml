@@ -3,6 +3,7 @@
     Layout = null;
 }
 @{
+    IEnumerable<SFSAcademy.PRIVILEGE> privilege = (IEnumerable<SFSAcademy.PRIVILEGE>)ViewData["privilege"];
     IEnumerable<SFSAcademy.CategoryTransactions> other_transaction_categories = (IEnumerable<SFSAcademy.CategoryTransactions>)ViewData["other_transaction_categories"];
     IEnumerable<SFSAcademy.FinanceTransaction> transactions = (IEnumerable<SFSAcademy.FinanceTransaction>)ViewData["transactions"];
 }
@@ -69,46 +70,90 @@
                     index += 1;
                     selectedRow = "even";
                     decimal income = 0; decimal expense = 0;
-                    if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
-                    if (item.TransactionCategoryData.IS_INCM == true) { expense = (decimal)item.TRANS_AMNT; }
-                    if (i == 19)
+                    if (privilege.Select(p => p.NAME).Contains("HostelAdmin"))
                     {
-                        i = 0;
-                        <tr class="page-break"><td colspan="3"></td></tr>
-                        <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Particulars</td><td class="col-pdf">Expenses</td><td class="col-pdf">Income</td></tr>
+                        if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+                        if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
+                        if (i == 19)
+                        {
+                            i = 0;
+                            <tr class="page-break"><td colspan="3"></td></tr>
+                            <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Particulars</td><td class="col-pdf">Expenses</td><td class="col-pdf">Income</td></tr>
+                        }
+                        if (index % 2 == 0)
+                        {
+                            selectedRow = "odd";
+                        }
+                        <tr class="@selectedRow">
+                            <td class="col-pdf">@index</td>
+                            <td class="col-pdf2">@item.TransactionCategoryData.NAME</td>
+                            @if (expense != 0)
+                            {
+                                <td class="col-pdf3">@expense</td>
+                            }
+                            else
+                            {
+                                <td class="col-pdf3"></td>
+                            }
+                            @if (income != 0)
+                            {
+                                <td class="col-pdf3">&nbsp;@income</td>
+                            }
+                            else
+                            {
+                                <td class="col-pdf3"> </td>
+                            }
+                        </tr>
+                        i += 1;
+                        income_total += income;
+                        expenses_total += expense;
                     }
-                    if (index % 2 == 0)
+                    else
                     {
-                        selectedRow = "odd";
+                        if (!item.TransactionCategoryData.NAME.Contains("Hostel"))
+                        {
+                            if (item.TransactionCategoryData.IS_INCM == true) { income = (decimal)item.TRANS_AMNT; }
+                            if (item.TransactionCategoryData.IS_INCM == false) { expense = (decimal)item.TRANS_AMNT; }
+                            if (i == 19)
+                            {
+                                i = 0;
+                                <tr class="page-break"><td colspan="3"></td></tr>
+                                <tr class="table-header"><td class="col-pdf">Sl. No.</td><td class="col-pdf">Particulars</td><td class="col-pdf">Expenses</td><td class="col-pdf">Income</td></tr>
+                            }
+                            if (index % 2 == 0)
+                            {
+                                selectedRow = "odd";
+                            }
+                            <tr class="@selectedRow">
+                                <td class="col-pdf">@index</td>
+                                <td class="col-pdf2">@item.TransactionCategoryData.NAME</td>
+                                @if (expense != 0)
+                                {
+                                    <td class="col-pdf3">@expense</td>
+                                }
+                                else
+                                {
+                                    <td class="col-pdf3"></td>
+                                }
+                                @if (income != 0)
+                                {
+                                    <td class="col-pdf3">&nbsp;@income</td>
+                                }
+                                else
+                                {
+                                    <td class="col-pdf3"> </td>
+                                }
+                            </tr>
+                            i += 1;
+                            income_total += income;
+                            expenses_total += expense;
+                        }
                     }
-                    <tr class="@selectedRow">
-                        <td class="col-pdf">@index</td>
-                        <td class="col-pdf2">@item.TransactionCategoryData.NAME</td>
-                        @if (expense != 0)
-                        {
-                            <td class="col-pdf3">@expense</td>
-                        }
-                        else
-                        {
-                            <td class="col-pdf3"></td>
-                        }
-                        @if (income != 0)
-                        {
-                            <td class="col-pdf3">&nbsp;@income</td>
-                        }
-                        else
-                        {
-                            <td class="col-pdf3"> </td>
-                        }
-                    </tr>
-                    i += 1;
-                    income_total += income;
-                    expenses_total += expense;
                 }
                 @{ index += 1; selectedRow = "even";}
                 @if (index % 2 == 0)
                 {
-                selectedRow = "odd";
+                    selectedRow = "odd";
                 }
                 @{expenses_total += (decimal)ViewBag.salary; income_total += (decimal)ViewBag.donations_total; income_total += (decimal)ViewBag.transactions_fees;}
                 <tr class="@selectedRow">
